@@ -1,0 +1,60 @@
+baseURL = 'https://www.oceanheart.ai/'
+languageCode = 'en-gb'
+title = 'oceanheart.ai'
+
+[params]
+  description = "Rick Hallett — agentic systems engineer. Building verification infrastructure for human-AI collaboration, and learning in public about what that requires."
+  author = "Richard Hallett"
+  email = "kai@oceanheart.ai"
+  github = "https://github.com/rickhallett"
+  linkedin = "https://www.linkedin.com/in/richardhallett86/"
+
+[menus]
+  [[menus.main]]
+    name = 'blog'
+    url = '/blog/'
+    weight = 10
+  [[menus.main]]
+    name = 'bootcamp'
+    url = '/bootcamp/'
+    weight = 22
+  [[menus.main]]
+    name = 'slopodar'
+    url = '/slopodar/'
+    weight = 25
+  [[menus.main]]
+    name = 'sloptics'
+    url = '/sloptics/'
+    weight = 26
+  [[menus.main]]
+    name = 'decisions'
+    url = '/decisions/'
+    weight = 27
+  [[menus.main]]
+    name = 'about'
+    url = '/about/'
+    weight = 30
+  [[menus.main]]
+    name = 'cv'
+    url = '/cv/'
+    weight = 40
+
+[markup]
+  [markup.highlight]
+    style = 'tokyonight-night'
+    lineNos = false
+    noClasses = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ['HTML', 'RSS']
+  section = ['HTML', 'RSS']
+
+[taxonomies]
+  tag = 'tags'
+  category = 'categories'
+
+[pagination]
+  pagerSize = 20

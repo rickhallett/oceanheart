@@ -1,0 +1,350 @@
+/* sloptics.css — the annotated specimen stylesheet */
+/* imported only on /sloptics/. every rule here is a sloptic intervention. */
+
+/* === em-dash highlighter === */
+/* every — on the page is coloured. em-dashes are an LLM frequency tell.
+   humans use them occasionally. LLMs use them compulsively.
+   the colour escalates from mild yellow to burning red as the count
+   climbs. each em-dash carries data-n="1" through data-n="N".
+   the escalation IS the argument: by the time you reach the last one,
+   the burn should be obvious. */
+
+/* base — mild yellow. first few are almost gentle. */
+.emdash {
+  color: var(--yellow);
+  font-weight: 500;
+  transition: color 0.1s;
+}
+
+/* 4-6: warming — amber/orange */
+.emdash[data-n="4"],
+.emdash[data-n="5"],
+.emdash[data-n="6"] {
+  color: var(--orange);
+}
+
+/* 7-9: hot — orange pushing red */
+.emdash[data-n="7"],
+.emdash[data-n="8"],
+.emdash[data-n="9"] {
+  color: #f06878;
+}
+
+/* 10-12: red */
+.emdash[data-n="10"],
+.emdash[data-n="11"],
+.emdash[data-n="12"] {
+  color: var(--red);
+}
+
+/* 13+: burning bright red — full weight, slight glow */
+.emdash[data-n="13"],
+.emdash[data-n="14"],
+.emdash[data-n="15"],
+.emdash[data-n="16"],
+.emdash[data-n="17"],
+.emdash[data-n="18"],
+.emdash[data-n="19"],
+.emdash[data-n="20"] {
+  color: var(--red);
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(247, 118, 142, 0.5);
+}
+
+/* === abstract noun highlighter === */
+/* words ending in -tion, -ment, -ness, -ity, -ence, -ance.
+   these are the atoms of the nominalisation cascade.
+   the colour escalates from barely-there purple to deep saturated.
+   36 instances on this page. watch the nouns accumulate. */
+
+/* base — faint purple. you barely notice the first few. */
+.absnoun {
+  color: #9980c4;
+  transition: color 0.1s;
+}
+
+/* 7-12: warming */
+.absnoun[data-n="7"],
+.absnoun[data-n="8"],
+.absnoun[data-n="9"],
+.absnoun[data-n="10"],
+.absnoun[data-n="11"],
+.absnoun[data-n="12"] {
+  color: #ad8fdb;
+}
+
+/* 13-18: mid — clearly purple now */
+.absnoun[data-n="13"],
+.absnoun[data-n="14"],
+.absnoun[data-n="15"],
+.absnoun[data-n="16"],
+.absnoun[data-n="17"],
+.absnoun[data-n="18"] {
+  color: var(--purple);
+}
+
+/* 19-24: saturating */
+.absnoun[data-n="19"],
+.absnoun[data-n="20"],
+.absnoun[data-n="21"],
+.absnoun[data-n="22"],
+.absnoun[data-n="23"],
+.absnoun[data-n="24"] {
+  color: var(--purple);
+  font-weight: 500;
+}
+
+/* 25-30: deep — underline appears */
+.absnoun[data-n="25"],
+.absnoun[data-n="26"],
+.absnoun[data-n="27"],
+.absnoun[data-n="28"],
+.absnoun[data-n="29"],
+.absnoun[data-n="30"] {
+  color: var(--purple);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--purple);
+  text-underline-offset: 3px;
+}
+
+/* 31+: full burn — glow */
+.absnoun[data-n="31"],
+.absnoun[data-n="32"],
+.absnoun[data-n="33"],
+.absnoun[data-n="34"],
+.absnoun[data-n="35"],
+.absnoun[data-n="36"],
+.absnoun[data-n="37"],
+.absnoun[data-n="38"],
+.absnoun[data-n="39"],
+.absnoun[data-n="40"] {
+  color: var(--purple);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--purple);
+  text-underline-offset: 3px;
+  text-shadow: 0 0 6px rgba(187, 154, 247, 0.5);
+}
+
+/* === epigrammatic closure detector (programmatic) === */
+/* paragraphs whose final sentence is ≤ 6 words, after at least
+   one longer sentence. the one closing lick.
+   right-border escalates from faint orange to burning red.
+   this runs on ALL text — LLM and human alike. the density
+   difference is the argument. */
+
+/* base — barely there */
+.auto-epigram {
+  border-right: 2px solid rgba(255, 158, 100, 0.25);
+  padding-right: 0.75rem;
+}
+
+/* 2-3: warming */
+.auto-epigram[data-epigram-n="2"],
+.auto-epigram[data-epigram-n="3"] {
+  border-right: 2px solid rgba(255, 158, 100, 0.45);
+}
+
+/* 4-5: clearly visible */
+.auto-epigram[data-epigram-n="4"],
+.auto-epigram[data-epigram-n="5"] {
+  border-right: 3px solid var(--orange);
+}
+
+/* 6-7: hot */
+.auto-epigram[data-epigram-n="6"],
+.auto-epigram[data-epigram-n="7"] {
+  border-right: 3px solid #f06878;
+}
+
+/* 8+: burning */
+.auto-epigram[data-epigram-n="8"],
+.auto-epigram[data-epigram-n="9"],
+.auto-epigram[data-epigram-n="10"],
+.auto-epigram[data-epigram-n="11"],
+.auto-epigram[data-epigram-n="12"],
+.auto-epigram[data-epigram-n="13"],
+.auto-epigram[data-epigram-n="14"],
+.auto-epigram[data-epigram-n="15"] {
+  border-right: 4px solid var(--red);
+  box-shadow: inset -4px 0 8px rgba(247, 118, 142, 0.15);
+}
+
+/* === nominalisation cascade density (programmatic) === */
+/* paragraphs where abstract noun suffixes exceed 3.5% of total
+   words. bottom-border in purple, escalating.
+   shows the percentage so you can see the threshold in action. */
+
+/* base — faint purple bottom border */
+.auto-nom-density {
+  border-bottom: 2px solid rgba(187, 154, 247, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* ratio badge — small percentage shown at bottom-right */
+.auto-nom-density::after {
+  content: attr(data-nom-ratio) "%";
+  position: absolute;
+  bottom: -0.2rem;
+  right: 0;
+  font-size: 0.6rem;
+  color: rgba(187, 154, 247, 0.6);
+  font-family: monospace;
+}
+
+/* 2-3: warming */
+.auto-nom-density[data-nom-n="2"],
+.auto-nom-density[data-nom-n="3"] {
+  border-bottom: 2px solid rgba(187, 154, 247, 0.5);
+}
+
+/* 4-5: mid */
+.auto-nom-density[data-nom-n="4"],
+.auto-nom-density[data-nom-n="5"] {
+  border-bottom: 3px solid var(--purple);
+}
+
+/* 6+: full */
+.auto-nom-density[data-nom-n="6"],
+.auto-nom-density[data-nom-n="7"],
+.auto-nom-density[data-nom-n="8"],
+.auto-nom-density[data-nom-n="9"],
+.auto-nom-density[data-nom-n="10"] {
+  border-bottom: 3px solid var(--purple);
+}
+
+.auto-nom-density[data-nom-n="6"]::after,
+.auto-nom-density[data-nom-n="7"]::after,
+.auto-nom-density[data-nom-n="8"]::after,
+.auto-nom-density[data-nom-n="9"]::after,
+.auto-nom-density[data-nom-n="10"]::after {
+  color: var(--purple);
+}
+
+/* === antithesis detector (programmatic) === */
+/* paragraphs containing negation contrast patterns.
+   "not A, but B" / "X, not Y" / "rather than" / "instead of".
+   cyan right+top corner outline to distinguish from other borders. */
+
+/* base — faint cyan corner */
+.auto-antithesis {
+  outline: 1px solid rgba(125, 207, 255, 0.2);
+  outline-offset: 2px;
+}
+
+/* 2-3: warming */
+.auto-antithesis[data-antithesis-n="2"],
+.auto-antithesis[data-antithesis-n="3"] {
+  outline: 1px solid rgba(125, 207, 255, 0.4);
+}
+
+/* 4-5: visible */
+.auto-antithesis[data-antithesis-n="4"],
+.auto-antithesis[data-antithesis-n="5"] {
+  outline: 2px solid rgba(125, 207, 255, 0.6);
+  outline-offset: 3px;
+}
+
+/* 6+: full cyan */
+.auto-antithesis[data-antithesis-n="6"],
+.auto-antithesis[data-antithesis-n="7"],
+.auto-antithesis[data-antithesis-n="8"],
+.auto-antithesis[data-antithesis-n="9"],
+.auto-antithesis[data-antithesis-n="10"] {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* === isocolon detector (programmatic) === */
+/* paragraphs with consecutive sentences within ±1 word of each
+   other, both ≥ 5 words. mechanical parallel structure.
+   yellow top-border, escalating. */
+
+/* base — faint yellow */
+.auto-isocolon {
+  border-top: 2px solid rgba(224, 175, 104, 0.25);
+  padding-top: 0.5rem;
+}
+
+/* 2-3: warming */
+.auto-isocolon[data-isocolon-n="2"],
+.auto-isocolon[data-isocolon-n="3"] {
+  border-top: 2px solid rgba(224, 175, 104, 0.5);
+}
+
+/* 4-5: visible */
+.auto-isocolon[data-isocolon-n="4"],
+.auto-isocolon[data-isocolon-n="5"] {
+  border-top: 3px solid var(--yellow);
+}
+
+/* 6+: full */
+.auto-isocolon[data-isocolon-n="6"],
+.auto-isocolon[data-isocolon-n="7"],
+.auto-isocolon[data-isocolon-n="8"],
+.auto-isocolon[data-isocolon-n="9"],
+.auto-isocolon[data-isocolon-n="10"] {
+  border-top: 3px solid var(--yellow);
+}
+
+/* === anadiplosis detector (programmatic) === */
+/* paragraphs where the last word of sentence K repeats as one of
+   the first words of sentence K+1. the hinge-word chain.
+   green left-border, escalating. matches the manual annotation
+   colour so you can see where programmatic agrees with manual. */
+
+/* base — faint green */
+.auto-anadiplosis {
+  border-left: 2px solid rgba(158, 206, 106, 0.3);
+  padding-left: 0.75rem;
+}
+
+/* 2-3: warming */
+.auto-anadiplosis[data-anadiplosis-n="2"],
+.auto-anadiplosis[data-anadiplosis-n="3"] {
+  border-left: 2px solid rgba(158, 206, 106, 0.55);
+}
+
+/* 4+: full green */
+.auto-anadiplosis[data-anadiplosis-n="4"],
+.auto-anadiplosis[data-anadiplosis-n="5"],
+.auto-anadiplosis[data-anadiplosis-n="6"],
+.auto-anadiplosis[data-anadiplosis-n="7"],
+.auto-anadiplosis[data-anadiplosis-n="8"] {
+  border-left: 3px solid var(--green);
+}
+
+/* === manual annotation classes (REMOVED) === */
+/* all manual inline spans stripped in favour of programmatic
+   paragraph-level detectors. the comparison must be fair.
+   historical reference preserved in git at commit 186e739. */
+
+/* === human baseline === */
+/* the same highlighters run here. the density difference
+   between LLM prose and human prose is the only argument
+   this section makes. if you can't see it, the detector
+   doesn't work. */
+
+.sloptics-baseline blockquote {
+  font-style: normal;
+  color: var(--text);
+}
+
+.sloptics-baseline blockquote p {
+  margin-bottom: 0.75rem;
+}
+
+/* === footnotes === */
+.sloptics-footnotes {
+  margin-top: 2rem;
+}
+
+.sloptics-footnote-notice {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}

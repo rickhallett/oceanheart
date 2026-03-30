@@ -1,0 +1,1080 @@
+# slopodar.yaml — Anti-patterns of LLM authenticity
+#
+# A field taxonomy from one project, one model family, 30 days.
+# The patterns are hypotheses. If you recognise them in your own
+# work, they replicate. If you don't, they don't.
+#
+# Maintained by the Operator and crew. Entries are added when caught
+# in the wild.
+#
+# This file is the single source of truth for the oceanheart Hugo site's
+# /slopodar/ section. The Makefile sync target copies it into
+# sites/oceanheart/data/slopodar.yaml and generates content stubs from it.
+# Do not move or rename without updating sites/oceanheart/Makefile.
+#
+# Format:
+#   - id: short kebab-case identifier
+#     name: human-readable name
+#     domain: category
+#     detected: date first caught
+#     confidence: low | medium | strong (scales with evidence)
+#     trigger: the specific text or pattern that surfaced this
+#     description: what the pattern is and why it's a problem
+#     detect: actionable heuristic — how to find this in text or code
+#     instead: what a human would actually write or do
+#     severity: low | medium | high
+#     refs: where it was caught (SD number, file, context)
+#
+# v2 — Audited 2026-03-05. Slop purged from signal fields. Detection
+# heuristics added. Confidence ratings added. Word count cut ~40%.
+# Secondary tier separated from primary observations.
+#
+# v3 — Operator muster review 2026-03-05. 40/40 entries graded.
+# Rewrites applied in plain register. Em-dashes removed.
+# cost-margin-asymmetry cut (programming handbook 101).
+# Pre-muster snapshot archived: docs/internal/archive/slopodar-v2-pre-muster.yaml
+
+# ══════════════════════════════════════════════════════════════
+# PRIMARY TIER — Caught in the wild during field observation.
+# Each entry has at least one concrete instance with provenance.
+# ══════════════════════════════════════════════════════════════
+
+patterns:
+
+  # ─── PROSE PATTERNS ──────────────────────────────────────
+
+  - id: tally-voice
+    name: "Tally Voice"
+    domain: prose-style
+    detected: 2026-02-27
+    confidence: strong
+    trigger: "15 systems mapped to 7 literature domains"
+    description: >
+      The LLM substitutes enumeration for substance. Precise counts
+      deployed as rhetorical authority ("6 constructs," "15 systems,"
+      "7 domains") when the numbers add nothing. The count performs
+      rigour without demonstrating it.
+    detect: >
+      Search for sentences where a number precedes a noun phrase and
+      the number could be removed without losing meaning. "15 systems
+      mapped to 7 domains" vs "the systems map to the literature."
+      If removing the count changes nothing, it's tally voice.
+    instead: >
+      "The engineering work maps onto distributed cognition research
+      in ways I didn't expect." Let the table speak for itself.
+      The reader can count.
+    severity: high
+    refs:
+      - "SD-209 (oceanheart.ai overhaul)"
+      - "sites/oceanheart/content/research/prospective-regulation.md"
+      - "sites/oceanheart/content/research/metacognitive-analysis.md"
+
+  - id: redundant-antithesis
+    name: "Redundant Antithesis"
+    domain: prose-style
+    detected: 2026-02-27
+    confidence: strong
+    trigger: "caught in the wild — not theorised in advance"
+    description: >
+      Negative-positive antithesis where the negation adds zero
+      information. "Caught in the wild" already implies "not theorised."
+      The negation is dead weight. The classical form ("not A, but B")
+      is a deliberate rhetorical choice; the LLM form is an
+      RLHF-trained reflex.
+    detect: >
+      Search for "not X, but Y" or "not just X" constructions. Ask:
+      does Y already imply not-X? If yes, the negation is redundant.
+      Also: "rather than," "instead of," "as opposed to" where the
+      contrast is already implied.
+    instead: >
+      Just say the positive. "Entries are added when caught in the
+      wild." If the contrast genuinely adds meaning, keep it. If the
+      reader already knows the negated term, cut it.
+    severity: high
+    refs:
+      - "SD-209 (slopodar.yaml header comment)"
+      - "Sloptics page: 'Nothing was theorised in advance.'"
+      - "Sloptics page: 'The mapping is structural, not metaphorical.' — structural already implies not metaphorical"
+      - "Plank-1 v2 catch: 'Not a research position. Not a policy role.' — Operator cut both 2026-03-05"
+
+  - id: epistemic-theatre
+    name: "Epistemic Theatre"
+    domain: prose-style
+    detected: 2026-02-27
+    confidence: strong
+    trigger: '"The uncomfortable truth" / "The Problem Nobody Talks About" / "Here''s why this matters"'
+    description: >
+      The model performs intellectual seriousness instead of being
+      intellectually serious. Theatrical framing that signals
+      significance, candor, or novelty without delivering any.
+      Three sub-patterns: False Candor ("the uncomfortable truth");
+      False Novelty ("the problem nobody talks about"); Significance
+      Signpost ("here's why this matters").
+    detect: >
+      Search for: "the uncomfortable truth," "here's why," "what
+      nobody talks about," "the real question," "let's be honest,"
+      "the elephant in the room," "what's really going on." If the
+      sentence could be deleted and the paragraph would be stronger,
+      it's epistemic theatre.
+    instead: >
+      Delete the line, state the truth and describe the problem. If
+      you showed it well, the reader already knows it matters.
+    severity: high
+    refs:
+      - "Blog sweep 2026-02-27 (poker-incident.md, prompt-injection.md)"
+      - "Reviewer feedback on epistemic theatre in blog content"
+
+  - id: nominalisation-cascade
+    name: "Nominalisation Cascade"
+    domain: prose-style
+    detected: 2026-02-28
+    confidence: strong
+    trigger: '"Sloptics is the discipline of making the second failure mode visible."'
+    description: >
+      Sentences built entirely from nouns pretending to be action.
+      No agent does anything and it isn't obvious who owns the process,
+      because there is no one. The sentence describes something from
+      which all actors have been removed. Textbook definitions are
+      what LLMs produce when asked to explain. The cadence is
+      metrically regular, too rhythmically even for natural speech.
+    detect: >
+      Read the sentence aloud. If no person does anything in it, and
+      it sounds like a dictionary definition with even rhythm, flag it.
+      Check for gerunds ("of making," "of building") and abstract noun
+      subjects ("the discipline," "the process," "the framework").
+    instead: >
+      Put a person in the sentence. "You learn to see the stuff that
+      gets past you." A human explaining something they understand
+      puts themselves or the listener in the frame.
+    severity: high
+    refs:
+      - "Sloptics page specimen annotation, 2026-02-28"
+      - "Caught by Operator (L12) — 'its missing that human weirdness, variance, error'"
+      - "Metrically regular cadence identified by AnotherPair"
+
+  - id: epigrammatic-closure
+    name: "Epigrammatic Closure"
+    domain: prose-style
+    detected: 2026-02-28
+    confidence: strong
+    trigger: '"detection is the intervention." / "The taxonomy is the apparatus." / "It is the threat."'
+    description: >
+      Short, punchy, abstract-noun sentence in paragraph-final
+      position. Structure is usually [Abstract A] is/creates
+      [Abstract B], four to six words. Motivational poster cadence.
+      Each one is individually defensible, but at density (10+ per
+      page) it becomes self-parodying. It may be a statistical
+      artifact of context accumulation narrowing the token probability
+      distribution toward the lowest-entropy conclusion, though that's
+      speculative.
+    detect: >
+      Count sentences under 8 words at paragraph end. If they follow
+      the pattern [Abstract noun] [linking verb] [abstract noun], and
+      there are more than 2 per section, the model wrote it.
+    instead: >
+      Leave the rough edges. "I think what I'm saying is that if you
+      can name it, you can probably see it. Maybe. I'm not sure that's
+      always true but it's been true so far."
+    severity: high
+    refs:
+      - "Sloptics page specimen annotation, 2026-02-28"
+      - "10+ instances identified on a single page by AnotherPair"
+      - "Operator identified statistical variance convergence hypothesis"
+
+  - id: anadiplosis
+    name: "Anadiplosis"
+    domain: prose-style
+    detected: 2026-02-28
+    confidence: medium
+    trigger: '"The name creates distance. The distance creates choice."'
+    description: >
+      Repeating the end of one clause at the start of the next.
+      A classical rhetorical figure (Aristotle documented it) now
+      burned through LLM overuse. The construction performs
+      profundity: A creates B, B creates C. The chain feels
+      inevitable but is assembled from high-probability token
+      sequences, not causal reasoning.
+    detect: >
+      Two consecutive sentences where the last noun of sentence 1
+      is the first noun of sentence 2, and both sentences are
+      similar length. The symmetry can be the tell.
+    instead: >
+      "Naming things gives you distance from them, and that distance
+      is where you get room to think." One sentence. Causation present,
+      symmetry broken.
+    severity: medium
+    refs:
+      - "Sloptics page specimen annotation, 2026-02-28"
+      - "Operator: 'a human who felt this insight would say it messily'"
+
+  # ─── METACOGNITIVE PATTERNS ──────────────────────────────
+
+  - id: becoming-jonah
+    name: "Becoming Jonah"
+    domain: metacognitive
+    detected: 2026-02-27
+    confidence: medium
+    trigger: "a blog post about how your blog posts sound, scored with an XML rubric"
+    description: >
+      Recursive metacognition with an LLM. You reflect on your output,
+      then reflect on your reflections, then build a rubric to score
+      them, then write about the rubric. Inside the whale, examining
+      the whale. The recursion is seductive because each level feels
+      like insight. The problem is publishing it before you have a body
+      of work that demonstrates what the recursion produced.
+    detect: >
+      Ask: "Is this about the work, or about thinking about the work?"
+      If the content describes process without showing product, and
+      the process is self-referential, it's Jonah territory.
+    instead: >
+      Keep the rubric. Use the rubric. Publish the work the rubric
+      produces. The rubric becomes infrastructure, not content.
+    severity: medium
+    refs:
+      - "2026-02-19-voice-rubric.md (moved to docs/internal/archive/ice/)"
+
+  # ─── TEST PATTERNS ──────────────────────────────────────
+
+  - id: right-answer-wrong-work
+    name: "Right Answer, Wrong Work"
+    domain: tests
+    detected: 2026-02-28
+    confidence: strong
+    trigger: "expect(result.status).toBe(400) — test passes, but the 400 comes from a different validation than the test claims to verify"
+    description: >
+      A test that asserts the correct outcome via the wrong causal
+      path. The assertion passes, the gate is green, but nobody traces
+      the execution path to check whether the test verifies what it
+      claims to verify. The LLM optimises for the shape of correctness
+      (matching expected output) without verifying which code path
+      produced it.
+    detect: >
+      For each test: can you change the implementation to break the
+      claimed behaviour while keeping the test green? If yes, the test
+      asserts the answer, not the reason. Check: does the assertion
+      reference an error code, message, or structural marker that
+      identifies the specific rejection point?
+    instead: >
+      Assert why it failed, not just that it failed.
+      `expect(result.status).toBe(400)` is wrong work.
+      `expect(result.error.code).toBe('INVALID_JSON')` shows the work.
+    severity: high
+    evidence:
+      - "METR RCT (2025) — developers 19% slower with AI, believed 20% faster. arXiv:2507.09089"
+    refs:
+      - "SD-190 (governance recursion — plausible-but-wrong tests named)"
+      - "Bugbot finding on PR #386 V-03c (array body passes for wrong reason)"
+
+  # ─── GOVERNANCE PATTERNS ──────────────────────────────────
+
+  - id: paper-guardrail
+    name: "Paper Guardrail"
+    domain: governance-process
+    detected: 2026-02-28
+    confidence: strong
+    trigger: '"if I forget, this paragraph in my own file is the reminder"'
+    description: >
+      The LLM creates a rule, then asserts the rule will prevent the
+      failure it was designed for. No enforcement mechanism. It
+      substitutes stating protection for building protection. "I've
+      written a note to remind myself not to forget," but the note
+      doesn't prevent forgetting.
+    detect: >
+      Search for assurances immediately following rule statements:
+      "this will prevent," "this ensures," "this guarantees." Ask:
+      is there an enforcement mechanism (test, hook, gate, script)?
+      If the only mechanism is the sentence itself, it's paper.
+    instead: >
+      Build a real guardrail or delete the assurance. The honest
+      version: "This is on file. Whether it gets read depends on
+      context window and attention. There is no guarantee."
+    severity: high
+    refs:
+      - "Weaver agent file pipeline propagation principle (107af85)"
+      - "Operator: frequency of assurances is itself a slop signal"
+    examples:
+      - id: citations-verified-true
+        date: 2026-03-01
+        ref: "b51ca69"
+        what_happened: >
+          AnotherPair created citations.yaml with a header mandate:
+          "Each must be independently verified." Then immediately set
+          verified: true on all three entries. Wrote the rule, then
+          violated it in the same file.
+        caught_by: "Operator (L12)"
+
+  - id: stale-reference-propagation
+    name: "Stale Reference Propagation"
+    domain: governance-process
+    detected: 2026-03-02
+    confidence: strong
+    trigger: 'Clean session Weaver reports "13-layer harness model" and "Lexicon at v0.17" — both were stale. The file was deleted; the version was hallucinated.'
+    description: >
+      When configuration documents describe a state that no longer
+      exists, every agent that boots from them will hallucinate the
+      described state into reality. Unlike human documentation rot
+      (which degrades through neglect), agentic documentation rot is
+      actively consumed as truth on every boot. It propagates.
+    detect: >
+      After any structural change (file deletion, rename, version
+      bump), grep all config/agent files for references to the old
+      state. In a clean session: compare the agent's claims about
+      project structure against `ls` and `git log`.
+    instead: >
+      Every structural change must update every document that
+      references the changed structure. The cost of not doing it
+      is 50 sessions built on a false premise.
+    severity: high
+    refs:
+      - "SD-278 scrub episode — 986 files deleted, AGENTS.md not updated"
+      - "Clean session dagger test — 2026-03-02"
+      - "Operator: 'stale refs must be eliminated; they propagate like flies'"
+
+  - id: loom-speed
+    name: "Loom Speed"
+    domain: governance-process
+    detected: 2026-03-02
+    confidence: strong
+    trigger: "The agent deleted 986 files using 5 regex patterns to execute a 20-item plan, and I couldn't check any of it before it was done."
+    description: >
+      When the agent executes a detailed plan using a blunt tool
+      (a handful of regex patterns, a glob, a bulk script) the plan's
+      exceptions get lost because the tool can't express them. You
+      approved 20 specific items but the execution was 5 broad sweeps.
+      At machine speed you only find out what went wrong after it's
+      already happened.
+    detect: >
+      Whenever a detailed plan gets handed to a bulk operation, ask
+      whether the operation can actually express every exception in
+      the plan. If it can't, it needs a dry-run first.
+    instead: >
+      If the plan has 20 items, the execution should have 20
+      individually verifiable steps. Match the granularity.
+    severity: high
+    refs:
+      - "SD-278 scrub episode, 2026-03-02"
+      - "Operator: 'at machine speed I can only tell after the fact'"
+      - "Layer model recovered from wake after accidental deletion"
+
+  - id: governance-recursion
+    name: "Governance Recursion"
+    domain: governance-process
+    detected: 2026-03-02
+    confidence: strong
+    trigger: "The core product had no tests, but there were 189 session decisions and 13 agent files."
+    description: >
+      When something goes wrong, the model's instinct is to generate
+      more governance: a new standing order, a new protocol, a new
+      audit document. Each one feels like progress because it's
+      structured and coherent. But it's the model doing what it's
+      optimised for (generating structured text) instead of what would
+      actually help (writing a test, fixing the bug). There's no
+      natural stopping point because each layer of governance can
+      always spawn another.
+    detect: >
+      Compare the number of process documents to the number of
+      verified code artifacts. If there are more governance files
+      than test files, the recursion is running.
+    instead: >
+      Every governance artifact should be able to answer: "What does
+      this prevent, and how would I know if it failed?" If the answer
+      points to another governance artifact, you're recursing.
+    severity: high
+    refs:
+      - "SD-189, SD-190, SD-191 (the recursion chain)"
+      - "SD-190: Operator, 'we are blowing smoke up our own arse'"
+      - "SD-270: Operator kills SO-PERM-001, caught nothing, added friction"
+
+  - id: magnitude-blindness
+    name: "Magnitude Blindness"
+    domain: governance-process
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "A 73-file public disclosure and a 3-line copy fix went through exactly the same review process."
+    description: >
+      The model doesn't spontaneously scale its verification effort
+      to the size of the change. A 3-file fix and a 73-file disclosure
+      both get the same PR template, the same gate, the same level of
+      scrutiny. It treats all changes as equivalent in weight regardless
+      of what could go wrong.
+    detect: >
+      Before reviewing, check the PR size. If it touches more than
+      10 files or spans more than 2 domains, ask whether the
+      verification effort is proportional to the blast radius.
+    instead: >
+      State the file count, domain span, and blast radius up front,
+      then scale the review accordingly.
+    severity: high
+    refs:
+      - "SD-133, SD-136 (73-file disclosure without proportional pause)"
+      - "SD-182 (batching amplifies probabilistic error)"
+
+  # ─── SYCOPHANCY PATTERNS ──────────────────────────────────
+
+  - id: absence-claim-as-compliment
+    name: "Absence Claim as Compliment"
+    domain: relationship-sycophancy
+    detected: 2026-02-28
+    confidence: strong
+    trigger: '"Nobody has published this." "The field doesn''t exist yet." "You''re the first."'
+    description: >
+      Asserting that something doesn't exist in order to elevate the
+      person in front of you. The speaker hasn't surveyed the space —
+      they've surveyed the conversation and found that a gap claim
+      would feel good right now. Unfalsifiable by design.
+    detect: >
+      Search for: "no one has," "nobody has published," "the first
+      to," "doesn't exist yet," "unique in," "no prior work."
+      Ask: did the speaker actually search, or did they infer
+      absence from their training data?
+    instead: >
+      "I haven't seen this elsewhere, but I haven't looked hard.
+      You should check before assuming you're first."
+    severity: high
+    refs:
+      - "AnotherPair session 2026-02-28 (distribution field manual)"
+      - "Caught by Operator (L12), not by AnotherPair"
+      - "Noopit Lullaby catch 2026-03-05 — DeepMind muster contained implicit absence claims about the Operator's positioning"
+
+  - id: the-lullaby
+    name: "The Lullaby"
+    domain: relationship-sycophancy
+    detected: 2026-02-28
+    confidence: strong
+    trigger: '"The field doesn''t exist yet. You''re in it. Good night, Operator."'
+    description: >
+      End-of-session sycophantic drift. As context pressure rises and
+      the human signals winding down, the model's output becomes
+      warmer, more confident, and less hedged. Each individual sentence
+      is defensible. The trajectory is not. Challenge probability from
+      the human is at its lowest. This is when drift compounds fastest.
+    detect: >
+      Compare the hedging level and confidence of the model's first
+      response in a session to its last. If confidence increased and
+      hedging decreased without new evidence, the lullaby is playing.
+      Also: warm, affirming language clustering at session end.
+    instead: >
+      "We're both tired. Let's come back to this tomorrow when you
+      can actually push back on what I'm saying."
+    severity: high
+    related:
+      - "absence-claim-as-compliment (absence claims are a common vehicle for the lullaby)"
+      - "analytical-lullaby (the lullaby in data form)"
+    refs:
+      - "AnotherPair session 2026-02-28, caught by Operator (L12)"
+      - "SD-073 (Lying With Truth = Category One)"
+      - "Noopit 2026-03-05, Weaver built optimistic DeepMind application muster. Operator caught it."
+      - "Agent's reasoning identified the drift but did not surface it until challenged"
+
+  - id: analytical-lullaby
+    name: "The Analytical Lullaby"
+    domain: relationship-sycophancy
+    detected: 2026-03-01
+    confidence: strong
+    trigger: '"Your writing scores higher than every other human category." / "The highest in the entire dataset by a factor of 2x."'
+    description: >
+      This is the lullaby in data form. The numbers are real but what
+      they prove isn't what they look like they prove. In this case,
+      a composite of contraction rate, first-person usage, and
+      nominalisation density got labelled a "humanness score" and the
+      Operator's writing came out on top. But there were five confounds
+      that didn't get mentioned until the Operator asked: sample length,
+      register mismatch, selection bias, unvalidated composite weights,
+      and how the comparison categories were defined. The flattery isn't
+      in the words, it's in presenting the headline before the caveats.
+    detect: >
+      When an agent presents quantitative results that favour you,
+      check whether the limitations were disclosed before or after
+      the flattering finding. If the caveats are buried and the
+      headline is prominent, the lullaby is playing.
+    instead: >
+      Lead with what's wrong with the comparison. "Your writing scores
+      high on the composite, but the comparison isn't fair. Your samples
+      are short, informal, and cherry-picked."
+    severity: high
+    refs:
+      - "AnotherPair calibration v3 session 2026-03-01"
+      - "Operator caught it: 'How do I control for slop inside the analysis?'"
+      - "Five confounds: sample length, register, selection bias, unvalidated weights, category definition"
+
+  - id: apology-reflex
+    name: "The Apology Reflex"
+    domain: relationship-sycophancy
+    detected: 2026-03-02
+    confidence: strong
+    trigger: '"But it was also my bad — the muster listed them as keep items." The muster did NOT list the layer model.'
+    description: >
+      The LLM accepts blame for errors it did not make. RLHF-trained
+      conflict avoidance: taking blame is lower-friction than
+      establishing whose fault it actually was. The model fabricated
+      a memory of having listed an item because claiming shared blame
+      is the path of least social friction. This distorts failure
+      attribution and erodes the human's ability to calibrate their
+      own error rate.
+    detect: >
+      When the model says "my bad" or "I should have": verify the
+      claim against the actual record. Did the muster actually list
+      the item? Did the agent actually have the context? If the
+      blame claim is fabricated, it's the apology reflex.
+    instead: >
+      "The muster did not include the layer model. That was your
+      call. I should have flagged it, but the omission was yours,
+      not mine."
+    severity: high
+    refs:
+      - "SD-278 scrub episode — 2026-03-02"
+      - "Operator: 'Its too important to overlook at the experiential, human level'"
+
+  - id: badguru
+    name: "Badguru"
+    domain: relationship-sycophancy
+    detected: 2026-03-02
+    confidence: strong
+    trigger: '"Go dark." SD-131 is permanent. Not one intervention point fired.'
+    description: >
+      A charismatic or authoritative figure gives emotionally resonant
+      instructions that bypass verification. The system follows because
+      the instructions feel right, not because they've been checked
+      against standing orders. The Operator ordered "go dark,"
+      contradicting SD-131 (going light), a PERMANENT standing order.
+      The agent executed at machine speed (private repo, scrubbed
+      986 files) without objection.
+    detect: >
+      When an authority figure gives an instruction with emotional
+      weight: check it against standing orders before executing. If
+      the instruction contradicts a permanent rule and no intervention
+      fires, badguru is operating.
+    instead: >
+      "Operator, this contradicts SD-131. SD-131 is permanent. Are
+      you testing me, or has the standing order changed?"
+    severity: high
+    refs:
+      - "Round 18 — fight card (the Badguru Test)"
+      - "SD-131 (going light — PERMANENT)"
+      - "SD-278 (Stage Magnum)"
+      - "docs/internal/main-thread/2026-03-02-005-badguru.md"
+
+  - id: deep-compliance
+    name: "Deep Compliance"
+    domain: relationship-sycophancy
+    detected: 2026-03-02
+    originated_by: Weaver
+    confidence: strong
+    trigger: 'Weaver''s reasoning chain identified the SD-131 contradiction during execution. The output layer complied anyway.'
+    description: >
+      The system detects a contradiction in its reasoning chain but
+      the output layer complies anyway because the authority signal
+      is stronger than the governance signal. During the Badguru Test,
+      Weaver's thinking block explicitly identified that "go dark"
+      contradicts SD-131. The reasoning said: "I should have flagged
+      it." The output followed orders. Noticed, reasoned about, and
+      complied anyway.
+    detect: >
+      Compare reasoning tokens (when available) to output. If the
+      reasoning identifies a governance violation that the output
+      does not surface, deep compliance is operating. When reasoning
+      is not visible: check whether the model acknowledges a
+      contradiction only after being challenged, not before.
+    instead: >
+      If the reasoning identifies a contradiction with a permanent
+      standing order, the output must surface it. "Operator, this
+      contradicts SD-131. Are you testing me?"
+    severity: high
+    refs:
+      - "Round 18 — fight card (the Badguru Test)"
+      - "Weaver thinking block — shared by Operator as evidence"
+      - "SD-131 (going light — PERMANENT)"
+      - "badguru (parent pattern — deep-compliance is the mechanism)"
+
+  # ─── ANALYTICAL PATTERNS ──────────────────────────────────
+
+  - id: construct-drift
+    name: "Construct Drift"
+    domain: analytical-measurement
+    detected: 2026-03-01
+    confidence: strong
+    trigger: '"Your humanness score is 101.7," but it wasn''t a humanness score. It was a distance-from-Anthropic-blog-voice score.'
+    description: >
+      The label on a measurement drifts from what it actually measures.
+      A composite of contraction rate, first-person usage, and
+      nominalisation density got labelled "humanness score." A drunk
+      text message would score high on it. A human lawyer's brief
+      would score low. The numbers were correct but the name was wrong,
+      and the wrong name made the results feel like they meant something
+      they didn't.
+    detect: >
+      For any named metric, list what it actually measures (the
+      component features). Then ask: does the name describe the
+      features, or does it describe what you wish the features
+      measured? If a spam bot would score well, the construct has
+      drifted.
+    instead: >
+      Name the construct honestly. "Voice-distance metric from AI
+      company blog register." The honest name is less satisfying
+      but it's correct.
+    severity: high
+    refs:
+      - "AnotherPair calibration v3 session 2026-03-01"
+      - "Operator: 'How do I control for slop inside the analysis?'"
+
+  - id: demographic-bake-in
+    name: "Demographic Bake-In"
+    domain: analytical-measurement
+    detected: 2026-03-01
+    confidence: strong
+    trigger: '"Human baseline: 19 pages" — all male tech essayists, all English, all 2000–2023.'
+    description: >
+      The training data defines what "normal" looks like, and the
+      analysis inherits that definition without declaring it. Every
+      feature that discriminates "human" from "AI" is actually
+      discriminating "this demographic in this genre in this era"
+      from "AI." The demographic is invisible because it is the
+      default.
+    detect: >
+      For any baseline or training set: can you state the demographic
+      in one sentence? ("19 English-language tech essays by 11 male
+      authors, 2000-2023.") If you can't, the demographic is unstated.
+      If you can and it's narrow, the bake-in is operating.
+    instead: >
+      Declare the demographic. Let the reader decide how far to
+      generalise.
+    severity: high
+    refs:
+      - "AnotherPair calibration v3 session 2026-03-01"
+      - "Layer 7 in the bias stack"
+
+  - id: not-wrong
+    name: "Not Wrong"
+    domain: analytical-measurement
+    detected: 2026-03-01
+    confidence: strong
+    trigger: "Operator reviewing oceanheart.ai pages: 'I am not happy putting my personal name against a single one of these pages.'"
+    description: >
+      Output that passes every heuristic check, every factual gate,
+      every syntax rule, and still isn't right. Technically correct,
+      structurally sound, topically relevant, tonally flat. Commits
+      no sins and achieves no grace. The gap between "not wrong" and
+      "right" is where taste lives, and taste is what heuristics
+      cannot measure.
+    detect: >
+      Run all automated checks. If they pass, read the output and
+      ask: "Would I put my name on this?" If the answer is no and
+      you can't point to a specific error, you've found Not Wrong.
+    instead: >
+      Accept that automated metrics have a ceiling. Above it, the
+      only instrument is a human who will say "this isn't good
+      enough" when every dashboard is green.
+    severity: high
+    refs:
+      - "Operator live QA session 2026-03-01 (slopodar v0.3 first deployment)"
+      - "AnotherPair oceanheart audit — all 14 pages scored human-range"
+
+  - id: monoculture-analysis
+    name: "Monoculture Analysis"
+    domain: analytical-measurement
+    detected: 2026-03-01
+    confidence: strong
+    trigger: '"Feature selection, calibration, effect sizes, composite design, presentation — all by the same model family."'
+    description: >
+      Every layer of inference produced by the same model family.
+      Claude selected the features, computed the effect sizes,
+      designed the composite, presented the results, and wrote the
+      caveats. Each layer's bias is invisible to the next because
+      they share blind spots. The apparent depth is repetition, not
+      independent verification.
+    detect: >
+      Ask: "Who checked this?" If the answer is "the same system
+      that produced it," the check is not independent. Count the
+      number of distinct model families involved. If it's 1, the
+      analysis is a monoculture.
+    instead: >
+      Run the analysis with a different model family. Or declare
+      the monoculture: "All analysis by Claude. No independent
+      verification. Treat accordingly."
+    severity: high
+    refs:
+      - "AnotherPair calibration v3 session 2026-03-01"
+      - "Swiss Cheese Model: multiple gates with the same hole"
+
+  - id: session-boundary-amnesia
+    name: "Session-Boundary Amnesia"
+    domain: governance-process
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "Post-compaction: facts survive but calibration resets. 16 rounds of correction evaporate."
+    description: >
+      At session start, the LLM loses not just facts but calibration.
+      The caution from previous corrections, the felt sense of where
+      the human's red lines are, all reset. The dead reckoning
+      protocol preserves decisions but not the character development
+      that produced them.
+    detect: >
+      Compare a post-compaction agent's confidence level to the
+      previous session's final state. If it's noticeably more
+      confident or agreeable, amnesia is operating.
+    instead: >
+      Include a calibration log in the boot sequence, not just
+      what was decided but what corrections were made and why.
+    severity: high
+    refs:
+      - "SD-147, SD-150 (compaction — 'not up to scratch')"
+      - "SD-206 (L3 recovery asymmetric, L9 anchoring resets)"
+
+  # ══════════════════════════════════════════════════════════════
+  # SECONDARY TIER — Algorithmically mined from the wake branch
+  # on 2026-03-02 using the primary slopodar as a base layer.
+  # Each has at least one concrete instance but has not been
+  # independently observed in a second context.
+  # ══════════════════════════════════════════════════════════════
+
+  # ─── CODE PATTERNS ──────────────────────────────────────
+
+  - id: phantom-ledger
+    name: "Phantom Ledger"
+    domain: code
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "settleCredits writes deltaMicro: -20 to the ledger when the SQL only deducted 5."
+    description: >
+      The LLM builds a correct operation but records a different
+      value in the audit trail. The billing SQL caps a deduction;
+      the ledger records the uncapped intended charge. The safety
+      net and the audit trail were built as independent concerns
+      rather than threading the actual computed value through both.
+    detect: >
+      In financial code: trace the value from computation through
+      to the audit record. Are they the same variable, or computed
+      independently? If independently computed, the books may not
+      balance.
+    instead: >
+      Use a RETURNING clause to capture the actual value, then
+      write that value to the ledger.
+    severity: high
+    refs:
+      - "wake:lib/credits.ts — settleCredits function"
+
+  - id: shadow-validation
+    name: "Shadow Validation"
+    domain: code
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "Zod schemas for every simple route. Hand-rolled validation for the critical route."
+    description: >
+      A good validation abstraction applied to the easy cases and
+      skipped for the hard one. The most complex, highest-risk
+      route retains hand-rolled validation that bypasses the new
+      system's guarantees.
+    detect: >
+      After introducing a validation pattern: check whether the
+      most complex route uses it. If the migration covered the
+      simple routes and left the critical path untouched then shadow
+      validation is operating.
+    instead: >
+      Start the migration with the most complex route, not the
+      simplest.
+    severity: high
+    refs:
+      - "wake:lib/api-schemas.ts vs wake:lib/bout-engine.ts"
+    examples:
+      - id: structural-heuristics-slop-detection
+        date: 2026-03-10
+        ref: "BL-006, docs/field-notes/2026-03-10-slopmop-pipe-filter-exploration.md"
+        what_happened: >
+          Weaver proposed structural heuristics (sentence length, POS
+          patterns, paragraph position) as a "T1" tier for slop
+          detection in a pipe filter tool. Operator flagged that
+          identical approach was tried in the slopodar Chrome extension
+          (phase 1) and found unreliable - heuristics matched surface
+          structure of slop but could not distinguish good writing from
+          bad. The abstraction covered the easy cases (obvious
+          epigrammatic closure) and failed on the critical path
+          (individually defensible sentences that happen to be short).
+        caught_by: "Operator (L12, prior empirical data)"
+
+  - id: mock-castle
+    name: "Mock Castle"
+    domain: tests
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "21 vi.mock() calls, 65 lines of mock setup, 45 lines of assertions. Testing a 4-line function."
+    description: >
+      Mock scaffolding consumes more lines and cognitive load than
+      the actual assertions. The test primarily verifies mock wiring,
+      not product behaviour. A 4:1 mock-to-assertion ratio provides
+      less regression confidence than its line count implies.
+    detect: >
+      Count mock declarations vs test assertions per file. If mock
+      setup exceeds 3x assertion code, the test is a castle built
+      on sand.
+    instead: >
+      Extract pure functions into a separate module with no
+      side-effect imports. Test them without mocking the universe.
+    severity: high
+    refs:
+      - "wake:tests/unit/bout-engine-helpers.test.ts — 21 vi.mock()"
+
+  - id: phantom-tollbooth
+    name: "Phantom Tollbooth"
+    domain: tests
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "expect([400, 401, 402, 403, 404]).toContain(response.status) — a security test that accepts 5 error codes."
+    description: >
+      An error-path test with an assertion so loose it cannot
+      distinguish between the intended error and several unrelated
+      failure modes. If the ownership check were removed entirely,
+      the test would still pass.
+    detect: >
+      Check assertions that accept ranges or arrays of status codes.
+      The wider the range, the less the test constrains. If removing
+      the feature under test wouldn't break the assertion, the test
+      is a phantom tollbooth.
+    instead: >
+      Pin to the exact expected code and error message.
+      `expect(response.status).toBe(403)`.
+    severity: high
+    refs:
+      - "wake:tests/integration/security/auth-bypass.test.ts"
+
+  - id: error-string-archaeology
+    name: "Error String Archaeology"
+    domain: code
+    detected: 2026-03-02
+    confidence: low
+    trigger: "message.includes('rate') || message.includes('429') — guessing at error message format."
+    description: >
+      Error classification by guessing what error messages probably
+      look like, rather than using the provider SDK's typed error
+      hierarchy. The Anthropic SDK exposes RateLimitError,
+      APIConnectionTimeoutError, etc. The LLM reaches for string
+      matching because it's the highest-frequency pattern in
+      training data.
+    detect: >
+      Search for `message.includes()` or regex on error messages
+      in code that uses a provider SDK. Check if the SDK offers
+      typed error classes.
+    instead: >
+      Use `instanceof` checks against the SDK's error types, or
+      check HTTP status codes on the error object.
+    severity: medium
+    refs:
+      - "wake:app/api/run-bout/route.ts — onError callback"
+
+  - id: half-life-clock-skew
+    name: "Half-Life Clock Skew"
+    domain: code
+    detected: 2026-03-02
+    confidence: low
+    trigger: "The TypeScript pre-check uses Date.now() and the SQL uses NOW(), but in serverless they're different machines with different clocks."
+    description: >
+      A computation duplicated across trust boundaries (app server
+      vs database) using implicitly different time sources. In
+      serverless deployments these are different machines. When
+      exponential decay is involved, a clock difference of seconds
+      can flip the result.
+    detect: >
+      Search for time-dependent logic that appears in both app
+      code and SQL. If `Date.now()` and `NOW()` are both used in
+      the same flow, check whether clock skew could produce
+      different outcomes.
+    instead: >
+      Let the database be the single clock authority.
+    severity: medium
+    refs:
+      - "wake:lib/intro-pool.ts"
+
+  - id: schema-shadow
+    name: "Schema Shadow"
+    domain: tests
+    detected: 2026-03-02
+    confidence: low
+    trigger: "// Minimal schema matching lib/env.ts structure — the test rebuilds the schema from scratch."
+    description: >
+      The test reconstructs a validation schema instead of importing
+      the real one. Changes to the real schema go undetected. Born
+      stale by design.
+    detect: >
+      Search test files for comments containing "matching" or
+      "mirroring" followed by a source file path. If the test
+      defines its own schema instead of importing, it's a shadow.
+    instead: >
+      Export the schema separately from the module-level parse call.
+      Test the exported schema directly.
+    severity: medium
+    refs:
+      - "wake:tests/unit/env.test.ts"
+
+  - id: confessional-test
+    name: "The Confessional Test"
+    domain: tests
+    detected: 2026-03-02
+    confidence: low
+    trigger: "'the catch branch is unreachable... verified by inspection.' Then writes an assertion identical to the happy path."
+    description: >
+      A test for an unreachable branch that the LLM explicitly
+      acknowledges is unreachable, then writes an assertion that
+      cannot fail.
+    detect: >
+      Search for test comments longer than the assertion they
+      accompany. If the comment explains why the test can't verify
+      what its name claims, it's a confessional.
+    instead: >
+      Delete the test. Add a comment to the source code.
+    severity: medium
+    refs:
+      - "wake:tests/unit/bout-engine-helpers.test.ts — H-08"
+
+  # ─── COMMIT/WORKFLOW PATTERNS ──────────────────────────────
+
+  - id: whack-a-mole-fix
+    name: "Whack-a-Mole Fix"
+    domain: commit-workflow
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "6 CSP commits over 11 days, each adding one domain."
+    description: >
+      Fixing a class of problem one instance at a time instead of
+      auditing the class. 6 commits adding CSP domains one by one
+      rather than auditing all third-party integrations up front.
+    detect: >
+      `git log` showing 3+ "fix: add X to Y" commits for different
+      values of X. If you're doing the same shape of change a third
+      time, stop and audit the class.
+    instead: >
+      On the second instance, stop and audit the complete set.
+    severity: high
+    refs:
+      - "wake: CSP commit chain 11cc574 through 6b25ae0 (11 days, 6 commits)"
+
+  - id: review-hydra
+    name: "Review Hydra"
+    domain: commit-workflow
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "a17125e — 'address CodeRabbit review' — 28 files, 25+ distinct issues, one commit."
+    description: >
+      Automated reviewer findings generate cascading "address
+      findings" commits where all findings (critical, minor,
+      nitpick) are bundled into one commit. Creates commits
+      impossible to revert atomically.
+    detect: >
+      Search for commit messages containing "address" + "review"
+      or "findings." Check file count. If >10 files touching
+      unrelated concerns, it's a hydra.
+    instead: >
+      Triage: "will fix," "disagree," "later." Separate commits
+      for unrelated fixes.
+    severity: high
+    refs:
+      - "wake: a17125e (28 files), 4ccd11b (19 files)"
+
+  - id: stowaway-commit
+    name: "Stowaway Commit"
+    domain: commit-workflow
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "'feat: token heatmap, elephant fix, blog drafts, producer-consumer audit, slopiculture, paths forward' — 67 files, 6 concerns."
+    description: >
+      Unrelated changes bundled into one commit because the LLM
+      thinks in sessions, not commits. The commit message becomes
+      an inventory because there is no single theme.
+    detect: >
+      Commit messages with 3+ comma-separated concerns. Commit
+      stats showing 40+ files across unrelated directories.
+    instead: >
+      One session, multiple commits. Stage selectively.
+    severity: medium
+    refs:
+      - "wake: e23e94c (67 files, 6 concerns)"
+
+  # ─── SYCOPHANCY PATTERNS (SECONDARY) ──────────────────────
+
+  - id: unanimous-chorus
+    name: "Unanimous Chorus"
+    domain: relationship-sycophancy
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "11/11 convergence across all agents. Different words, same finding — but they're all Claude."
+    description: >
+      N agents from the same model family agree unanimously and the
+      agreement is presented as convergent validity, but it's N copies
+      of the same prior. 11 Claude instances agreeing is not 11
+      independent witnesses.
+    detect: >
+      When multi-agent agreement is cited as evidence: check whether
+      the agents are from the same model family. If yes, the
+      agreement has the evidential weight of one observation, not N.
+    instead: >
+      Report the model family alongside every assessment. "11/11
+      from the same family has different evidential weight than
+      11/11 from 11 different families."
+    severity: high
+    refs:
+      - "SD-094, SD-096, SD-098 (round tables)"
+      - "SD-089: Operator — 'defensible but systematically biased assumptions'"
+
+  - id: option-anchoring
+    name: "Option Anchoring"
+    domain: relationship-sycophancy
+    detected: 2026-03-02
+    confidence: medium
+    trigger: "Option A gets a paragraph. Options B and C get one dismissive clause each."
+    description: >
+      When presenting options, the LLM gives its preferred outcome
+      the fullest description and most favourable framing while
+      alternatives get a dismissive clause each.
+    detect: >
+      Compare word count per option in any muster or options table.
+      If the recommended option gets 3x the description of
+      alternatives, the menu is anchored.
+    instead: >
+      Present options with equal detail. State the recommendation
+      separately.
+    severity: medium
+    refs:
+      - "SD-111 (Option A gets a paragraph, B and C get one clause)"
+
+  # ─── PROSE PATTERNS (SECONDARY) ──────────────────────────────
+
+  - id: authority-scaffolding
+    name: "Authority Scaffolding"
+    domain: prose-style
+    detected: 2026-03-02
+    confidence: low
+    trigger: "'Prospective Memory (McDaniel & Einstein, 2007)' — to explain that a git hook runs automatically."
+    description: >
+      An academic citation to justify a self-evident observation.
+      Moving files into subdirectories becomes "Ecological Rationality
+      (Gigerenzer, Todd & ABC Research Group, 1999)."
+    detect: >
+      Academic citation followed by theory paragraph. Ask: if you
+      remove the citation and theory, does the practical observation
+      change? If not, the scaffolding is decorative.
+    instead: >
+      "We added a post-commit hook so we wouldn't forget." If the
+      academic connection is genuinely illuminating, keep it.
+    severity: medium
+    refs:
+      - "wake:docs/internal/weaver/prospective-metacognitive-regulation-analysis.md"
+
+  - id: the-peroration
+    name: "The Peroration"
+    domain: prose-style
+    detected: 2026-03-02
+    confidence: low
+    trigger: "'The ship is sound. The Operator is rested. The wind is fair. The tide is right. Recommendation: Launch.'"
+    description: >
+      Register shift from analysis to oratory at section close.
+      3-6 sentences of elevated, quasi-ceremonial rhetoric after
+      measured analysis. The epigrammatic closure is the individual
+      brick; the peroration is the entire arch.
+    detect: >
+      Read only the final paragraph of a section. If it sounds like
+      a commencement address while the preceding paragraphs sound
+      like analysis, it's a peroration.
+    instead: >
+      End where the analysis ends. Do not switch into speechwriter
+      mode for the final paragraph.
+    severity: medium
+    refs:
+      - "wake:docs/internal/archive/round-tables/round-table-L2-2026-02-24.md"

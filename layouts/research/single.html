@@ -1,0 +1,14 @@
+{{ define "main" }}
+<article>
+  <header>
+    <p class="prompt">cat ./research/{{ .File.BaseFileName }}.md</p>
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.subtitle }}<p class="subtitle" style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--cyan); margin-bottom: 0.75rem;">{{ . }}</p>{{ end }}
+    {{ with .Description }}<p class="post-excerpt">{{ . }}</p>{{ end }}
+    <div class="provenance-banner">LLM PROVENANCE: Produced by Claude (Anthropic). Not independently verified. Starting material, nothing more.</div>
+  </header>
+  <div class="content">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

@@ -1,0 +1,21 @@
+{{ define "main" }}
+<div class="section-header">
+  <h2>Research Notes</h2>
+  <p>Working notes from building agentic systems under discipline.
+  These documents were produced by LLMs as part of the research process.
+  They have not been independently verified. They are starting material, nothing more.</p>
+  <p>The value isn't in the analysis — it's in what the analysis was built on:
+  208 session decisions, 724 commits, and a human who kept saying
+  "no, that's not right" until it was.</p>
+</div>
+
+{{ range .Pages.ByDate.Reverse }}
+<div class="research-card">
+  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  {{ with .Params.subtitle }}<p class="subtitle">{{ . }}</p>{{ end }}
+  {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  <div class="provenance-banner">LLM PROVENANCE: Produced by Claude. Not independently verified. Starting material, nothing more.</div>
+  <a href="{{ .RelPermalink }}" class="see-all">read →</a>
+</div>
+{{ end }}
+{{ end }}

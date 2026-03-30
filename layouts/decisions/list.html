@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{ $decisions := .Site.Data.decisions }}
+{{ $total := len $decisions }}
+<article class="slopodar-page">
+  <header>
+    <h1>Session Decisions</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+      {{ $total }} decisions on file. Every directive, parked item, and prioritisation call
+      made during development. Git-tracked, timestamped, attributed. Most recent first.
+    </p>
+  </header>
+
+  <div class="slopodar-search">
+    <input type="text" id="sd-filter" placeholder="filter..." autocomplete="off" spellcheck="false">
+  </div>
+
+  <p class="slopodar-count" id="sd-count">{{ $total }} decisions</p>
+
+  <div class="slopodar-grid" id="sd-grid">
+    {{ range seq (sub $total 1) 0 }}
+    {{ $d := index $decisions . }}
+    <a class="sd-row" href="/decisions/{{ $d.id | urlize }}/" data-sd>
+      <span class="sd-row-id">{{ $d.id }}</span>
+      <span class="sd-row-decision">{{ $d.decision | plainify | truncate 120 }}</span>
+      <span class="sd-row-status">{{ $d.status }}</span>
+      <span class="sd-row-link">&rarr;</span>
+    </a>
+    {{ end }}
+  </div>
+</article>
+
+<script>
+(function () {
+  var input = document.getElementById('sd-filter');
+  var grid = document.getElementById('sd-grid');
+  var count = document.getElementById('sd-count');
+  var rows = grid.querySelectorAll('[data-sd]');
+  var total = rows.length;
+  var timer = null;
+
+  function fuzzy(needle, haystack) {
+    var n = needle.length;
+    var h = haystack.length;
+    if (n === 0) return true;
+    if (n > h) return false;
+    var j = 0;
+    var first = -1;
+    var last = 0;
+    for (var i = 0; i < h && j < n; i++) {
+      if (haystack[i] === needle[j]) {
+        if (first === -1) first = i;
+        last = i;
+        j++;
+      }
+    }
+    if (j < n) return false;
+    return (last - first) < n * 3;
+  }
+
+  function filter() {
+    var q = input.value.toLowerCase();
+    var visible = 0;
+    for (var i = 0; i < rows.length; i++) {
+      var text = rows[i].textContent.toLowerCase();
+      var match = q === '' || text.indexOf(q) !== -1 || fuzzy(q, text);
+      rows[i].style.display = match ? '' : 'none';
+      if (match) visible++;
+    }
+    count.textContent = q === ''
+      ? total + ' decisions'
+      : visible + ' of ' + total;
+  }
+
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(filter, 80);
+  });
+})();
+</script>
+{{ end }}

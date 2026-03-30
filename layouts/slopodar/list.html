@@ -1,0 +1,78 @@
+{{ define "main" }}
+<article class="slopodar-page">
+  <header>
+    <h1>The Slopodar</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+      A living inventory of LLM authenticity anti-patterns, caught in the wild.
+    </p>
+  </header>
+
+  <div class="slopodar-search">
+    <input type="text" id="slopodar-filter" placeholder="filter..." autocomplete="off" spellcheck="false">
+  </div>
+
+  <p class="slopodar-count" id="slopodar-count">
+    {{ len .Site.Data.slopodar.patterns }} patterns
+  </p>
+
+  <div class="slopodar-grid" id="slopodar-grid">
+    {{ range sort .Site.Data.slopodar.patterns "detected" "desc" }}
+    <a href="/slopodar/{{ .id }}/" class="slopodar-row" id="{{ .id }}" data-pattern>
+      <span class="slopodar-row-name">{{ .name }}</span>
+      <span class="slopodar-row-trigger">"{{ .trigger }}"</span>
+      <span class="slopodar-row-date">{{ .detected }}</span>
+      <span class="slopodar-row-link">&rarr;</span>
+    </a>
+    {{ end }}
+  </div>
+</article>
+
+<script>
+(function () {
+  var input = document.getElementById('slopodar-filter');
+  var grid = document.getElementById('slopodar-grid');
+  var count = document.getElementById('slopodar-count');
+  var cards = grid.querySelectorAll('[data-pattern]');
+  var total = cards.length;
+  var timer = null;
+
+  function fuzzy(needle, haystack) {
+    var n = needle.length;
+    var h = haystack.length;
+    if (n === 0) return true;
+    if (n > h) return false;
+    var j = 0;
+    var first = -1;
+    var last = 0;
+    for (var i = 0; i < h && j < n; i++) {
+      if (haystack[i] === needle[j]) {
+        if (first === -1) first = i;
+        last = i;
+        j++;
+      }
+    }
+    if (j < n) return false;
+    return (last - first) < n * 3;
+  }
+
+  function filter() {
+    var q = input.value.toLowerCase();
+    var visible = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var text = cards[i].textContent.toLowerCase();
+      var match = q === '' || text.indexOf(q) !== -1 || fuzzy(q, text);
+      cards[i].style.display = match ? '' : 'none';
+      if (match) visible++;
+    }
+    count.textContent = q === ''
+      ? total + ' patterns'
+      : visible + ' of ' + total;
+  }
+
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(filter, 80);
+  });
+})();
+</script>
+{{ end }}

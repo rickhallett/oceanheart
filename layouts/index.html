@@ -1,0 +1,53 @@
+{{ define "main" }}
+<div class="hero">
+  <h1>Rick Hallett</h1>
+  <p class="subtitle">
+    Agentic systems engineer. Building verification infrastructure
+    for human-AI collaboration, and learning in public about what
+    that requires.
+  </p>
+  <p class="tagline">earth. lets stop the slop.</p>
+  <div class="hero-links">
+    <a href="/blog/">writing</a>
+    <span>/</span>
+    <a href="/research/">research</a>
+    <span>/</span>
+    <a href="/about/">about</a>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-header">
+  <h2>Recent</h2>
+</div>
+
+<ul class="post-list">
+  {{ range (where .Site.RegularPages "Section" "blog") | first 5 }}
+  <li class="post-item">
+    <span class="post-date">{{ .Date.Format "2006-01-02" }}</span>
+    <a href="{{ .RelPermalink }}" class="post-title">{{ .Title }}</a>
+    {{ with .Description }}<p class="post-excerpt">{{ . }}</p>{{ end }}
+  </li>
+  {{ end }}
+</ul>
+
+<a href="/blog/" class="see-all">all posts →</a>
+
+{{ with (where .Site.RegularPages "Section" "research") }}
+<hr>
+
+<div class="section-header">
+  <h2>Research notes</h2>
+</div>
+
+{{ range . }}
+<div class="research-card">
+  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  <p class="provenance-banner">LLM-produced · not independently verified · starting material only</p>
+</div>
+{{ end }}
+{{ end }}
+
+{{ end }}

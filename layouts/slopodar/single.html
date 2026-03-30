@@ -1,0 +1,52 @@
+{{ define "main" }}
+{{ $id := .Params.id }}
+{{ $pattern := false }}
+{{ range .Site.Data.slopodar.patterns }}
+  {{ if eq .id $id }}
+    {{ $pattern = . }}
+  {{ end }}
+{{ end }}
+
+{{ with $pattern }}
+<article>
+  <header>
+    <h1>{{ .name }}</h1>
+    <p style="color: var(--muted); margin-bottom: 2rem;">detected {{ .detected }}</p>
+  </header>
+
+  <div style="margin-bottom: 1.5rem;">
+    <h3>trigger</h3>
+    <p style="color: var(--red);">"{{ .trigger }}"</p>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <h3>what it is</h3>
+    <p>{{ .description }}</p>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <h3>what it signals</h3>
+    <p>{{ .signal }}</p>
+  </div>
+
+  <div style="margin-bottom: 1.5rem;">
+    <h3>instead</h3>
+    <p>{{ .instead }}</p>
+  </div>
+
+  {{ with .refs }}
+  <div style="margin-bottom: 1.5rem;">
+    <h3>refs</h3>
+    <ul>
+      {{ range . }}
+      <li style="font-size: 0.75rem; color: var(--muted);">{{ . }}</li>
+      {{ end }}
+    </ul>
+  </div>
+  {{ end }}
+
+  <hr>
+  <a href="/slopodar/" class="see-all">&larr; all patterns</a>
+</article>
+{{ end }}
+{{ end }}

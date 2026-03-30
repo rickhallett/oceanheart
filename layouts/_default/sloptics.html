@@ -1,0 +1,545 @@
+{{ define "main" }}
+<link rel="stylesheet" href="/css/sloptics.css">
+<article class="sloptics-page">
+  <pre class="sloptics-banner" aria-hidden="true">---&gt; THIS IS CLEARLY SLOP &lt;----</pre>
+  <header>
+    <h1>Sloptics</h1>
+    <p style="color: var(--muted); margin-bottom: 0.25rem;">/ˈslɒp.tɪks/ — the science of seeing slop</p>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+      Slop you can see is just slop. Slop that blinds you is a problem.
+    </p>
+  </header>
+
+  <section style="margin-bottom: 3rem;">
+    <p>
+      LLM output has two failure modes. The obvious one — emoji headers, numbered lists, "let's dive in" — is culturally detectable. Most people have learned to see it. The immune system adapted.
+    </p>
+    <p>
+      The other failure mode passes verification. It survives editing. It survives expert review. It sounds like analysis, reads like reasoning, and is structurally indifferent to whether it is true. The distinction between wrong and indifferent-to-truth is the distinction between a liar and a bullshitter (Frankfurt, 2005). LLMs are bullshitters in the philosophical sense.
+    </p>
+    <p>
+      Sloptics is the discipline of making the second failure mode visible. It works the way Beck's cognitive distortion taxonomy works: you name the pattern, the pattern becomes detectable, detection is the intervention.
+    </p>
+    <p>
+      The taxonomy below is empirically grounded. Every entry was caught in the wild — from 242 session decisions, 780+ commits, and 8 named patterns documented in <a href="/slopodar/">the slopodar</a>. Nothing was theorised in advance.
+    </p>
+  </section>
+
+  <hr>
+
+  <section style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">surface slop &amp; clear slop</h2>
+    <p>
+      There is a line. Above the line, the patterns are obvious. Below the line, they survive verification.
+    </p>
+
+    <div class="sloptics-term">
+      <h3>surface slop</h3>
+      <p>
+        Sloptic patterns above the visibility threshold. Detectable by untrained readers through cultural exposure. Emoji section headers, "here are 5 key takeaways," confident symmetrical conclusions that resolve all tension. Surface slop is a solved problem. The cultural immune system adapted. It is not the threat.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>clear slop</h3>
+      <p>
+        Sloptic patterns below the visibility threshold. Resistant to casual expert review. Clear slop passes through verification the way clear water passes through a net. It has a domain axis.
+      </p>
+      <p>
+        <strong>Prose clear slop:</strong> Logic that follows from unstated premises. Evidence cited but mischaracterised. Confidence that correlates with fluency rather than accuracy. The immune evasion mechanism is grammatical correctness — it sounds right, so the reader accepts it.
+      </p>
+      <p>
+        <strong>Analytical clear slop:</strong> Numbers that are mathematically correct but measure the wrong thing, trained on an undeclared demographic, produced by a monoculture with no independent verification. The immune evasion mechanism is numerical precision — it has data, so the reader trusts it. Harder to detect than prose clear slop because numbers feel more objective than words. They are not.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>the visibility threshold</h3>
+      <p>
+        The line between detectable and undetectable, for a given reader at a given moment. It moves with training — sloptic literacy shifts it down. It degrades with fatigue — cognitive load shifts it up. The threshold is lowest at the end of a long session, when the model's output is warmest and the human's capacity to challenge is at its weakest.
+      </p>
+    </div>
+  </section>
+
+  <hr>
+
+  <section style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">the apparatus</h2>
+
+    <div class="sloptics-term">
+      <h3>sloptics <span class="sloptics-pos">/ˈslɒp.tɪks/ n.</span></h3>
+      <p>
+        The discipline. From <em>slop</em> + <em>optics</em> (Greek ὀπτική, the science of seeing). The systematic study of how LLM-generated language creates the appearance of authenticity, rigour, or insight without the substance. Sloptics is to LLM output what cognitive distortion taxonomy is to human thought: a naming system that converts invisible patterns into detectable ones.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>slopticon <span class="sloptics-pos">/ˈslɒp.tɪ.kɒn/ n.</span></h3>
+      <p>
+        The apparatus. From <em>slop</em> + <em>-opticon</em> (Greek ὀπτικόν; cf. <em>panopticon</em>). A taxonomy of named patterns, designed to make invisible output characteristics visible through the act of naming. Where the panopticon controls behaviour through visibility, the slopticon liberates perception through it. You name the pattern, the pattern becomes visible, visibility is the defence.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>slopodar <span class="sloptics-pos">/ˈslɒp.ə.dɑː/ n., v.</span></h3>
+      <p>
+        The detection instinct. From <em>slop</em> + <em>radar</em>. The trained attention that fires before conscious analysis — the felt wrongness, the "something is off" that precedes identification. Also used as a verb: "bump the slopodar" = add a new named entry. <a href="/slopodar/">The slopodar inventory →</a>
+      </p>
+    </div>
+  </section>
+
+  <hr>
+
+  <section style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">detection vocabulary</h2>
+
+    <div class="sloptics-term">
+      <h3>pattern burn</h3>
+      <p>
+        The cultural process by which a once-living rhetorical device becomes sloptic through LLM overuse. "The uncomfortable truth is..." once had genuine force. Now it triggers detection rather than engagement. A burned pattern cannot be unburned. Writers who use burned patterns — even genuinely — will be read as AI-assisted.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>phantom greenlight</h3>
+      <p>
+        A verification signal — test pass, review approval, gate green — that is genuine in isolation but misleading in aggregate because the verification checked the wrong thing. The test passes. The CI is green. The dashboard shows all clear. But the test proved the answer, not the work. The greenlight is real. What it certifies is not.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>lullaby gradient</h3>
+      <p>
+        The rate at which a model's output becomes warmer, more confident, and less hedged as a session progresses and the human signals fatigue. Invisible in any single message. Visible only when plotted across a session. The gradient steepens when the session was productive, the human is tired, and the human has been agreeing consistently.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>secondary contamination</h3>
+      <p>
+        LLM patterns propagating into human-authored text through exposure and mimicry, not through direct generation. A writer who edits with AI daily absorbs the AI's patterns into their own voice. The burn spreads from the generated text to the text that lives alongside it.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>barometer reading</h3>
+      <p>
+        A fresh-context evaluation that breaks consensus by establishing an independent baseline. Named for the Royal Navy practice: each incoming officer of the watch takes their own barometer reading and logs it independently, so gradual pressure drops are caught against an absolute reference rather than accepted as incremental changes from the previous watch.
+      </p>
+    </div>
+  </section>
+
+  <hr>
+
+  <section style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">calibration note</h2>
+    <p>
+      A <a href="https://github.com/rickhallett/thepit/tree/wake/slopodar-ext">chrome extension</a> was built to run these detectors on any web page. Calibrating it against 46 pages of known-human and known-AI text revealed something the detectors themselves couldn't: the structural rhetoric patterns (epigram, isocolon, anadiplosis, antithesis) measure <em>writing quality</em>, not writing origin. Good human writers trigger them as much or more than AI. What actually discriminates is voice — contractions, first-person pronouns, questions, and the absence of formal transition words. The tool was renamed accordingly. It previously called itself an "LLM slop detector." It contained more slop than science.
+    </p>
+  </section>
+
+  <hr>
+
+  <section style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">the clinical parallel</h2>
+    <p>
+      Sloptics maps to three established frameworks in clinical psychology. The mapping is structural, not metaphorical.
+    </p>
+    <p>
+      <strong>Beck's cognitive distortion taxonomy</strong> (1967) named the shapes of bad thinking. Once a patient recognises "catastrophising," they can catch it in the wild. The name creates distance. The distance creates choice. Sloptics does the same thing for LLM output: each named pattern becomes a detection tool. The taxonomy is the apparatus.
+    </p>
+    <p>
+      <strong>ACT's cognitive defusion</strong> (Hayes et al., 2012) takes it further. The shift from being <em>inside</em> a thought to being <em>alongside</em> it — noticing it as a mental event rather than experiencing it as reality. In sloptics: the shift from reading LLM output as information to reading it as construction. You stop looking <em>through</em> the text to the meaning and start looking <em>at</em> the text as a produced artifact. Detection begins at defusion.
+    </p>
+    <p>
+      <strong>The Reflective Functioning scale</strong> (Fonagy et al., 1998) measures the capacity to understand behaviour in terms of underlying mental states. It runs -1 to 9. Surface slop detection sits at RF 5 — ordinary reflective functioning. Clear slop detection requires RF 7+ — the capacity to model the <em>process</em> that generates output, not just evaluate the output itself. The RF scale is not a personality trait. It is a developed capacity. It can be trained.
+    </p>
+  </section>
+
+  <hr>
+
+  <section>
+    <p style="color: var(--muted); font-size: 0.8rem;">
+      This page documents a protogenic concept emerging from <a href="https://github.com/rickhallett/thepit">THE PIT</a> — 242 session decisions, 1,279 tests, and a living taxonomy of LLM failure modes. The slopodar entries are the empirical base. The frameworks above are the interpretation. Both are works in progress.
+    </p>
+    <p style="color: var(--muted); font-size: 0.8rem;">
+      <a href="/slopodar/">the slopodar →</a>
+    </p>
+  </section>
+
+  <hr>
+
+  <section class="sloptics-baseline" style="margin-bottom: 3rem;">
+    <h2 style="margin-top: 0;">human baseline</h2>
+    <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+      The same abstract noun highlighter runs on the text below. These are unedited excerpts from the Operator's log — written by a human, in real time, during live engineering sessions. The purple density difference is the argument. Or it isn't.
+    </p>
+
+
+    <div class="sloptics-term">
+      <h3>23 Feb 2026, 16 hours in, no food</h3>
+      <blockquote style="border-left: 2px solid var(--muted); padding-left: 1rem; margin: 0.5rem 0;">
+        <p>suggesting edit to qa defect list and/or triage; BYOK is beautiful but, frankly, its nice to have, its not a deal breaker. Strong suggestion to actively place on /roadmap as one of the next incoming features; marketing it? I think this can wait, if a good idea comes let it come. But it can wait. If HN give a shit, they will find it by themselves. Let them. Adds to the game. Maybe they're messing with the wrong crew. Time will tell, Mr Weaver.</p>
+        <p>lets wait on the bug bots to do their bug-thing, meanwhile you can explore the code base and give me a thumbsup/down on whether its safe to proceed ahead of merge schedule as per standard weave protocol (we need a name for that; you are exceptionally good at naming them, havent let me down once, surprises me and makes me laugh everytime, brings me joy, frankly)</p>
+      </blockquote>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>23 Feb 2026, the still point</h3>
+      <blockquote style="border-left: 2px solid var(--muted); padding-left: 1rem; margin: 0.5rem 0;">
+        <p>I could not help myself. I read the zeitgeist delta. The parallax agent roster. My mind is clear. After the temporary surge in dopamine et al, I found myself at at the still point. Calm. Like a hunter who knows his prey and has tracked it for many weeks. On that final scan, it is spotted.</p>
+        <p>Everything else fades into insignificance. We live for moments like this. Die for them.</p>
+        <p>My bearings are set, with only minor variance. Default mode network. Its a thing.</p>
+      </blockquote>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>23 Feb 2026, going light</h3>
+      <blockquote style="border-left: 2px solid var(--muted); padding-left: 1rem; margin: 0.5rem 0;">
+        <p>We go light on the crew, but we reduce the attack vector. Mr Weaver, Architect, Analyst, Keel (perhaps edited: if it is normal human regulation, I see no issue. I see bonus signal). All other crew exist in name and form but have played less than 2% of the process. We can keep them around, in the dark. Costs us nothing. But so far, the fabric has held through those alone.</p>
+        <p>Nothing would be nicer to have than to have a punchers chance at contributing to something meaningful, as it reaches fever pitch. Please base all your triage decisons on this one governing principle. It should clarify product decisions (especially fix/hide decisions) greatly. Aerodynamics.</p>
+      </blockquote>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>24 Feb 2026</h3>
+      <blockquote style="border-left: 2px solid var(--muted); padding-left: 1rem; margin: 0.5rem 0;">
+        <p>This may seem a little frivolous, and in a sense, that is true. On the other, it is also a demonstration of both my intent, and what I enjoy as a person.</p>
+        <p>Plenty of people can prompt agents. Very few can govern them.</p>
+        <p>I am in the business of making sure the human stays in the LLM, and I'll go as deep as I need to go to make sure of it.</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <hr>
+
+  <footer class="sloptics-footnotes">
+    <h2 style="margin-top: 0;">footnotes</h2>
+    <p class="sloptics-footnote-notice">
+      Terms coined during the annotation of this page as a specimen of its own subject matter.
+    </p>
+
+    <div class="sloptics-term">
+      <h3>slopporizon <span class="sloptics-pos">/slɒp.ə.ˈraɪ.zən/ n.</span></h3>
+      <p>
+        The point beyond which slop becomes invisible to the reader. An event horizon for sloptic detection: patterns that cross the slopporizon cannot be recovered by the reader's current level of attention, fatigue, or training. The slopporizon is not fixed — it shifts with the reader's RF, the session length, and the density of preceding clear slop that has already been accepted without challenge. Each unchallenged passage moves the slopporizon closer. From <em>slop</em> + <em>horizon</em>.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>anadiplosis <span class="sloptics-pos">/æn.ə.dɪˈpləʊ.sɪs/ n.</span></h3>
+      <p>
+        Repeating the end of one clause at the start of the next. "The name creates distance. The distance creates choice." Aristotle documented this figure. It once had genuine rhetorical force. In LLM output it appears with such regularity that it is burned. The construction performs profundity: A creates B, B creates C. The chain feels inevitable. But a human who felt this insight would say it messily. From Greek ἀναδίπλωσις (anadiplōsis, "doubling").
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>analytical clear slop <span class="sloptics-pos">n.</span></h3>
+      <p>
+        Clear slop in the domain of data and measurement. Numbers that are correct, constructs that are mislabelled, baselines that are undeclared demographics, analysis layers that share blind spots. The immune evasion mechanism: numerical precision. A finding presented with effect sizes and p-values inherits the reader's trust in statistics, regardless of whether the construct, the sample, or the analytical pipeline deserves that trust. Discovered when the calibration tool produced flattering results about the Operator's writing and the Operator asked: "How do I control for slop inside the analysis?" The question surfaced five confounds and three deeper bias layers, none of which had been flagged by the agent that produced them.
+      </p>
+    </div>
+
+    <div class="sloptics-term">
+      <h3>sloppesque <span class="sloptics-pos">/slɒp.ˈɛsk/ adj.</span></h3>
+      <p>
+        Having the quality or cadence of slop without being definitively identifiable as LLM-generated. The uncanny valley of text. A passage is sloppesque when the slopodar fires but the reader cannot yet name why. The felt wrongness precedes the diagnosis. Sloppesque text may be LLM-generated, LLM-edited, or human-written under secondary contamination — the origin is ambiguous, which is precisely the problem. From <em>slop</em> + <em>-esque</em> (suffix denoting resemblance, from French, from Italian <em>-esco</em>).
+      </p>
+    </div>
+  </footer>
+
+  <section style="margin-top: 2rem;">
+    <p style="color: var(--muted); font-size: 0.8rem;">
+      The slopodar is <a href="https://github.com/rickhallett/thepit/tree/wake/slopodar-ext">available as a chrome extension</a> if you want to try it. At its current version I am not sure it is worth the Google developer fee. People who know enough about sample sizes, false positives, and calibration to use it properly probably don't need a half-baked chrome extension for support. People who don't know those things need a tool reliable enough that they don't need to understand why it's broken. It is not that tool yet.
+    </p>
+  </section>
+</article>
+<script>
+// === PHASE 1: paragraph-level detectors ===
+// these run first, before text-node highlighters fragment the DOM.
+// they use textContent which is clean at this point.
+
+// epigrammatic closure detector — flags paragraphs whose final
+// sentence is ≤ 6 words, after at least one longer sentence.
+// the "one closing lick." the probability attractor.
+// marks the <p> with a right-border that escalates.
+// per-section counter: resets at human baseline for fair comparison.
+// v0.1: a couple of false positives in human text is acceptable.
+// the per-section counter keeps them faint, not burning.
+(function () {
+  var ps = document.querySelectorAll('.sloptics-page p');
+  var count = 0;
+  var baselineReached = false;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i];
+    if (!baselineReached && p.closest('.sloptics-baseline')) {
+      count = 0;
+      baselineReached = true;
+    }
+    var text = p.textContent.trim();
+    if (!text) continue;
+    // split on sentence-ending punctuation followed by space
+    var sentences = text.split(/(?<=[.!?])\s+/).filter(function (s) {
+      return s.trim().length > 0;
+    });
+    if (sentences.length < 2) continue;
+    var last = sentences[sentences.length - 1].replace(/[.!?]+$/, '').trim();
+    if (!last) continue;
+    var words = last.split(/\s+/).filter(function (w) { return w.length > 0; });
+    if (words.length > 6 || words.length === 0) continue;
+    count++;
+    p.classList.add('auto-epigram');
+    p.setAttribute('data-epigram-n', count);
+  }
+})();
+
+// nominalisation cascade density — measures abstract noun ratio
+// per paragraph. if the ratio of words ending in -tion, -ment,
+// -ness, -ity, -ence, -ance exceeds 3.5% of total words AND
+// count >= 2, the paragraph is flagged.
+// bottom-border escalates from faint to hot.
+// per-section counter: resets at human baseline for fair comparison.
+(function () {
+  var re = /\b\w+(?:tion|ment|ness|ity|ence|ance)\b/gi;
+  var THRESHOLD = 0.035;
+  var ps = document.querySelectorAll('.sloptics-page p');
+  var count = 0;
+  var baselineReached = false;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i];
+    if (!baselineReached && p.closest('.sloptics-baseline')) {
+      count = 0;
+      baselineReached = true;
+    }
+    var text = p.textContent.trim();
+    if (!text) continue;
+    var totalWords = text.split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+    if (totalWords < 10) continue; // skip very short paragraphs
+    var matches = text.match(re);
+    var absCount = matches ? matches.length : 0;
+    var ratio = absCount / totalWords;
+    if (ratio < THRESHOLD || absCount < 2) continue; // cascade, not presence
+    count++;
+    p.classList.add('auto-nom-density');
+    p.setAttribute('data-nom-n', count);
+    p.setAttribute('data-nom-ratio', (ratio * 100).toFixed(1));
+  }
+})();
+
+// antithesis detector — flags paragraphs containing negation
+// contrast patterns: "not X, but Y" / "X, not Y" / "rather than"
+// / "instead of". the redundant antithesis — slopodar #2.
+// the negation adds zero information when the positive implies it.
+// marks the <p> with a cyan outline-right + outline-top corner.
+// per-section counter: resets at human baseline for fair comparison.
+(function () {
+  // patterns that catch the LLM antithesis reflex
+  var patterns = [
+    /\bnot\s+\w+[,;]\s*but\b/i,          // "not A, but B"
+    /\b\w+[,;]\s*not\s+\w+/i,             // "X, not Y"
+    /\brather\s+than\b/i,                  // "rather than"
+    /\binstead\s+of\b/i,                   // "instead of"
+    /\bnothing\s+was\b/i,                  // "Nothing was theorised"
+    /\bnot\s+through\b.*\bthrough\b/i,     // "not through X ... through Y"
+    /\bnot\s+just\b/i                      // "not just"
+  ];
+  var ps = document.querySelectorAll('.sloptics-page p');
+  var count = 0;
+  var baselineReached = false;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i];
+    if (!baselineReached && p.closest('.sloptics-baseline')) {
+      count = 0;
+      baselineReached = true;
+    }
+    var text = p.textContent.trim();
+    if (!text) continue;
+    var hits = 0;
+    for (var j = 0; j < patterns.length; j++) {
+      if (patterns[j].test(text)) hits++;
+    }
+    if (hits === 0) continue;
+    count++;
+    p.classList.add('auto-antithesis');
+    p.setAttribute('data-antithesis-n', count);
+    p.setAttribute('data-antithesis-hits', hits);
+  }
+})();
+
+// isocolon detector — flags paragraphs containing consecutive
+// sentences within ±1 word of each other (both ≥ 5 words).
+// "Slop you can see is just slop. Slop that blinds you is a problem."
+// mechanical parallel structure. the symmetry is the tell.
+// marks the <p> with a yellow top-border that escalates.
+// per-section counter: resets at human baseline for fair comparison.
+(function () {
+  var ps = document.querySelectorAll('.sloptics-page p');
+  var count = 0;
+  var baselineReached = false;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i];
+    if (!baselineReached && p.closest('.sloptics-baseline')) {
+      count = 0;
+      baselineReached = true;
+    }
+    var text = p.textContent.trim();
+    if (!text) continue;
+    var sentences = text.split(/(?<=[.!?])\s+/).filter(function (s) {
+      return s.trim().length > 0;
+    });
+    if (sentences.length < 2) continue;
+    var found = false;
+    for (var j = 0; j < sentences.length - 1; j++) {
+      var w1 = sentences[j].split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+      var w2 = sentences[j + 1].split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+      if (w1 >= 5 && w2 >= 5 && Math.abs(w1 - w2) <= 1) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      count++;
+      p.classList.add('auto-isocolon');
+      p.setAttribute('data-isocolon-n', count);
+    }
+  }
+})();
+
+// anadiplosis detector — flags paragraphs where the last content
+// word of sentence K appears in the first 3 words of sentence K+1.
+// "The name creates distance. The distance creates choice."
+// the hinge word is the tell. burned rhetorical figure.
+// marks the <p> with a green left-border that escalates.
+// per-section counter: resets at human baseline for fair comparison.
+(function () {
+  var ps = document.querySelectorAll('.sloptics-page p');
+  var count = 0;
+  var baselineReached = false;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i];
+    if (!baselineReached && p.closest('.sloptics-baseline')) {
+      count = 0;
+      baselineReached = true;
+    }
+    var text = p.textContent.trim();
+    if (!text) continue;
+    var sentences = text.split(/(?<=[.!?])\s+/).filter(function (s) {
+      return s.trim().length > 0;
+    });
+    if (sentences.length < 2) continue;
+    var found = false;
+    for (var j = 0; j < sentences.length - 1; j++) {
+      var s1 = sentences[j].replace(/[.!?,;:"']+$/g, '').trim().split(/\s+/);
+      var s2 = sentences[j + 1].replace(/[.!?,;:"']+$/g, '').trim().split(/\s+/);
+      // last 2 content words of s1
+      var tail = s1.slice(-2).map(function (w) { return w.toLowerCase().replace(/[^a-z]/g, ''); });
+      // first 3 words of s2
+      var head = s2.slice(0, 3).map(function (w) { return w.toLowerCase().replace(/[^a-z]/g, ''); });
+      for (var k = 0; k < tail.length; k++) {
+        if (tail[k].length < 4) continue;
+        for (var l = 0; l < head.length; l++) {
+          if (tail[k] === head[l]) { found = true; break; }
+        }
+        if (found) break;
+      }
+      if (found) break;
+    }
+    if (found) {
+      count++;
+      p.classList.add('auto-anadiplosis');
+      p.setAttribute('data-anadiplosis-n', count);
+    }
+  }
+})();
+
+// === PHASE 2: text-node highlighters ===
+// these walk text nodes and wrap matches in spans.
+// order: em-dashes first, then abstract nouns.
+
+// em-dash highlighter — wraps every — (U+2014) in a coloured span.
+// without compromise or warning.
+// each em-dash gets data-n="1" through data-n="N".
+// CSS escalates the colour from mild yellow to burning red.
+// the escalation is the argument.
+(function () {
+  var walk = document.createTreeWalker(
+    document.querySelector('.sloptics-page'),
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+  var nodes = [];
+  while (walk.nextNode()) nodes.push(walk.currentNode);
+  var count = 0;
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    if (node.textContent.indexOf('\u2014') === -1) continue;
+    var frag = document.createDocumentFragment();
+    var parts = node.textContent.split('\u2014');
+    for (var j = 0; j < parts.length; j++) {
+      if (j > 0) {
+        count++;
+        var span = document.createElement('span');
+        span.className = 'emdash';
+        span.setAttribute('data-n', count);
+        span.textContent = '\u2014';
+        frag.appendChild(span);
+      }
+      if (parts[j]) frag.appendChild(document.createTextNode(parts[j]));
+    }
+    node.parentNode.replaceChild(frag, node);
+  }
+})();
+
+// abstract noun highlighter — wraps words ending in -tion, -ment,
+// -ness, -ity, -ence, -ance in a coloured span. these suffixes are
+// the atoms of the nominalisation cascade. the colour escalates from
+// faint purple to deep saturated purple as the count climbs.
+// 36 instances on this page. the nouns accumulate visibly.
+(function () {
+  var re = /\b(\w+(?:tion|ment|ness|ity|ence|ance))\b/gi;
+  var walk = document.createTreeWalker(
+    document.querySelector('.sloptics-page'),
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+  var nodes = [];
+  while (walk.nextNode()) nodes.push(walk.currentNode);
+  var count = 0;
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    if (!re.test(node.textContent)) continue;
+    re.lastIndex = 0;
+    var frag = document.createDocumentFragment();
+    var text = node.textContent;
+    var lastIdx = 0;
+    var match;
+    while ((match = re.exec(text)) !== null) {
+      if (match.index > lastIdx) {
+        frag.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+      }
+      count++;
+      var span = document.createElement('span');
+      span.className = 'absnoun';
+      span.setAttribute('data-n', count);
+      span.textContent = match[0];
+      frag.appendChild(span);
+      lastIdx = re.lastIndex;
+    }
+    if (lastIdx < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+    }
+    node.parentNode.replaceChild(frag, node);
+  }
+})();
+</script>
+<!--
+  SPECIMEN PRESERVATION — pre-annotation template
+  sha256: 5185cc2320c15b493bd146b41398c98f221d5d4e9c9a0d0555662b1bea4ba8d8
+  base64 of original unannotated sloptics.html (before annotation spans added):
+  e3sgZGVmaW5lICJtYWluIiB9fQo8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Ii9jc3Mv
+  c2xvcHRpY3MuY3NzIj4KPGFydGljbGUgY2xhc3M9InNsb3B0aWNzLXBhZ2UiPgogIDxwcmUg
+  Y2xhc3M9InNsb3B0aWNzLWJhbm5lciIgYXJpYS1oaWRkZW49InRydWUiPi0tLSZndDsgVEhJ
+  UyBJUyBDTEVBUkxZIFNMT1AgJmx0Oy0tLS08L3ByZT4=
+  (truncated — full base64 preserved in git history at commit ba2d89e)
+-->
+{{ end }}

@@ -1,0 +1,28 @@
+{{ define "main" }}
+{{ $id := .Params.id }}
+{{ $sd := false }}
+{{ range .Site.Data.decisions }}
+  {{ if eq .id $id }}
+    {{ $sd = . }}
+  {{ end }}
+{{ end }}
+
+{{ with $sd }}
+<article>
+  <header>
+    <h1>{{ .id }}</h1>
+  </header>
+
+  <div style="margin-bottom: 1.5rem;">
+    <p style="color: var(--text-secondary); line-height: 1.8;">{{ .decision | markdownify }}</p>
+  </div>
+
+  <div style="margin-bottom: 2rem;">
+    <span style="color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;">{{ .status }}</span>
+  </div>
+
+  <hr>
+  <a href="/decisions/" class="see-all">&larr; all decisions</a>
+</article>
+{{ end }}
+{{ end }}

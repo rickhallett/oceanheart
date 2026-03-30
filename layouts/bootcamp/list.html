@@ -1,0 +1,48 @@
+{{ define "main" }}
+<article class="bootcamp-index">
+  <header>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="subtitle" style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 1rem;">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="content">
+    {{ .Content }}
+  </div>
+
+  {{ $bootcamps := dict
+    "1" "I: Linux Substrate"
+    "2" "II: Agentic Engineering Practices"
+    "3" "III: Operational Analytics"
+    "4" "IV: Evaluation & Adversarial Testing"
+    "5" "V: Agent Infrastructure in Practice"
+  }}
+
+  {{ $estimates := dict
+    "1" "51-65 hours"
+    "2" "50-61 hours"
+    "3" "32-40 hours"
+    "4" "39-48 hours"
+    "5" "36-45 hours"
+  }}
+
+  {{ range $bnum, $blabel := $bootcamps }}
+  {{ $pages := where $.Pages "Params.bootcamp" (int $bnum) }}
+  {{ if $pages }}
+  <div class="bootcamp-group" style="margin-top: 3rem;">
+    <h2 style="font-size: 1.15rem; color: var(--cyan); margin-bottom: 0.25rem;">{{ $blabel }}</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">{{ index $estimates $bnum }}</p>
+    <div class="bootcamp-steps">
+      {{ range $pages.ByParam "step" }}
+      <a href="{{ .RelPermalink }}" class="bootcamp-step" style="display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--border); text-decoration: none;">
+        <span style="color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.85rem;">{{ .Params.step }}.</span>
+        <span style="color: var(--text-primary); margin-left: 0.5rem;">{{ .Title }}</span>
+        {{ with .Params.estimate }}<span style="color: var(--text-secondary); font-size: 0.85rem; float: right;">{{ . }}</span>{{ end }}
+        {{ if lt (countwords .RawContent) 200 }}<span style="color: var(--text-secondary); font-size: 0.8rem; margin-left: 0.5rem;">[coming]</span>{{ end }}
+      </a>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+  {{ end }}
+</article>
+{{ end }}
