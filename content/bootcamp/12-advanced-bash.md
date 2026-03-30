@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Advanced Bash - trap, coprocesses, associative arrays, BASH_REMATCH, and production patterns"
 date = "2026-03-10"
 description = "Signal traps, indexed and associative arrays, regex matching, coprocesses, process substitution, production-grade shell scripting patterns, and shellcheck."

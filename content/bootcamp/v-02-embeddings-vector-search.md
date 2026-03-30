@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Embeddings and Vector Search"
 date = "2026-03-10"
 description = "Dense vector representations, similarity metrics, vector databases, indexing strategies."

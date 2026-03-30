@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Python as a CLI Tool - The Escape Hatch from Shell Complexity"
 date = "2026-03-10"
 description = "The escape hatch from shell complexity. stdin/stdout, exit codes, argparse, subprocess, uv."

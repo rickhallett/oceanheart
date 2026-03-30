@@ -19,21 +19,9 @@ title = 'oceanheart.ai'
     url = '/projects/'
     weight = 15
   [[menus.main]]
-    name = 'bootcamp'
-    url = '/bootcamp/'
-    weight = 22
-  [[menus.main]]
-    name = 'slopodar'
-    url = '/slopodar/'
-    weight = 25
-  [[menus.main]]
     name = 'sloptics'
-    url = '/sloptics/'
+    url = 'https://www.sloptics.dev/'
     weight = 26
-  [[menus.main]]
-    name = 'decisions'
-    url = '/decisions/'
-    weight = 27
   [[menus.main]]
     name = 'about'
     url = '/about/'

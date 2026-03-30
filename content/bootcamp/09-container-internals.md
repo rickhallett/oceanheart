@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Container Internals - Namespaces, Cgroups, and OverlayFS"
 date = "2026-03-10"
 description = "A container is a process with three kernel restrictions. Namespaces restrict visibility, cgroups restrict resources, and OverlayFS controls the filesystem."

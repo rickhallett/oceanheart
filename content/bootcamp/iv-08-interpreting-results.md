@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Interpreting and Communicating Eval Results"
 date = "2026-03-10"
 description = "Confidence intervals, honest model comparison, eval limitations, avoiding eval theatre."

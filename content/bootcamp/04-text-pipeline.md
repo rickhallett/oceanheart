@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Text Processing Pipeline - grep, sed, awk, jq, yq"
 date = "2026-03-10"
 description = "The tools that transform text streams: jq, grep, awk, sed, yq, and the supporting cast that make Unix pipelines practical."

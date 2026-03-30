@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "SQL Analytics with DuckDB"
 date = "2026-03-10"
 description = "CTEs, window functions, self-joins, pivoting, date/time operations. Analytical SQL for agent data."

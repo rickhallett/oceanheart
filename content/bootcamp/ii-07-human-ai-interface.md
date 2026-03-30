@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Human-AI Interface"
 date = "2026-03-10"
 description = "The layer model (L0-L12), sycophantic drift, the slopodar, seven HCI foot guns."

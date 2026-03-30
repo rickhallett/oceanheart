@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Tabular Data with pandas and DuckDB"
 date = "2026-03-10"
 description = "DataFrames, column operations, groupby, joins, reshaping. The foundation for all analysis."

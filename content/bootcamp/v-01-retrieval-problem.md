@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Retrieval Problem"
 date = "2026-03-10"
 description = "Why agents need external knowledge. The naive RAG pipeline. Where it breaks. Retrieval quality metrics."

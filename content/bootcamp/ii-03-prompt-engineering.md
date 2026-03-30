@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Prompt Engineering as System Design"
 date = "2026-03-10"
 description = "System prompts as specifications. Structured output. Few-shot patterns. The AGENTS.md pattern."

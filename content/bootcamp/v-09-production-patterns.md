@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Production Patterns"
 date = "2026-03-10"
 description = "Rate limiting, fallback chains, scaling, deployment patterns, cost controls, reliability."

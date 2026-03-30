@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Networking from the CLI - curl, openssl, dig, tcpdump, iptables"
 date = "2026-03-10"
 description = "Every agent operates over a network. These tools let you inspect every layer of the stack from the command line."

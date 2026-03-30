@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Text Analysis Basics"
 date = "2026-03-10"
 description = "String similarity, TF-IDF, embedding-based similarity, simple classification, diffing."

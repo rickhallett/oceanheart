@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Time Series Basics"
 date = "2026-03-10"
 description = "Moving averages, trend detection, seasonality, anomaly detection, change points. Agent metrics over time."

@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Notebook-Based Analysis Workflows"
 date = "2026-03-10"
 description = "Notebook organisation, reproducibility, the exploration-to-script pipeline, analysis templates."

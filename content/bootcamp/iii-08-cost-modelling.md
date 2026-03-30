@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Cost Modelling for API-Based Systems"
 date = "2026-03-10"
 description = "Token economics, cost per task, trend analysis, marginal cost, budget forecasting."

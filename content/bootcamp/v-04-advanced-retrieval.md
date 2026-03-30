@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Advanced Retrieval Patterns"
 date = "2026-03-10"
 description = "Hybrid search, reranking, agentic RAG, GraphRAG, code retrieval, index maintenance."

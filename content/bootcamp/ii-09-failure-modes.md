@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Failure Modes and Recovery"
 date = "2026-03-10"
 description = "Seven HCI foot guns in operational depth. Cognitive deskilling. Checkpoint recovery. Governance recursion."

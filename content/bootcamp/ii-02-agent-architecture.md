@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Agent Architecture Patterns"
 date = "2026-03-10"
 description = "Workflows vs agents. The five patterns from Anthropic's guidance. Single-agent vs multi-agent. The simplicity principle."

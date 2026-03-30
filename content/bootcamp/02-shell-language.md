@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Shell Language"
 date = "2026-03-10"
 description = "POSIX sh then bash. Quoting, expansion, control flow, error handling. The glue that composes processes."

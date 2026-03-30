@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "How LLMs Actually Work"
 date = "2026-03-10"
 description = "Transformer architecture, tokenisation, context windows, autoregressive generation. The operational consequences of the math."

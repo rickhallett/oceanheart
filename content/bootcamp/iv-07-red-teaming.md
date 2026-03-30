@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Red Teaming for Safety-Critical Capabilities"
 date = "2026-03-10"
 description = "Safety evaluation, sabotage modalities, alignment faking, deception detection, responsible disclosure."

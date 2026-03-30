@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Cost, Security, Legal, and Compliance"
 date = "2026-03-10"
 description = "Token economics, sandbox design, prompt injection, credential management. IP ownership and audit trails."

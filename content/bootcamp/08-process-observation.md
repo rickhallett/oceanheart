@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Process Observation - strace, ltrace, lsof, ss"
 date = "2026-03-10"
 description = "The Operator's instruments for observing what a process actually does at the syscall, file descriptor, and network level."

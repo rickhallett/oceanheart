@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Agent Observability and Tracing"
 date = "2026-03-10"
 description = "Traces, spans, structured logging. OpenTelemetry for LLM. Custom tracing. Alert fatigue."

@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Unix Process Model"
 date = "2026-03-10"
 description = "File descriptors, pipes, and signals. The kernel primitives that everything else composes on."

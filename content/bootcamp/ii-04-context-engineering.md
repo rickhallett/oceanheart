@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Context Engineering"
 date = "2026-03-10"
 description = "The working set, cold and hot pressure, compaction loss, the dumb zone. The novel discipline."

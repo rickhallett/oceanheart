@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "What Evaluations Actually Measure"
 date = "2026-03-10"
 description = "Construct validity, content contamination, saturation, Goodhart's law. The epistemology of evals."

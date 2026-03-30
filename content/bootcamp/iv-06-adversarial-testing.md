@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Adversarial Testing Methodology"
 date = "2026-03-10"
 description = "Structured adversarial testing, prompt injection, multi-model review, anti-pattern detection."

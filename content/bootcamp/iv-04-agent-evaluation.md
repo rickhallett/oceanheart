@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Evaluating Agents and Workflows"
 date = "2026-03-10"
 description = "Task-based evaluation, trajectory analysis, Inspect AI, sandboxed execution, tool use accuracy."

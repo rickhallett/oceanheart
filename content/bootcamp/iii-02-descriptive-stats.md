@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Descriptive Statistics"
 date = "2026-03-10"
 description = "Central tendency, spread, percentiles, distribution shape, correlation. Describing what you have before claiming anything."

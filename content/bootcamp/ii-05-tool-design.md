@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Tool Design and Agent-Computer Interfaces"
 date = "2026-03-10"
 description = "ACI design, poka-yoke for tools, MCP, tool result injection. The agent's empirical contact with reality."

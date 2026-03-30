@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Git Internals - Beyond Porcelain Commands"
 date = "2026-03-10"
 description = "Git's object model made transparent so every agent git operation can be verified at the object level, not just the porcelain level."

@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Verification and Quality for Probabilistic Systems"
 date = "2026-03-10"
 description = "The oracle problem, the quality gate, the Swiss Cheese Model. Five named test anti-patterns."

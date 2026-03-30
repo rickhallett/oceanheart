@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Visualisation for Decision-Making"
 date = "2026-03-10"
 description = "matplotlib, the right chart for the question, multi-panel figures, heatmaps, annotations."

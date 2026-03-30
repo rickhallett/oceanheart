@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Make and Just as Orchestrators"
 date = "2026-03-10"
 description = "DAG execution and recipe running - how shell recipes become deterministic pipelines."

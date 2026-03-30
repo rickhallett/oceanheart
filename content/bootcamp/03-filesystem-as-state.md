@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "The Filesystem as State"
 date = "2026-03-10"
 description = "Paths, permissions, inodes, /proc, /sys - the agent's working memory is the filesystem."

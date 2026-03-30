@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Agentic Engineering Bootcamp"
 description = "First principles for engineers who govern what agents build."
 +++

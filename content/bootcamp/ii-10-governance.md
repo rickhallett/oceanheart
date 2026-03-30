@@ -1,4 +1,5 @@
 +++
+draft = true
 title = "Governance, Process, and Enterprise Integration"
 date = "2026-03-10"
 description = "The engineering loop. Atomic changes. HOTL/HODL spectrum. Bearing checks. Pull-based review."
