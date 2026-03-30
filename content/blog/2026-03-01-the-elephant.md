@@ -3,7 +3,7 @@ title = "33,700 tokens on boot and nobody noticed"
 date = "2026-03-01"
 description = "I pointed a tokeniser at the repo. The boot sequence had an elephant in it."
 tags = ["agents", "tokens", "infrastructure", "discipline"]
-draft = false
+draft = true
 +++
 
 ```

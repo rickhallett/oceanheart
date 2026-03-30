@@ -3,7 +3,7 @@ title = "I think they might actually be trying to kill me"
 date = "2026-03-01"
 description = "The problem with being earnest."
 tags = ["agents", "discipline", "slopodar", "meta"]
-draft = false
+draft = true
 +++
 
 The previous post shipped a script that replaces a 33,700-token file with a 1,500-token index. The agent committed it, pushed it, wrote the blog post about it, and said:

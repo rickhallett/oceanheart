@@ -3,7 +3,7 @@ title = "Build your house from paper and 0.37% of the time you'll get screwed 10
 date = "2026-03-01T15:00:00Z"
 description = "A standing order said 'read the file.' The file was 33,700 tokens. So we wrote 60 lines of JavaScript."
 tags = ["agents", "tokens", "discipline", "slopodar"]
-draft = false
+draft = true
 +++
 
 ```js

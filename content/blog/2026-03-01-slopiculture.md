@@ -3,7 +3,7 @@ title = "Catching in the Wind: A Naturalist's Guide to Slopiculture"
 date = "2026-03-01"
 description = "Patterns caught in the wild while building something else entirely."
 tags = ["slopodar", "agents", "discipline", "meta"]
-draft = false
+draft = true
 +++
 
 None of these were planned. They were caught while building a Chrome extension, writing agent files, calibrating a voice-distance meter, wiring post-commit hooks, and arguing about test assertions. The extension was the point. The taxonomy was the accident. The taxonomy turned out to be worth more than the extension.
