@@ -21,7 +21,7 @@
       Sloptics is the discipline of making the second failure mode visible. It works the way Beck's cognitive distortion taxonomy works: you name the pattern, the pattern becomes detectable, detection is the intervention.
     </p>
     <p>
-      The taxonomy below is empirically grounded. Every entry was caught in the wild — from 242 session decisions, 780+ commits, and 8 named patterns documented in <a href="/slopodar/">the slopodar</a>. Nothing was theorised in advance.
+      The taxonomy below is empirically grounded. Every entry was caught in the wild — from 242 session decisions, 780+ commits, and 8 named patterns documented in <a href="/tells/">the tells</a>. Nothing was theorised in advance.
     </p>
   </section>
 
@@ -81,9 +81,9 @@
     </div>
 
     <div class="sloptics-term">
-      <h3>slopodar <span class="sloptics-pos">/ˈslɒp.ə.dɑː/ n., v.</span></h3>
+      <h3>tells <span class="sloptics-pos">/ˈslɒp.ə.dɑː/ n., v.</span></h3>
       <p>
-        The detection instinct. From <em>slop</em> + <em>radar</em>. The trained attention that fires before conscious analysis — the felt wrongness, the "something is off" that precedes identification. Also used as a verb: "bump the slopodar" = add a new named entry. <a href="/slopodar/">The slopodar inventory →</a>
+        The detection instinct. From <em>slop</em> + <em>radar</em>. The trained attention that fires before conscious analysis — the felt wrongness, the "something is off" that precedes identification. Also used as a verb: "bump the tells" = add a new named entry. <a href="/tells/">The tells inventory →</a>
       </p>
     </div>
   </section>
@@ -134,7 +134,7 @@
   <section style="margin-bottom: 3rem;">
     <h2 style="margin-top: 0;">calibration note</h2>
     <p>
-      A <a href="https://github.com/rickhallett/thepit/tree/wake/slopodar-ext">chrome extension</a> was built to run these detectors on any web page. Calibrating it against 46 pages of known-human and known-AI text revealed something the detectors themselves couldn't: the structural rhetoric patterns (epigram, isocolon, anadiplosis, antithesis) measure <em>writing quality</em>, not writing origin. Good human writers trigger them as much or more than AI. What actually discriminates is voice — contractions, first-person pronouns, questions, and the absence of formal transition words. The tool was renamed accordingly. It previously called itself an "LLM slop detector." It contained more slop than science.
+      A <a href="https://github.com/rickhallett/thepit/tree/wake/tells-ext">chrome extension</a> was built to run these detectors on any web page. Calibrating it against 46 pages of known-human and known-AI text revealed something the detectors themselves couldn't: the structural rhetoric patterns (epigram, isocolon, anadiplosis, antithesis) measure <em>writing quality</em>, not writing origin. Good human writers trigger them as much or more than AI. What actually discriminates is voice — contractions, first-person pronouns, questions, and the absence of formal transition words. The tool was renamed accordingly. It previously called itself an "LLM slop detector." It contained more slop than science.
     </p>
   </section>
 
@@ -160,10 +160,10 @@
 
   <section>
     <p style="color: var(--muted); font-size: 0.8rem;">
-      This page documents a protogenic concept emerging from <a href="https://github.com/rickhallett/thepit">THE PIT</a> — 242 session decisions, 1,279 tests, and a living taxonomy of LLM failure modes. The slopodar entries are the empirical base. The frameworks above are the interpretation. Both are works in progress.
+      This page documents a protogenic concept emerging from <a href="https://github.com/rickhallett/thepit">THE PIT</a> — 242 session decisions, 1,279 tests, and a living taxonomy of LLM failure modes. The tells entries are the empirical base. The frameworks above are the interpretation. Both are works in progress.
     </p>
     <p style="color: var(--muted); font-size: 0.8rem;">
-      <a href="/slopodar/">the slopodar →</a>
+      <a href="/tells/">the tells →</a>
     </p>
   </section>
 
@@ -243,14 +243,14 @@
     <div class="sloptics-term">
       <h3>sloppesque <span class="sloptics-pos">/slɒp.ˈɛsk/ adj.</span></h3>
       <p>
-        Having the quality or cadence of slop without being definitively identifiable as LLM-generated. The uncanny valley of text. A passage is sloppesque when the slopodar fires but the reader cannot yet name why. The felt wrongness precedes the diagnosis. Sloppesque text may be LLM-generated, LLM-edited, or human-written under secondary contamination — the origin is ambiguous, which is precisely the problem. From <em>slop</em> + <em>-esque</em> (suffix denoting resemblance, from French, from Italian <em>-esco</em>).
+        Having the quality or cadence of slop without being definitively identifiable as LLM-generated. The uncanny valley of text. A passage is sloppesque when the tells fires but the reader cannot yet name why. The felt wrongness precedes the diagnosis. Sloppesque text may be LLM-generated, LLM-edited, or human-written under secondary contamination — the origin is ambiguous, which is precisely the problem. From <em>slop</em> + <em>-esque</em> (suffix denoting resemblance, from French, from Italian <em>-esco</em>).
       </p>
     </div>
   </footer>
 
   <section style="margin-top: 2rem;">
     <p style="color: var(--muted); font-size: 0.8rem;">
-      The slopodar is <a href="https://github.com/rickhallett/thepit/tree/wake/slopodar-ext">available as a chrome extension</a> if you want to try it. At its current version I am not sure it is worth the Google developer fee. People who know enough about sample sizes, false positives, and calibration to use it properly probably don't need a half-baked chrome extension for support. People who don't know those things need a tool reliable enough that they don't need to understand why it's broken. It is not that tool yet.
+      The tells is <a href="https://github.com/rickhallett/thepit/tree/wake/tells-ext">available as a chrome extension</a> if you want to try it. At its current version I am not sure it is worth the Google developer fee. People who know enough about sample sizes, false positives, and calibration to use it properly probably don't need a half-baked chrome extension for support. People who don't know those things need a tool reliable enough that they don't need to understand why it's broken. It is not that tool yet.
     </p>
   </section>
 </article>
@@ -328,7 +328,7 @@
 
 // antithesis detector — flags paragraphs containing negation
 // contrast patterns: "not X, but Y" / "X, not Y" / "rather than"
-// / "instead of". the redundant antithesis — slopodar #2.
+// / "instead of". the redundant antithesis — tells #2.
 // the negation adds zero information when the positive implies it.
 // marks the <p> with a cyan outline-right + outline-top corner.
 // per-section counter: resets at human baseline for fair comparison.

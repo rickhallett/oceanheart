@@ -83,7 +83,7 @@ The strongest writing occurs when admitting uncertainty or limitation. No hedgin
 |---|---|
 | Clean section headers with `##` | I don't section my thoughts neatly |
 | "Welcome to the flywheel effect." | I would never introduce a concept with a greeting |
-| "Here's the thing:" | Epistemic Theatre — False Candor (I have a [slopodar entry](/slopodar/epistemic-theatre/) for this) |
+| "Here's the thing:" | Epistemic Theatre — False Candor (I have a [tells entry](/tells/epistemic-theatre/) for this) |
 | "You see where this is going." | Telling the reader what to think |
 | Bold **concept names** introduced formally | I name things in passing, not ceremony |
 | `Dam it.` emoji pun | I do not use emoji or puns in writing |

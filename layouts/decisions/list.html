@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ $decisions := .Site.Data.decisions }}
 {{ $total := len $decisions }}
-<article class="slopodar-page">
+<article class="tells-page">
   <header>
     <h1>Session Decisions</h1>
     <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
@@ -10,13 +10,13 @@
     </p>
   </header>
 
-  <div class="slopodar-search">
+  <div class="tells-search">
     <input type="text" id="sd-filter" placeholder="filter..." autocomplete="off" spellcheck="false">
   </div>
 
-  <p class="slopodar-count" id="sd-count">{{ $total }} decisions</p>
+  <p class="tells-count" id="sd-count">{{ $total }} decisions</p>
 
-  <div class="slopodar-grid" id="sd-grid">
+  <div class="tells-grid" id="sd-grid">
     {{ range seq (sub $total 1) 0 }}
     {{ $d := index $decisions . }}
     <a class="sd-row" href="/decisions/{{ $d.id | urlize }}/" data-sd>
