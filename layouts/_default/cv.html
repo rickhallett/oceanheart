@@ -3,46 +3,41 @@
   <header>
     <p class="prompt">cat ./cv/richard-hallett.md</p>
     <h1>Richard (Kai) Hallett</h1>
-    <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted);">Agentic Systems Engineer · kai@oceanheart.ai</p>
+    <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted);">Software Engineer · kai@oceanheart.ai</p>
   </header>
 
   <div class="cv-section">
-    <p>I don't write the application code any more. I write the systems that make it safe for agents to write the application code: verification pipelines, context-window economics, operator telemetry. The 15 years I spent as a cognitive behavioural therapist before engineering turned out to be the preparation for exactly this — noticing when a system is producing confident, coherent output that is completely wrong, and building the structural controls that catch it.</p>
-    <p>Looking for a role where operational rigour in agentic systems is legible.</p>
+    <p>Full-stack engineer with a focus on AI-augmented development. I build application code and the verification infrastructure that makes it safe for agents to contribute: adversarial review pipelines, structured evaluation, operator telemetry. The 15 years I spent as a cognitive behavioural therapist before engineering turned out to be preparation for exactly this — noticing when a system is producing confident, coherent output that is completely wrong, and building the structural controls that catch it.</p>
+    <p>Looking for a full-stack or platform engineering role where process quality and technical depth are valued.</p>
   </div>
 
   <div class="cv-section">
     <h2 style="color: var(--cyan);">What I built</h2>
-    <p class="cv-section-note">Everything below is auditable in the <a href="https://github.com/rickhallett/thepit-v2">public repo</a>. The git log is the proof.</p>
+    <p class="cv-section-note">Everything below is public. The git logs are the proof.</p>
 
     <div class="cv-artifact">
-      <div class="cv-artifact-name">The Gauntlet</div>
-      <div class="desc">Multi-model adversarial review pipeline enforced as a git pre-commit hook. Claude and OpenAI independently red-team every code change against a structured adversarial prompt. Cryptographic attestations tied to git tree hashes — if the staged content changes after review, the attestation goes stale and the commit is blocked. Code does not enter the branch without surviving autonomous red-teaming and passing deterministic tests.</div>
-    </div>
-
-    <div class="cv-artifact">
-      <div class="cv-artifact-name">Pitkeel</div>
-      <div class="desc">Operator telemetry daemon. Tracks session duration, scope drift, velocity, ultradian cycles, and cognitive reserves (meditation, exercise). Progressive fatigue warnings at 90min/2h/3h thresholds. The sleep daemon will shut down the operating system if reserves deplete — not metaphorically. Pure-function analysis core (517 lines, fully tested) with a strict IO boundary layer. The architecture came directly from CBT's model of cognitive load and behavioural activation.</div>
-    </div>
-
-    <div class="cv-artifact">
-      <div class="cv-artifact-name">Slopodar</div>
-      <div class="desc">Field taxonomy of LLM anti-patterns caught in the wild: epistemic theatre, paper guardrails, analytical lullabies, sycophantic drift. 40+ entries, each with detection heuristics, severity grading, and the story of how it was caught. Includes programmatic detectors that run on the <a href="/sloptics/">sloptics page</a> — the page annotates itself.</div>
-    </div>
-
-    <div class="cv-artifact">
-      <div class="cv-artifact-name">Deterministic build orchestration</div>
-      <div class="desc">26-task dependency graph in Make. Each task is a one-shot agent execution with a plan file as sole input. No interactive steering, no trajectory corruption, no context bloat. The plan is the prime context; the gate is the reviewer. Human reviews after execution, not during.</div>
-    </div>
-
-    <div class="cv-artifact">
-      <div class="cv-artifact-name"><a href="/bootcamp/">The Agentic Engineering Bootcamp</a></div>
-      <div class="desc">51 steps across 5 bootcamps — self-study material I wrote for myself and am publishing because it might be useful to others. Linux substrate, agentic engineering practices, operational analytics, evaluation and adversarial testing, agent infrastructure. The content came directly out of the practical problems I hit building everything above. Each step is grounded in the actual failure modes, tooling, and verification patterns encountered in production agentic work.</div>
+      <div class="cv-artifact-name"><a href="/projects/sortie/">Sortie</a></div>
+      <div class="desc">Async adversarial multi-model code review system. Runs a configurable roster of LLMs (Claude, Codex, Gemini) against a worker's diff in parallel, synthesises findings through a 4th-model debrief with convergence analysis, triages by severity, and gates worktree merges. Built after surveying <a href="https://github.com/rickhallett/sortie">40+ existing tools and 30+ research papers</a> — designed to fill a specific gap none of them cover. 106 tests, Python, single runtime dependency. <a href="/projects/sortie/">Project page →</a></div>
     </div>
 
     <div class="cv-artifact">
       <div class="cv-artifact-name"><a href="/projects/pidgeon/">Pidgeon</a> · <a href="/projects/pidgeon-swarm/">Pidgeon Swarm</a></div>
       <div class="desc">Same spec, two processes. A carrier-agnostic shipping rate integration built twice: once with outside-in TDD and 48 cross-model adversarial reviews (86 commits, 161 tests, 18 hours), once with design-first parallel agent execution (17 commits, 55 tests, 1 hour). Machine-queryable decision log, self-critical retrospective, direct comparison of iterative verification vs upfront design. <a href="/blog/2026-03-30-building-the-same-system-twice/">Case study →</a></div>
+    </div>
+
+    <div class="cv-artifact">
+      <div class="cv-artifact-name">The Gauntlet</div>
+      <div class="desc">Multi-model adversarial review pipeline enforced as a git pre-commit hook. Claude and OpenAI independently red-team every code change against a structured adversarial prompt. Cryptographic attestations tied to git tree hashes — if the staged content changes after review, the attestation goes stale and the commit is blocked. Sortie is the generalisation of this concept into a configurable, multi-mode system.</div>
+    </div>
+
+    <div class="cv-artifact">
+      <div class="cv-artifact-name"><a href="https://www.sloptics.dev/">Slopodar</a></div>
+      <div class="desc">Field taxonomy of LLM anti-patterns caught in the wild: epistemic theatre, paper guardrails, analytical lullabies, sycophantic drift. 60+ entries, each with detection heuristics, severity grading, and the story of how it was caught. Includes <a href="https://www.sloptics.dev/">programmatic detectors</a> that annotate text in real time.</div>
+    </div>
+
+    <div class="cv-artifact">
+      <div class="cv-artifact-name">Pitkeel</div>
+      <div class="desc">Operator telemetry daemon. Tracks session duration, scope drift, velocity, ultradian cycles, and cognitive reserves (meditation, exercise). The sleep daemon will shut down the operating system if reserves deplete — not metaphorically. Pure-function analysis core (517 lines, fully tested) with a strict IO boundary layer. Architecture derived from CBT's model of cognitive load and behavioural activation.</div>
     </div>
   </div>
 
@@ -88,28 +83,37 @@ Gauntlet: gate+claude+openai+pitkeel+walkthrough @ dec8b5a3 [full]</code></pre>
 
     <div class="cv-entry">
       <span class="period">2024–present</span>
-      <div class="role">Agentic Systems Engineer</div>
+      <div class="role">Software Engineer</div>
       <div class="org">Oceanheart.ai</div>
-      <div class="desc">Building the coordination layer that makes human-AI delegation reliable. 11 specialised agents, 316+ session decisions on file, every commit cryptographically attested. The repo is <a href="https://github.com/rickhallett/thepit-v2">public</a>.</div>
+      <div class="desc">Building verification infrastructure for AI-augmented development: adversarial review pipelines (<a href="/projects/sortie/">Sortie</a>), anti-pattern taxonomy (<a href="https://www.sloptics.dev/">Slopodar</a>), operator telemetry (Pitkeel). 328 session decisions on file. All repos public.</div>
     </div>
 
     <div class="cv-entry">
-      <span class="period">2022–2024</span>
+      <span class="period">2023–2024</span>
       <div class="role">Software Engineer</div>
       <div class="org">EDITED · Retail analytics</div>
-      <div class="desc">React, TypeScript, Python. Data visualisation of ML-driven retail insights. Enterprise SaaS.</div>
+      <div class="desc">React, TypeScript, Python. Data visualisation features for AI-driven retail analytics SaaS. Partnered with backend engineers (Python/Django) to optimise API integrations serving enterprise clients.</div>
     </div>
 
     <div class="cv-entry">
-      <span class="period">2021–2022</span>
+      <span class="period">2021–2023</span>
       <div class="role">Software Engineer</div>
       <div class="org">Brandwatch · Social intelligence</div>
+      <div class="desc">Enterprise data visualisation platform (Monitor project). Built scalable React components while modernising legacy Backbone codebase. Mentored junior developers.</div>
     </div>
 
     <div class="cv-entry">
-      <span class="period">2019–2021</span>
-      <div class="role">Software Engineer</div>
+      <span class="period">2020–2021</span>
+      <div class="role">Full Stack Engineer</div>
       <div class="org">Telesoft Technologies · Network security</div>
+      <div class="desc">TypeScript, Angular, Node.js. Secure features for cybersecurity applications. Python utilities for data processing and automation.</div>
+    </div>
+
+    <div class="cv-entry">
+      <span class="period">2019–2020</span>
+      <div class="role">Software Developer</div>
+      <div class="org">School Business Services</div>
+      <div class="desc">Vue.js frontend features for school financial management software.</div>
     </div>
 
     <div class="cv-entry">
@@ -135,25 +139,9 @@ Gauntlet: gate+claude+openai+pitkeel+walkthrough @ dec8b5a3 [full]</code></pre>
   <div class="cv-section">
     <h2 style="color: var(--green);">Technical</h2>
     <div class="cv-tech-group">
-      <span class="cv-tech-label">Agentic infrastructure</span>
+      <span class="cv-tech-label">Languages</span>
       <div class="tech-tags">
-        {{ range (slice "Multi-agent orchestration" "Adversarial CI/CD" "Git hook enforcement" "Cross-model review" "Deterministic build graphs") }}
-        <span class="tech-tag">{{ . }}</span>
-        {{ end }}
-      </div>
-    </div>
-    <div class="cv-tech-group">
-      <span class="cv-tech-label">LLM operations</span>
-      <div class="tech-tags">
-        {{ range (slice "Context-window compression" "Structured prompt protocols" "Claude / OpenAI / Gemini" "Anti-pattern detection") }}
-        <span class="tech-tag">{{ . }}</span>
-        {{ end }}
-      </div>
-    </div>
-    <div class="cv-tech-group">
-      <span class="cv-tech-label">Systems</span>
-      <div class="tech-tags">
-        {{ range (slice "Python" "Go" "Node.js" "Bun" "PostgreSQL" "Bash" "Make" "Zod") }}
+        {{ range (slice "TypeScript" "Python" "Go" "Bash") }}
         <span class="tech-tag">{{ . }}</span>
         {{ end }}
       </div>
@@ -161,15 +149,23 @@ Gauntlet: gate+claude+openai+pitkeel+walkthrough @ dec8b5a3 [full]</code></pre>
     <div class="cv-tech-group">
       <span class="cv-tech-label">Frontend</span>
       <div class="tech-tags">
-        {{ range (slice "TypeScript" "React" "Next.js" "Tailwind") }}
+        {{ range (slice "React" "Next.js" "Tailwind" "Hugo") }}
         <span class="tech-tag">{{ . }}</span>
         {{ end }}
       </div>
     </div>
     <div class="cv-tech-group">
-      <span class="cv-tech-label">Human-computer interaction</span>
+      <span class="cv-tech-label">Backend & infra</span>
       <div class="tech-tags">
-        {{ range (slice "Operator telemetry" "Cognitive load mapping" "Behavioural safeguards" "Fatigue monitoring") }}
+        {{ range (slice "Node.js" "Bun" "PostgreSQL" "Docker" "Make" "Zod") }}
+        <span class="tech-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+    <div class="cv-tech-group">
+      <span class="cv-tech-label">AI-augmented development</span>
+      <div class="tech-tags">
+        {{ range (slice "Multi-model adversarial review" "Cross-family verification" "Claude / Codex / Gemini" "Convergence analysis" "Anti-pattern detection") }}
         <span class="tech-tag">{{ . }}</span>
         {{ end }}
       </div>
