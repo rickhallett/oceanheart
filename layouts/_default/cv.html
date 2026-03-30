@@ -7,7 +7,7 @@
   </header>
 
   <div class="cv-section">
-    <p>Full-stack engineer with a focus on AI-augmented development. I build application code and the verification infrastructure that makes it safe for agents to contribute: adversarial review pipelines, structured evaluation, operator telemetry. The 15 years I spent as a cognitive behavioural therapist before engineering turned out to be preparation for exactly this — noticing when a system is producing confident, coherent output that is completely wrong, and building the structural controls that catch it.</p>
+    <p>Full-stack engineer with a focus on AI-augmented development. I build application code and the verification infrastructure that makes it safe for agents to contribute. The 15 years I spent as a cognitive behavioural therapist before engineering turned out to be preparation for exactly this — noticing when a system is producing confident, coherent output that is completely wrong, and building the structural controls that catch it.</p>
     <p>Looking for a full-stack or platform engineering role where process quality and technical depth are valued.</p>
   </div>
 
@@ -17,27 +17,22 @@
 
     <div class="cv-artifact">
       <div class="cv-artifact-name"><a href="/projects/the-pit/">The Pit</a></div>
-      <div class="desc">Multi-agent AI evaluation platform. Structured contests between agent configurations with observable traces, rubric-based scoring, 9-category failure taxonomy, and cost visibility. 1,300+ commits, 1,503 tests, ~28k LOC, 329 architectural decisions. Currently building the run/evaluation engine (Phase 1 execution engine delivered; Phase 2 rubric scoring next). Next.js, TypeScript, Drizzle, Neon Postgres, Vercel AI SDK, Stripe, Upstash Redis. <a href="/projects/the-pit/">Project page →</a></div>
+      <div class="desc">A multi-agent evaluation platform — structured contests between agent configurations with observable traces, rubric-based scoring, failure tagging, and cost visibility. The product and the development process are the same thesis: governance infrastructure first, features second. Every architectural decision is on file, every commit passes through adversarial review, and the evaluation engine I'm building now grew directly from running the process on itself. Next.js, TypeScript, Drizzle, Neon Postgres, Vercel AI SDK, Stripe. <a href="/projects/the-pit/">Project page →</a></div>
     </div>
 
     <div class="cv-artifact">
       <div class="cv-artifact-name"><a href="/projects/sortie/">Sortie</a></div>
-      <div class="desc">Async adversarial multi-model code review system. Runs a configurable roster of LLMs (Claude, Codex, Gemini) against a worker's diff in parallel, synthesises findings through a 4th-model debrief with convergence analysis, triages by severity, and gates worktree merges. Built after surveying <a href="https://github.com/rickhallett/sortie">40+ existing tools and 30+ research papers</a> — designed to fill a specific gap none of them cover. 106 tests, Python, single runtime dependency. <a href="/projects/sortie/">Project page →</a></div>
+      <div class="desc">Adversarial multi-model code review, extracted from The Pit into a standalone tool. Three LLMs review a diff in parallel, a fourth synthesises their findings, and merge is gated on convergent severity. I built it after a pilot run showed that 74% of findings were caught by only one model — the complementarity justified a tool. Surveyed <a href="https://github.com/rickhallett/sortie">40+ existing tools and 30+ papers</a> before writing a line of code. Python. <a href="/projects/sortie/">Project page →</a></div>
     </div>
 
     <div class="cv-artifact">
       <div class="cv-artifact-name"><a href="/projects/pidgeon/">Pidgeon</a> · <a href="/projects/pidgeon-swarm/">Pidgeon Swarm</a></div>
-      <div class="desc">Same spec, two processes. A carrier-agnostic shipping rate integration built twice: once with outside-in TDD and 48 cross-model adversarial reviews (86 commits, 161 tests, 18 hours), once with design-first parallel agent execution (17 commits, 55 tests, 1 hour). Machine-queryable decision log, self-critical retrospective, direct comparison of iterative verification vs upfront design. <a href="/blog/2026-03-30-building-the-same-system-twice/">Case study →</a></div>
-    </div>
-
-    <div class="cv-artifact">
-      <div class="cv-artifact-name">The Gauntlet · Darkcat</div>
-      <div class="desc">Multi-model adversarial review pipeline enforced as a git pre-commit hook. Claude, Codex, and Gemini independently red-team every code change. Cryptographic attestations tied to git tree hashes — if staged content changes after review, the attestation goes stale and the commit is blocked. Pilot run across a 1,300+ commit project (3 phases, 508 test files) produced 31 findings from 3 models — 74% caught by only one model, 0 false positives. That complementarity data is what motivated building <a href="/projects/sortie/">Sortie</a> as the generalised, configurable version.</div>
+      <div class="desc">A carrier-agnostic shipping rate integration, built twice from the same spec to compare development processes. The first used outside-in TDD with cross-model adversarial review after every step. The second used a design-first parallel agent swarm. The interesting finding wasn't which produced better code — it was that review timing determines what you catch. <a href="/blog/2026-03-30-building-the-same-system-twice/">Case study →</a></div>
     </div>
 
     <div class="cv-artifact">
       <div class="cv-artifact-name"><a href="https://www.sloptics.dev/">Tells</a></div>
-      <div class="desc">Field taxonomy of LLM anti-patterns caught in the wild: epistemic theatre, paper guardrails, analytical lullabies, sycophantic drift. 60+ entries, each with detection heuristics, severity grading, and the story of how it was caught. Includes <a href="https://www.sloptics.dev/">programmatic detectors</a> that annotate text in real time.</div>
+      <div class="desc">A field taxonomy of LLM output patterns — epistemic theatre, paper guardrails, analytical lullabies, sycophantic drift. Catalogued from live observation over several months of AI-augmented development. Includes <a href="https://www.sloptics.dev/">programmatic detectors</a> that annotate text in real time.</div>
     </div>
 
   </div>
@@ -49,7 +44,7 @@
       <span class="period">2024–present</span>
       <div class="role">Software Engineer</div>
       <div class="org">Oceanheart.ai</div>
-      <div class="desc">Building <a href="/projects/the-pit/">The Pit</a> — a multi-agent evaluation platform (Next.js, TypeScript, Drizzle, Neon Postgres, Vercel AI SDK). 1,300+ commits, 1,503 tests, 329 architectural decisions. Also built: adversarial review pipelines (<a href="/projects/sortie/">Sortie</a>), anti-pattern taxonomy (<a href="https://www.sloptics.dev/">Tells</a>), cross-model triangulation (Darkcat). All repos public.</div>
+      <div class="desc">Building <a href="/projects/the-pit/">The Pit</a> — a multi-agent evaluation platform. Also built the adversarial review pipeline (<a href="/projects/sortie/">Sortie</a>), anti-pattern taxonomy (<a href="https://www.sloptics.dev/">Tells</a>), and cross-model triangulation system that governs the development process itself. All repos public.</div>
     </div>
 
     <div class="cv-entry">
@@ -84,7 +79,7 @@
       <span class="period">2004–2019</span>
       <div class="role">Cognitive Behavioural Therapist</div>
       <div class="org">NHS / Private Practice</div>
-      <div class="desc">15 years clinical practice. PGDip CBT (Royal Holloway). The core skill is noticing when someone — including yourself — is producing plausible-sounding nonsense. Directly load-bearing for AI-augmented engineering: context-window management maps to working memory, system prompts map to behavioural bounds.</div>
+      <div class="desc">15 years clinical practice. PGDip CBT (Royal Holloway). The core skill — noticing when someone, including yourself, is producing plausible-sounding nonsense — turned out to transfer directly to AI-augmented engineering.</div>
     </div>
   </div>
 
