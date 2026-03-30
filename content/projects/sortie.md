@@ -15,6 +15,12 @@ Multi-agent swarm workflows produce code fast. They also produce unreviewed merg
 
 The prior art survey found 40+ tools implementing adversarial or multi-model review patterns. None of them combine all of: configurable model roster, parallel CLI invocation, 4th-model debrief synthesis with convergence analysis, severity-gated triage with configurable blocking, structured ledger for operational evaluation, and Claude Code hook integration.
 
+## Origin: Darkcat pilot
+
+Sortie grew out of the Darkcat adversarial review system I built inside a [147-commit project](https://github.com/rickhallett/thepit-v2) (The Pit). Darkcat ran Claude, Codex, and Gemini against every code change as a pre-commit gate. The pilot data was what validated the approach: 31 findings from 3 models, **74% caught by only one model**, 0 false positives. That complementarity — each model family seeing things the others miss — is the empirical foundation for Sortie's design.
+
+The Gauntlet (Darkcat's enforcement layer) required tree-hash-based attestations, manual walkthrough gates, and structured finding logs. Sortie generalises all of this into a configurable system that works outside The Pit's specific workflow.
+
 ## How it works
 
 ```

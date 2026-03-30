@@ -16,6 +16,8 @@ I write TypeScript, Python, and Go. I've shipped production code at EDITED (reta
 
 **[Tells](https://www.sloptics.dev/)** — a field taxonomy of LLM output patterns caught in the wild. Epistemic theatre, paper guardrails, analytical lullabies. 60+ entries with detection heuristics and [programmatic detectors](https://www.sloptics.dev/).
 
+Most of this work grew out of **[The Pit](https://github.com/rickhallett/thepit-v2)** — a 147-commit project where I built the evaluation and governance infrastructure first, then the product. 321 architectural decisions logged. The Gauntlet (adversarial pre-commit gate), the Darkcat triangulation system (31 findings, 74% unique per model, 0 false positives), and the Tells taxonomy all originated there. Sortie is the generalisation of those ideas into a standalone tool.
+
 **[oceanheart.ai](https://oceanheart.ai)** — this site. Learning in public about what happens when you give LLMs real responsibilities and then hold them to account.
 
 ## Contact
