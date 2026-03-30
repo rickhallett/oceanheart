@@ -39,6 +39,11 @@
       <div class="cv-artifact-name"><a href="/bootcamp/">The Agentic Engineering Bootcamp</a></div>
       <div class="desc">51 steps across 5 bootcamps — self-study material I wrote for myself and am publishing because it might be useful to others. Linux substrate, agentic engineering practices, operational analytics, evaluation and adversarial testing, agent infrastructure. The content came directly out of the practical problems I hit building everything above. Each step is grounded in the actual failure modes, tooling, and verification patterns encountered in production agentic work.</div>
     </div>
+
+    <div class="cv-artifact">
+      <div class="cv-artifact-name"><a href="/projects/pidgeon/">Pidgeon</a> · <a href="/projects/pidgeon-swarm/">Pidgeon Swarm</a></div>
+      <div class="desc">Same spec, two processes. A carrier-agnostic shipping rate integration built twice: once with outside-in TDD and 48 cross-model adversarial reviews (86 commits, 161 tests, 18 hours), once with design-first parallel agent execution (17 commits, 55 tests, 1 hour). Machine-queryable decision log, self-critical retrospective, direct comparison of iterative verification vs upfront design. <a href="/blog/2026-03-30-building-the-same-system-twice/">Case study →</a></div>
+    </div>
   </div>
 
   <div class="cv-section">
@@ -148,7 +153,7 @@ Gauntlet: gate+claude+openai+pitkeel+walkthrough @ dec8b5a3 [full]</code></pre>
     <div class="cv-tech-group">
       <span class="cv-tech-label">Systems</span>
       <div class="tech-tags">
-        {{ range (slice "Python" "Go" "Node.js" "PostgreSQL" "Bash" "Make") }}
+        {{ range (slice "Python" "Go" "Node.js" "Bun" "PostgreSQL" "Bash" "Make" "Zod") }}
         <span class="tech-tag">{{ . }}</span>
         {{ end }}
       </div>

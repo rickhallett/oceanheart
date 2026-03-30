@@ -749,3 +749,38 @@ footer a:hover {
     order: 3;
   }
 }
+
+/* Projects */
+
+.project-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.project-card {
+  border: 1px solid var(--bg-tertiary);
+  padding: 1.25rem;
+  border-radius: 2px;
+}
+
+.project-card:hover {
+  border-color: var(--muted);
+}
+
+.project-title {
+  font-size: 0.9rem;
+  color: var(--cyan);
+}
+
+.project-desc {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.project-tags {
+  margin-top: 0.5rem;
+}
