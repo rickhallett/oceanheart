@@ -19,6 +19,10 @@ title = 'oceanheart.ai'
     url = '/projects/'
     weight = 15
   [[menus.main]]
+    name = 'observatory'
+    url = 'https://observatory-delta.vercel.app'
+    weight = 22
+  [[menus.main]]
     name = 'sloptics'
     url = 'https://www.sloptics.dev/'
     weight = 26
