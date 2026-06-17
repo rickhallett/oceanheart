@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ $id := .Params.id }}
 {{ $pattern := false }}
-{{ range .Site.Data.tells.patterns }}
+{{ range hugo.Data.tells.patterns }}
   {{ if eq .id $id }}
     {{ $pattern = . }}
   {{ end }}

@@ -1,20 +1,32 @@
 {{ define "main" }}
+{{ $projects := .Pages }}
+{{ $client := where $projects "Params.track" "client" }}
+{{ $ai := where $projects "Params.track" "ai" }}
+{{ $untracked := where $projects "Params.track" "" }}
+
 <div class="section-header">
   <h2>{{ .Title }}</h2>
   {{ with .Description }}<p>{{ . }}</p>{{ end }}
 </div>
 
-<div class="project-grid">
-  {{ range .Pages.ByDate.Reverse }}
-  <div class="project-card">
-    <a href="{{ .RelPermalink }}" class="project-title">{{ .Title }}</a>
-    {{ with .Description }}<p class="project-desc">{{ . }}</p>{{ end }}
-    {{ with .Params.tags }}
-    <div class="project-tags">
-      {{ range . }}<span class="post-tag">{{ . }}</span> {{ end }}
-    </div>
-    {{ end }}
-  </div>
-  {{ end }}
+{{ with $client }}
+<div class="track">
+  <div class="track-label">Client work, shipped as working systems</div>
+  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
 </div>
+{{ end }}
+
+{{ with $ai }}
+<div class="track">
+  <div class="track-label">AI engineering, the depth that makes it trustworthy</div>
+  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
+</div>
+{{ end }}
+
+{{ with $untracked }}
+<div class="track">
+  <div class="track-label">More</div>
+  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
+</div>
+{{ end }}
 {{ end }}

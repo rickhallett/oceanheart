@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ $id := .Params.id }}
 {{ $sd := false }}
-{{ range .Site.Data.decisions }}
+{{ range hugo.Data.decisions }}
   {{ if eq .id $id }}
     {{ $sd = . }}
   {{ end }}

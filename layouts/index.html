@@ -1,53 +1,55 @@
 {{ define "main" }}
-<div class="hero">
-  <h1>Rick Hallett</h1>
+<section class="hero">
+  <h1>I turn business problems into <span class="accent">working systems</span>, fast, using AI as leverage.</h1>
   <p class="subtitle">
-    Agentic systems engineer. Building verification infrastructure
-    for human-AI collaboration, and learning in public about what
-    that requires.
+    I'm not a traditional developer anymore. I earned those stripes shipping production software,
+    then moved past hand-writing code. Now I build whole business capability with AI-assisted systems:
+    prototype, evidence, deployment, the customer journey, safety, measurement. A therapist for fifteen
+    years before an engineer, so the human side gets the same rigour as the machine.
   </p>
-  <p class="tagline">earth. lets stop the slop.</p>
-  <div class="hero-links">
-    <a href="/blog/">writing</a>
-    <span>/</span>
-    <a href="/research/">research</a>
-    <span>/</span>
-    <a href="/about/">about</a>
+  <div class="hero-cta">
+    <a href="/projects/" class="btn btn-primary">View work</a>
+    <a href="/cv/" class="btn">Read CV</a>
   </div>
+</section>
+
+<section class="home-section">
+  <div class="home-section-head">
+    <h2>Selected work</h2>
+    <a href="/projects/" class="more">all work &rarr;</a>
+  </div>
+  {{ $order := slice "/projects/fail-closed-llm-engine" "/projects/the-pit" "/projects/becoming-diamond" "/projects/sortie" "/projects/halo" }}
+  {{ range $order }}{{ with $.Site.GetPage . }}{{ partial "work-row.html" . }}{{ end }}{{ end }}
+</section>
+
+<section class="home-section">
+  <div class="home-section-head">
+    <h2>How I work</h2>
+  </div>
+  <p class="home-lead">
+    I build the whole thing, not just the code. A prototype goes up fast, then has to earn its place:
+    real evidence it works, deployed where people actually use it, with the customer journey and the
+    safety boundary designed together, and measured, so I know it's holding. AI does most of the mechanical work;
+    the architecture and the judgment calls are mine, and so are the small details that decide whether
+    it holds up once real users touch it.
+  </p>
+  <p class="home-lead">
+    When the system is an LLM in a regulated domain, that judgment becomes architecture: the model
+    proposes, deterministic code decides what a customer sees, and every decision is on the record, so
+    "why did it say that?" always has an answer. Adversarial multi-model review, fail-closed validators,
+    and per-turn audit traces aren't techniques for their own sake; they're what lets a client
+    trust an AI in front of their customers.
+  </p>
+  <p class="home-lead">
+    The human side gets the same attention. Fifteen years as a therapist is why the parts of a system
+    that meet someone in distress get designed deliberately, not bolted on afterwards: spotting
+    vulnerability early, and handing off to a person instead of pushing an answer.
+  </p>
+</section>
+
+<div class="home-contact">
+  <a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a>
+  · <a href="{{ .Site.Params.github }}" rel="noopener">github.com/rickhallett</a>
+  · <a href="{{ .Site.Params.linkedin }}" rel="noopener">linkedin</a>
 </div>
-
-<hr>
-
-<div class="section-header">
-  <h2>Recent</h2>
-</div>
-
-<ul class="post-list">
-  {{ range (where .Site.RegularPages "Section" "blog") | first 5 }}
-  <li class="post-item">
-    <span class="post-date">{{ .Date.Format "2006-01-02" }}</span>
-    <a href="{{ .RelPermalink }}" class="post-title">{{ .Title }}</a>
-    {{ with .Description }}<p class="post-excerpt">{{ . }}</p>{{ end }}
-  </li>
-  {{ end }}
-</ul>
-
-<a href="/blog/" class="see-all">all posts →</a>
-
-{{ with (where .Site.RegularPages "Section" "research") }}
-<hr>
-
-<div class="section-header">
-  <h2>Research notes</h2>
-</div>
-
-{{ range . }}
-<div class="research-card">
-  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-  {{ with .Description }}<p>{{ . }}</p>{{ end }}
-  <p class="provenance-banner">LLM-produced · not independently verified · starting material only</p>
-</div>
-{{ end }}
-{{ end }}
-
 {{ end }}

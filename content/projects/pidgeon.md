@@ -3,6 +3,12 @@ title = "Pidgeon"
 date = "2026-03-30"
 description = "Carrier-agnostic shipping rate integration. Outside-in TDD, 48 cross-model adversarial reviews, machine-queryable decision log. 161 tests, 86 commits."
 tags = ["typescript", "tdd", "adversarial-review", "ai-augmented-development"]
+track = "ai"
+tier = "notable"
+weight = 40
+repo = "https://github.com/rickhallett/pidgeon"
+caseStudy = "/blog/2026-03-30-building-the-same-system-twice/"
+draft = true
 +++
 
 ## What it is

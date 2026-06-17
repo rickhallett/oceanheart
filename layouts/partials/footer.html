@@ -1,5 +1,8 @@
 <footer>
   <div class="container">
-    <a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a> · <a href="{{ .Site.Params.github }}">github</a> · {{ now.Year }}
+    <a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a>
+    · <a href="{{ .Site.Params.github }}" rel="noopener">github</a>
+    · <a href="{{ .Site.Params.linkedin }}" rel="noopener">linkedin</a>
+    {{ range .Site.Menus.footer }}· <a href="{{ .URL }}" rel="noopener">{{ .Name }}</a> {{ end }}· {{ now.Year }}
   </div>
 </footer>

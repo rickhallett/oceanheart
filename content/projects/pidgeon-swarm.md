@@ -3,6 +3,12 @@ title = "Pidgeon Swarm"
 date = "2026-03-30"
 description = "Same spec as Pidgeon, rebuilt in 1 hour using design-first parallel agent execution. 55 tests, 17 commits. A direct comparison of process vs velocity."
 tags = ["typescript", "swarm", "agents", "parallel-execution"]
+track = "ai"
+tier = "archive"
+weight = 50
+repo = "https://github.com/rickhallett/pidgeon-swarm"
+caseStudy = "/blog/2026-03-30-building-the-same-system-twice/"
+draft = true
 +++
 
 ## What it is

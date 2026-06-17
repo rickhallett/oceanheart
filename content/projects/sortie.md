@@ -1,8 +1,12 @@
 +++
 title = "Sortie"
 date = "2026-03-30"
-description = "Async adversarial multi-model code review system. Parallel LLM fan-out, debrief synthesis with convergence analysis, severity-gated merge blocking. 106 tests, Python."
+description = "Async adversarial multi-model code review system. Parallel LLM fan-out, debrief synthesis with convergence analysis, severity-gated merge blocking. Python."
 tags = ["python", "adversarial-review", "multi-model", "verification", "ai-augmented-development"]
+track = "ai"
+tier = "notable"
+weight = 20
+repo = "https://github.com/rickhallett/sortie"
 +++
 
 ## What it is
@@ -11,28 +15,42 @@ An async adversarial code review system for multi-agent development workflows. S
 
 ## Why it exists
 
-Multi-agent swarm workflows produce code fast. They also produce unreviewed merges fast. The question isn't "did the code pass tests" — it's "did independent reviewers with different blind spots converge on the same issues?"
+Multi-agent swarm workflows produce code fast. They also produce unreviewed merges fast. The question isn't "did the code pass tests". It's "did independent reviewers with different blind spots converge on the same issues?"
 
-The prior art survey found 40+ tools implementing adversarial or multi-model review patterns. None of them combine all of: configurable model roster, parallel CLI invocation, 4th-model debrief synthesis with convergence analysis, severity-gated triage with configurable blocking, structured ledger for operational evaluation, and Claude Code hook integration.
+The prior art survey found a range of tools implementing adversarial or multi-model review patterns. None of them combine all of: configurable model roster, parallel CLI invocation, 4th-model debrief synthesis with convergence analysis, severity-gated triage with configurable blocking, structured ledger for operational evaluation, and Claude Code hook integration.
 
 ## Origin: Darkcat pilot
 
-Sortie grew out of the Darkcat adversarial review system I built inside [The Pit](https://github.com/rickhallett/thepit) — a 1,300+ commit project across 3 phases (508 test files, 329 architectural decisions). Darkcat ran Claude, Codex, and Gemini against every code change as a pre-commit gate. The pilot data was what validated the approach: 31 findings from 3 models, **74% caught by only one model**, 0 false positives. That complementarity — each model family seeing things the others miss — is the empirical foundation for Sortie's design.
+Sortie grew out of the Darkcat adversarial review system I built inside [The Pit](https://github.com/rickhallett/thepit), a large, multi-phase project. Darkcat ran Claude, Codex, and Gemini against every code change as a pre-commit gate. The pilot data was what validated the approach: most findings were caught by only one model, with no false positives. That complementarity, each model family seeing things the others miss, is the empirical foundation for Sortie's design.
 
 The Gauntlet (Darkcat's enforcement layer) required tree-hash-based attestations, manual walkthrough gates, and structured finding logs. Sortie generalises all of this into a configurable system that works outside The Pit's specific workflow.
 
 ## How it works
 
-```
-Worker finishes code
-  → Lead prepares merge
-    → Sortie runs in parallel (claude, codex, gemini)
-      → Debrief synthesis (4th model)
-        → Verdict (pass / pass_with_findings / fail)
-          → Triage decision (merge / merge with advisory / block)
+```mermaid
+flowchart LR
+  CLI[sortie.py cmd_pipeline]
+  GIT[git diff and write-tree]
+  INV[invoker invoke_all]
+  REV[Reviewer models claude codex gemini]
+  DEB[debrief build_prompt]
+  TRI[triage_verdict]
+  STORE[.sortie run dir verdict and attestations]
+  LEDGER[Ledger yaml]
+  HOOK[sortie_hook pre-merge gate]
+
+  CLI --> GIT
+  CLI --> INV
+  INV --> REV
+  REV --> INV
+  INV --> DEB
+  DEB --> TRI
+  CLI --> STORE
+  CLI --> LEDGER
+  HOOK --> STORE
 ```
 
-**Convergence analysis:** When 2+ models independently identify the same issue (despite different wording, line numbers, or framing), that finding is convergent — high confidence. A finding from only 1 model is divergent — logged as advisory, never blocks.
+**Convergence analysis:** When 2+ models independently identify the same issue (despite different wording, line numbers, or framing), that finding is convergent, high confidence. A finding from only 1 model is divergent, logged as advisory, never blocks.
 
 **Severity-gated triage:** Configurable `block_on` list in `sortie.yaml`. Default: convergent critical or major findings block the merge. Minor findings and all divergent findings are advisory only.
 
@@ -63,32 +81,21 @@ Three review modes (code, tests, docs) with different rosters, triggers, and blo
 
 ## Research foundation
 
-The design is grounded in 30+ papers on cross-model verification, LLM-as-judge, and multi-agent debate:
+The design is grounded in research on cross-model verification, LLM-as-judge, and multi-agent debate:
 
-- **Cross-family triad validated** — ReConcile (2024) showed models from different labs catch errors that same-family ensembles miss
-- **Collaborative debrief over competitive debate** — ColMAD (2024) found structured collaboration outperforms adversarial debate for factual accuracy
-- **Convergence threshold of 2** — empirical evidence shows 2-model agreement captures 73%→94% of real issues; 3-model adds only marginal gain (94%→96%)
-- **Divergent findings as advisory** — Free-MAD (2024) established that single-model findings are informative but unreliable as blocking criteria
+- **Cross-family triad validated**. ReConcile (2024) showed models from different labs catch errors that same-family ensembles miss
+- **Collaborative debrief over competitive debate**. ColMAD (2024) found structured collaboration outperforms adversarial debate for factual accuracy
+- **Convergence threshold of 2**. Empirical evidence shows two-model agreement captures most real issues, with a third model adding only marginal gain
+- **Divergent findings as advisory**. Free-MAD (2024) established that single-model findings are informative but unreliable as blocking criteria
 
 Full survey: [landscape.md](https://github.com/rickhallett/sortie/blob/main/docs/landscape.md) · [research.md](https://github.com/rickhallett/sortie/blob/main/docs/research.md)
 
 ## Design principles
 
-- **Legibility over magic** — every step writes a YAML attestation; the operator can read the trail
-- **Auditability over novelty** — append-only ledger captures findings, dispositions, tokens, wall time
-- **Evaluation over vibes** — the ledger exists to answer "is this process actually catching bugs?"
-- **Constrained autonomy** — models review independently but the triage decision is rule-based, not LLM-decided
-- **Real traces over retrospective storytelling** — attestations and ledger entries are written as the pipeline runs, not reconstructed after
-
-## Numbers
-
-| Metric | Value |
-|--------|-------|
-| Tests | 106 (all passing) |
-| Python modules | 9 |
-| Review prompts | 4 (code, tests, docs, debrief) |
-| Prior art surveyed | 40+ tools, 30+ papers |
-| Runtime dependencies | 1 (PyYAML) |
-| Lines of production code | ~1,500 |
+- **Legibility over magic**. Every step writes a YAML attestation; the operator can read the trail
+- **Auditability over novelty**. Append-only ledger captures findings, dispositions, tokens, wall time
+- **Evaluation over vibes**. The ledger exists to answer "is this process actually catching bugs?"
+- **Constrained autonomy**. Models review independently but the triage decision is rule-based, not LLM-decided
+- **Real traces over retrospective storytelling**. Attestations and ledger entries are written as the pipeline runs, not reconstructed after
 
 [GitHub →](https://github.com/rickhallett/sortie)

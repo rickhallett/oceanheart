@@ -1,5 +1,5 @@
 {{ define "main" }}
-{{ $decisions := .Site.Data.decisions }}
+{{ $decisions := hugo.Data.decisions }}
 {{ $total := len $decisions }}
 <article class="tells-page">
   <header>

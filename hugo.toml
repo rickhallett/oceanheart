@@ -3,7 +3,7 @@ languageCode = 'en-gb'
 title = 'oceanheart.ai'
 
 [params]
-  description = "Rick Hallett — agentic systems engineer. Building verification infrastructure for human-AI collaboration, and learning in public about what that requires."
+  description = "Rick Hallett, AI-first builder. I turn business problems into working systems, fast, using AI as leverage. Former therapist, with real engineering depth."
   author = "Richard Hallett"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
@@ -11,21 +11,9 @@ title = 'oceanheart.ai'
 
 [menus]
   [[menus.main]]
-    name = 'blog'
-    url = '/blog/'
-    weight = 10
-  [[menus.main]]
-    name = 'projects'
+    name = 'work'
     url = '/projects/'
-    weight = 15
-  [[menus.main]]
-    name = 'observatory'
-    url = 'https://observatory-delta.vercel.app'
-    weight = 22
-  [[menus.main]]
-    name = 'sloptics'
-    url = 'https://www.sloptics.dev/'
-    weight = 26
+    weight = 10
   [[menus.main]]
     name = 'about'
     url = '/about/'
@@ -34,6 +22,12 @@ title = 'oceanheart.ai'
     name = 'cv'
     url = '/cv/'
     weight = 40
+
+  # Demoted from the primary nav, surfaced in the footer.
+  [[menus.footer]]
+    name = 'observatory'
+    url = 'https://observatory-delta.vercel.app'
+    weight = 20
 
 [markup]
   [markup.highlight]

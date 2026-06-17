@@ -11,5 +11,26 @@
     </div>
   </main>
   {{ partial "footer.html" . }}
+  {{ if .Store.Get "hasMermaid" }}
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      securityLevel: 'loose',
+      fontFamily: "'JetBrains Mono', monospace",
+      themeVariables: {
+        background: '#1a1b26',
+        primaryColor: '#1f2335',
+        primaryTextColor: '#c0caf5',
+        primaryBorderColor: '#3b4261',
+        lineColor: '#565f89',
+        secondaryColor: '#292e42',
+        tertiaryColor: '#16161e',
+        fontSize: '14px',
+      },
+    });
+  </script>
+  {{ end }}
 </body>
 </html>
