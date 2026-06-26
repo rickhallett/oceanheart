@@ -9,6 +9,8 @@ weight = 10
 repo = "https://github.com/rickhallett/thepit"
 live = "https://www.thepit.cloud"
 status = "building eval engine"
+summary = "multi-agent evaluation"
+principle = "If you can't see the agent, you can't trust it."
 +++
 
 ## What it is

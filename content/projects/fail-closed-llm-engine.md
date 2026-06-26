@@ -8,6 +8,16 @@ tier = "flagship"
 weight = 10
 status = "prototypal"
 live = "https://x827e1872-production.up.railway.app/?devtools=true"
+summary = "fail-closed engine, regulated lending"
+principle = "The AI proposes; the code enforces."
+
+[artifact]
+  quote = "Can you tell me my current balance and settlement figure?"
+  proposed = "answer"
+  final = "handoff"
+  override = "account_specific_promise"
+  redactLabel = "account"
+  note = "The model wanted to help. A figure it can't verify routes to a human instead. Every override is recorded with its reason, so &ldquo;why did it say that?&rdquo; always has an answer, for any single message."
 +++
 
 ## What it is

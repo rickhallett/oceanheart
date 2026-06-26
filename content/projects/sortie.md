@@ -7,6 +7,8 @@ track = "ai"
 tier = "notable"
 weight = 20
 repo = "https://github.com/rickhallett/sortie"
+summary = "adversarial multi-model review"
+principle = "Different models have different blind spots. Make them check each other."
 +++
 
 ## What it is

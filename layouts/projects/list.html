@@ -1,32 +1,13 @@
 {{ define "main" }}
-{{ $projects := .Pages }}
-{{ $client := where $projects "Params.track" "client" }}
-{{ $ai := where $projects "Params.track" "ai" }}
-{{ $untracked := where $projects "Params.track" "" }}
-
-<div class="section-header">
-  <h2>{{ .Title }}</h2>
-  {{ with .Description }}<p>{{ . }}</p>{{ end }}
+<div class="page-head">
+  <h1>{{ .Title }}</h1>
+  {{ with .Content }}<div class="content">{{ . }}</div>{{ end }}
 </div>
 
-{{ with $client }}
-<div class="track">
-  <div class="track-label">Client work, shipped as working systems</div>
-  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
-</div>
-{{ end }}
-
-{{ with $ai }}
-<div class="track">
-  <div class="track-label">AI engineering, the depth that makes it trustworthy</div>
-  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
-</div>
-{{ end }}
-
-{{ with $untracked }}
-<div class="track">
-  <div class="track-label">More</div>
-  {{ range .ByWeight }}{{ partial "work-row.html" . }}{{ end }}
-</div>
-{{ end }}
+<section class="home-projects">
+  {{ $projects := sort (where .Site.RegularPages "Type" "projects") "Params.weight" }}
+  {{ range $i, $p := $projects }}
+    {{ partial "project-card.html" (dict "page" $p "num" (add $i 1)) }}
+  {{ end }}
+</section>
 {{ end }}

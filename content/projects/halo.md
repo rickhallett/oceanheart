@@ -8,6 +8,8 @@ tier = "notable"
 weight = 30
 repo = "https://github.com/rickhallett/halo"
 status = "personal infra"
+summary = "agent + tool infrastructure"
+principle = "A human and an agent, driving the same tools the same way."
 +++
 
 ## What it is

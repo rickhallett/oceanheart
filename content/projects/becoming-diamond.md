@@ -8,6 +8,8 @@ tier = "notable"
 weight = 20
 status = "production"
 live = "https://becoming-diamond.vercel.app/"
+summary = "production client product"
+principle = "Shipped, paid for, and edited by the client themselves."
 +++
 
 ## What it is

@@ -1,0 +1,454 @@
+/* ============================================================
+   oceanheart.ai — "Case file" design system
+   Warm paper, a literary serif for the human voice,
+   monospace only where the machine speaks.
+   Replaces terminal.css. Class vocabulary kept stable so every
+   existing template restyles without edits.
+   ============================================================ */
+
+:root {
+  /* Paper + ink */
+  --paper:    #f4f1ea;   /* warm page */
+  --paper-2:  #f8f5ee;   /* card fill */
+  --panel:    #fffdfa;   /* artifact / inner panel (the machine zone, light) */
+  --header:   #ece7db;   /* file header bar */
+
+  --ink:      #1c1a17;   /* near-black, warm */
+  --ink-2:    #57534e;   /* secondary text */
+  --faint:    #8a857c;   /* muted meta */
+
+  --rule:     #ddd7ca;   /* hairline */
+  --rule-2:   #e4ddce;   /* softer hairline */
+
+  --accent:      #a13d2d; /* oxblood — overrides, stamps, links */
+  --accent-soft: #d8b3a8; /* accent border */
+
+  /* Code block (machine zone, dark) */
+  --code-bg:  #1c1a17;
+  --code-fg:  #e8e2d6;
+
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono:  'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+  --max-width: 720px;
+  --nav-height: 52px;
+
+  --fs-hero: 2.05rem;
+  --fs-h1:   1.7rem;
+  --fs-h2:   1.35rem;
+  --fs-h3:   1.15rem;
+  --fs-body: 1.0625rem;  /* 17px-ish; Newsreader reads large + warm */
+  --fs-sm:   0.875rem;
+  --fs-xs:   0.75rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection { background: var(--accent); color: var(--paper); }
+
+/* ---- Typography ------------------------------------------------ */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 2rem 0 0.6rem;
+}
+h1 { font-size: var(--fs-h1); letter-spacing: 0; }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+
+p { margin-bottom: 1.2rem; color: var(--ink-2); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+a, p, li { overflow-wrap: anywhere; }
+
+strong { color: var(--ink); font-weight: 600; }
+em { color: var(--ink); font-style: italic; }
+
+/* "$ " prompt label — mono, the machine speaking */
+.prompt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--faint);
+  margin-bottom: 0.5rem;
+}
+.prompt::before { content: "$ "; color: var(--accent); }
+
+/* ---- Code (the machine zone) ---------------------------------- */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--accent);
+  background: var(--header);
+  padding: 0.05em 0.35em;
+  border-radius: 2px;
+}
+pre {
+  font-family: var(--font-mono);
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+pre code { color: inherit; background: none; padding: 0; font-size: inherit; }
+
+/* ---- Prose (blog / cv / about / bootcamp) --------------------- */
+.content, .cv-content { font-size: var(--fs-body); line-height: 1.7; }
+.content > :first-child, .cv-content > :first-child { margin-top: 0; }
+.content p, .cv-content p { margin-bottom: 1.2rem; }
+.content h2, .cv-content h2 { margin-top: 2.75rem; }
+.content h3, .cv-content h3 { margin-top: 1.9rem; }
+.content ul, .content ol, .cv-content ul, .cv-content ol { margin: 0 0 1.2rem 1.4rem; }
+.content li, .cv-content li { margin-bottom: 0.3rem; }
+
+.content table {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.25rem 0 1.75rem;
+}
+.content th, .content td {
+  text-align: left;
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  vertical-align: top;
+}
+.content th { color: var(--ink); font-weight: 600; border-bottom-color: var(--faint); }
+
+blockquote {
+  border-left: 2px solid var(--accent-soft);
+  padding: 0.1rem 1.1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--ink-2);
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+hr { border: none; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+/* ---- Layout --------------------------------------------------- */
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; width: 100%; min-width: 0; }
+main { flex: 1; padding-top: calc(var(--nav-height) + 2.5rem); padding-bottom: 4rem; min-width: 0; }
+
+/* ---- File header / nav ---------------------------------------- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: var(--header);
+  border-bottom: 1px solid var(--rule);
+  z-index: 100;
+  display: flex; align-items: center;
+}
+nav .container { display: flex; align-items: center; justify-content: space-between; }
+.nav-brand {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.nav-brand:hover { color: var(--accent); text-decoration: none; }
+.nav-links { display: flex; gap: 1.25rem; list-style: none; }
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+.nav-links a:hover, .nav-links a.active { color: var(--ink); text-decoration: none; }
+.nav-links a.cta { color: var(--accent); }
+
+/* ---- Hero ----------------------------------------------------- */
+.hero { padding: 1rem 0 0.5rem; max-width: 40ch; }
+.hero-statement {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--fs-hero);
+  line-height: 1.22;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 0;
+  max-width: 21ch;
+}
+.lead {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 1.5rem 0 0;
+  max-width: 46ch;
+}
+.lead em { color: var(--ink); font-style: italic; }
+
+/* ---- Project stack + repeatable project card ------------------ */
+.home-projects { margin-top: 3rem; }
+
+.project-card {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--paper-2);
+  padding: 1.6rem 1.6rem 1.7rem;
+  margin-bottom: 1.5rem;
+}
+.project-card-head { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.3rem; }
+.project-num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0;
+  color: var(--accent);
+  border: 1px solid var(--accent-soft);
+  padding: 0.18rem 0.5rem;
+  white-space: nowrap;
+}
+.project-card-head .rule { flex: 1; height: 1px; background: var(--rule); }
+.project-meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); text-align: right; }
+
+.project-principle {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 0 0 1.2rem;
+  letter-spacing: 0;
+}
+.project-desc { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.55; color: var(--ink-2); margin: 0; }
+
+.project-links { margin-top: 1.1rem; }
+
+/* ---- Annotated artifact (machine speaks, you answer) ---------- */
+.artifact-wrap { display: flex; gap: 1.4rem; align-items: flex-start; flex-wrap: wrap; margin: 0 0 1.4rem; }
+.artifact {
+  flex: 1.3; min-width: 300px;
+  background: var(--panel);
+  border: 1px solid var(--rule-2);
+  border-radius: 3px;
+  padding: 1.1rem 1.2rem;
+}
+.artifact-quote { font-family: var(--font-serif); font-style: italic; font-size: 1rem; color: var(--ink-2); margin-bottom: 0.9rem; }
+.artifact-trace { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.95; color: var(--ink-2); white-space: pre; }
+.artifact-trace .k     { color: var(--ink); }
+.artifact-trace .final { color: var(--accent); font-weight: 500; }
+.artifact-trace .ovr   { color: var(--accent); }
+.artifact-trace .dim   { color: var(--faint); }
+.redact { background: var(--ink); color: var(--ink); border-radius: 1px; user-select: none; }
+.artifact-note { flex: 1; min-width: 220px; font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.5; color: var(--ink-2); }
+.artifact-note strong, .artifact-note .hl { color: var(--ink); font-weight: 400; }
+
+/* ---- Engage / contact block ----------------------------------- */
+.home-engage { margin-top: 2.6rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+.engage-line { font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.45; color: var(--ink); margin: 0 0 1rem; max-width: 48ch; }
+.engage-cta { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+
+/* ---- Chips (plain inline meta, no boxes) ---------------------- */
+.chips { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; }
+.chip { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); white-space: nowrap; }
+.chip + .chip::before { content: "\00B7"; margin: 0 0.5rem; color: var(--rule); }
+a.chip:hover { color: var(--accent); text-decoration: none; }
+
+/* ---- Buttons -------------------------------------------------- */
+.btn {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  padding: 0.5rem 1.05rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--ink);
+  background: var(--paper-2);
+  display: inline-block;
+  transition: border-color 0.12s, color 0.12s;
+}
+.btn:hover { border-color: var(--accent-soft); color: var(--accent); text-decoration: none; }
+.btn-primary { border-color: var(--accent-soft); color: var(--accent); }
+
+/* ---- Generic section heads ------------------------------------ */
+.home-section { margin-top: 3.5rem; }
+.home-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.home-section-head h2 { margin: 0; }
+.home-section-head .more, .see-all { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+.home-lead { font-family: var(--font-serif); color: var(--ink-2); max-width: 60ch; margin-bottom: 1.25rem; }
+.section-header { margin-bottom: 1rem; }
+.section-header p { font-size: var(--fs-sm); color: var(--faint); margin: 0; }
+
+.page-head { margin-bottom: 2rem; }
+.page-head h1 { margin-top: 0; }
+
+/* ---- Work rows (projects index legacy / blog cross-links) ----- */
+.work-row { display: block; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.work-row:last-child { border-bottom: none; }
+.work-row-title { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; letter-spacing: 0; color: var(--ink); }
+.work-row:hover .work-row-title { color: var(--accent); }
+.work-row-desc { font-family: var(--font-serif); font-size: 1.02rem; color: var(--ink-2); line-height: 1.5; margin: 0.4rem 0 0.5rem; }
+.track { margin-bottom: 2rem; }
+.track-label { font-family: var(--font-mono); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0; color: var(--faint); margin-bottom: 0.6rem; }
+
+/* ---- Receipts ------------------------------------------------- */
+.receipt-group { margin-bottom: 1.75rem; }
+.receipt-row { display: flex; align-items: baseline; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--rule); }
+.receipt-claim { flex: 1; min-width: 0; color: var(--ink-2); font-size: var(--fs-sm); }
+.receipt-claim strong { color: var(--accent); font-weight: 600; }
+.receipt-source { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); white-space: nowrap; flex-shrink: 0; }
+
+/* ---- Post list / blog ----------------------------------------- */
+.post-list { list-style: none; }
+.post-item { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.post-item:last-child { border-bottom: none; }
+.post-date { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); display: block; margin-bottom: 0.2rem; }
+.post-title { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; color: var(--ink); display: block; line-height: 1.3; }
+.post-title:hover { color: var(--accent); text-decoration: none; }
+.post-excerpt { font-size: 1rem; color: var(--ink-2); margin: 0.3rem 0 0; line-height: 1.5; }
+.post-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.35rem; }
+.post-tag { font-family: var(--font-mono); font-size: 0.7rem; color: var(--faint); }
+
+article header { margin-bottom: 2rem; }
+article header h1 { margin-top: 0; }
+article header .post-meta { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); margin-top: 0.4rem; }
+article .content { line-height: 1.75; }
+article .content img { max-width: 100%; margin: 1.5rem 0; border-radius: 3px; }
+
+/* ---- Research ------------------------------------------------- */
+.research-card { padding: 1.25rem 0; border-bottom: 1px solid var(--rule); }
+.research-card:last-child { border-bottom: none; }
+.research-card h3 { margin-top: 0; color: var(--ink); }
+.research-card .subtitle { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); margin-bottom: 0.5rem; }
+.research-card p { font-size: var(--fs-sm); }
+.provenance-banner { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); margin-top: 0.5rem; }
+
+/* ---- CV ------------------------------------------------------- */
+.cv-section { margin-bottom: 2rem; }
+.cv-section h2 { padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule); }
+.cv-content h1 + p { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--faint); }
+.cv-entry { padding: 0.75rem 0; }
+.cv-entry .role { color: var(--ink); font-size: 1rem; }
+.cv-entry .org, .cv-entry .period { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); }
+.cv-entry .desc { color: var(--ink-2); font-size: 0.95rem; margin-top: 0.25rem; }
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.35rem; }
+.tech-tag { font-family: var(--font-mono); font-size: 0.7rem; color: var(--faint); }
+.cv-download { margin-top: 2.5rem; }
+
+/* ---- Slopodar / tells / decisions (data rows) ----------------- */
+.tells-search input {
+  width: 100%; font-family: var(--font-mono); font-size: var(--fs-sm);
+  color: var(--ink); background: var(--panel);
+  border: 1px solid var(--rule); border-radius: 3px;
+  padding: 0.5rem 0.7rem; outline: none; margin-bottom: 1rem;
+}
+.tells-search input::placeholder { color: var(--faint); }
+.tells-row, .sd-row {
+  display: flex; align-items: baseline; gap: 1rem;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--rule);
+  text-decoration: none; color: inherit;
+}
+.tells-row:first-child, .sd-row:first-child { border-top: 1px solid var(--rule); }
+.tells-row-name { font-family: var(--font-mono); color: var(--ink); font-size: var(--fs-sm); white-space: nowrap; flex-shrink: 0; }
+.tells-row:hover .tells-row-name, .sd-row:hover .sd-row-id { color: var(--accent); }
+.tells-row-trigger, .sd-row-decision { color: var(--faint); font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.tells-row-date, .tells-row-link, .sd-row-link, .sd-row-id { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-xs); flex-shrink: 0; white-space: nowrap; }
+.sd-row-id { min-width: 4rem; }
+.sd-row-status { font-family: var(--font-mono); color: var(--faint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0; flex-shrink: 0; }
+.tells-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); margin-bottom: 0.5rem; }
+
+/* ---- Sloptics ------------------------------------------------- */
+.sloptics-banner {
+  color: var(--accent); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.3;
+  border: 1px solid var(--accent-soft); padding: 1.25rem 0; text-align: center;
+  margin-bottom: 1.5rem; width: 100%; user-select: none;
+}
+.sloptics-term { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.sloptics-term:last-child { border-bottom: none; }
+.sloptics-term h3 { margin-top: 0; color: var(--ink); }
+.sloptics-pos { font-family: var(--font-mono); color: var(--faint); font-size: 0.8rem; font-style: normal; }
+
+/* ---- Badges --------------------------------------------------- */
+.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.badge {
+  font-family: var(--font-mono); font-size: var(--fs-xs);
+  padding: 0.3rem 0.65rem; border: 1px solid var(--rule); border-radius: 3px;
+  color: var(--ink-2); background: var(--paper-2);
+}
+
+/* ---- Footer --------------------------------------------------- */
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--faint);
+  text-align: center;
+}
+footer a { color: var(--faint); }
+footer a:hover { color: var(--ink); text-decoration: none; }
+
+/* ---- Mermaid -------------------------------------------------- */
+.mermaid { margin: 1.75rem 0; text-align: center; line-height: 1.2; }
+.mermaid svg { max-width: 100%; height: auto; }
+
+/* ---- Mobile --------------------------------------------------- */
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 0.5rem; }
+.nav-toggle-label span { display: block; width: 18px; height: 2px; background: var(--faint); margin: 3px 0; transition: transform 0.2s, opacity 0.2s; }
+
+@media (max-width: 640px) {
+  :root { --nav-height: 46px; --fs-hero: 1.7rem; }
+  .container { padding: 0 1.25rem; }
+  .hero, .hero-statement, .lead, .content, .cv-content { max-width: 100%; min-width: 0; }
+  .nav-toggle-label { display: block; }
+  .nav-links {
+    display: none; position: absolute; top: var(--nav-height); left: 0; right: 0;
+    background: var(--header); border-bottom: 1px solid var(--rule);
+    flex-direction: column; padding: 0.75rem 1.5rem; gap: 0;
+  }
+  .nav-links li { padding: 0.4rem 0; }
+  .nav-toggle:checked ~ .nav-links { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) { transform: rotate(45deg) translate(3px, 3px); }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) { transform: rotate(-45deg) translate(3px, -3px); }
+  .project-card { padding: 1.25rem 1rem; }
+  .project-card-head { flex-wrap: wrap; gap: 0.55rem 0.8rem; }
+  .project-card-head .rule { min-width: 3rem; }
+  .project-meta { flex-basis: 100%; text-align: left; overflow-wrap: anywhere; }
+  .artifact-wrap { display: block; }
+  .artifact { min-width: 0; width: 100%; }
+  .artifact-note { min-width: 0; width: 100%; margin-top: 1rem; }
+  .artifact-trace { white-space: normal; overflow-wrap: anywhere; }
+  .cv-content h1 + p { white-space: normal; }
+  .receipt-row { flex-direction: column; gap: 0.15rem; }
+  .receipt-source { white-space: normal; }
+}

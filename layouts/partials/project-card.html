@@ -1,0 +1,47 @@
+{{/* Repeatable project card. Call:
+       {{ partial "project-card.html" (dict "page" $somePage "num" 1) }}
+     Reads these from the project's front matter:
+       title, description            (always)
+       summary    (string)           short meta line, right of the PROJECT n tag
+       principle  (string)           the big serif claim line  [optional]
+       live, repo (urls)             [optional]
+       [artifact]                    [optional] the annotated machine trace
+         quote     (string)          customer/input line, shown in quotes
+         proposed  (string)          what the model proposed
+         final     (string)          what the deterministic code finalised
+         override  (string)          the override / reason code
+         redactLabel (string)        label for the redacted line (e.g. "account")
+         note      (string/html)     your serif annotation beside the trace
+*/}}
+{{ $p := .page }}
+{{ $num := .num }}
+<article class="project-card">
+  <div class="project-card-head">
+    <span class="project-num">PROJECT {{ $num }}</span>
+    <span class="rule"></span>
+    <span class="project-meta">{{ $p.Title }}{{ with $p.Params.summary }} &middot; {{ . }}{{ end }}</span>
+  </div>
+
+  {{ with $p.Params.principle }}<p class="project-principle">{{ . }}</p>{{ end }}
+
+  {{ with $p.Params.artifact }}
+  <div class="artifact-wrap">
+    <div class="artifact">
+      {{ with .quote }}<div class="artifact-quote">&ldquo;{{ . }}&rdquo;</div>{{ end }}
+      <div class="artifact-trace"><div>planner.proposed   <span class="k">{{ .proposed }}</span></div>
+<div>validator.final    <span class="final">{{ .final }}</span></div>
+<div>override           <span class="ovr">{{ .override }}</span></div>
+{{ with .redactLabel }}<div class="dim">{{ . }}   <span class="redact">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="redact">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="redact">&nbsp;&nbsp;&nbsp;</span></div>{{ end }}</div>
+    </div>
+    {{ with .note }}<div class="artifact-note">{{ . | safeHTML }}</div>{{ end }}
+  </div>
+  {{ end }}
+
+  {{ with $p.Description }}<p class="project-desc">{{ . }}</p>{{ end }}
+
+  <div class="project-links chips">
+    {{ with $p.Params.live }}<a class="chip" href="{{ . }}" rel="noopener">live &#8599;</a>{{ end }}
+    {{ with $p.Params.repo }}<a class="chip" href="{{ . }}" rel="noopener">repo &#8599;</a>{{ end }}
+    <a class="chip" href="{{ $p.RelPermalink }}">details &#8594;</a>
+  </div>
+</article>
