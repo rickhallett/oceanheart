@@ -16,7 +16,7 @@
      (Variant B · Grotesk / Slate: cool grey, steel-blue accent)
      ============================================================ */
   :root {
-    --paper:    #F4F5F6;
+    --paper:    #fff;
     --ink:      #16191D;
     --mute:     #586271;
     --hairline: #D5D9DD;
@@ -38,7 +38,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: #e7e6e1;
+    background: none;
     font-family: var(--font-body);
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
@@ -76,11 +76,17 @@
   /* ============================================================
      HEADER
      ============================================================ */
-  .header {
-    display: flex;
-    justify-content: space-between;
+  .top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    justify-content: stretch;
     align-items: flex-start;
-    gap: 20px;
+    column-gap: 28px;
+  }
+  .header-text {
+    min-width: 0;
+    justify-self: start;
+    text-align: left;
   }
   .name {
     margin: 0;
@@ -110,9 +116,9 @@
   .contacts .sep { padding: 0 6px; }
 
   .portrait {
-    flex: 0 0 auto;
     width: 120px;
     aspect-ratio: 4 / 5;
+    justify-self: end;
     border: 1px solid var(--hairline);
     border-radius: 6px;
     background: var(--hairline);
@@ -132,27 +138,28 @@
      ============================================================ */
   .facts {
     display: flex;
-    margin: 18px 0 0;
+    margin: 13px 0 0;
     border-top: 1px solid var(--hairline);
     border-bottom: 1px solid var(--hairline);
   }
   .fact {
     flex: 1;
-    padding: 8px 0 8px 16px;
+    padding: 6px 0 6px 16px;
     border-left: 1px solid var(--hairline);
   }
   .fact:first-child { padding-left: 0; border-left: 0; }
   .fact dt {
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: 8px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--mute);
   }
   .fact dd {
-    margin: 3px 0 0;
+    margin: 2px 0 0;
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 10.5px;
+    line-height: 1.22;
     font-weight: 500;
     color: var(--ink);
   }
@@ -319,6 +326,11 @@
   @media (max-width: 480px) {
     .cv { padding: 32px 20px; }
     .name { font-size: 26px; }
+    .top-grid {
+      grid-template-columns: minmax(0, 1fr) 84px;
+      column-gap: 16px;
+    }
+    .portrait { width: 84px; }
     .facts { flex-direction: column; }
     .fact {
       padding: 8px 0;
@@ -335,9 +347,9 @@
      ============================================================ */
   @media print {
     html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    body { background: #fff; padding: 0; }
-    .cv { box-shadow: none; max-width: none; padding: 14mm 17mm; }
-    .page-break { break-before: page; }
+    body { background: none; padding: 0; }
+    .cv { background: none; box-shadow: none; max-width: none; padding: 12mm 15mm; }
+    .page-break { display: none; }
   }
 </style>
 </head>
@@ -357,16 +369,19 @@
 <main class="cv">
 
   <!-- ---------- HEADER ---------- -->
-  <header class="header">
+  <div class="top-grid">
     <div class="header-text">
       <h1 class="name">Richard Hallett</h1>
-      <p class="tagline">Full-stack and AI engineer building systems that fail closed.<br>Before this came fifteen years as a therapist, and the same instinct now points at machines.</p>
+      <p class="tagline">Full-stack agentic engineer specialising in application development, verification systems and auditability.
+            <br>
+                        Psychologist with 15 years of clinical experience, navigating ambiguity under high stakes pressure.
+      </p>
       <p class="contacts">kai@oceanheart.ai<span class="sep">·</span><a class="cv-link" href="https://github.com/rickhallett">github.com/rickhallett</a><span class="sep">·</span><a class="cv-link" href="https://oceanheart.ai">oceanheart.ai</a></p>
     </div>
     <div class="portrait">
       <img src="richard-hallett-portrait.jpg" alt="Richard Hallett">
     </div>
-  </header>
+  </div>
 
   <!-- ---------- FACTS BAND ---------- -->
   <dl class="facts">
@@ -376,7 +391,7 @@
   </dl>
 
   <!-- ---------- SUMMARY ---------- -->
-  <p class="summary">The last five years have gone into shipping production <span class="mono">TypeScript, Python</span> and <span class="mono">Go</span>, most lately designing AI systems that fail closed. These systems use deterministic validators that gate LLM output before it reaches a customer, keep every turn audit-traced, and track the cost of each run. Fifteen years as a CBT therapist carry over in practice and habit: spotting plausible-but-wrong output and asking better questions whilst a system remains uncertain.</p>
+  <p class="summary">The last five years have gone into shipping production <span class="mono">TypeScript, Python</span> and <span class="mono">Go</span>, most lately designing and developing data-driven AI systems that with known error bars. These systems use deterministic validators that gate LLM output before it reaches a customer, keep every turn audit-traced, and track the cost of each run. Fifteen years as a CBT therapist carry over in practice and habit: spotting plausible-but-wrong output and asking better questions whilst a system remains uncertain.</p>
 
   <!-- ---------- SELECTED WORK ---------- -->
   <section class="block">
@@ -386,11 +401,12 @@
       <div class="work-head">
         <h3 class="work-title">LoanSlam</h3>
             <div>
-              <a class="work-meta cv-link" href="https://x827e1872-production.up.railway.app?devtools=true">live demo ↗</a>
-              <a class="work-meta cv-link" href="https://loanslam-site-production.up.railway.app/contact?devtools=true">live site ↗</a>
+              <a class="work-meta cv-link" href="https://x827e1872-production.up.railway.app?devtools=true">demo ↗</a>&nbsp
+              <a class="work-meta cv-link" href="https://mal-demo.up.railway.app/">site ↗</a>&nbsp
+              <a class="work-meta cv-link" href="https://mal-demo.up.railway.app/reports">reports ↗</a>
             </div>
       </div>
-      <p class="work-desc">Fail-closed conversation engine for regulated lending. The LLM proposes each turn whilst a deterministic validator enforces compliance and blocks unsafe output before it can reach a customer; every turn is audit-traced. Drivable demo and an evaluation-reports page, both over synthetic data.</p>
+      <p class="work-desc">Fail-closed conversation engine for regulated lending. The LLM proposes each turn whilst a deterministic validator enforces compliance and blocks unsafe output before it can reach a customer; every turn is audit-traced. Drivable demo and an evaluation-reports* page, both over synthetic data.</p>
       <p class="work-stack">Vue · TypeScript · Node · Zod</p>
     </article>
 
@@ -399,8 +415,8 @@
         <h3 class="work-title">The Pit</h3>
         <a class="work-meta cv-link" href="https://thepit.cloud">thepit.cloud ↗</a>
       </div>
-      <p class="work-desc">Evaluation platform for multi-agent systems, with observable traces, rubric scoring, failure tagging, and cost tracking per run. It answers the commercial questions behind AI tooling: what did this run cost, what did it catch, and is the extra model call worth it?</p>
-      <p class="work-stack">Next.js · TypeScript · Postgres · Stripe</p>
+      <p class="work-desc">Evaluation platform for multi-agent systems, with observable traces, rubric scoring, failure tagging, and cost tracking per run. Agent prompts are hashed onto Ethereum L2 for independent attestation. It answers the commercial questions behind AI tooling: what did this run cost, what did it catch, and is the extra model call worth it.</p>
+      <p class="work-stack">Next.js · TypeScript/Python/Go · Postgres · Stripe</p>
     </article>
 
     <article class="work">
@@ -424,7 +440,7 @@
     <article class="work">
       <div class="work-head">
         <h3 class="work-title">Becoming Diamond</h3>
-        <span class="work-meta tag">client product</span>
+        <a class="work-meta cv-link" href="https://becoming-diamond.vercel.app/">site ↗</a>
       </div>
       <p class="work-desc">Shipped client product: marketing site and gated member portal delivering a 30-day video course, with AI chat, Stripe payments, and a git-based CMS for client editing. Built across front end, backend, payments, content workflows, and deployment.</p>
       <p class="work-stack">Next.js · React 19 · TypeScript · Stripe · Decap CMS</p>
@@ -469,7 +485,7 @@
 
     <div class="exp sep">
       <div class="exp-meta">2004 to present · NHS / Private Practice</div>
-      <p class="exp-desc"><strong>Cognitive Behavioural Therapist.</strong> Fifteen years of clinical practice, NHS and private; now a small private caseload alongside engineering. <span class="muted">The other half of the résumé, kept deliberately short.</span></p>
+      <p class="exp-desc"><strong>Cognitive Behavioural Therapist.</strong> Fifteen years of clinical practice, NHS and private; now a small private caseload alongside engineering.</p>
     </div>
   </section>
 
