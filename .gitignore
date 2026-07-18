@@ -1,3 +1,4 @@
 .vercel
 public/
 resources/
+.DS_Store
