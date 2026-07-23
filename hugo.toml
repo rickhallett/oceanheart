@@ -15,6 +15,10 @@ title = 'oceanheart.ai'
     url = '/projects/'
     weight = 10
   [[menus.main]]
+    name = 'blog'
+    url = '/blog/'
+    weight = 20
+  [[menus.main]]
     name = 'about'
     url = '/about/'
     weight = 30

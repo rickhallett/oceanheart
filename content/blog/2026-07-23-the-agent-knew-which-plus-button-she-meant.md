@@ -7,7 +7,7 @@ draft = false
 
 [build]
 render = "always"
-list = "never"
+list = "always"
 +++
 
 > "There's only 4 products there and i don't know how to edit the info below them or how to edit the drop down menu for what formats they are available in"
