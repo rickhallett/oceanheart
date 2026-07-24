@@ -1,35 +1,35 @@
 +++
 title = "Building a Cost-Aware Intelligence Pipeline"
 date = "2026-04-05"
-description = "How I built a system that tracks every penny it spends on AI — and why that's the whole point."
+description = "How I built a system that tracks every penny it spends on AI - and why that's the whole point."
 tags = ["engineering", "data", "llm", "cost", "architecture", "jeany"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 1854
-copy_not_count = 14
-copy_not_ratio = 0.00755124
+copy_word_count = 1817
+copy_not_count = 7
+copy_not_ratio = 0.00385250
 +++
 
-There are roughly 200 RSS feeds publishing substantive AI content daily — newsletters, company blogs, research feeds, tech publications. If you read them all, you'd know everything happening in the AI content economy. Nobody reads them all.
+There are roughly 200 RSS feeds publishing substantive AI content daily - newsletters, company blogs, research feeds, tech publications. If you read them all, you'd know everything happening in the AI content economy. Nobody reads them all.
 
-So I built a pipeline to do it: ingest every feed, extract entities and topics using LLMs, track costs down to the penny, and surface patterns in a dashboard. The project is called Jeany — a microservice intelligence platform for analysing the AI content economy.
+So I built a pipeline to do it: ingest every feed, extract entities and topics using LLMs, track costs down to the penny, and surface patterns in a dashboard. The project is called Jeany - a microservice intelligence platform for analysing the AI content economy.
 
-But this isn't a write-up about building a data pipeline. Plenty of those exist. This is about a design decision I made on day one that shaped every subsequent decision: **cost tracking is not a feature. It's the architecture.**
+Plenty has been written about building data pipelines. The decision that shaped this one from day one was to make **cost tracking part of the architecture rather than an added feature.**
 
 ## The Decision That Changed Everything
 
-Most LLM-powered projects treat API costs as an operational concern — something you monitor in your provider dashboard and optimise when the bill arrives. I decided to make cost a first-class data type, tracked with the same rigour as the content itself.
+Most LLM-powered projects treat API costs as an operational concern - something you monitor in your provider dashboard and optimise when the bill arrives. I decided to make cost a first-class data type, tracked with the same rigour as the content itself.
 
 From the project's decision log:
 
-> *"Cost tracking is first-class from day zero — not bolted on later."*
+> *"Cost tracking is first-class from day zero - not bolted on later."*
 >
 > *"Every data point traces back to raw source with timestamp and collection cost."*
 
-This means every item in the system has a known cost of acquisition. Not estimated. Not averaged. Recorded at the moment of spend, converted to GBP at the exchange rate captured at the start of that pipeline run, stored in a TimescaleDB hypertable for time-series analysis.
+This means every item in the system has a known cost of acquisition, recorded at the moment of spend rather than estimated or averaged. It is converted to GBP at the exchange rate captured at the start of that pipeline run and stored in a TimescaleDB hypertable for time-series analysis.
 
-The question the system answers isn't just "what are AI newsletters talking about?" — it's "what did it cost to learn that, and is it worth it?"
+The system can answer "what are AI newsletters talking about?" alongside the more interesting question: "what did it cost to learn that, and is it worth it?"
 
 ## Architecture
 
@@ -63,7 +63,7 @@ RSS Feeds (83 sources)
                     └───────────────┘
 ```
 
-Every arrow in that diagram carries cost data alongside content data. The cost-ledger service isn't a monitoring sidecar — it's a core pipeline stage with its own Celery queue, its own database writes, and its own finalisation logic.
+Every arrow in that diagram carries cost data alongside content data. The cost-ledger service is a core pipeline stage with its own Celery queue, database writes and finalisation logic.
 
 ## Three Design Problems Worth Talking About
 
@@ -71,7 +71,7 @@ Every arrow in that diagram carries cost data alongside content data. The cost-l
 
 The first version of topic classification was simple: give the LLM an article title and summary, ask it to generate 1-3 topic labels. Free-form, unconstrained.
 
-After processing 664 items, I had 1,515 unique topic labels. A 2.3:1 ratio of topics to items, with 63 fragmented stems — "llm-safety", "llm safety", "LLM Safety", "ai-safety", "AI Safety" all appearing as distinct topics.
+After processing 664 items, I had 1,515 unique topic labels. A 2.3:1 ratio of topics to items, with 63 fragmented stems - "llm-safety", "llm safety", "LLM Safety", "ai-safety", "AI Safety" all appearing as distinct topics.
 
 The root cause was obvious in retrospect: unconstrained generation with no awareness of existing labels. The LLM generates a new label for almost every item because it has no memory of what it's already said.
 
@@ -81,13 +81,13 @@ The fix was a two-pass classification system:
 
 **Pass 2** fires only if nothing fits. It asks for exactly one new broad topic with constraints: 2-4 words, lowercase, not a near-duplicate of existing topics. The first 30 existing topics are included as negative examples.
 
-The taxonomy is self-bootstrapping. Early items create seed topics. Subsequent items converge on them. Over time, the distribution stabilises. The cost impact is marginal — Pass 1 uses slightly more tokens (taxonomy in the prompt) but Pass 2 is rarely needed, so average cost per item stays flat.
+The taxonomy is self-bootstrapping. Early items create seed topics. Subsequent items converge on them. Over time, the distribution stabilises. The cost impact is marginal - Pass 1 uses slightly more tokens (taxonomy in the prompt) but Pass 2 is rarely needed, so average cost per item stays flat.
 
 From the decision log:
 
 > *"Prompt eval revealed 1515 unique topics for 664 items (2.3x ratio) with 63 fragmented stems. The open-ended prompt generates a new label for almost every item. Root cause: unconstrained generation with no awareness of existing labels."*
 
-This decision has its own arc in the log. Decision 13 chose free-form generation deliberately — "thematic analysis should be induced from the ground up, not imposed top-down." Decision 51 reversed it when the data made the cost of that principle clear. The log captures both the original reasoning and the correction. The evolution of understanding is more valuable than the final answer.
+This decision has its own arc in the log. Decision 13 chose free-form generation deliberately - "thematic analysis should be induced from the ground up, not imposed top-down." Decision 51 reversed it when the data made the cost of that principle clear. The log captures both the original reasoning and the correction. The evolution of understanding is more valuable than the final answer.
 
 ### 2. The Cost Ceiling Problem
 
@@ -105,17 +105,17 @@ def check_cost_ceiling(engine):
     return total < float(ceiling), total, float(ceiling)
 ```
 
-If spend exceeds the ceiling, the pipeline refuses to start and publishes a `pipeline.paused` event. It's a pre-flight check, not a mid-flight kill switch — once a run starts, it completes. This is intentional: partial runs are harder to reason about than completed runs that were expensive.
+If spend exceeds the ceiling, the pipeline refuses to start and publishes a `pipeline.paused` event. The check happens before flight, allowing a run that has already started to complete because partial runs are harder to reason about than expensive completed ones.
 
 The cost ceiling is an environment variable, not a database setting, because I want it to survive container restarts without database access and be visible in deployment manifests.
 
 ### 3. The Cadence Problem
 
-The pipeline started with 12 feeds, polled hourly. For BI, I needed to scale to 80+ sources across newsletters, company blogs, tech publications, arXiv, YouTube, and podcasts. But polling all 83 feeds every hour means 83 HTTP requests/hour plus hundreds of LLM calls — rate limit pressure from both feed hosts and the LLM provider.
+The pipeline started with 12 feeds, polled hourly. For BI, I needed to scale to 80+ sources across newsletters, company blogs, tech publications, arXiv, YouTube, and podcasts. But polling all 83 feeds every hour means 83 HTTP requests/hour plus hundreds of LLM calls - rate limit pressure from both feed hosts and the LLM provider.
 
 The insight was that publishing cadence varies enormously. Ben's Bites publishes daily. Apple's Machine Learning blog publishes monthly. Polling a monthly blog every hour is 720 wasted requests between actual content.
 
-The `feeds` table already had a `poll_cadence` interval column — it just wasn't wired up. I replaced the global hourly poll with a scheduler that runs every 15 minutes and queries:
+The `feeds` table already had a `poll_cadence` interval column - it just wasn't wired up. I replaced the global hourly poll with a scheduler that runs every 15 minutes and queries:
 
 ```sql
 SELECT id, url, name, etag, last_modified_header, max_items_per_poll
@@ -151,16 +151,16 @@ Every cost event in the system is a row in a TimescaleDB hypertable:
 | `item_id` | Which content item |
 | `run_id` | Which pipeline run |
 
-This isn't a monitoring table. It's a business intelligence table. Because every cost event links to an item, and every item links to a feed, and every feed has a platform and cadence, the system can answer questions like:
+This is a business intelligence table. Every cost event links to an item, every item to a feed, and every feed has a platform and cadence, allowing the system to answer questions such as:
 
 - What's the cost per insight by source type?
 - Which feeds have the highest entity density per pound spent?
 - Is the two-pass classifier actually cheaper than the single-pass was?
 - At current growth rates, what will this cost in six months?
 
-The exchange rate is captured once per pipeline run — not per item, not per day. From the decision log:
+The exchange rate is captured once per pipeline run. From the decision log:
 
-> *"The computational cost of one exchange rate fetch per pipeline run is trivial. The business intelligence value of historically accurate GBP costs compounds over time. Designing for data density that is affordable from the outset is the right default — if capturing a signal is cheap now and expensive to reconstruct later, capture it now."*
+> *"The computational cost of one exchange rate fetch per pipeline run is trivial. The business intelligence value of historically accurate GBP costs compounds over time. Designing for data density that is affordable from the outset is the right default - if capturing a signal is cheap now and expensive to reconstruct later, capture it now."*
 
 ## The Stack
 
@@ -179,13 +179,13 @@ For the technically inclined:
 
 Design decisions that mattered:
 
-- **SQLAlchemy Core without the ORM** — the natural unit of work in a data pipeline is a query, not an object graph.
-- **OpenRouter instead of direct SDK** — single billing view, model swaps are a config change, no custom abstraction layer needed.
-- **TimescaleDB from day zero** — it's a Postgres superset. Starting with it avoids a migration when you need time-series queries. You always need time-series queries.
+- **SQLAlchemy Core without the ORM** - the natural unit of work in a data pipeline is a query, not an object graph.
+- **OpenRouter instead of direct SDK** - single billing view, model swaps are a config change, no custom abstraction layer needed.
+- **TimescaleDB from day zero** - it's a Postgres superset. Starting with it avoids a migration when you need time-series queries. You always need time-series queries.
 
 ## The Decision Log
 
-The project maintains a machine-readable decision log (`devlog.yaml`) with 51 entries as of writing. Every architectural choice records the decision, the alternatives considered, and the reasoning. Not because documentation is virtuous — because decisions without recorded reasoning can't be evaluated later.
+The project maintains a machine-readable decision log (`devlog.yaml`) with 51 entries as of writing. Every architectural choice records the decision, the alternatives considered, and the reasoning, so that it can be evaluated later.
 
 Some favourites:
 
@@ -193,7 +193,7 @@ Some favourites:
 
 > **Decision 22, Observable scripts**: "A batch re-dispatch of 205 items ran with no timeout, no progress indicator, and no error handling. If it had hung or failed silently, there would have been no signal. The convention: never fire into a void."
 
-> **Decision 11, Human verification gates**: "Unit tests and CI prove code works as code. They do not behaviourally validate that the system does what it should. Context anxiety is real — there is always a gap between 'tests pass' and 'this is correct.'"
+> **Decision 11, Human verification gates**: "Unit tests and CI prove code works as code. They do not behaviourally validate that the system does what it should. Context anxiety is real - there is always a gap between 'tests pass' and 'this is correct.'"
 
 ## What I'd Do Differently
 
@@ -214,4 +214,4 @@ As of writing:
 - Live dashboard with SSE updates
 - Running on Docker Compose locally, Kubernetes manifests ready for GKE
 
-The pipeline runs continuously. Every 15 minutes, it checks what's due. Most checks find nothing — the feeds that publish daily are the only ones that regularly produce new items. The system is designed to be boring in operation and interesting in analysis.
+The pipeline runs continuously. Every 15 minutes, it checks what's due. Most checks find nothing - the feeds that publish daily are the only ones that regularly produce new items. The system is designed to be boring in operation and interesting in analysis.

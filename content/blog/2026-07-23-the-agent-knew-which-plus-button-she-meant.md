@@ -6,9 +6,9 @@ tags = ["agents", "context-engineering", "chatgpt", "cms", "human-ai-interface"]
 draft = false
 
 copy_metrics_version = 1
-copy_word_count = 761
-copy_not_count = 5
-copy_not_ratio = 0.00657030
+copy_word_count = 738
+copy_not_count = 1
+copy_not_ratio = 0.00135501
 
 [build]
 render = "always"
@@ -19,7 +19,7 @@ list = "always"
 
 Sarah was learning TinaCMS, the editing system behind her new studio website. That WhatsApp message contained at least three different problems: why there were only four things in Products, where the information shown below each product came from, and how the choice of card, print or original was meant to work.
 
-A generic help page would have told her to open Products and click a field. It would not have known which screen she was looking at, which of the two orange plus buttons she meant, or which fields she should leave alone.
+A generic help page would have told her to open Products and click a field. It couldn't have known which screen she was looking at, which of the two orange plus buttons she meant, or which fields she should leave alone.
 
 ## The context stack
 
@@ -31,7 +31,7 @@ This happened inside one thread in the [ChatGPT desktop app](https://learn.chatg
 4. Chrome already had the live TinaCMS Products collection open. The agent could inspect the actual interface Sarah had just used, not a mock-up or remembered version.
 5. The existing private guide contained the intended operating model, so the answer could be checked against the documentation already written for her.
 
-That is the context engineering. It is not one enormous prompt. It is a set of specific sources with different authority: the human message explains the problem, the schema explains the software, repository instructions explain the safety boundary, the live browser proves the current UI, and the guide explains the intended workflow.
+The context engineering came from specific sources with different authority: the human message explains the problem, the schema explains the software, repository instructions explain the safety boundary, the live browser proves the current UI, and the guide explains the intended workflow.
 
 ## What it worked out
 
@@ -39,7 +39,7 @@ The key sentence was already embedded in the Tina schema:
 
 > One row per sellable format. Formats from the same painting share an artwork grouping ID.
 
-So four rows did not mean the CMS had failed to import the rest of Sarah's paintings. It meant four sellable formats had been configured.
+The schema showed that those four rows were configured sellable formats, rather than evidence of a failed import.
 
 The **Kind** dropdown changes the format of one row: Card, Print or Original artwork. If one painting is available as both a card and a print, those are two rows joined by the same Artwork grouping ID.
 
@@ -53,7 +53,7 @@ It then returned the browser to the unchanged Products list, verified the matchi
 
 ## Why the desktop interface matters
 
-None of the individual capabilities is novel on its own. A model can read code. Browser automation can click a page. Screenshot tools can draw rectangles. A chat can draft a message.
+Each individual capability is familiar on its own: a model can read code, browser automation can click a page, screenshot tools can draw rectangles, and a chat can draft a message.
 
 The difference is that they happened in one bounded environment, attached to the same thread and the same real task. The agent could move from Sarah's sentence, to the live CMS, to the source schema, to the owner guide, to the annotated help, without me translating state between five tools.
 
@@ -61,4 +61,4 @@ OpenAI's [browser documentation](https://learn.chatgpt.com/docs/browser) describ
 
 Now this post has been made in the same environment. The thread moved into the Oceanheart site repository, matched its existing Hugo blog format, reused the privacy-safe screenshot, and built and verified the article locally.
 
-That recursive bit is not a party trick. The evidence, the support material and the account of how it was made all remained attached to the event that produced them. That is what made the context detailed without making me repeat it.
+The recursive bit mattered because the evidence, the support material and the account of how it was made all remained attached to the event that produced them. That is what made the context detailed without making me repeat it.
