@@ -3,7 +3,7 @@ title = "AI-Augmented Photo Curation Pipeline"
 date = "2026-04-05"
 description = "Building a resume-safe, multi-pass system that turns 4,700 unsorted iPhone photos into a categorised library - using metadata heuristics, perceptual hashing, and Claude's vision API."
 tags = ["agents", "vision", "pipeline", "python", "engineering"]
-draft = true
+draft = false
 
 copy_metrics_version = 2
 copy_word_count = 1356
@@ -19,6 +19,10 @@ copy_first_person_count = 9
 copy_contraction_count = 14
 copy_editorial_signpost_count = 0
 copy_repeated_ngram_count = 0
+
+[build]
+render = "always"
+list = "always"
 +++
 
 My Photos library had become a junk drawer. 4,691 items spanning six years: travel photos mixed with screenshots of WiFi passwords, AI-generated art alongside blurry pocket shots, receipts next to family portraits. Apple's "Memories" feature kept surfacing a screenshot of a Slack thread next to a sunset in Portugal.

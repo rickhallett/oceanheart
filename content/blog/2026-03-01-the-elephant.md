@@ -3,12 +3,12 @@ title = "33,700 tokens on boot and nobody noticed"
 date = "2026-03-01"
 description = "I pointed a tokeniser at the repo. The boot sequence had an elephant in it."
 tags = ["agents", "tokens", "infrastructure", "discipline"]
-draft = true
+draft = false
 
 copy_metrics_version = 2
-copy_word_count = 30
-copy_sentence_count = 4
-copy_paragraph_count = 2
+copy_word_count = 84
+copy_sentence_count = 7
+copy_paragraph_count = 3
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 copy_negation_count = 0
@@ -19,6 +19,10 @@ copy_first_person_count = 0
 copy_contraction_count = 0
 copy_editorial_signpost_count = 0
 copy_repeated_ngram_count = 0
+
+[build]
+render = "always"
+list = "always"
 +++
 
 ```
@@ -55,6 +59,8 @@ tag boot files
 ```
 
 5 agent-minutes to build. 3 seconds to run. The fix (stop loading all 271 historical decisions on every wake) drops 30k tokens from the boot sequence.[^1]
+
+Once the boot path was visible file by file, there was very little design work left. The largest source of waste was obvious, the remedy stayed small, and the same check could be rerun whenever the repository changed. Five minutes spent making the cost inspectable saved a much longer argument about where to optimise.
 
 [Provenance](https://github.com/rickhallett/thepit/blob/wake/docs/internal/weaver/token-heatmap.yaml) | [Script](https://github.com/rickhallett/thepit/blob/wake/bin/token-heatmap.js)
 

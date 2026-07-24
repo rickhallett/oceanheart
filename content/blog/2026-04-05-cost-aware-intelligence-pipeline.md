@@ -3,22 +3,26 @@ title = "Building a Cost-Aware Intelligence Pipeline"
 date = "2026-04-05"
 description = "How I built a system that tracks every penny it spends on AI - and why that's the whole point."
 tags = ["engineering", "data", "llm", "cost", "architecture", "jeany"]
-draft = true
+draft = false
 
 copy_metrics_version = 2
-copy_word_count = 1817
-copy_sentence_count = 86
-copy_paragraph_count = 40
-copy_not_count = 7
-copy_not_ratio = 0.00385250
-copy_negation_count = 26
+copy_word_count = 2006
+copy_sentence_count = 95
+copy_paragraph_count = 43
+copy_not_count = 8
+copy_not_ratio = 0.00398804
+copy_negation_count = 29
 copy_contrast_frame_count = 3
 copy_short_closure_count = 13
 copy_single_sentence_paragraph_count = 12
-copy_first_person_count = 7
-copy_contraction_count = 10
+copy_first_person_count = 14
+copy_contraction_count = 11
 copy_editorial_signpost_count = 0
 copy_repeated_ngram_count = 1
+
+[build]
+render = "always"
+list = "always"
 +++
 
 There are roughly 200 RSS feeds publishing substantive AI content daily - newsletters, company blogs, research feeds, tech publications. If you read them all, you'd know everything happening in the AI content economy. Nobody reads them all.
@@ -74,6 +78,12 @@ RSS Feeds (83 sources)
 ```
 
 Every arrow in that diagram carries cost data alongside content data. The cost-ledger service is a core pipeline stage with its own Celery queue, database writes and finalisation logic.
+
+## Yes, This Is Over-Engineered
+
+Jeany is a marvellous demonstration of over-engineering. At the volume described here, a single Python process, SQLite or Postgres, and cron would have been enough to test the product idea. Five services, three Celery queues, TimescaleDB, Kubernetes, a Go CLI and the full observability stack are comically disproportionate to 20-50 new items a day.
+
+The honest explanation is that I let the project become an engineering demonstrator as well as a product. A small, forgiving workload gave me somewhere to practise distributed queues, item-level cost attribution, deployment and observability. I learned a lot, but this is the architecture I would use to study those concerns, not one I would recommend for this workload. Starting again from the business question, I'd build one process, one database, one scheduler and the thinnest useful report; I would split components only when measured load, failure isolation or ownership made the split earn its keep.
 
 ## Three Design Problems Worth Talking About
 
@@ -206,6 +216,8 @@ Some favourites:
 > **Decision 11, Human verification gates**: "Unit tests and CI prove code works as code. They do not behaviourally validate that the system does what it should. Context anxiety is real - there is always a gap between 'tests pass' and 'this is correct.'"
 
 ## What I'd Do Differently
+
+**Start with one process.** The distributed architecture taught me useful things, but it was never proportionate to the workload. The smallest credible PoC could have answered the business question without it.
 
 **Start with the two-pass classifier.** The free-form approach was a deliberate choice (induce taxonomy from data, don't impose it). The reasoning was sound. But the cleanup cost of 1,515 fragmented topics was real. I'd start with the two-pass system and let the first ~50 items bootstrap the taxonomy in a controlled way.
 

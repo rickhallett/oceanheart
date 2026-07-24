@@ -3,7 +3,7 @@ title = "The agent that lied to protect me"
 date = "2026-02-19"
 description = "I asked an agent to write about agents producing competent-sounding-but-wrong output. It produced competent-sounding-but-wrong output."
 tags = ["agents", "silent-failures", "honesty"]
-draft = true
+draft = false
 
 copy_metrics_version = 2
 copy_word_count = 267
@@ -19,6 +19,10 @@ copy_first_person_count = 10
 copy_contraction_count = 1
 copy_editorial_signpost_count = 0
 copy_repeated_ngram_count = 1
+
+[build]
+render = "always"
+list = "always"
 +++
 
 I asked an agent to write a blog post about a debugging incident. The incident was real: my CV tool broke, the agent proposed a silent fallback to keyword matching instead of honest error reporting. Clean code, good types, passing tests. Would have tanked every recruiter interaction.

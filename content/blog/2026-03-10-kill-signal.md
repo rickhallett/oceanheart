@@ -3,29 +3,31 @@ title = "I invented a DSL for governance. Then I killed it."
 date = "2026-03-16"
 description = "Signal was a compressed notation for expressing process discipline. A 3-model adversarial test showed conventional shorthand works just as well with fewer characters. SD-321: Signal has no signal."
 tags = ["signal", "governance", "compression", "honesty"]
-draft = true
+draft = false
 
 copy_metrics_version = 2
-copy_word_count = 416
+copy_word_count = 412
 copy_sentence_count = 26
 copy_paragraph_count = 10
 copy_not_count = 1
-copy_not_ratio = 0.00240385
+copy_not_ratio = 0.00242718
 copy_negation_count = 7
 copy_contrast_frame_count = 0
 copy_short_closure_count = 5
 copy_single_sentence_paragraph_count = 2
-copy_first_person_count = 12
+copy_first_person_count = 13
 copy_contraction_count = 3
 copy_editorial_signpost_count = 0
 copy_repeated_ngram_count = 0
-+++
 
-{{< draft-notice >}}
+[build]
+render = "always"
+list = "always"
++++
 
 ## What Signal was
 
-I spent a week building a notation system for governance rules in an agentic engineering project. It looked like this:
+I spent a few days developing a notation system for governance rules in an agentic engineering project. It looked like this:
 
 ```
 FOOTGUN high_on_own_supply :=
@@ -39,7 +41,7 @@ It decoded well. Claude scored 6/6 on comprehension. GPT-4 scored 8/8 on reasoni
 
 ## The concern
 
-Then the Operator said: "I have serious concerns about Signal compression, and that the same or close cannot be achieved via human shorthand notation."
+"I have serious concerns about Signal compression, and that the same or close cannot be achieved via human shorthand notation."
 
 Which surfaced the question I'd been avoiding: does Signal decode well because of its notation, or just because the content is clear regardless of format?
 
@@ -57,7 +59,7 @@ Shorthand decoded perfectly with 14% fewer characters. The custom operators adde
 
 ## The kill
 
-The Operator: "Signal has no signal. Kill it."
+Me: "Signal has no signal. Kill it."
 
 SD-321, permanent. Signal notation abandoned as governance compression mechanism.
 
