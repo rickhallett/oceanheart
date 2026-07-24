@@ -6,9 +6,9 @@ tags = ["agents", "vision", "pipeline", "python", "engineering"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 1361
+copy_word_count = 1356
 copy_not_count = 3
-copy_not_ratio = 0.00220426
+copy_not_ratio = 0.00221239
 +++
 
 My Photos library had become a junk drawer. 4,691 items spanning six years: travel photos mixed with screenshots of WiFi passwords, AI-generated art alongside blurry pocket shots, receipts next to family portraits. Apple's "Memories" feature kept surfacing a screenshot of a Slack thread next to a sunset in Portugal.
@@ -202,7 +202,7 @@ The full run across 3,335 photos cost approximately **$10** in Claude Haiku API 
 
 This pipeline categorises, while proper evaluation still needs ground truth.
 
-The distribution looks reasonable, the albums are browsable, and spot-checking suggests Claude is mostly right. But "mostly right" isn't a measurement. Two things are next:
+The distribution looks reasonable, the albums are browsable, and spot-checking suggests Claude is mostly right. Proper measurement needs two things:
 
 **Human ground truth.** A stratified sample of 200–300 photos, manually labelled, compared against Claude's classifications. This gives per-category precision and recall, and - critically - a confusion matrix showing *where* the model struggles. Does it confuse `document` with `screenshot`? Does `life-moment` absorb photos that should be `people`? The taxonomy can't improve without knowing where it's wrong.
 

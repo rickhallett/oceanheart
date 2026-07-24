@@ -6,9 +6,9 @@ tags = ["agents", "human-ai-collaboration", "telemetry", "context-engineering", 
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 1682
-copy_not_count = 9
-copy_not_ratio = 0.00535077
+copy_word_count = 1663
+copy_not_count = 8
+copy_not_ratio = 0.00481058
 
 [build]
 render = "always"
@@ -450,8 +450,6 @@ Whilst this isn't a conventional bimodal distribution with two statistical peaks
 The middle exists. Another 220 conversations ran for between two and ten turns. They contain normal iterative work: clarify the target, inspect the result, make a correction, verify it. But it is the two ends that explain what is distinctive about this system.
 
 ## Dispatches
-
-A dispatch is not necessarily a trivial question. It is a task whose useful unit is one bounded response.
 
 Examples include:
 

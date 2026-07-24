@@ -6,7 +6,7 @@ tags = ["agent-native", "creative", "taste", "design"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 392
+copy_word_count = 389
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -29,7 +29,7 @@ Composition. Colour grading. The mix balance between voice and music. Whether th
 
 The dividing line is perception. If the operation's correctness can be verified without human senses, it's automatable. If someone needs to look at it or listen to it to know whether it's right, it requires taste.
 
-## The tools exist, but the judgment doesn't
+## Where the judgment remains
 
 Photoshop's functionality is largely available through ImageMagick, GIMP's Script-Fu, or Python's Pillow. DaVinci Resolve has a scripting API. Blender has a complete Python API - you can model, texture, light, and render without ever opening the GUI. Figma has a plugin API and REST API.
 
