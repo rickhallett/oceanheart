@@ -1170,18 +1170,22 @@ a.work-row-title { text-decoration: none; }
   background: var(--bg-alt);
 }
 
-/* The gray dot. Robinett, 1979. Found only by those who look. */
+/* The gray dot. Robinett, 1979. It sleeps in the catacombs (404),
+   invisible until bumped, and only reachable by the lost. */
+.catacombs {
+  position: relative;
+}
+
 .gray-dot {
-  display: inline-block;
+  position: absolute;
+  left: 21%;
+  bottom: -6rem;
   width: 6px;
   height: 6px;
   padding: 0;
   border: none;
-  border-radius: 50%;
-  background: var(--bg-tertiary);
+  background: var(--bg);
   cursor: default;
-  vertical-align: middle;
-  margin-left: 0.35rem;
   transition: background 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -1193,68 +1197,135 @@ a.work-row-title { text-decoration: none; }
   outline: none;
 }
 
-.hidden-room {
+/* Carried: the dot travels beside your square, which is to say your pointer */
+.carried-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--muted);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.carried-dot-corner {
+  transform: none !important;
+  top: auto;
+  left: auto;
+  right: 12px;
+  bottom: 12px;
+}
+
+/* The thin section of the east wall, home only, carriers only */
+.east-wall {
+  position: fixed;
+  right: 0;
+  bottom: 15vh;
+  width: 8px;
+  height: 30vh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: default;
+  z-index: 150;
+  transition: background 0.4s ease;
+}
+
+.east-wall:hover,
+.east-wall:focus-visible {
+  background: rgba(154, 77, 214, 0.35);
+  cursor: pointer;
+  outline: none;
+}
+
+/* The room itself: an Atari 2600 chamber, per the original */
+.atari-room {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 300;
+  background: #cbcbcb;
+  overflow: hidden;
+}
+
+.atari-wall {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.atari-wall-top { top: 0; }
+.atari-wall-bottom { bottom: 0; }
+
+/* Two purple slabs per wall leave a door gap in the middle */
+.atari-wall span {
+  display: block;
+  height: 100%;
+  background: #9a4dd6;
+  width: calc(50% - 60px);
+}
+
+.atari-text {
+  position: absolute;
+  top: 48px;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(10, 10, 14, 0.96);
-  padding: 1.5rem;
-}
-
-.hidden-room-inner {
-  max-width: 34rem;
-  text-align: center;
-}
-
-.hidden-room-eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 1rem;
-}
-
-.hidden-room-name {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  margin-bottom: 1.25rem;
-  animation: robinett 2.4s steps(1) infinite;
+  margin: 0;
+  writing-mode: vertical-rl;
+  text-orientation: sideways;
+  font-family: 'Press Start 2P', var(--font-mono);
+  font-size: clamp(14px, 3.2vh, 26px);
+  letter-spacing: 0.4em;
+  color: #3c3cba;
+  animation: robinett 1.6s steps(1) infinite;
+  cursor: default;
+  user-select: none;
 }
 
 @keyframes robinett {
-  0%   { color: var(--cyan); }
-  25%  { color: var(--purple); }
-  50%  { color: var(--yellow); }
-  75%  { color: var(--green); }
-  100% { color: var(--cyan); }
+  0%   { color: #3c3cba; }
+  20%  { color: #b83232; }
+  40%  { color: #2e7d32; }
+  60%  { color: #b8862e; }
+  80%  { color: #7a2eb8; }
+  100% { color: #3c3cba; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hidden-room-name { animation: none; color: var(--cyan); }
+  .atari-text { animation: none; color: #3c3cba; }
 }
 
-.hidden-room-copy {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+.atari-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  background: #9a4dd6;
 }
 
-.hidden-room-cta {
-  margin-bottom: 1.5rem;
-}
-
-.hidden-room-exit {
+.atari-contact {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--muted);
-  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: #3a3a3a;
+}
+
+.atari-contact a {
+  color: #3c3cba;
+  text-decoration: underline;
 }
 
 /* Claude coach — prepared-conversation card (shortcode: claude-coach) */

@@ -1,5 +1,5 @@
 {{ define "main" }}
-<section class="hero">
+<section class="hero catacombs">
   <p class="prompt">cd {{ .Site.BaseURL }}…</p>
   <h1>404: path not found</h1>
   <p class="subtitle">
@@ -11,5 +11,6 @@
     <a href="/projects/" class="btn">Work</a>
     <a href="/blog/" class="btn">Blog</a>
   </div>
+  <button type="button" class="gray-dot" id="catacomb-dot" aria-label="a gray dot"></button>
 </section>
 {{ end }}
