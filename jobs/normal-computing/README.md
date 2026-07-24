@@ -2,7 +2,8 @@
 
 Prepared for: Richard Hallett
 Call: Talent pre-screen, Monday 2026-06-29, 14:00 UK time
-Source CV: `cv/richard-hallett-cv.html`
+Application-era CV snapshot:
+`career/archive/pre-2026-07-23/richard-hallett-cv.html` (legacy, not current)
 Scraped/researched: 2026-06-29T11:19:55+01:00
 
 ## Files

@@ -1,3 +1,6 @@
+> Archived application-era CV source. It is not a current drafting or upload
+> source. See `career/README.md` for the canonical CVs.
+
 # Richard (Kai) Hallett
 
 Software Engineer · Dorset · kai@oceanheart.ai · github.com/rickhallett · oceanheart.ai

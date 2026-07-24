@@ -1,3 +1,7 @@
+> Archived Upperdog application email. It is not a reusable cover-letter
+> source. Current application letters belong under
+> `/Users/mrkai/vault/career/applications/`.
+
 To: careers@upperdog.co.uk
 Subject: Application: Full Stack Developer (Web and AI) - Richard Hallett
 

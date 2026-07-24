@@ -1,5 +1,5 @@
 +++
 title = "CV"
-description = "Richard (Kai) Hallett, Agentic Systems Engineer"
+description = "Richard (Kai) Hallett, Forward Deployed Engineer"
 layout = "cv"
 +++

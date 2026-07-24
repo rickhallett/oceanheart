@@ -2,7 +2,8 @@
 
 Prepared for: Talent pre-screen, Tuesday 2026-06-30
 Candidate: Richard Hallett
-CV source: `cv/richard-hallett-cv.html`
+Application-era CV snapshot:
+`career/archive/pre-2026-07-23/richard-hallett-cv.html` (legacy, not current)
 
 ## One-line read
 
