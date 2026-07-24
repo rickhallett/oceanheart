@@ -6,14 +6,14 @@ tags = ["agents", "computer-use", "context-engineering", "human-ai-collaboration
 draft = false
 
 copy_metrics_version = 2
-copy_word_count = 2203
-copy_sentence_count = 142
-copy_paragraph_count = 59
+copy_word_count = 2235
+copy_sentence_count = 144
+copy_paragraph_count = 60
 copy_not_count = 7
-copy_not_ratio = 0.00317749
+copy_not_ratio = 0.00313199
 copy_negation_count = 14
 copy_contrast_frame_count = 9
-copy_short_closure_count = 8
+copy_short_closure_count = 9
 copy_single_sentence_paragraph_count = 20
 copy_first_person_count = 70
 copy_contraction_count = 0
@@ -32,6 +32,108 @@ The obvious answer is software development. I use Claude and Codex for implement
 AI has become an input method, a computer interface, a research partner, a set of workers, a component inside customer systems, a review mechanism, a practice opponent and, increasingly, something I build an operating system around.
 
 Those uses carry different risks, need different forms of human control and become more interesting as they compound.
+
+<style>
+  .claude-coach {
+    --coach-accent: #d97757;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    margin: 2rem 0 2.4rem;
+    padding: 1.25rem 1.3rem;
+    border: 1px solid rgba(217, 119, 87, 0.48);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    background:
+      radial-gradient(circle at top left, rgba(217, 119, 87, 0.18), transparent 46%),
+      rgba(31, 35, 53, 0.8);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+    text-decoration: none;
+    transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+  }
+
+  .claude-coach:hover {
+    border-color: var(--coach-accent);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .claude-coach:focus-visible {
+    outline: 2px solid var(--coach-accent);
+    outline-offset: 4px;
+  }
+
+  .claude-coach-mark {
+    display: grid;
+    width: 2.55rem;
+    height: 2.55rem;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff4ed;
+    background: var(--coach-accent);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .claude-coach-copy {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .claude-coach-eyebrow {
+    color: var(--coach-accent);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .claude-coach-title {
+    color: var(--text-bright);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+
+  .claude-coach-description {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: justify;
+    text-justify: inter-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .claude-coach-action {
+    margin-top: 0.25rem;
+    color: #f1a27f;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  @media (max-width: 540px) {
+    .claude-coach {
+      grid-template-columns: 1fr;
+      padding: 1.1rem;
+    }
+  }
+</style>
+
+<a class="claude-coach" href="https://claude.ai/share/44d6347a-ca6f-4b83-90a4-c88504741a3a" target="_blank" rel="noopener noreferrer" aria-label="Open the prepared Claude coaching conversation">
+  <span class="claude-coach-mark" aria-hidden="true">✳</span>
+  <span class="claude-coach-copy">
+    <span class="claude-coach-eyebrow">Claude coach</span>
+    <strong class="claude-coach-title">Make this useful to you</strong>
+    <span class="claude-coach-description">This prepared conversation knows the article and can help you adapt its ideas to your own work, experience or questions.</span>
+    <span class="claude-coach-action">Talk it through with Claude <span aria-hidden="true">↗</span></span>
+  </span>
+</a>
 
 ## I start by speaking
 

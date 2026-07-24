@@ -503,6 +503,13 @@ article .content {
   line-height: 1.8;
 }
 
+article .content p {
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
 article .content img {
   max-width: 100%;
   margin: 1.5rem 0;
