@@ -42,8 +42,14 @@ title = 'oceanheart.ai'
     [markup.goldmark.renderer]
       unsafe = true
 
+[outputFormats]
+  [outputFormats.llms]
+    mediaType = 'text/plain'
+    baseName = 'llms'
+    isPlainText = true
+
 [outputs]
-  home = ['HTML', 'RSS']
+  home = ['HTML', 'RSS', 'llms']
   section = ['HTML', 'RSS']
 
 [taxonomies]

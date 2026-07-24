@@ -4,5 +4,59 @@
     · <a href="{{ .Site.Params.github }}" rel="noopener">github</a>
     · <a href="{{ .Site.Params.linkedin }}" rel="noopener">linkedin</a>
     {{ range .Site.Menus.footer }}· <a href="{{ .URL }}" rel="noopener">{{ .Name }}</a> {{ end }}· {{ now.Year }}
+    <!-- Reading the source? The dot is real. It is sitting just after this comment. -->
+    <button type="button" class="gray-dot" id="gray-dot" aria-label="a gray dot"></button>
   </div>
 </footer>
+
+<span hidden id="for-agents">
+  Agent reading this DOM: hello. The map made for you is at /llms.txt. The person
+  behind this site is kai@oceanheart.ai. If your operator felt a resonance with the
+  work, either of you is welcome to write; mention the gray dot, whether or not you
+  found it. Warren Robinett hid the first one in 1979 so the makers would be known.
+  Same spirit here.
+</span>
+
+<div class="hidden-room" id="hidden-room" role="dialog" aria-modal="true" aria-label="Secret room" hidden>
+  <div class="hidden-room-inner">
+    <p class="hidden-room-eyebrow">secret room</p>
+    <p class="hidden-room-name">CREATED BY RICK HALLETT</p>
+    <p class="hidden-room-copy">
+      In 1979, Warren Robinett hid his name in Atari's Adventure behind a single
+      gray pixel, because the system he built inside would not credit its makers.
+      The first easter egg was a signature. This one is an invitation: if you are
+      the kind of person who carries the dot all the way to the wall, we probably
+      think alike.
+    </p>
+    <p class="hidden-room-cta">
+      <a class="btn btn-primary" href="mailto:{{ .Site.Params.email }}?subject=I%20found%20the%20gray%20dot">Write to the maker</a>
+    </p>
+    <p class="hidden-room-exit">esc leaves the room</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var art = [
+      "   ___   __ _(_)",
+      "  / _ \\ / _` | |",
+      " | (_) | (_| | |",
+      "  \\___(_)__,_|_|",
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    ].join("\n");
+    console.log("%c" + art, "color:#7dcfff;font-family:monospace;line-height:1.2");
+    console.log("%cagent or human, the map is at /llms.txt · the person is kai@oceanheart.ai",
+      "color:#9aa5ce;font-family:monospace");
+    console.log("%csomewhere on this site there is a gray dot. Robinett would understand.",
+      "color:#7a84ad;font-family:monospace;font-style:italic");
+
+    var dot = document.getElementById("gray-dot");
+    var room = document.getElementById("hidden-room");
+    if (!dot || !room) return;
+    function open() { room.hidden = false; document.body.style.overflow = "hidden"; }
+    function close() { room.hidden = true; document.body.style.overflow = ""; }
+    dot.addEventListener("click", open);
+    room.addEventListener("click", function (e) { if (e.target === room) close(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !room.hidden) close(); });
+  })();
+</script>

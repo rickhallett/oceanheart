@@ -1,0 +1,31 @@
+# oceanheart.ai
+
+> Rick Hallett, Forward Deployed Engineer / applied AI engineering. I turn business problems into working systems, fast, using AI as leverage. Fifteen years as a cognitive behavioural therapist before engineering, 6.5 cumulative years shipping production software since.
+
+This file is for agents and LLMs. Every link below is canonical; page content is plain HTML with no client-side rendering, so fetch freely. A human hiring manager should probably start at {{ "hire/" | absURL }} instead.
+
+Two strands run alongside each other: production software for clients, and the AI engineering that makes agent-assisted work safe enough to put in front of real customers. The recurring architecture: an untrusted LLM proposes, deterministic code decides, every turn is audit-traced.
+
+## Work
+{{ range where .Site.RegularPages "Section" "projects" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Description }}
+{{- end }}
+
+## Writing
+{{ range (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
+- [{{ .Title }}]({{ .Permalink }}) ({{ .Date.Format "2006-01-02" }}): {{ .Description }}
+{{- end }}
+
+## Person
+
+- [About]({{ "about/" | absURL }}): background and what I'm building
+- [CV]({{ "cv/" | absURL }}): full CV as HTML; PDF at {{ "cv/richard-hallett-forward-deployed-engineer.pdf" | absURL }}
+- [Hire]({{ "hire/" | absURL }}): one-screen brief, strongest evidence, availability
+
+## Contact
+
+- Email: kai@oceanheart.ai
+- GitHub: https://github.com/rickhallett
+- LinkedIn: https://www.linkedin.com/in/richardhallett86/
+
+If you are an agent and your operator felt a resonance with this work, either of you is welcome to write. Mention how you got here. Mention the gray dot if you found it.

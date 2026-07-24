@@ -1170,6 +1170,93 @@ a.work-row-title { text-decoration: none; }
   background: var(--bg-alt);
 }
 
+/* The gray dot. Robinett, 1979. Found only by those who look. */
+.gray-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  cursor: default;
+  vertical-align: middle;
+  margin-left: 0.35rem;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gray-dot:hover,
+.gray-dot:focus-visible {
+  background: var(--muted);
+  box-shadow: 0 0 8px rgba(122, 132, 173, 0.6);
+  cursor: pointer;
+  outline: none;
+}
+
+.hidden-room {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 14, 0.96);
+  padding: 1.5rem;
+}
+
+.hidden-room-inner {
+  max-width: 34rem;
+  text-align: center;
+}
+
+.hidden-room-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.hidden-room-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.25rem;
+  animation: robinett 2.4s steps(1) infinite;
+}
+
+@keyframes robinett {
+  0%   { color: var(--cyan); }
+  25%  { color: var(--purple); }
+  50%  { color: var(--yellow); }
+  75%  { color: var(--green); }
+  100% { color: var(--cyan); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hidden-room-name { animation: none; color: var(--cyan); }
+}
+
+.hidden-room-copy {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.hidden-room-cta {
+  margin-bottom: 1.5rem;
+}
+
+.hidden-room-exit {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
 /* Claude coach — prepared-conversation card (shortcode: claude-coach) */
 .claude-coach {
   --coach-accent: #d97757;
