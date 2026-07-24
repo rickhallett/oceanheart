@@ -1,4 +1,7 @@
-# Oceanheart.ai — Rebuild, CV & Portfolio Brief
+> Superseded on 2026-07-23. This brief describes the previous CV topology and
+> must not be used as current operating guidance. See `career/README.md`.
+
+# Oceanheart.ai: Rebuild, CV & Portfolio Brief
 
 Last updated: 2026-06-16. Single source of truth for the site rebuild, the canonical
 CV, the portfolio narrative, and the live job search. Read this first to resume work

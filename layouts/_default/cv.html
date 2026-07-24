@@ -1,6 +1,9 @@
 {{ define "main" }}
 <article class="cv-content">
-  {{ readFile "cv/richard-hallett.md" | markdownify }}
-  <p class="cv-download"><a href="/richard-hallett-cv.pdf" class="btn">Download PDF</a></p>
+  {{ readFile "career/cv/forward-deployed-engineer.md" | markdownify }}
+  <p class="cv-download">
+    <a href="/cv/richard-hallett-forward-deployed-engineer.pdf" class="btn">Download PDF</a>
+    <a href="/cv/richard-hallett-applied-ai-engineer.pdf" class="btn">Applied AI variant</a>
+  </p>
 </article>
 {{ end }}

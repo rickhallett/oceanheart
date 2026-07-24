@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<!--
+  Archived application-era CV source. It is not a current drafting or upload
+  source. See career/README.md for the canonical CVs.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Richard Hallett CV</title>
+<meta name="description" content="Richard Hallett, full-stack and AI engineer. CV.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS (change colours/fonts in one place).
+     (Variant B · Grotesk / Slate: cool grey, steel-blue accent)
+     ============================================================ */
+  :root {
+    --paper:    #fff;
+    --ink:      #16191D;
+    --mute:     #586271;
+    --hairline: #D5D9DD;
+    --accent:   #2D5B8E;
+
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+    /* page geometry */
+    --page-max:   820px;
+    --page-pad-y: 56px;
+    --page-pad-x: 64px;
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: none;
+    font-family: var(--font-body);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 16px;
+  }
+  a { color: var(--accent); }
+  .cv-link {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 0.7px;
+    white-space: nowrap;
+  }
+  .muted { color: var(--mute); }
+  .mono  { font-family: var(--font-mono); }
+
+  /* ============================================================
+     PAPER
+     ============================================================ */
+  .cv {
+    position: relative;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    background: var(--paper);
+    padding: var(--page-pad-y) var(--page-pad-x);
+    box-shadow: 0 2px 14px rgba(0,0,0,0.14);
+  }
+  .cv::before {                       /* top accent bar */
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: var(--accent);
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    justify-content: stretch;
+    align-items: flex-start;
+    column-gap: 28px;
+  }
+  .header-text {
+    min-width: 0;
+    justify-self: start;
+    text-align: left;
+  }
+  .name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: -0.01em;
+    line-height: 1.04;
+    color: var(--ink);
+  }
+  .tagline {
+    margin: 9px 0 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--mute);
+  }
+  .contacts {
+    margin: 12px 0 0;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    color: var(--mute);
+  }
+  .contacts .sep { padding: 0 6px; }
+
+  .portrait {
+    width: 120px;
+    aspect-ratio: 4 / 5;
+    justify-self: end;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--hairline);
+    overflow: hidden;
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    display: block;
+    filter: grayscale(0.12) contrast(1.02);
+  }
+
+  /* ============================================================
+     FACTS BAND
+     ============================================================ */
+  .facts {
+    display: flex;
+    margin: 13px 0 0;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .fact {
+    flex: 1;
+    padding: 6px 0 6px 16px;
+    border-left: 1px solid var(--hairline);
+  }
+  .fact:first-child { padding-left: 0; border-left: 0; }
+  .fact dt {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .fact dd {
+    margin: 2px 0 0;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.22;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ============================================================
+     SUMMARY
+     ============================================================ */
+  .summary {
+    margin: 18px 0 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .summary .mono { font-size: 12px; }
+
+  /* ============================================================
+     SECTION SCAFFOLD
+     ============================================================ */
+  .block { margin: 30px 0 0; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 14px;
+  }
+  .section-head .tick {
+    width: 14px;
+    height: 3px;
+    background: var(--accent);
+  }
+  .section-head .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ============================================================
+     SELECTED WORK
+     ============================================================ */
+  .work { margin: 0 0 14px; }
+  .work:last-child { margin-bottom: 0; }
+  .work-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .work-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .work-meta {                        /* link or "client product" tag */
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .work-meta.tag { color: var(--mute); }
+  .work-desc {
+    margin: 4px 0 0;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+  .work-stack {
+    margin: 4px 0 0;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--mute);
+  }
+
+  /* ============================================================
+     EXPERIENCE
+     ============================================================ */
+  .exp { margin: 0 0 12px; }
+  .exp.sep {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+  }
+  .exp-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--mute);
+  }
+  .exp-desc {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+  .exp-desc strong { font-weight: 600; }
+
+  /* ============================================================
+     EDUCATION & TECHNICAL
+     ============================================================ */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 28px;
+  }
+  .mini-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-bottom: 8px;
+  }
+  .edu-item {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .edu-item:last-child { margin-bottom: 0; }
+  .tech-row {
+    font-size: 11.5px;
+    line-height: 1.5;
+    margin-bottom: 5px;
+  }
+  .tech-row:last-child { margin-bottom: 0; }
+  .tech-key {
+    display: inline-block;
+    min-width: 34px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mute);
+  }
+  .interests-copy {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .interests-loadline {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .interests-loadline strong {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     RESPONSIVE (tablet then phone)
+     ============================================================ */
+  @media (max-width: 760px) {
+    body { padding: 20px 0; }
+    .cv {
+      max-width: 100%;
+      padding: 40px 28px;
+      box-shadow: none;
+    }
+    .header { flex-direction: column-reverse; align-items: flex-start; gap: 16px; }
+    .name { font-size: 30px; }
+    .grid-2 { grid-template-columns: 1fr; gap: 22px; }
+  }
+
+  @media (max-width: 480px) {
+    .cv { padding: 32px 20px; }
+    .name { font-size: 26px; }
+    .top-grid {
+      grid-template-columns: minmax(0, 1fr) 84px;
+      column-gap: 16px;
+    }
+    .portrait { width: 84px; }
+    .facts { flex-direction: column; }
+    .fact {
+      padding: 8px 0;
+      border-left: 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .fact:first-child { border-top: 0; }
+    .work-head { flex-direction: column; gap: 2px; }
+    .contacts .sep { padding: 0 4px; }
+  }
+
+  /* ============================================================
+     PRINT (keep the A4 résumé look; break before Experience)
+     ============================================================ */
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: none; padding: 0; }
+    .cv { background: none; box-shadow: none; max-width: none; padding: 12mm 15mm; }
+    .page-break { display: none; }
+  }
+</style>
+</head>
+
+<body>
+<!-- ================================================================
+     EDIT GUIDE
+     · All wording lives plainly between the tags below. Change text
+       in place; you almost never need to touch the <style> block.
+     · Colours / fonts: edit the :root design tokens at the top of
+       <style>.
+     · Add a project: copy one <article class="work"> … </article>.
+     · Add a job: copy one <div class="exp"> … </div>.
+     · Photo: richard-hallett-portrait.jpg (sits beside this file).
+       Re-frame it with the .portrait img { object-position } rule.
+     ================================================================ -->
+<main class="cv">
+
+  <!-- ---------- HEADER ---------- -->
+  <div class="top-grid">
+    <div class="header-text">
+      <h1 class="name">Richard Hallett</h1>
+      <p class="tagline">Full-stack agentic engineer specialising in application development, verification systems and auditability.
+            <br>
+                        Psychologist with 15 years of clinical experience, navigating ambiguity under high stakes pressure.
+      </p>
+      <p class="contacts">kai@oceanheart.ai<span class="sep">·</span><a class="cv-link" href="https://github.com/rickhallett">github.com/rickhallett</a><span class="sep">·</span><a class="cv-link" href="https://oceanheart.ai">oceanheart.ai</a></p>
+    </div>
+    <div class="portrait">
+      <img src="richard-hallett-portrait.jpg" alt="Richard Hallett">
+    </div>
+  </div>
+
+  <!-- ---------- FACTS BAND ---------- -->
+  <dl class="facts">
+    <div class="fact"><dt>Based</dt><dd>Dorset, UK</dd><dd>Will consider relocating</dd></div>
+    <div class="fact"><dt>Engineering</dt><dd>Enterprise: 5 years</dd><dd>Agentic: 2 years</dd></div>
+    <div class="fact"><dt>Prior career</dt><dd>Cognitive Behavioural Psychotherapist since 2004</dd></div>
+  </dl>
+
+  <!-- ---------- SUMMARY ---------- -->
+  <p class="summary">The last five years have gone into shipping production <span class="mono">TypeScript, Python</span> and <span class="mono">Go</span>, most lately designing and developing data-driven AI systems that with known error bars. These systems use deterministic validators that gate LLM output before it reaches a customer, keep every turn audit-traced, and track the cost of each run. Fifteen years as a CBT therapist carry over in practice and habit: spotting plausible-but-wrong output and asking better questions whilst a system remains uncertain.</p>
+
+  <!-- ---------- SELECTED WORK ---------- -->
+  <section class="block">
+    <div class="section-head"><span class="tick"></span><span class="label">Selected work</span></div>
+
+    <article class="work">
+      <div class="work-head">
+        <h3 class="work-title">LoanSlam</h3>
+            <div>
+              <a class="work-meta cv-link" href="https://x827e1872-production.up.railway.app?devtools=true">demo ↗</a>&nbsp
+              <a class="work-meta cv-link" href="https://mal-demo.up.railway.app/">site ↗</a>&nbsp
+              <a class="work-meta cv-link" href="https://mal-demo.up.railway.app/reports">reports ↗</a>
+            </div>
+      </div>
+      <p class="work-desc">Fail-closed conversation engine for regulated lending. The LLM proposes each turn whilst a deterministic validator enforces compliance and blocks unsafe output before it can reach a customer; every turn is audit-traced. Drivable demo and an evaluation-reports* page, both over synthetic data.</p>
+      <p class="work-stack">Vue · TypeScript · Node · Zod</p>
+    </article>
+
+    <article class="work">
+      <div class="work-head">
+        <h3 class="work-title">The Pit</h3>
+        <a class="work-meta cv-link" href="https://thepit.cloud">thepit.cloud ↗</a>
+      </div>
+      <p class="work-desc">Evaluation platform for multi-agent systems, with observable traces, rubric scoring, failure tagging, and cost tracking per run. Agent prompts are hashed onto Ethereum L2 for independent attestation. It answers the commercial questions behind AI tooling: what did this run cost, what did it catch, and is the extra model call worth it.</p>
+      <p class="work-stack">Next.js · TypeScript/Python/Go · Postgres · Stripe</p>
+    </article>
+
+    <article class="work">
+      <div class="work-head">
+        <h3 class="work-title">Sortie</h3>
+        <a class="work-meta cv-link" href="https://github.com/rickhallett/sortie">/rickhallett/sortie ↗</a>
+      </div>
+      <p class="work-desc">AI-assisted code review. Three LLMs review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity.</p>
+      <p class="work-stack">Multi-model review · convergent gating</p>
+    </article>
+
+    <article class="work">
+      <div class="work-head">
+        <h3 class="work-title">Halo</h3>
+        <a class="work-meta cv-link" href="https://github.com/rickhallett/halo">/rickhallett/halo ↗</a>
+      </div>
+      <p class="work-desc">Personal engineering tool-layer: CLI modules for work tracking, memory, briefing synthesis, email triage, journaling, and agent orchestration. Each module has an explicit CLI surface and isolated storage, so humans and agents use the same tools.</p>
+      <p class="work-stack">Python · SQLite · NATS JetStream · Docker · Kubernetes</p>
+    </article>
+
+    <article class="work">
+      <div class="work-head">
+        <h3 class="work-title">Becoming Diamond</h3>
+        <a class="work-meta cv-link" href="https://becoming-diamond.vercel.app/">site ↗</a>
+      </div>
+      <p class="work-desc">Shipped client product: marketing site and gated member portal delivering a 30-day video course, with AI chat, Stripe payments, and a git-based CMS for client editing. Built across front end, backend, payments, content workflows, and deployment.</p>
+      <p class="work-stack">Next.js · React 19 · TypeScript · Stripe · Decap CMS</p>
+    </article>
+  </section>
+
+  <div class="page-break"></div>
+
+  <!-- ---------- EXPERIENCE ---------- -->
+  <section class="block">
+    <div class="section-head"><span class="tick"></span><span class="label">Experience</span></div>
+
+    <div class="exp">
+      <div class="exp-meta">2024 to present · Oceanheart.ai · independent</div>
+      <p class="exp-desc"><strong>Software Engineer.</strong> Client-facing full-stack work and AI delivery tooling, covering scoping, build planning, implementation, integration, deployment and support.</p>
+    </div>
+
+    <div class="exp">
+      <div class="exp-meta">2026 (May to June) · Loans by MAL · contract</div>
+      <p class="exp-desc"><strong>Full-Stack Developer.</strong> Built the first fail-closed AI conversation engine for a UK lending context, with a Vue/TS front end, a Node/TS backend, shared Zod contracts, deterministic safety validation, and persona-driven simulation of confused, adversarial and vulnerable journeys.</p>
+    </div>
+
+    <div class="exp">
+      <div class="exp-meta">2023 to 2024 · EDITED · retail analytics</div>
+      <p class="exp-desc"><strong>Software Engineer.</strong> Data-visualisation features and enterprise API integrations for an AI-driven retail analytics SaaS. React · TypeScript · Python.</p>
+    </div>
+
+    <div class="exp">
+      <div class="exp-meta">2021 to 2023 · Brandwatch · social intelligence</div>
+      <p class="exp-desc"><strong>Software Engineer.</strong> Greenfield enterprise data-viz platform in a team of five; scalable React components, modernised legacy Backbone, mentored junior developers.</p>
+    </div>
+
+    <div class="exp">
+      <div class="exp-meta">2020 to 2021 · Telesoft</div>
+      <p class="exp-desc"><strong>Full-Stack Engineer.</strong> Secure features for cybersecurity apps. TS · Angular · Node.</p>
+    </div>
+
+    <div class="exp">
+      <div class="exp-meta">2019 to 2020 · School Business Services</div>
+      <p class="exp-desc"><strong>Software Developer.</strong> Vue front end for school financial-management software.</p>
+    </div>
+
+    <div class="exp sep">
+      <div class="exp-meta">2004 to present · NHS / Private Practice</div>
+      <p class="exp-desc"><strong>Cognitive Behavioural Therapist.</strong> Fifteen years of clinical practice, NHS and private; now a small private caseload alongside engineering.</p>
+    </div>
+  </section>
+
+  <!-- ---------- EDUCATION & TECHNICAL ---------- -->
+  <section class="block">
+    <div class="section-head"><span class="tick"></span><span class="label">Education &amp; technical</span></div>
+
+    <div class="grid-2">
+      <div class="edu">
+        <div class="mini-label">Education</div>
+        <p class="edu-item"><strong>PGDip</strong> Cognitive Behavioural Therapy<br><span class="muted">Royal Holloway, University of London</span></p>
+        <p class="edu-item"><strong>PGCert</strong> Primary Mental Healthcare<br><span class="muted">University of Central Lancashire</span></p>
+        <p class="edu-item"><strong>BSc</strong> Psychology<br><span class="muted">UWE Bristol</span></p>
+      </div>
+      <div class="tech">
+        <div class="mini-label">Technical</div>
+        <div class="tech-row"><span class="tech-key">LANG</span>TypeScript, Python, Go, Bash</div>
+        <div class="tech-row"><span class="tech-key">FE</span>React, Next.js, Vue, Angular, Astro, Tailwind</div>
+        <div class="tech-row"><span class="tech-key">BE</span>Node, FastAPI, REST, PostgreSQL, SQLite, NATS</div>
+        <div class="tech-row"><span class="tech-key">OPS</span>Git, GitHub Actions, Vercel, Docker, AWS, Terraform/OpenTofu, Kubernetes</div>
+        <div class="tech-row"><span class="tech-key">AI</span>LLM integration, agent/tool-layer architecture, provider-agnostic adapters, AI-assisted review, rubric evaluation, cost/token tracking, fail-closed safety patterns</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- INTERESTS ---------- -->
+  <section class="block">
+    <div class="section-head"><span class="tick"></span><span class="label">Interests</span></div>
+    <p class="interests-copy">Strength and kettlebell training. Meditation. Ecstatic dance, electronic music and hard rock. Authentic relating and ongoing self-development work. In the distant past, a champion bodybuilder.</p>
+    <p class="interests-loadline">The same thing runs through all of it: pick a hard practice, repeat it until it changes you. Engineering included.</p>
+  </section>
+
+</main>
+</body>
+</html>
