@@ -18,7 +18,7 @@ My recent focus has been applied AI and agentic systems, including evaluation, g
 
 ## Selected systems
 
-**[LoanSlam](https://mal-demo.up.railway.app/) - public demonstrator and evaluation surface.** A drivable, synthetic-data environment for the lending conversation engine, with evaluation reports and observable traces that turn safety claims into inspectable evidence. Vue, TypeScript, Node.js, Zod.
+**[LoanSlam production deployment](https://mal-demo.up.railway.app/) - full Nuxt website with an embedded assistant.** A synthetic-data rendition of the complete lending journey, using the current fail-closed conversation engine alongside evaluation reports and observable traces that turn safety claims into inspectable evidence. Nuxt, Vue, TypeScript, Node.js, Zod.
 
 **[Sortie](https://github.com/rickhallett/sortie) - ensemble AI code review.** Three LLMs review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity. Across six runs on a shipping codebase, 76.9% of distinct findings were surfaced by exactly one of the three reviewing models. One of those model-unique findings was a committed API key. TypeScript, Bun.
 

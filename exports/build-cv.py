@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["reportlab==4.4.9"]
+# dependencies = ["pypdf==6.14.2", "reportlab==4.4.9"]
 # ///
 """Build the canonical Oceanheart CV variants as ATS-friendly PDFs."""
 
@@ -32,6 +32,8 @@ from reportlab.platypus import (
     Table,
     TableStyle,
 )
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import BooleanObject, DictionaryObject, NameObject, TextStringObject
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = ROOT / "career" / "cv"
@@ -69,6 +71,22 @@ INK = colors.HexColor("#16191D")
 MUTED = colors.HexColor("#586271")
 RULE = colors.HexColor("#D5D9DD")
 PAPER = colors.white
+
+LINK_DESCRIPTIONS = {
+    "mailto:kai@oceanheart.ai": "Email Richard Hallett",
+    "https://github.com/rickhallett": "Richard Hallett on GitHub",
+    "https://www.linkedin.com/in/richardhallett86/": (
+        "Richard Hallett on LinkedIn"
+    ),
+    "https://oceanheart.ai": "Oceanheart website",
+    "https://www.sarahmozer.org": "Sarah Mozer Studio",
+    "https://becoming-diamond.vercel.app/": "Becoming Diamond",
+    "https://mal-demo.up.railway.app/": (
+        "LoanSlam production demonstration"
+    ),
+    "https://github.com/rickhallett/sortie": "Sortie source repository",
+    "https://thepit.cloud": "The Pit",
+}
 
 
 @dataclass
@@ -535,6 +553,43 @@ def draw_page(canvas, doc, label: str, styles: dict[str, ParagraphStyle]) -> Non
     canvas.restoreState()
 
 
+def add_accessible_pdf_metadata(path: Path) -> None:
+    """Add document language and descriptions to every link annotation."""
+
+    reader = PdfReader(path)
+    writer = PdfWriter()
+    writer.clone_document_from_reader(reader)
+    writer.root_object[NameObject("/Lang")] = TextStringObject("en-GB")
+    writer.root_object[NameObject("/ViewerPreferences")] = DictionaryObject(
+        {NameObject("/DisplayDocTitle"): BooleanObject(True)}
+    )
+
+    for page in writer.pages:
+        for reference in page.get("/Annots", []):
+            annotation = reference.get_object()
+            if annotation.get("/Subtype") != "/Link":
+                continue
+            action = annotation.get("/A")
+            uri = str(action.get("/URI")) if action and action.get("/URI") else ""
+            description = LINK_DESCRIPTIONS.get(uri, f"Open {uri}")
+            annotation[NameObject("/Contents")] = TextStringObject(description)
+
+    with tempfile.NamedTemporaryFile(
+        prefix=f"{path.stem}-accessible-",
+        suffix=".pdf",
+        dir=path.parent,
+        delete=False,
+    ) as handle:
+        temporary = Path(handle.name)
+
+    try:
+        with temporary.open("wb") as stream:
+            writer.write(stream)
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def build_variant(slug: str, config: dict[str, object]) -> Path:
     source = config["source"]
     label = str(config["label"])
@@ -571,6 +626,7 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             onLaterPages=lambda canvas, doc: draw_page(canvas, doc, label, styles),
         )
         temporary.replace(destination)
+        add_accessible_pdf_metadata(destination)
     finally:
         temporary.unlink(missing_ok=True)
 
