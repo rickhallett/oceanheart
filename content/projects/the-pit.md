@@ -94,3 +94,9 @@ L3 findings directly motivated the transactional integrity standardisation, a `D
 Next.js 16, TypeScript (strict), React 19, Drizzle ORM, Neon Postgres, Clerk auth, Stripe payments, Vercel AI SDK, Upstash Redis, PostHog, Sentry.
 
 [GitHub →](https://github.com/rickhallett/thepit)
+
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/the-pit/ and discuss the evaluation design with me: what structured agent contests can and cannot prove, and how you would extend the scoring and failure taxonomy."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to discuss what structured agent contests prove, and where the evaluation design could go next."
+  action="Discuss it with Claude" >}}

@@ -119,3 +119,9 @@ TypeScript (ESM, Node 24+), Zod for shared contracts, Vitest for tests, OpenAI R
 ## Confidentiality
 
 The contracted MVP for Loans by MAL was private, proprietary work and is not shown here. What this page describes is my own post-contract engine, my IP, demonstrated entirely over synthetic data, with no client name attached to any record and no public repository. The live demo runs against a synthetic knowledge base only. Nothing here exposes Loans by MAL's data, code, or customers.
+
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/fail-closed-llm-engine/ and interrogate the architecture with me: where fail-closed validation could still leak, how the audit trace holds up under adversarial input, and what you would probe first in a design review."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to stress-test the fail-closed design with you: validators, audit traces, and where you would attack it first."
+  action="Stress-test it with Claude" >}}

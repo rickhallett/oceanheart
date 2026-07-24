@@ -99,3 +99,9 @@ Full survey: [landscape.md](https://github.com/rickhallett/sortie/blob/main/docs
 - **Real traces over retrospective storytelling**. Attestations and ledger entries are written as the pipeline runs, not reconstructed after
 
 [GitHub →](https://github.com/rickhallett/sortie)
+
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/sortie/ and discuss adversarial multi-model code review with me: convergence analysis, severity gating, and where single-reviewer blind spots survive."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to discuss adversarial multi-model review: convergence, severity gating, and surviving blind spots."
+  action="Discuss it with Claude" >}}
