@@ -4,6 +4,11 @@ date = "2026-03-30"
 description = "8 remaining categories. Media players, PDFs, passwords, screenshots, CAD, diagramming, VMs, gaming. Gaming is the second irreducible category - games exist for human experience."
 tags = ["agent-native", "consumer", "gaming", "cad"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 463
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}

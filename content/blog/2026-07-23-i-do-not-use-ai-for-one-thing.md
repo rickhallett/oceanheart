@@ -5,6 +5,11 @@ description = "Voice dictation, computer use, terminal agents, parallel work, cl
 tags = ["agents", "computer-use", "context-engineering", "human-ai-collaboration", "workflow"]
 draft = false
 
+copy_metrics_version = 1
+copy_word_count = 2270
+copy_not_count = 24
+copy_not_ratio = 0.01057269
+
 [build]
 render = "always"
 list = "never"

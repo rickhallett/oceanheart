@@ -4,6 +4,11 @@ date = "2026-04-10"
 description = "Making AI output sound like one specific human, using structured rubrics and 20-50 scored examples instead of a quarter-million dollars of fine-tuning infrastructure."
 tags = ["ai-engineering", "rlhf", "voice-fidelity", "eval", "dpo"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 723
+copy_not_count = 7
+copy_not_ratio = 0.00968188
 +++
 
 I'm building a content pipeline for Aura — Daoist practitioner, Qi Gong teacher, someone whose audience knows her voice in three sentences. The AI-generated content needs to sound like *her*, not like a wellness content mill with the temperature turned up.

@@ -4,6 +4,11 @@ date = "2026-04-05"
 description = "How I built a system that tracks every penny it spends on AI — and why that's the whole point."
 tags = ["engineering", "data", "llm", "cost", "architecture", "jeany"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 1854
+copy_not_count = 14
+copy_not_ratio = 0.00755124
 +++
 
 There are roughly 200 RSS feeds publishing substantive AI content daily — newsletters, company blogs, research feeds, tech publications. If you read them all, you'd know everything happening in the AI content economy. Nobody reads them all.

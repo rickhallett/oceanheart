@@ -4,6 +4,11 @@ date = "2026-02-28"
 description = "I asked my agent to extract every verbatim thing I'd typed across 20 files in the repo, build a voice profile, then cross-analyse every blog post against it. Every post read like an agent wrote it and a human approved it."
 tags = ["agents", "voice", "honesty", "meta"]
 draft = false
+
+copy_metrics_version = 1
+copy_word_count = 875
+copy_not_count = 16
+copy_not_ratio = 0.01828571
 +++
 
 I run a multi-agent system with 12 specialised agents and over 200 session decisions on file. Every decision, every directive, every correction I've typed is recorded verbatim in the repo. That's about 8,000 words of my actual voice, spread across 20 sources.

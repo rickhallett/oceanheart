@@ -4,6 +4,11 @@ date = "2026-03-28"
 description = "4 web/content categories. Web scraping is inherently programmatic. CMS is CRUD on structured content. SEO is data analysis + rule application."
 tags = ["agent-native", "web", "scraping", "cms", "seo"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 412
+copy_not_count = 1
+copy_not_ratio = 0.00242718
 +++
 
 {{< draft-notice >}}

@@ -4,6 +4,11 @@ date = "2026-04-05"
 description = "I deployed an event-sourced multi-agent fleet to Kubernetes on my second day of using it. Everything worked locally. Nothing worked in the cluster. The bugs were the interesting part."
 tags = ["kubernetes", "containers", "deployment", "nats", "event-sourcing", "ai-agents", "debugging"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 1785
+copy_not_count = 14
+copy_not_ratio = 0.00784314
 +++
 
 I deployed four AI advisors to a Kubernetes cluster on my second day of using Kubernetes. The system worked perfectly on my MacBook. In the cluster, it broke thirteen different ways. None of the bugs were in my application logic. All of them were in the gap between "runs locally" and "runs in a container on a remote node."

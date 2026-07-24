@@ -4,6 +4,11 @@ date = "2026-03-01"
 description = "I pointed a tokeniser at the repo. The boot sequence had an elephant in it."
 tags = ["agents", "tokens", "infrastructure", "discipline"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 30
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 ```

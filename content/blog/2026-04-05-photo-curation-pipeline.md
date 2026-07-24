@@ -4,6 +4,11 @@ date = "2026-04-05"
 description = "Building a resume-safe, multi-pass system that turns 4,700 unsorted iPhone photos into a categorised library — using metadata heuristics, perceptual hashing, and Claude's vision API."
 tags = ["agents", "vision", "pipeline", "python", "engineering"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 1373
+copy_not_count = 3
+copy_not_ratio = 0.00218500
 +++
 
 My Photos library had become a junk drawer. 4,691 items spanning six years: travel photos mixed with screenshots of WiFi passwords, AI-generated art alongside blurry pocket shots, receipts next to family portraits. Apple's "Memories" feature kept surfacing a screenshot of a Slack thread next to a sunset in Portugal.

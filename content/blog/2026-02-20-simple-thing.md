@@ -4,6 +4,11 @@ date = "2026-02-20"
 description = "I asked my agent how to trigger a daily Vercel rebuild. It gave me deploy hooks, environment variables, logging scripts. I asked why."
 tags = ["agents", "simplicity", "over-engineering"]
 draft = false
+
+copy_metrics_version = 1
+copy_word_count = 180
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 I needed a cron job to rebuild my Vercel site daily. Scheduled publishing. Posts with a future `publishDate` become visible when their date passes.

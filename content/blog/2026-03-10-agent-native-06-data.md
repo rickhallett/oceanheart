@@ -4,6 +4,11 @@ date = "2026-03-27"
 description = "4 data/analysis categories. Data viz is taste-required. Statistics, ML experiment tracking, and BI are mostly/fully reducible. The agent computes the correlation directly."
 tags = ["agent-native", "data", "analysis", "visualisation"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 387
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}

@@ -4,6 +4,11 @@ date = "2026-03-25"
 description = "4 communication categories. Video conferencing is the only truly irreducible category in the entire taxonomy. Email, chat, and social media are mostly reducible."
 tags = ["agent-native", "communication", "meetings", "email"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 350
+copy_not_count = 1
+copy_not_ratio = 0.00285714
 +++
 
 {{< draft-notice >}}

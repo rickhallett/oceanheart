@@ -4,6 +4,11 @@ date = "2026-03-01"
 description = "Patterns caught in the wild while building something else entirely."
 tags = ["slopodar", "agents", "discipline", "meta"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 999
+copy_not_count = 4
+copy_not_ratio = 0.00400400
 +++
 
 None of these were planned. They were caught while building a Chrome extension, writing agent files, calibrating a voice-distance meter, wiring post-commit hooks, and arguing about test assertions. The extension was the point. The taxonomy was the accident. The taxonomy turned out to be worth more than the extension.

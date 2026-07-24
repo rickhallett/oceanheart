@@ -4,6 +4,11 @@ date = "2026-03-22"
 description = "7 productivity categories assessed. Word processing, spreadsheets, presentations, email, calendar, notes, project management. 4 fully reducible, 2 mostly, 1 taste-required."
 tags = ["agent-native", "productivity", "spreadsheets", "cli"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 377
+copy_not_count = 1
+copy_not_ratio = 0.00265252
 +++
 
 {{< draft-notice >}}

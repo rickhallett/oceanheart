@@ -5,6 +5,11 @@ description = "A WhatsApp screenshot, a live CMS, a repository full of operating
 tags = ["agents", "context-engineering", "chatgpt", "cms", "human-ai-interface"]
 draft = false
 
+copy_metrics_version = 1
+copy_word_count = 761
+copy_not_count = 5
+copy_not_ratio = 0.00657030
+
 [build]
 render = "always"
 list = "always"

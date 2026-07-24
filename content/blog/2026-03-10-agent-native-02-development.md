@@ -4,6 +4,11 @@ date = "2026-03-23"
 description = "6 development categories. IDEs, version control, databases, API testing, CI/CD, containers. All 6 fully reducible. The most sophisticated IDE is a text editor + compiler + language server."
 tags = ["agent-native", "development", "ide", "cli"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 428
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}

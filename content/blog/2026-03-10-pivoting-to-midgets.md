@@ -4,6 +4,11 @@ date = "2026-03-17"
 description = "I built a SaaS product with 13 agents and 274 passing tests. Then I realised the conventions were the output, not the code."
 tags = ["midgets", "pivot", "agents", "linux", "containers"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 377
+copy_not_count = 2
+copy_not_ratio = 0.00530504
 +++
 
 {{< draft-notice >}}

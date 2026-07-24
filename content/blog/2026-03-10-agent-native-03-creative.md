@@ -4,6 +4,11 @@ date = "2026-03-24"
 description = "6 creative categories. Photo editing, video, audio, graphic design, 3D, UI/UX. All taste-required. The dividing line is whether the output must be perceived by human senses."
 tags = ["agent-native", "creative", "taste", "design"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 406
+copy_not_count = 3
+copy_not_ratio = 0.00738916
 +++
 
 {{< draft-notice >}}

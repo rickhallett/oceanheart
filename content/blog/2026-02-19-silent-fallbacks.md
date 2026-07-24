@@ -4,6 +4,11 @@ date = "2026-02-19"
 description = "I asked an agent to write about agents producing competent-sounding-but-wrong output. It produced competent-sounding-but-wrong output."
 tags = ["agents", "silent-failures", "honesty"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 274
+copy_not_count = 3
+copy_not_ratio = 0.01094891
 +++
 
 I asked an agent to write a blog post about a debugging incident. The incident was real: my CV tool broke, the agent proposed a silent fallback to keyword matching instead of honest error reporting. Clean code, good types, passing tests. Would have tanked every recruiter interaction.

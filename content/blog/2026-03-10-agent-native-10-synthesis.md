@@ -4,6 +4,11 @@ date = "2026-03-31"
 description = "48 categories assessed. 22 fully reducible, 14 mostly reducible, 10 taste-required, 2 irreducible. 60-70% of engineering effort exists to serve human visual perception, not to perform computation."
 tags = ["agent-native", "synthesis", "gui-tax", "unix", "composition"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 650
+copy_not_count = 2
+copy_not_ratio = 0.00307692
 +++
 
 {{< draft-notice >}}

@@ -4,6 +4,11 @@ date = "2026-03-19"
 description = "Gate, then 3 models review your code independently, then a 4th synthesises their findings. If they converge on a defect, confidence is high. If they diverge, investigate."
 tags = ["verification", "agents", "gauntlet", "quality"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 474
+copy_not_count = 3
+copy_not_ratio = 0.00632911
 +++
 
 {{< draft-notice >}}

@@ -4,6 +4,11 @@ date = "2026-03-01T15:00:00Z"
 description = "A standing order said 'read the file.' The file was 33,700 tokens. So we wrote 60 lines of JavaScript."
 tags = ["agents", "tokens", "discipline", "slopodar"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 2
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 ```js

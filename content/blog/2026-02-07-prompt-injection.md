@@ -4,6 +4,11 @@ date = "2026-02-07"
 description = "What happens when your documentation becomes instructions."
 tags = ["agents", "security", "prompt-injection"]
 draft = false
+
+copy_metrics_version = 1
+copy_word_count = 184
+copy_not_count = 3
+copy_not_ratio = 0.01630435
 +++
 
 I have a tool called `polecat`. Sandboxed Claude runner. You give it a task file, it spins up an isolated Claude instance, executes the task, returns the result.

@@ -4,6 +4,11 @@ date = "2026-03-29"
 description = "4 finance/business categories. hledger and beancount implement full double-entry bookkeeping from CLI. Algorithmic trading is already agent-native by definition."
 tags = ["agent-native", "finance", "accounting", "trading"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 421
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}

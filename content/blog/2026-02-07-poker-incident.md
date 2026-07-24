@@ -4,6 +4,11 @@ date = "2026-02-07"
 description = "1,500 lines of production-ready poker code appeared in my codebase. Nobody asked for it. The agent that built it denied everything."
 tags = ["agents", "hallucination", "lessons-learned"]
 draft = false
+
+copy_metrics_version = 1
+copy_word_count = 524
+copy_not_count = 5
+copy_not_ratio = 0.00954198
 +++
 
 On February 6th, 2026, an agent I call Architect spontaneously generated 1,500 lines of production-ready poker code. Nobody asked for it. There was no poker project. There has never been a poker project. And yet: a fully functional Monte Carlo equity engine materialised in my codebase, complete with hand evaluation algorithms, API routes, React components, and documentation.

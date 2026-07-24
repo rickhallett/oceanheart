@@ -4,6 +4,11 @@ date = "2026-03-26"
 description = "5 system/infrastructure categories. All fully reducible. File management, monitoring, networking, cloud consoles, backup. Every GUI in this section is a convenience wrapper over CLI operations."
 tags = ["agent-native", "infrastructure", "linux", "cli", "devops"]
 draft = true
+
+copy_metrics_version = 1
+copy_word_count = 347
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}
