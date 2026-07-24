@@ -22,7 +22,7 @@ copy_repeated_ngram_count = 0
 
 [build]
 render = "always"
-list = "never"
+list = "always"
 +++
 
 People keep asking how I use AI, as though there should be one answer.
