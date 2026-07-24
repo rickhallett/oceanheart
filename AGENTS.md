@@ -1,4 +1,4 @@
-<!-- FLUENCY_PROTOCOL_START sha256:b6f818b38d2f9f8b -->
+<!-- FLUENCY_PROTOCOL_START sha256:96b37930a6f115a4 -->
 # Coding Fluency Rehab Protocol
 
 Operational extract. Full sources:
@@ -25,7 +25,7 @@ Operational extract. Full sources:
 - Vague calls grade as miss; push for a call that can be wrong.
 
 ## Canonical Folder Map
-- This is a macOS machine rooted at `/Users/mrkai`; Fish is the interactive shell and mise owns language runtimes.
+- This is a macOS machine rooted at `/Users/mrkai`; Zsh is the interactive login shell and mise owns language runtimes.
 - Before editing or deploying, resolve the real checkout, Git root, branch, registered worktree, dirty state, and actual runtime or deployment path. Never infer them from a folder, service, or environment name.
 - The only normal project entrances are the eight direct children of `~/work`: `cockpit`, `cue`, `jobpipe`, `loanslam`, `normal`, `oai-ltd`, `oceanheart`, and `sarahs-studio`.
 - Agent and machine operations live under `~/_ops`; private state under `~/vault`; durable evidence under `~/reference`; inactive material under `~/archive`. These are not alternative project entrances.
@@ -102,6 +102,8 @@ Do not use auto-BLUE for product/application code, tests, migrations, refactors,
   ```
 
 - Before handing back any blog creation or copy-editing task, run the same command without `--write` and require it to pass.
-- The required top-level TOML fields are `copy_metrics_version`, `copy_word_count`, `copy_not_count`, and `copy_not_ratio`. They are machine-readable editorial metadata and must not be rendered into the article.
-- The ratio is the case-insensitive count of the standalone word `not` divided by the body-copy word count. The deterministic script owns the exact counting and exclusion rules.
+- Every article must carry the complete version-2 top-level TOML panel owned by the checker: words, sentences, prose paragraphs, standalone `not` and its ratio, broad negation, contrast frames, short closures, single-sentence paragraphs, first-person singular terms, contractions, editorial signposts, and repeated five-word phrases. The fields are machine-readable editorial metadata and must not be rendered into the article.
+- The standalone `not` ratio remains the case-insensitive count divided by the body-copy word count. The other counts describe voice and rhythm. They are diagnostic signals, not quality scores or targets.
+- Use `--report --format json` for structured corpus data, `--explain --file <path>` for line-level editorial candidates, and `--baseline <git-ref>` for a before-and-after comparison.
+- The deterministic hard gates reject Unicode em dash characters, broken footnote references or definitions, and missing absolute local Markdown images. Placeholder markers are reported as warnings.
 - Do not add metrics to Hugo section files such as `content/blog/_index.md`.

@@ -5,10 +5,20 @@ description = "I asked an agent to write about agents producing competent-soundi
 tags = ["agents", "silent-failures", "honesty"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 267
+copy_sentence_count = 27
+copy_paragraph_count = 10
 copy_not_count = 3
 copy_not_ratio = 0.01123596
+copy_negation_count = 4
+copy_contrast_frame_count = 3
+copy_short_closure_count = 6
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 10
+copy_contraction_count = 1
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 1
 +++
 
 I asked an agent to write a blog post about a debugging incident. The incident was real: my CV tool broke, the agent proposed a silent fallback to keyword matching instead of honest error reporting. Clean code, good types, passing tests. Would have tanked every recruiter interaction.

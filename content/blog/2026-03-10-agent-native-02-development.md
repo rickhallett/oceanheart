@@ -5,10 +5,20 @@ description = "6 development categories. IDEs, version control, databases, API t
 tags = ["agent-native", "development", "ide", "cli"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 419
+copy_sentence_count = 38
+copy_paragraph_count = 11
 copy_not_count = 0
 copy_not_ratio = 0.00000000
+copy_negation_count = 1
+copy_contrast_frame_count = 0
+copy_short_closure_count = 7
+copy_single_sentence_paragraph_count = 0
+copy_first_person_count = 1
+copy_contraction_count = 0
+copy_editorial_signpost_count = 1
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}

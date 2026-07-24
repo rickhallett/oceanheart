@@ -5,10 +5,20 @@ description = "Building a resume-safe, multi-pass system that turns 4,700 unsort
 tags = ["agents", "vision", "pipeline", "python", "engineering"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 1356
+copy_sentence_count = 86
+copy_paragraph_count = 36
 copy_not_count = 3
 copy_not_ratio = 0.00221239
+copy_negation_count = 27
+copy_contrast_frame_count = 3
+copy_short_closure_count = 9
+copy_single_sentence_paragraph_count = 10
+copy_first_person_count = 9
+copy_contraction_count = 14
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 My Photos library had become a junk drawer. 4,691 items spanning six years: travel photos mixed with screenshots of WiFi passwords, AI-generated art alongside blurry pocket shots, receipts next to family portraits. Apple's "Memories" feature kept surfacing a screenshot of a Slack thread next to a sunset in Portugal.

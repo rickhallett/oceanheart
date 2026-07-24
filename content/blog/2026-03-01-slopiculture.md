@@ -5,10 +5,20 @@ description = "Patterns caught in the wild while building something else entirel
 tags = ["slopodar", "agents", "discipline", "meta"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 978
+copy_sentence_count = 130
+copy_paragraph_count = 35
 copy_not_count = 4
 copy_not_ratio = 0.00408998
+copy_negation_count = 21
+copy_contrast_frame_count = 0
+copy_short_closure_count = 14
+copy_single_sentence_paragraph_count = 17
+copy_first_person_count = 4
+copy_contraction_count = 8
+copy_editorial_signpost_count = 2
+copy_repeated_ngram_count = 1
 +++
 
 These were caught while building a Chrome extension, writing agent files, calibrating a voice-distance meter, wiring post-commit hooks and arguing about test assertions. The taxonomy was an accident that turned out to be worth more than the intended extension.

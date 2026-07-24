@@ -4,10 +4,20 @@ date = "2026-03-10"
 description = "A first-principles curriculum for SWEs who steer AI agents. Five bootcamps, 51 steps, 208-259 hours. From Linux primitives to evaluation pipelines."
 tags = ["bootcamp", "agentic-engineering", "linux", "learning"]
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 1243
+copy_sentence_count = 78
+copy_paragraph_count = 29
 copy_not_count = 2
 copy_not_ratio = 0.00160901
+copy_negation_count = 15
+copy_contrast_frame_count = 1
+copy_short_closure_count = 7
+copy_single_sentence_paragraph_count = 4
+copy_first_person_count = 16
+copy_contraction_count = 11
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 ## The observation

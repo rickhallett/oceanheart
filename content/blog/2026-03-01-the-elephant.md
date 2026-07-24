@@ -5,10 +5,20 @@ description = "I pointed a tokeniser at the repo. The boot sequence had an eleph
 tags = ["agents", "tokens", "infrastructure", "discipline"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 30
+copy_sentence_count = 4
+copy_paragraph_count = 2
 copy_not_count = 0
 copy_not_ratio = 0.00000000
+copy_negation_count = 0
+copy_contrast_frame_count = 0
+copy_short_closure_count = 1
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 0
+copy_contraction_count = 0
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 ```

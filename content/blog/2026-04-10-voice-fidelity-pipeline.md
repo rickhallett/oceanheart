@@ -5,10 +5,20 @@ description = "Making AI output sound like one specific human, using structured 
 tags = ["ai-engineering", "rlhf", "voice-fidelity", "eval", "dpo"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 709
+copy_sentence_count = 45
+copy_paragraph_count = 17
 copy_not_count = 3
 copy_not_ratio = 0.00423131
+copy_negation_count = 10
+copy_contrast_frame_count = 1
+copy_short_closure_count = 4
+copy_single_sentence_paragraph_count = 2
+copy_first_person_count = 3
+copy_contraction_count = 10
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 I'm building a content pipeline for Aura - Daoist practitioner, Qi Gong teacher, someone whose audience knows her voice in three sentences. The AI-generated content needs to sound like *her*, not like a wellness content mill with the temperature turned up.

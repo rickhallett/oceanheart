@@ -5,10 +5,20 @@ description = "What happens when your documentation becomes instructions."
 tags = ["agents", "security", "prompt-injection"]
 draft = false
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 179
+copy_sentence_count = 21
+copy_paragraph_count = 8
 copy_not_count = 1
 copy_not_ratio = 0.00558659
+copy_negation_count = 1
+copy_contrast_frame_count = 1
+copy_short_closure_count = 4
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 5
+copy_contraction_count = 1
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 I have a tool called `polecat`. Sandboxed Claude runner. You give it a task file, it spins up an isolated Claude instance, executes the task, returns the result.

@@ -5,10 +5,20 @@ description = "I built a SaaS product with 13 agents and 274 passing tests. Then
 tags = ["midgets", "pivot", "agents", "linux", "containers"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 383
+copy_sentence_count = 18
+copy_paragraph_count = 9
 copy_not_count = 2
 copy_not_ratio = 0.00522193
+copy_negation_count = 3
+copy_contrast_frame_count = 0
+copy_short_closure_count = 5
+copy_single_sentence_paragraph_count = 3
+copy_first_person_count = 6
+copy_contraction_count = 2
+copy_editorial_signpost_count = 1
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}

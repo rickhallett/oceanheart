@@ -5,10 +5,20 @@ description = "I deployed an event-sourced multi-agent fleet to Kubernetes on my
 tags = ["kubernetes", "containers", "deployment", "nats", "event-sourcing", "ai-agents", "debugging"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 1764
+copy_sentence_count = 172
+copy_paragraph_count = 73
 copy_not_count = 10
 copy_not_ratio = 0.00566893
+copy_negation_count = 37
+copy_contrast_frame_count = 7
+copy_short_closure_count = 33
+copy_single_sentence_paragraph_count = 22
+copy_first_person_count = 12
+copy_contraction_count = 27
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 1
 +++
 
 I deployed four AI advisors to a Kubernetes cluster on my second day of using Kubernetes. The system worked perfectly on my MacBook. In the cluster, it broke thirteen different ways, all in the gap between "runs locally" and "runs in a container on a remote node."

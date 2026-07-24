@@ -4,10 +4,20 @@ date = "2026-03-30"
 description = "A third implementation of the same shipping rate service - this time with 4 parallel workers gated by Sortie's multi-model adversarial review. Pre-merge quality gates caught security issues that 48 post-hoc reviews missed."
 tags = ["engineering-process", "sortie", "adversarial-review", "swarm", "tdd"]
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 925
+copy_sentence_count = 57
+copy_paragraph_count = 22
 copy_not_count = 1
 copy_not_ratio = 0.00108108
+copy_negation_count = 9
+copy_contrast_frame_count = 1
+copy_short_closure_count = 11
+copy_single_sentence_paragraph_count = 7
+copy_first_person_count = 2
+copy_contraction_count = 3
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 This is Part 2 of [Building the Same System Twice](/blog/2026-03-30-building-the-same-system-twice/). If you haven't read that, the short version: I built a carrier integration service (TypeScript, UPS API, OAuth 2.0) twice from the same spec. Once with outside-in TDD and 48 adversarial reviews over 18 hours. Once with a parallel agent swarm in 1 hour.

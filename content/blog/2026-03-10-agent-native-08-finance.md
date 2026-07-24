@@ -5,10 +5,20 @@ description = "4 finance/business categories. hledger and beancount implement fu
 tags = ["agent-native", "finance", "accounting", "trading"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 411
+copy_sentence_count = 37
+copy_paragraph_count = 10
 copy_not_count = 0
 copy_not_ratio = 0.00000000
+copy_negation_count = 2
+copy_contrast_frame_count = 0
+copy_short_closure_count = 5
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 0
+copy_contraction_count = 4
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}

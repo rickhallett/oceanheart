@@ -5,10 +5,20 @@ description = "How I built a system that tracks every penny it spends on AI - an
 tags = ["engineering", "data", "llm", "cost", "architecture", "jeany"]
 draft = true
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 1817
+copy_sentence_count = 86
+copy_paragraph_count = 40
 copy_not_count = 7
 copy_not_ratio = 0.00385250
+copy_negation_count = 26
+copy_contrast_frame_count = 3
+copy_short_closure_count = 13
+copy_single_sentence_paragraph_count = 12
+copy_first_person_count = 7
+copy_contraction_count = 10
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 1
 +++
 
 There are roughly 200 RSS feeds publishing substantive AI content daily - newsletters, company blogs, research feeds, tech publications. If you read them all, you'd know everything happening in the AI content economy. Nobody reads them all.

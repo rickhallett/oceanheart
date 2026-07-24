@@ -5,10 +5,20 @@ description = "I asked my agent to extract every verbatim thing I'd typed across
 tags = ["agents", "voice", "honesty", "meta"]
 draft = false
 
-copy_metrics_version = 1
+copy_metrics_version = 2
 copy_word_count = 851
+copy_sentence_count = 32
+copy_paragraph_count = 15
 copy_not_count = 10
 copy_not_ratio = 0.01175088
+copy_negation_count = 22
+copy_contrast_frame_count = 1
+copy_short_closure_count = 1
+copy_single_sentence_paragraph_count = 5
+copy_first_person_count = 49
+copy_contraction_count = 6
+copy_editorial_signpost_count = 1
+copy_repeated_ngram_count = 0
 +++
 
 I run a multi-agent system with 12 specialised agents and over 200 session decisions on file. Every decision, every directive, every correction I've typed is recorded verbatim in the repo. That's about 8,000 words of my actual voice, spread across 20 sources.
