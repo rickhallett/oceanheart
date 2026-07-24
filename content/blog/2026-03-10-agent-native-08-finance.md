@@ -6,7 +6,7 @@ tags = ["agent-native", "finance", "accounting", "trading"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 421
+copy_word_count = 411
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -27,7 +27,7 @@ This is the cleanest example of an agent-native paradigm that already exists and
     assets:checking   -45.00
 ```
 
-That's a transaction. `hledger balance` gives you a balance sheet. `hledger incomestatement` gives you an income statement. `hledger register expenses:office` gives you a ledger view. No GUI needed, no database needed, no SaaS subscription needed.
+That's a transaction. `hledger balance` gives you a balance sheet. `hledger incomestatement` gives you an income statement. `hledger register expenses:office` gives you a ledger view. The text file and CLI replace the GUI, database and SaaS subscription.
 
 QuickBooks and Xero provide GUIs for entering transactions, categorising expenses, and generating reports. The underlying operations are the same: record debits and credits, query balances, generate reports. The GUI provides a form-based entry interface and visual charts. The computation is arithmetic.
 
@@ -47,7 +47,7 @@ The trading GUI (TradingView, ThinkOrSwim) exists for discretionary traders who 
 
 SAP, Oracle, NetSuite - these are large, integrated databases covering finance, HR, supply chain, manufacturing. They have APIs and scripting layers (SAP ABAP, Oracle PL/SQL, NetSuite SuiteScript). The GUI exists because thousands of employees across an organisation need to interact with the system daily, each seeing a role-specific view of the data.
 
-An agent uses the API. Worth noting: the complexity of ERP isn't in the interface. It's in the business logic and data model, and that complexity doesn't go away when you remove the GUI. You just access it differently.
+An agent uses the API. The complexity of ERP lives in the business logic and data model, and removing the GUI simply changes how you access it.
 
 ## Source
 

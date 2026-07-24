@@ -6,9 +6,9 @@ tags = ["lexicon", "vocabulary", "frameworks", "context-engineering"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 732
-copy_not_count = 2
-copy_not_ratio = 0.00273224
+copy_word_count = 728
+copy_not_count = 1
+copy_not_ratio = 0.00137363
 +++
 
 {{< draft-notice >}}
@@ -17,7 +17,7 @@ copy_not_ratio = 0.00273224
 
 Over 30 days of building software with 13 AI agents, I ended up developing a working vocabulary for things that kept happening. It started as naval metaphors - the project used *Master and Commander* as scaffolding, which was fun but eventually became a credibility problem - and ended as a ~70-term lexicon.
 
-Two independent analyses mapped about 60% of the terms to existing frameworks (DRI, quality gate, poka-yoke, etc.). That's actually good news: it means we converged on the same concepts independently through practice. The remaining ~18% that doesn't map to anything existing is where the interesting stuff is. Version 0.26 is the 3rd distillation.
+Two independent analyses mapped about 60% of the terms to existing frameworks (DRI, quality gate, poka-yoke, etc.). That's actually good news: it means we converged on the same concepts independently through practice. The interesting material lies in the remaining ~18% without an existing match. Version 0.26 is the 3rd distillation.
 
 ## What maps to existing frameworks
 
@@ -35,7 +35,7 @@ Two independent analyses mapped about 60% of the terms to existing frameworks (D
 | Verification pipeline | Swiss Cheese Model | Reason 1990 |
 | Adversarial review | Red team, FMEA | Security engineering |
 
-I was initially slightly deflated by how much mapped to existing work. But on reflection, arriving at the same concepts independently through practice is a better validation than novelty would be.
+I was initially slightly deflated by how much mapped to existing work, although arriving at the same concepts independently through practice is better validation than novelty would be.
 
 ## What is genuinely novel (~18%)
 
@@ -51,7 +51,7 @@ The novel terms all cluster around **context engineering for LLM agents** - whic
 
 5. **Compaction loss** - context window death where decisions not written to durable files are permanently lost. The context window is volatile memory with no graceful degradation.
 
-6. **Communication modes** - systematic registers for human-AI interaction (formal/exploration/execution). Not the same as "prompting styles" - these are governance modes that control what kind of output is expected.
+6. **Communication modes** - systematic registers for human-AI interaction (formal/exploration/execution). These are governance modes that control what kind of output is expected, a broader role than "prompting styles."
 
 7. **Tacking** - purposeful strategic indirection. No established SWE equivalent for "going sideways on purpose to make progress against a headwind."
 
@@ -77,7 +77,7 @@ The lexicon also encodes decision-making heuristics that govern when to stop ite
 - **Asymmetric payoff** - low cost if nothing is found, high value if something is caught. Favours running the check.
 - **Convexity** - a position with more upside than downside. The verification pipeline is convex: it costs little when it finds nothing and saves a lot when it catches something.
 
-None of this is novel economics - Marshall (1890), Taleb (2012). But naming them explicitly in the lexicon means agents can use them as decision criteria rather than me having to invoke them from intuition each time.
+The economics comes from established work by Marshall (1890) and Taleb (2012). Naming the heuristics explicitly in the lexicon lets agents use them as decision criteria rather than relying on me to invoke them from intuition each time.
 
 ## Source
 

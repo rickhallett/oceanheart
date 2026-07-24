@@ -6,9 +6,9 @@ tags = ["signal", "governance", "compression", "honesty"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 423
-copy_not_count = 3
-copy_not_ratio = 0.00709220
+copy_word_count = 416
+copy_not_count = 1
+copy_not_ratio = 0.00240385
 +++
 
 {{< draft-notice >}}
@@ -57,11 +57,11 @@ So I converted 27 files from Signal to shorthand. 201 em-dashes replaced. Net: -
 
 1. **Test the null hypothesis.** Signal looked good because I never compared it to the obvious alternative. The 4.5:1 compression claim was measured against verbose prose, not against shorthand. That's like saying your car is fast because it beats walking.
 
-2. **n=1 per cell is a sniff test, not a study.** I noted that in the test design. But the result was clear enough that statistical power was beside the point - shorthand was equal or better on every metric.
+2. **n=1 per cell is a sniff test.** I noted that in the test design, although the result was clear enough that statistical power was beside the point: shorthand was equal or better on every metric.
 
 3. **Kill your darlings means killing things you built.** Signal was mine. It had a PoC, decode tests, reasoning tests. I liked it. But the data was unambiguous, and when the Operator said "kill it," the correct response was "yes."
 
-4. **Content carries; format doesn't.** The governance rules themselves are useful. The notation I wrapped them in was not. Took me a week to discover something most writers learn earlier.
+4. **Content carries.** The governance rules themselves are useful, while the notation added nothing measurable. Took me a week to discover something most writers learn earlier.
 
 ## Source
 

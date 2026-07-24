@@ -6,9 +6,9 @@ tags = ["midgets", "pivot", "agents", "linux", "containers"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 377
+copy_word_count = 383
 copy_not_count = 2
-copy_not_ratio = 0.00530504
+copy_not_ratio = 0.00522193
 +++
 
 {{< draft-notice >}}
@@ -17,7 +17,7 @@ copy_not_ratio = 0.00530504
 
 The Pit was a SaaS debate platform. I built it over 30 days with 13 AI agents, a governance system I was developing alongside it, and a verification pipeline that got more elaborate every week. 274 tests passing. TypeScript, Next.js, the full modern stack. It worked.
 
-I didn't realise until near the end that the product wasn't what I'd actually been building.
+Near the end, I realised that the product was only one part of what I'd actually been building.
 
 ## What actually came out
 
@@ -29,7 +29,7 @@ The SaaS is archived on a git branch. What actually came out of the month was di
 - A **verification pipeline** where 3 different models review the same diff independently, then a 4th synthesises their findings
 - **Operational conventions** that compound - a lexicon, a readback protocol, formatting conventions that reduce ambiguity
 
-The interesting thing is that all of this transfers to any project. The SaaS doesn't.
+The interesting thing is that all of this transfers to any project, while the SaaS remains specific to one.
 
 ## Why midgets
 

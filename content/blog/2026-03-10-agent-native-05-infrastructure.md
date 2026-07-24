@@ -21,7 +21,7 @@ File management, system monitoring, networking, cloud consoles, backup/sync. Thi
 
 This is the most obviously CLI-native category. `cp`, `mv`, `rm`, `mkdir`, `find`, `rsync`, `tar`, `zip` - these commands predate GUIs by decades. Finder, Explorer, Nautilus - they're visual wrappers over filesystem operations. Drag-and-drop is `mv`. Double-click is `xdg-open`. The recycle bin is a hidden directory.
 
-An agent managing files doesn't need spatial layout, icon previews, or column views. It has the path. It runs the command.
+An agent managing files can work from the path and run the command without spatial layout, icon previews or column views.
 
 ## System monitoring
 

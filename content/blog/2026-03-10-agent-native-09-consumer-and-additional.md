@@ -6,7 +6,7 @@ tags = ["agent-native", "consumer", "gaming", "cad"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 463
+copy_word_count = 459
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -55,7 +55,7 @@ The agent writes the description. The renderer produces the image. The diagrammi
 
 ## Gaming is irreducible
 
-Gaming is the second of the two genuinely irreducible categories. Games exist to produce human experiences - challenge, narrative, social interaction, flow states. An agent can interact with game APIs, control inputs, and optimise strategies. But automating a game isn't playing it. It's solving an optimisation problem, and those are different things.
+Gaming is the second of the two genuinely irreducible categories. Games exist to produce human experiences - challenge, narrative, social interaction, flow states. An agent can interact with game APIs, control inputs and optimise strategies, but that automation solves a different kind of problem from playing the game.
 
 ## Media players and PDFs
 

@@ -6,18 +6,18 @@ tags = ["agent-native", "communication", "meetings", "email"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 350
-copy_not_count = 1
-copy_not_ratio = 0.00285714
+copy_word_count = 338
+copy_not_count = 0
+copy_not_ratio = 0.00000000
 +++
 
 {{< draft-notice >}}
 
 ## The irreducible category
 
-Video conferencing is one of only two genuinely irreducible categories in the whole taxonomy. The core activity is humans talking to humans - there's no programmatic equivalent to a conversation.
+Video conferencing is one of only two genuinely irreducible categories in the whole taxonomy because its core activity is humans talking to humans.
 
-You can automate everything around the meeting: scheduling (API call), recording (media capture), transcribing (speech-to-text), summarising (language model), distributing action items (task API). But the meeting itself - reading expressions, negotiating, the politics - that's the thing. Zoom's API handles the logistics. The video feed of human faces is the product, not chrome over the product.
+You can automate everything around the meeting: scheduling (API call), recording (media capture), transcribing (speech-to-text), summarising (language model), distributing action items (task API). The meeting itself involves reading expressions, negotiating and handling the politics. Zoom's API handles the logistics; the video feed of human faces is the product.
 
 ## Email and messaging
 

@@ -6,7 +6,7 @@ tags = ["agent-native", "data", "analysis", "visualisation"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 387
+copy_word_count = 384
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -27,7 +27,7 @@ This is the pattern for the entire data section. Humans need visualisations to c
 
 The edge case: when the agent produces a chart for human consumption, choosing the right visualisation is a taste decision. Bar chart or line chart? Which colour palette? How to label axes for clarity? What to emphasise and what to suppress? `matplotlib`, `seaborn`, `plotly`, `vega-lite` - the agent can produce any chart programmatically. But selecting the chart that best communicates the data to a human audience requires understanding human perception.
 
-When the agent analyses data for its own purposes - to inform a decision, to detect an anomaly, to summarise a dataset - charts are unnecessary. The analysis is computation. The chart is communication.
+When the agent analyses data for its own purposes, such as informing a decision, detecting an anomaly or summarising a dataset, charts become unnecessary. The analysis is computation; the chart is communication.
 
 ## ML experiment tracking
 
@@ -39,7 +39,7 @@ MLflow has a Python API and CLI. `mlflow experiments search`, `mlflow runs list`
 
 Tableau, Power BI, Looker, Metabase - these are SQL query builders with drag-and-drop chart creation. The core operation is: write a query, get a result, render it visually. Metabase has a REST API. Looker uses LookML (a modelling language in text files). The agent writes SQL and processes the result set.
 
-The BI dashboard exists so business users who don't write SQL can explore data visually. The agent just writes the query.
+The BI dashboard lets business users explore data visually without writing SQL. The agent writes the query directly.
 
 ## Source
 

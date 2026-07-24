@@ -5,9 +5,9 @@ description = "A first-principles curriculum for SWEs who steer AI agents. Five 
 tags = ["bootcamp", "agentic-engineering", "linux", "learning"]
 
 copy_metrics_version = 1
-copy_word_count = 1338
-copy_not_count = 5
-copy_not_ratio = 0.00373692
+copy_word_count = 1243
+copy_not_count = 2
+copy_not_ratio = 0.00160901
 +++
 
 ## The observation
@@ -20,11 +20,11 @@ But the substrate is only the beginning. Once you can verify system-level output
 
 When an agent constructs a pipeline that silently drops data on a broken pipe, or generates a shell script with a quoting bug that only surfaces on filenames containing spaces, or claims a process is healthy when it's a zombie - the human operator has to catch it. That's the job now. You steer and verify.
 
-If you don't understand what a file descriptor is, you can't diagnose why an agent's redirection is wrong. If you don't understand process groups and signals, you can't tell whether an agent's cleanup logic actually works. If you don't understand how `set -euo pipefail` interacts with subshells, you can't evaluate whether an agent's error handling is real or cosmetic.
+Diagnosing an agent's broken redirection requires understanding file descriptors. Verifying cleanup logic requires process groups and signals. Evaluating whether `set -euo pipefail` provides real error handling requires knowing how it interacts with subshells.
 
-This creates what I've been calling an oracle problem. The human is supposed to be the final verification layer. But if the human doesn't understand the substrate, errors pass through every layer uncaught. The verifier becomes the vulnerability.
+This creates what I've been calling an oracle problem. The human is supposed to be the final verification layer, but gaps in their understanding of the substrate allow errors to pass through every layer uncaught. The verifier becomes the vulnerability.
 
-The same problem scales upward. If you don't understand how LLM tokenisation affects prompt engineering, you can't tell whether an agent's context window is being used well. If you don't understand evaluation methodology, you can't tell whether your "95% accuracy" metric measures what you think it measures. If you don't understand retrieval, you can't tell whether an agent's RAG pipeline is returning relevant documents or just similar-looking ones.
+The same problem scales upward. Understanding LLM tokenisation is necessary to judge context use; evaluation methodology is necessary to interpret a "95% accuracy" claim; and retrieval knowledge separates relevant RAG results from merely similar-looking ones.
 
 ## What I built
 
@@ -75,7 +75,7 @@ Three criteria for ordering within each bootcamp:
 
 **Return per hour.** How much capability does each hour of study produce? Text pipelines score well in Bootcamp I. Prompt engineering scores well in Bootcamp II. Both open large surface areas of practical work for relatively small time investment.
 
-**Irreplaceability.** Can an agent compensate for the operator's ignorance, or must the operator know this? If an agent generates a shell script and you don't understand process substitution, the agent can't help you verify its own output. If an agent writes an evaluation harness and you don't understand the difference between accuracy and calibration, the agent's metrics are uninformative. You either understand the concepts or you don't, and the agent's confidence is uninformative either way.
+**Irreplaceability.** Can an agent compensate for the operator's ignorance, or must the operator know this? An agent cannot verify its own use of process substitution for an operator who lacks that concept. Its evaluation metrics are equally uninformative when the operator cannot distinguish accuracy from calibration. The operator's understanding remains the boundary.
 
 ## The dependency structure across bootcamps
 
@@ -91,13 +91,13 @@ Bootcamp IV (evaluation) requires II and benefits from III. You cannot build mea
 
 Bootcamp V (infrastructure) requires I, II, and benefits from IV. Production agent systems need substrate knowledge, agentic understanding, and ideally evaluation methodology to validate that the infrastructure works.
 
-## What it is not
+## Scope
 
-This is self-study material I wrote for myself and am publishing because it might be useful to others. It is not a certified programme. There is no credential at the end. The only test is whether you can read agent-generated code and tell when it's wrong - at the system level, at the prompt level, and at the evaluation level.
+This is self-study material I wrote for myself and am publishing because it might be useful to others. It offers practice rather than certification or a credential. The meaningful test is whether you can read agent-generated code and tell when it's wrong at the system, prompt and evaluation levels.
 
 Each step has interactive challenges you run in the same environment you're learning about. There are no separate lab setups. The terminal you're reading in is the terminal you practice in.
 
-Where a concept has a good origin story - Ken Thompson's fork, Doug McIlroy's pipes, Linus Torvalds's git object model, the BLEU score's limitations - I include it. Not for decoration. Historical context creates memory anchors that make the mental model stick.
+Where a concept has a good origin story - Ken Thompson's fork, Doug McIlroy's pipes, Linus Torvalds's git object model, the BLEU score's limitations - I include it because historical context creates memory anchors that make the mental model stick.
 
 Every section connects explicitly to agentic engineering. The question "why does this matter when agents write code?" gets a concrete answer for every topic.
 

@@ -6,7 +6,7 @@ tags = ["agent-native", "development", "ide", "cli"]
 draft = true
 
 copy_metrics_version = 1
-copy_word_count = 428
+copy_word_count = 419
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -15,7 +15,7 @@ copy_not_ratio = 0.00000000
 
 ## All 6 fully reducible
 
-IDEs, version control, databases, API testing, CI/CD, containers. None of this should surprise anyone - developers built these tools for themselves, and they tend to prefer CLIs. This was the most boring section to assess because the answer was always "yes, obviously."
+IDEs, version control, databases, API testing, CI/CD, containers. Developers built these tools for themselves and tend to prefer CLIs, so this was the most predictable section to assess. The answer was always "yes, obviously."
 
 ## The IDE is a perception layer
 
@@ -25,7 +25,7 @@ The agent accesses the language server directly. `typescript-language-server` pr
 
 Syntax highlighting exists because humans read code visually and need colour to distinguish identifiers from keywords. The agent parses the AST. Inline error squiggles exist because humans need spatial cues to locate problems. The agent reads the diagnostic line number.
 
-VS Code is excellent software, and I use it daily. But the agent just needs the language server and the compiler. It doesn't even need an editor.
+VS Code is excellent software, and I use it daily. An agent can work with the language server and compiler directly, even without an editor.
 
 ## Git was always CLI
 
