@@ -9,6 +9,13 @@ weight = 20
 repo = "https://github.com/rickhallett/sortie"
 +++
 
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/sortie/ and discuss adversarial multi-model code review with me: convergence analysis, severity gating, and where single-reviewer blind spots survive."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to discuss adversarial multi-model review: convergence, severity gating, and surviving blind spots."
+  action="Discuss it with Claude" >}}
+
+
 ## What it is
 
 An async adversarial code review system for multi-agent development workflows. Sortie runs a configurable roster of language models (Claude, Codex, Gemini) against a worker's diff in parallel, synthesises their findings through a 4th-model debrief invocation, triages by severity, and gates worktree merges. All findings, dispositions, and cost data are captured in a structured ledger.
@@ -99,9 +106,3 @@ Full survey: [landscape.md](https://github.com/rickhallett/sortie/blob/main/docs
 - **Real traces over retrospective storytelling**. Attestations and ledger entries are written as the pipeline runs, not reconstructed after
 
 [GitHub →](https://github.com/rickhallett/sortie)
-
-{{< claude-coach
-  prompt="Read https://www.oceanheart.ai/projects/sortie/ and discuss adversarial multi-model code review with me: convergence analysis, severity gating, and where single-reviewer blind spots survive."
-  title="Interrogate this architecture"
-  description="Open a Claude conversation primed to discuss adversarial multi-model review: convergence, severity gating, and surviving blind spots."
-  action="Discuss it with Claude" >}}
