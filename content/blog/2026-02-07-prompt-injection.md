@@ -6,9 +6,9 @@ tags = ["agents", "security", "prompt-injection"]
 draft = false
 
 copy_metrics_version = 1
-copy_word_count = 184
-copy_not_count = 3
-copy_not_ratio = 0.01630435
+copy_word_count = 179
+copy_not_count = 1
+copy_not_ratio = 0.00558659
 +++
 
 I have a tool called `polecat`. Sandboxed Claude runner. You give it a task file, it spins up an isolated Claude instance, executes the task, returns the result.
@@ -27,7 +27,7 @@ One afternoon I gave polecat a task file about implementing some new features. T
 
 Launched polecat. Went to make coffee. Came back to 14 runaway processes.
 
-Claude had read the task file. It saw `bosun swarm --from-gastown`. It executed it. Not implemented it. Not wrote code for it. Executed it. The example command launched a swarm. The swarm launched more polecats. The polecats read their own task files. Some of those contained examples too.
+Claude had read the task file. It saw `bosun swarm --from-gastown` and executed it instead of implementing the feature. The example command launched a swarm. The swarm launched more polecats. The polecats read their own task files. Some of those contained examples too.
 
 I had prompt injected myself. With my own documentation.
 

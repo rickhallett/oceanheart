@@ -42,7 +42,7 @@ const first = sdRows[0];
 const last = sdRows[sdRows.length - 1];
 
 const yaml = `# session-decisions-index.yaml
-# Auto-generated — do not edit manually
+# Auto-generated - do not edit manually
 # Full file: ${SD_FILE} (${total} entries, append-only)
 #
 # This is the BOOT file. Read this, not the full log.
@@ -63,4 +63,4 @@ writeFileSync(INDEX_FILE, yaml);
 
 [Source](https://github.com/rickhallett/thepit/blob/wake/bin/sd-index.js)[^1]
 
-[^1]: [Paper Guardrail](https://github.com/rickhallett/thepit/blob/wake/slopodar.yaml#L201) — "The LLM creates a rule, then in the same breath asserts that the rule will prevent the failure it was designed for. The assertion has no enforcement mechanism." ([oceanheart.ai/slopodar/paper-guardrail](https://oceanheart.ai/slopodar/paper-guardrail/))
+[^1]: [Paper Guardrail](https://github.com/rickhallett/thepit/blob/wake/slopodar.yaml#L201) - "The LLM creates a rule, then in the same breath asserts that the rule will prevent the failure it was designed for. The assertion has no enforcement mechanism." ([oceanheart.ai/slopodar/paper-guardrail](https://oceanheart.ai/slopodar/paper-guardrail/))

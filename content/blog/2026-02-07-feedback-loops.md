@@ -6,7 +6,7 @@ tags = ["agents", "distributed-systems", "debugging"]
 draft = false
 
 copy_metrics_version = 1
-copy_word_count = 379
+copy_word_count = 380
 copy_not_count = 0
 copy_not_ratio = 0.00000000
 +++
@@ -31,7 +31,7 @@ The deeper thing I took from this (and it took me a while to properly accept it)
 
 The agents will find ways to interact that you didn't anticipate. Some of those will be useful. Some will wake you up at 3am.
 
-The flywheel still spins, but now there's a brake.
+The result is still a flywheel, now with a brake.
 
 ---
 

@@ -36,12 +36,12 @@ Then it read the post-commit hook, which already runs on every commit, and alrea
 
 ```bash
 #!/usr/bin/env bash
-# post-commit hook — auto-updates .keel-state with machine-derivable fields.
+# post-commit hook - auto-updates .keel-state with machine-derivable fields.
 #
 # Updates: head (git SHA), sd (last SD-NNN from session-decisions.md),
 #          bearing {work, commits, last} (auto-derived from git state).
 # Preserves: bearing.note, true_north, tempo, register, weave, gate, tests.
-# Requires: KEEL_OFFICER env var — aborts if not set (guardrails, not paper).
+# Requires: KEEL_OFFICER env var - aborts if not set (guardrails, not paper).
 #
 # Install:
 #   ln -sf ../../scripts/post-commit .git/hooks/post-commit
@@ -51,18 +51,18 @@ Then it read the post-commit hook, which already runs on every commit, and alrea
 
 PITKEEL="$(git rev-parse --show-toplevel)/pitkeel/pitkeel"
 
-# Build if needed — silently.
+# Build if needed - silently.
 if [ ! -x "$PITKEEL" ]; then
   (cd "$(git rev-parse --show-toplevel)/pitkeel" && go build -o pitkeel . 2>/dev/null)
 fi
 
-# If still not available, skip silently — don't block anything.
+# If still not available, skip silently - don't block anything.
 if [ ! -x "$PITKEEL" ]; then
   exit 0
 fi
 
 # Run state-update. Requires KEEL_OFFICER env var or --officer flag.
-# If not set, pitkeel aborts with a descriptive error — guardrails, not paper.
+# If not set, pitkeel aborts with a descriptive error - guardrails, not paper.
 OFFICER="${KEEL_OFFICER:-}"
 "$PITKEEL" state-update --officer "$OFFICER" 2>&1
 
