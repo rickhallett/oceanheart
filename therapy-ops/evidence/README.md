@@ -12,5 +12,15 @@ The proof uses fake Google Workspace adapters and makes no network calls. It
 exists to prove workflow structure and safety gates before any real Workspace
 deployment.
 
+`website-route-proof.json` records the observed build and browser checks for
+the draft-only enquiry route. From the repository root, re-run the
+deterministic route checker with:
+
+```sh
+draft_output="$(mktemp -d)"
+hugo --buildDrafts --destination "${draft_output}"
+node scripts/check-therapy-draft.mjs "${draft_output}"
+```
+
 Do not add screenshots, exports, logs, or fixtures containing real client
 information.

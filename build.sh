@@ -17,7 +17,7 @@ run_matching_hugo() {
 
   current_hugo="$("${bin}" version)"
   if [[ "${current_hugo}" == *"hugo v${HUGO_VERSION}"* || "${current_hugo}" == *"hugo ${HUGO_VERSION}"* ]]; then
-    "${bin}"
+    "${bin}" --cleanDestinationDir
     exit 0
   fi
 

@@ -13,7 +13,8 @@ be committed to this repository.
 - Copy status: `DRAFT_FOR_REVIEW`
 - Data status: synthetic only
 - Operational status: not approved for real client use
-- Deployment status: not provisioned
+- Workspace deployment status: not provisioned
+- Website status: review-only draft, excluded from the production build
 
 ## Intended workflow
 
@@ -38,6 +39,9 @@ be committed to this repository.
 - `apps-script/`: generated Google Apps Script deployment source.
 - `tests/`: synthetic unit and end-to-end tests.
 - `evidence/`: deterministic synthetic proof packets.
+
+The optional public entry point is kept at `content/therapy.md`. It is a Hugo
+draft with analytics, external fonts, indexing, and web forms disabled.
 
 ## Review boundary
 
