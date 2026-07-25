@@ -43,6 +43,9 @@ be committed to this repository.
 The optional public entry point is kept at `content/therapy.md`. It is a Hugo
 draft with analytics, external fonts, indexing, and web forms disabled.
 
+Current implementation and tracker evidence are recorded in
+`docs/implementation-status.md` and `docs/linear-backlog.md`.
+
 ## Review boundary
 
 Draft language is deliberately encapsulated outside the automation code.
