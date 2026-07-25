@@ -81,6 +81,16 @@
       "permanent": true
     },
     {
+      "source": "/pattern-before-automation",
+      "destination": "/blog/2026-07-25-pattern-before-automation/",
+      "permanent": true
+    },
+    {
+      "source": "/pattern-before-automation/",
+      "destination": "/blog/2026-07-25-pattern-before-automation/",
+      "permanent": true
+    },
+    {
       "source": "/photo-curation",
       "destination": "/blog/2026-04-05-photo-curation-pipeline/",
       "permanent": true
