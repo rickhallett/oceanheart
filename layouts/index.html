@@ -1,7 +1,14 @@
 {{ define "main" }}
 <section class="hero">
-  <p class="hero-kicker">Forward-deployed / applied AI engineering</p>
-  <h1>I turn business problems into <span class="accent">working systems</span>, fast, using AI as leverage.</h1>
+  <div class="hero-top">
+    <div class="hero-heading">
+      <p class="hero-kicker">Forward-deployed / applied AI engineering</p>
+      <h1>I turn business problems into <span class="accent">working systems</span>, fast, using AI as leverage.</h1>
+    </div>
+    <div class="hero-mark">
+      <img src="/images/oceanheart-mark.svg" alt="Oceanheart zero and dot mark" width="200" height="200">
+    </div>
+  </div>
   <p class="subtitle">
     I'm not a traditional developer anymore. I earned those stripes shipping production software,
     then moved past hand-writing code. Now I build whole business capability with AI-assisted systems:
@@ -15,28 +22,10 @@
 </section>
 
 <section class="home-section">
-  <div class="metrics-band">
-    <div class="metric">
-      <div class="metric-value">6.5 yrs</div>
-      <div class="metric-label">shipping production software</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">3</div>
-      <div class="metric-label">paid client deliveries</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">5</div>
-      <div class="metric-label">AI systems on show</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">6.4B</div>
-      <div class="metric-label">tokens through agent harnesses, 37 days</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">15 yrs</div>
-      <div class="metric-label">clinical practice before engineering</div>
-    </div>
-  </div>
+  <ul class="metrics-list" aria-label="Experience and delivery metrics">
+    <li><strong>6.5 yrs</strong><span>shipping production software</span></li>
+    <li><strong>15 yrs</strong><span>clinical practice before engineering</span></li>
+  </ul>
   <p class="metrics-note">Numbers from the <a href="/cv/">CV</a> and the <a href="/blog/2026-07-23-dispatches-and-deep-arcs/">agent telemetry write-up</a>.</p>
 </section>
 
@@ -45,7 +34,7 @@
     <h2>Selected work</h2>
     <a href="/projects/" class="more">all work &rarr;</a>
   </div>
-  {{ $order := slice "/projects/fail-closed-llm-engine" "/projects/the-pit" "/projects/becoming-diamond" "/projects/sortie" "/projects/halo" }}
+  {{ $order := slice "/projects/fail-closed-llm-engine" "/projects/sarah-mozer-studio" "/projects/human-os" "/projects/becoming-diamond" "/projects/sortie" "/projects/halo" }}
   {{ range $order }}{{ with $.Site.GetPage . }}{{ partial "work-row.html" . }}{{ end }}{{ end }}
 </section>
 

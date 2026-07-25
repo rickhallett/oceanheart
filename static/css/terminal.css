@@ -319,16 +319,39 @@ nav .container {
 
 /* Homepage — hero */
 .hero {
-  padding: 3.5rem 0 2.25rem;
+  padding: 3.5rem 0 0;
+}
+
+.hero-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(9rem, 12rem);
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero-heading {
+  min-width: 0;
 }
 
 .hero-kicker {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: 0;
   color: var(--cyan);
   margin-bottom: 1rem;
+}
+
+.hero-mark {
+  width: 100%;
+  max-width: 12rem;
+  justify-self: end;
+}
+
+.hero-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .hero h1 {
@@ -388,41 +411,24 @@ nav .container {
   background: rgba(192, 202, 245, 0.05);
 }
 
-/* Homepage — metrics band */
-.metrics-band {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--bg-tertiary);
-  border-radius: 2px;
+/* Homepage metrics */
+.metrics-list {
+  list-style: none;
   margin: 0 0 0.75rem;
-  overflow: hidden;
+  padding: 0;
+  border-top: 1px solid var(--bg-tertiary);
 }
 
-/* Keep all five metrics on one row at desktop width */
-@media (min-width: 641px) {
-  .metrics-band {
-    grid-template-columns: repeat(5, 1fr);
-  }
+.metrics-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--bg-tertiary);
 }
 
-/* Two columns on small screens; the odd metric spans, so no empty cell shows */
-@media (max-width: 640px) {
-  .metrics-band {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .metric:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-}
-
-.metric {
-  background: var(--bg);
-  padding: 0.9rem 1rem;
-}
-
-.metric-value {
+.metrics-list strong {
+  flex: 0 0 5.5rem;
   font-family: var(--font-mono);
   font-size: var(--fs-h3);
   font-weight: 500;
@@ -430,11 +436,10 @@ nav .container {
   line-height: 1.2;
 }
 
-.metric-label {
+.metrics-list span {
   font-size: var(--fs-xs);
   color: var(--text-secondary);
   line-height: 1.4;
-  margin-top: 0.15rem;
 }
 
 .metrics-note {
@@ -1037,6 +1042,10 @@ footer a:hover {
   margin-top: 3.5rem;
 }
 
+.hero + .home-section {
+  margin-top: 2rem;
+}
+
 .home-section-head {
   display: flex;
   align-items: baseline;
@@ -1525,6 +1534,21 @@ a.work-row-title { text-decoration: none; }
 
 @media (max-width: 640px) {
   :root { --fs-hero: 1.9rem; }
+
+  .hero {
+    padding-top: 1rem;
+  }
+
+  .hero-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .hero-mark {
+    order: -1;
+    width: 7.5rem;
+    justify-self: start;
+  }
 
   /* Justified text at a narrow measure produces rivers and broken words */
   article .content p {

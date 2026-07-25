@@ -10,6 +10,13 @@ repo = "https://github.com/rickhallett/halo"
 status = "personal infra"
 +++
 
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/halo/ and interrogate the architecture with me: whether one CLI surface can safely serve humans and agents, how isolated stores and NATS JetStream interact, where event delivery or projection rebuilds could fail, and what you would probe first in a design review."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to examine the shared CLI contract, event stream, isolated stores, projections, and recovery boundaries."
+  action="Discuss it with Claude" >}}
+
+
 ## What it is
 
 A personal engineering tool layer. Halo is a set of small CLI modules, work tracking, memory, briefing synthesis, email triage, journaling, agent orchestration, each with an explicit command surface and its own isolated store. The design rule is that a human and an agent reach for the same tool the same way: there is no separate "agent API" bolted on after the fact, because the CLI *is* the API.
