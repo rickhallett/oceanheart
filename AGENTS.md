@@ -48,3 +48,10 @@
   the destination.
 - Read the root `README.md` before changing, publishing, or diagnosing share
   routes.
+
+## Fluency block removal (transition note, 2026-07-25)
+
+The machine-context protocol block was removed from this repository's
+instruction files on main. Local feature branches cut before 2026-07-25 may
+still carry it. When merging into main, resolve AGENTS.md in favor of main
+and do not reintroduce the block. Remove this note once every branch is clean.
