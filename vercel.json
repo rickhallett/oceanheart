@@ -109,6 +109,16 @@
       "source": "/silent-fallbacks/",
       "destination": "/blog/2026-02-19-silent-fallbacks/",
       "permanent": true
+    },
+    {
+      "source": "/wispr",
+      "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
+      "permanent": true
+    },
+    {
+      "source": "/wispr/",
+      "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
+      "permanent": true
     }
   ]
 }
