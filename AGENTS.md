@@ -1,4 +1,4 @@
-<!-- FLUENCY_PROTOCOL_START sha256:96b37930a6f115a4 -->
+<!-- FLUENCY_PROTOCOL_START sha256:003494db749950ca -->
 # Coding Fluency Rehab Protocol
 
 Operational extract. Full sources:
@@ -27,7 +27,7 @@ Operational extract. Full sources:
 ## Canonical Folder Map
 - This is a macOS machine rooted at `/Users/mrkai`; Zsh is the interactive login shell and mise owns language runtimes.
 - Before editing or deploying, resolve the real checkout, Git root, branch, registered worktree, dirty state, and actual runtime or deployment path. Never infer them from a folder, service, or environment name.
-- The only normal project entrances are the eight direct children of `~/work`: `cockpit`, `cue`, `jobpipe`, `loanslam`, `normal`, `oai-ltd`, `oceanheart`, and `sarahs-studio`.
+- The only normal project entrances are the direct children of `~/work`, fourteen as of 2026-07-25: `agentic-labs`, `cockpit`, `cue`, `human-os`, `jobpipe`, `loanslam`, `medicine-2026`, `normal`, `oai-ltd`, `oceanheart`, `sarahs-studio`, `secrets-manager`, `singleshot`, and `tinybench`.
 - Agent and machine operations live under `~/_ops`; private state under `~/vault`; durable evidence under `~/reference`; inactive material under `~/archive`. These are not alternative project entrances.
 - Worktrees must be Git-registered and remain subordinate to their repository. Branch-backed worktrees may be maintained centrally; detached worktrees are opt-in mutation targets.
 - Repository-local ownership is the default. Cockpit indexes and composes the system; it is not a miscellaneous shared-library home. Do not create cross-project code without an explicit owner and repeated need.
@@ -76,6 +76,13 @@ Do not use auto-BLUE for product/application code, tests, migrations, refactors,
 - `rehab mode set RED` is an indefinite block until mode changes.
 - `rehab red <minutes>` / `rehab focus <minutes>` are hard timed blocks; keep agent-imposed blocks short and state them plainly.
 - `rehab blue <minutes> --reason "<why>"` opens an explicit exception window; `rehab blue-end` closes it.
+
+## High-Stakes Clinical And Client-Data Workflows
+- Agents may build structures, draft materials, run synthetic tests, and prepare options. Clinical suitability, formulation, diagnosis, risk and safeguarding decisions, treatment, consent sufficiency, and final professional outputs remain with the practitioner.
+- Default to drafts and synthetic data. Before live capture or automation, require practitioner approval; verified scope, indemnity, and supervision or referral boundaries; and a documented data map, lawful bases, DPIA, processors, access, retention, and incident route.
+- Keep identifiable client and health data out of Git, tickets, generic agent context, rehab logs, and public-site forms. Use an approved private system of record, coded identifiers, least privilege, and separate administrative, clinical, and client-visible records.
+- Consent must be granular, current, and revocable. Explain capture, recording or transcription, AI purpose and processors, access, and retention separately; reconfirm recording or transcription at each session where used.
+- Fail closed on uncertainty about identity, authentication, scope, consent, storage, processor, or destination. Do not invite, capture, transcribe, process, share, send, or delete. Require synthetic-first rehearsal, exact live readback, an audit trail, and human review. Never automate deletion of clinical records.
 
 ## Reports
 - Daily report: `rehab report daily --date <YYYY-MM-DD>`
