@@ -1,0 +1,39 @@
+{
+  "version": "v0.1.0",
+  "status": "DRAFT_FOR_REVIEW",
+  "effectiveDate": "[EFFECTIVE_DATE_AFTER_APPROVAL]",
+  "documents": [
+    {
+      "id": "how-we-work",
+      "file": "01-how-we-work.md",
+      "audience": "client",
+      "requiresSignature": false
+    },
+    {
+      "id": "therapy-agreement",
+      "file": "02-therapy-agreement.md",
+      "audience": "client",
+      "requiresSignature": true
+    },
+    {
+      "id": "privacy-notice",
+      "file": "03-privacy-notice.md",
+      "audience": "client",
+      "requiresSignature": false,
+      "requiresAcknowledgement": true
+    },
+    {
+      "id": "transcription-ai-schedule",
+      "file": "04-transcription-and-ai-processing.md",
+      "audience": "client",
+      "requiresSignature": true
+    },
+    {
+      "id": "remote-session-checklist",
+      "file": "05-remote-session-checklist.md",
+      "audience": "client",
+      "requiresSignature": false,
+      "requiresAcknowledgement": true
+    }
+  ]
+}

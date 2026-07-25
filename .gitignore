@@ -1,3 +1,6 @@
 .vercel
 public/
 resources/
+therapy-ops/.local/
+therapy-ops/build/
+therapy-ops/apps-script/.clasp.json

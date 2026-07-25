@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "id": "private-therapy-intake",
+  "version": "v0.1.0",
+  "status": "DRAFT_FOR_REVIEW",
+  "title": "Private therapy intake",
+  "description": "Please provide the minimum information needed to arrange and safely begin remote therapy. Do not use this form for an emergency.",
+  "settings": {
+    "collectEmail": false,
+    "limitToOneResponse": false,
+    "allowResponseEdits": false,
+    "showResponseSummary": false,
+    "sendResponseCopy": "on-request",
+    "requiresGoogleAccount": false,
+    "acceptingResponses": true
+  },
+  "sections": [
+    {
+      "id": "identity",
+      "title": "About you",
+      "items": [
+        {
+          "id": "fullName",
+          "type": "text",
+          "label": "Full name",
+          "required": true
+        },
+        {
+          "id": "preferredName",
+          "type": "text",
+          "label": "Name you would like me to use",
+          "required": false
+        },
+        {
+          "id": "dateOfBirth",
+          "type": "date",
+          "label": "Date of birth",
+          "required": true
+        },
+        {
+          "id": "pronouns",
+          "type": "text",
+          "label": "Pronouns, if you would like to share them",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact details",
+      "items": [
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email address",
+          "required": true
+        },
+        {
+          "id": "phone",
+          "type": "phone",
+          "label": "Telephone number",
+          "required": true
+        },
+        {
+          "id": "address",
+          "type": "paragraph",
+          "label": "Home address",
+          "required": true
+        },
+        {
+          "id": "safeContactMethod",
+          "type": "multiple-choice",
+          "label": "Which contact method is safe for routine messages?",
+          "required": true,
+          "options": [
+            "Email",
+            "Telephone call",
+            "Text message"
+          ]
+        },
+        {
+          "id": "contactRestrictions",
+          "type": "paragraph",
+          "label": "Is there anything I should know about when or how it is safe to contact you?",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "gp-emergency",
+      "title": "GP and emergency contact",
+      "items": [
+        {
+          "id": "gpName",
+          "type": "text",
+          "label": "GP name, if known",
+          "required": false
+        },
+        {
+          "id": "gpPractice",
+          "type": "text",
+          "label": "GP practice",
+          "required": true
+        },
+        {
+          "id": "gpPhone",
+          "type": "phone",
+          "label": "GP practice telephone number",
+          "required": true
+        },
+        {
+          "id": "emergencyContactName",
+          "type": "text",
+          "label": "Emergency contact name",
+          "required": true
+        },
+        {
+          "id": "emergencyContactRelationship",
+          "type": "text",
+          "label": "Relationship to you",
+          "required": true
+        },
+        {
+          "id": "emergencyContactPhone",
+          "type": "phone",
+          "label": "Emergency contact telephone number",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "remote-suitability",
+      "title": "Remote-session practicalities",
+      "items": [
+        {
+          "id": "ukBased",
+          "type": "multiple-choice",
+          "label": "Will you normally be physically located in the United Kingdom during sessions?",
+          "required": true,
+          "options": [
+            "Yes",
+            "No",
+            "I am not sure"
+          ]
+        },
+        {
+          "id": "privateSpace",
+          "type": "multiple-choice",
+          "label": "Can you normally join from a private place where you will not be overheard?",
+          "required": true,
+          "options": [
+            "Yes",
+            "No",
+            "Sometimes"
+          ]
+        },
+        {
+          "id": "deviceAccess",
+          "type": "checkboxes",
+          "label": "Which devices can you use for sessions?",
+          "required": true,
+          "options": [
+            "Laptop or desktop with webcam",
+            "Tablet",
+            "Telephone",
+            "I need to discuss an alternative"
+          ]
+        },
+        {
+          "id": "accessibilityNeeds",
+          "type": "paragraph",
+          "label": "Please describe any accessibility, communication, or technology needs you would like me to consider.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "clinical-overview",
+      "title": "A brief starting point",
+      "items": [
+        {
+          "id": "reasonForSeekingTherapy",
+          "type": "paragraph",
+          "label": "What would you most like help with at the moment?",
+          "required": true
+        },
+        {
+          "id": "hopesForTherapy",
+          "type": "paragraph",
+          "label": "What would tell you that therapy was useful?",
+          "required": false
+        },
+        {
+          "id": "currentSupport",
+          "type": "paragraph",
+          "label": "Are you currently receiving relevant support, treatment, or medication that would be helpful for me to know about?",
+          "required": false
+        },
+        {
+          "id": "immediateSafetyConcern",
+          "type": "multiple-choice",
+          "label": "Is there an immediate concern about your safety or someone else's safety that requires urgent support?",
+          "required": true,
+          "options": [
+            "No",
+            "Yes",
+            "I am not sure"
+          ],
+          "reviewRule": "Any answer other than No blocks automatic progression and requires practitioner review."
+        }
+      ]
+    },
+    {
+      "id": "acknowledgements",
+      "title": "Before submitting",
+      "items": [
+        {
+          "id": "notEmergencyService",
+          "type": "checkbox",
+          "label": "I understand that this form and service are not monitored as an emergency or crisis service.",
+          "required": true
+        },
+        {
+          "id": "privacyNoticeAcknowledged",
+          "type": "checkbox",
+          "label": "I have received the draft privacy notice and understand that I can ask questions before therapy begins.",
+          "required": true
+        },
+        {
+          "id": "informationAccurate",
+          "type": "checkbox",
+          "label": "The information I have provided is accurate to the best of my knowledge.",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "session-capture-check",
+  "version": "v0.1.0",
+  "status": "DRAFT_FOR_REVIEW",
+  "audience": "practitioner",
+  "description": "A practitioner-only structured check before transcription or AI-supported processing.",
+  "fields": [
+    {
+      "id": "clientId",
+      "type": "client-id",
+      "required": true
+    },
+    {
+      "id": "sessionId",
+      "type": "session-id",
+      "required": true
+    },
+    {
+      "id": "clientLocationConfirmed",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "privacyConfirmed",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "consentVersion",
+      "type": "version",
+      "required": true
+    },
+    {
+      "id": "transcriptionAllowedToday",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "approvedAiPurposes",
+      "type": "multi-select",
+      "required": true,
+      "options": [
+        "provisional-formulation",
+        "treatment-planning",
+        "progress-review",
+        "report-or-letter-drafting",
+        "client-visible-material"
+      ]
+    },
+    {
+      "id": "checkedBy",
+      "type": "practitioner-identity",
+      "required": true
+    },
+    {
+      "id": "checkedAt",
+      "type": "timestamp",
+      "required": true
+    }
+  ]
+}
