@@ -1,0 +1,11 @@
+{
+  "name": "oceanheart-blog-retirement",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
