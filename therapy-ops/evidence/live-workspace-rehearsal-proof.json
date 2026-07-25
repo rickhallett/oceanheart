@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-25T08:11:58.000Z",
+  "sourceCommit": "9eb8f82",
+  "environment": "Oceanheart Google Workspace draft",
+  "dataClassification": "synthetic-only",
+  "provisioning": {
+    "appsScriptFilesPushed": 6,
+    "templateDocumentsCreated": 5,
+    "systemSpreadsheetsCreated": 2,
+    "intakeFormsCreated": 1,
+    "intakeFormAcceptingResponses": false,
+    "externalCollaborators": 0
+  },
+  "rehearsal": {
+    "clientId": "OH-SYNTH001",
+    "finalState": "CLOSED",
+    "clientBoundaryFolders": [
+      "Admin",
+      "Clinical",
+      "Shared"
+    ],
+    "adminDocumentsCreated": 4,
+    "clinicalFilesCreated": 0,
+    "sharedDocumentsCreated": 1,
+    "auditEventsRecorded": 19,
+    "blockedChecks": [
+      "urgent-safety-review-required",
+      "practitioner-send-approval-required",
+      "session-capture-check-required",
+      "approved-ai-processor-and-purpose-required",
+      "practitioner-sharing-approval-required"
+    ],
+    "externalCalendarInviteCreated": false,
+    "externalFileShared": false,
+    "externalAiRequestCreated": false,
+    "deletionPerformed": false
+  },
+  "readback": {
+    "copyVersion": "v0.1.0",
+    "copyStatus": "DRAFT_FOR_REVIEW",
+    "visibleReviewPlaceholdersRetained": true,
+    "aiRequestRows": 0,
+    "sessionCheckRows": 0,
+    "realClientDataObserved": false
+  },
+  "cleanup": {
+    "completedAt": "2026-07-25T08:16:17.000Z",
+    "cleanupCommit": "fa4dad0",
+    "syntheticClientFolderMovedToTrash": true,
+    "syntheticClientRowsDeleted": 1,
+    "syntheticAuditRowsDeleted": 19,
+    "sessionCheckRowsDeleted": 0,
+    "aiRequestRowsDeleted": 0,
+    "liveSyntheticRowsRemaining": 0,
+    "reusableDraftInfrastructurePreserved": true
+  }
+}

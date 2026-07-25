@@ -50,22 +50,37 @@ See `linear-backlog.md` for the issue map.
 
 ### Google Workspace
 
-The connected Drive profile was confirmed as `kai@oceanheart.ai`.
+The connected Drive and Apps Script profile was confirmed as
+`kai@oceanheart.ai`.
 
-Live draft provisioning did not proceed because:
+The disabled draft was provisioned and live-read back on 2026-07-25:
 
-- the current Google Drive connection lacks write scope;
-- the local machine has no Google Apps Script authentication file; and
-- the available connector does not create Google Forms or Apps Script
-  projects.
+- one private Apps Script project containing six pushed source files;
+- five template Docs;
+- one system Sheet and one restricted response Sheet;
+- one intake Form that visibly reports it is not accepting responses;
+- owner-only Drive permissions with no external collaborators; and
+- one coded synthetic client with separate Admin, Clinical, and Shared
+  folders.
 
-One attempted creation of a clearly marked draft root folder was rejected by
-Google before any Drive artifact was created. No repeated or alternative write
-attempt was made.
+The live rehearsal reached `CLOSED` and recorded 19 audit events. It proved the
+urgent-safety, invitation, transcription, AI, sharing, and deletion gates
+without sending a Calendar invitation, sharing a file, invoking an AI
+processor, or deleting a record. The Clinical folder and AI request table
+remain empty.
 
-The next operational action is RIC-13: authorize the intended Workspace
-provisioning route, create the draft artifacts with intake disabled, then
-complete the synthetic rehearsal in RIC-14.
+After evidence capture, the coded client folder was moved to Drive Trash and
+all 19 synthetic audit rows plus the synthetic client row were purged. The
+live system Sheets are back to header-only state. The draft Form, templates,
+system folders, and provisioning source remain available for review.
+
+Deployment identifiers are stored only in ignored local state. The
+non-identifying proof packet is
+`evidence/live-workspace-rehearsal-proof.json`.
+
+RIC-13 and RIC-14 are complete. The system remains
+`NOT_APPROVED_FOR_REAL_CLIENT_USE`; the next work is practitioner approval and
+the eSignature, payment, Meet transcription, and processor verification gates.
 
 ## Known tooling limitation
 

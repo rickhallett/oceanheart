@@ -13,7 +13,7 @@ be committed to this repository.
 - Copy status: `DRAFT_FOR_REVIEW`
 - Data status: synthetic only
 - Operational status: not approved for real client use
-- Workspace deployment status: not provisioned
+- Workspace deployment status: provisioned for synthetic review only
 - Website status: review-only draft, excluded from the production build
 
 ## Intended workflow
@@ -66,3 +66,7 @@ This validates the source catalog, regenerates the Apps Script catalog, runs a
 synthetic end-to-end onboarding and closure, writes the deterministic proof
 packet, and runs the test suite. It does not call Google or use real client
 data.
+
+The live Google Workspace rehearsal is recorded separately in
+`evidence/live-workspace-rehearsal-proof.json`. Deployment identifiers remain
+in ignored local state under `.local/`.

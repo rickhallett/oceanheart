@@ -37,6 +37,17 @@ This step is not approved until the practitioner reviews the current draft.
 
 Use an obviously synthetic identity and an `example.test` email address.
 
+For the no-external-side-effect rehearsal, run
+`runTherapySyntheticWorkspaceRehearsal()` from the Apps Script editor. It uses
+the fixed coded identity `OH-SYNTH001`, keeps the intake Form inactive, and
+does not create a Calendar invitation, share a file, call an AI processor, or
+delete a record.
+
+After capturing evidence, run
+`cleanupTherapySyntheticWorkspaceRehearsal()`. It can target only the fixed
+synthetic client, moves its folder to Drive Trash, purges its system rows, and
+leaves the reusable draft infrastructure in place.
+
 1. Run `createTherapyEnquiry()`.
 2. Run `confirmTherapySuitability()` with both gates set to `true`.
 3. Open the returned prefilled intake URL.
