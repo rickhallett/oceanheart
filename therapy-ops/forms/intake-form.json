@@ -20,6 +20,13 @@
       "title": "About you",
       "items": [
         {
+          "id": "invitationCode",
+          "type": "text",
+          "label": "Invitation code",
+          "helpText": "This should already be filled in from the private link you received.",
+          "required": true
+        },
+        {
           "id": "fullName",
           "type": "text",
           "label": "Full name",
