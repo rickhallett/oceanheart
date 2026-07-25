@@ -307,3 +307,136 @@ function runTherapySyntheticWorkspaceRehearsal() {
   );
   return result;
 }
+
+function therapyOpsSyntheticDeleteRows(
+  sheet,
+  clientId,
+  clientIdColumn,
+) {
+  var deleted = 0;
+  for (var row = sheet.getLastRow(); row >= 2; row -= 1) {
+    if (
+      String(sheet.getRange(row, clientIdColumn).getValue()) ===
+      clientId
+    ) {
+      sheet.deleteRow(row);
+      deleted += 1;
+    }
+  }
+  return deleted;
+}
+
+function therapyOpsSyntheticClientFolder(record, registry) {
+  var adminFolder = DriveApp.getFolderById(record.adminFolderId);
+  var clientParents = adminFolder.getParents();
+  if (!clientParents.hasNext()) {
+    throw new Error("SYNTHETIC_CLIENT_PARENT_NOT_FOUND");
+  }
+  var clientFolder = clientParents.next();
+  if (clientFolder.getName() !== THERAPY_OPS_SYNTHETIC_CLIENT_ID) {
+    throw new Error("SYNTHETIC_CLIENT_FOLDER_NAME_MISMATCH");
+  }
+
+  var rootParents = clientFolder.getParents();
+  if (!rootParents.hasNext()) {
+    throw new Error("SYNTHETIC_CLIENTS_ROOT_NOT_FOUND");
+  }
+  var clientsRoot = rootParents.next();
+  if (clientsRoot.getId() !== registry.clientsFolderId) {
+    throw new Error("SYNTHETIC_CLIENT_FOLDER_OUTSIDE_DRAFT_ROOT");
+  }
+  return clientFolder;
+}
+
+function cleanupTherapySyntheticWorkspaceRehearsal() {
+  if (
+    THERAPY_OPS_CATALOG.service.operationalStatus !==
+    "NOT_APPROVED_FOR_REAL_CLIENT_USE"
+  ) {
+    throw new Error("SYNTHETIC_CLEANUP_REQUIRES_DRAFT_STATUS");
+  }
+
+  var properties = PropertiesService.getScriptProperties();
+  var registry = TherapyOpsWorkspace.registry();
+  var record;
+  try {
+    record = TherapyOpsWorkspace.getClient(
+      THERAPY_OPS_SYNTHETIC_CLIENT_ID,
+    );
+  } catch (error) {
+    var message = String(error && error.message ? error.message : error);
+    if (
+      message.indexOf(
+        "CLIENT_NOT_FOUND:" + THERAPY_OPS_SYNTHETIC_CLIENT_ID,
+      ) !== 0
+    ) {
+      throw error;
+    }
+    properties.deleteProperty(
+      THERAPY_OPS_SYNTHETIC_REHEARSAL_KEY,
+    );
+    return {
+      schemaVersion: 1,
+      clientId: THERAPY_OPS_SYNTHETIC_CLIENT_ID,
+      alreadyClean: true,
+      clientFolderTrashed: false,
+      clientRowsDeleted: 0,
+      auditRowsDeleted: 0,
+      sessionCheckRowsDeleted: 0,
+      aiRequestRowsDeleted: 0,
+      markerDeleted: true,
+    };
+  }
+
+  if (record.clientId !== THERAPY_OPS_SYNTHETIC_CLIENT_ID) {
+    throw new Error("SYNTHETIC_CLEANUP_CLIENT_ID_MISMATCH");
+  }
+  if (record.state !== "CLOSED") {
+    throw new Error(
+      "SYNTHETIC_CLEANUP_REQUIRES_CLOSED_STATE:" + record.state,
+    );
+  }
+
+  var clientFolder = therapyOpsSyntheticClientFolder(
+    record,
+    registry,
+  );
+  clientFolder.setTrashed(true);
+
+  var spreadsheet = SpreadsheetApp.openById(
+    registry.systemSpreadsheetId,
+  );
+  var auditRowsDeleted = therapyOpsSyntheticDeleteRows(
+    spreadsheet.getSheetByName("Audit"),
+    record.clientId,
+    2,
+  );
+  var sessionCheckRowsDeleted = therapyOpsSyntheticDeleteRows(
+    spreadsheet.getSheetByName("Session Checks"),
+    record.clientId,
+    2,
+  );
+  var aiRequestRowsDeleted = therapyOpsSyntheticDeleteRows(
+    spreadsheet.getSheetByName("AI Requests"),
+    record.clientId,
+    2,
+  );
+  var clientRowsDeleted = therapyOpsSyntheticDeleteRows(
+    spreadsheet.getSheetByName("Clients"),
+    record.clientId,
+    1,
+  );
+  properties.deleteProperty(THERAPY_OPS_SYNTHETIC_REHEARSAL_KEY);
+
+  return {
+    schemaVersion: 1,
+    clientId: record.clientId,
+    alreadyClean: false,
+    clientFolderTrashed: true,
+    clientRowsDeleted: clientRowsDeleted,
+    auditRowsDeleted: auditRowsDeleted,
+    sessionCheckRowsDeleted: sessionCheckRowsDeleted,
+    aiRequestRowsDeleted: aiRequestRowsDeleted,
+    markerDeleted: true,
+  };
+}
