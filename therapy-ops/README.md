@@ -48,3 +48,14 @@ catalog.
 
 Before real use, the practitioner must approve the clinical model and obtain
 any required professional, insurance, data-protection, and legal review.
+
+## One-command local proof
+
+```sh
+npm run proof
+```
+
+This validates the source catalog, regenerates the Apps Script catalog, runs a
+synthetic end-to-end onboarding and closure, writes the deterministic proof
+packet, and runs the test suite. It does not call Google or use real client
+data.

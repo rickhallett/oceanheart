@@ -181,6 +181,20 @@ function createTherapySessionInvite(clientId, session) {
     throw new Error("SESSION_INVITE_NOT_ALLOWED_FOR_STATE:" + record.state);
   }
 
+  var outcome = TherapyOpsCore.transition(
+    THERAPY_OPS_CATALOG.workflow,
+    record,
+    "SESSION_READY",
+    {
+      sessionScheduledAt: session.startAt,
+      fallbackPhoneConfirmed: session.fallbackPhoneConfirmed === true,
+      remoteChecklistAcknowledged:
+        session.remoteChecklistAcknowledged === true,
+    },
+    "practitioner",
+    therapyOpsNow(),
+  );
+
   var requestId =
     clientId.replace(/[^A-Z0-9]/g, "") +
     "-" +
@@ -221,20 +235,7 @@ function createTherapySessionInvite(clientId, session) {
     },
   );
 
-  var outcome = TherapyOpsCore.transition(
-    THERAPY_OPS_CATALOG.workflow,
-    record,
-    "SESSION_READY",
-    {
-      sessionScheduledAt: session.startAt,
-      fallbackPhoneConfirmed: session.fallbackPhoneConfirmed === true,
-      remoteChecklistAcknowledged:
-        session.remoteChecklistAcknowledged === true,
-      firstCalendarEventId: event.id,
-    },
-    "practitioner",
-    therapyOpsNow(),
-  );
+  outcome.record.facts.firstCalendarEventId = event.id;
   TherapyOpsWorkspace.saveClient(outcome.record);
   TherapyOpsWorkspace.appendAudit(outcome.audit);
   return {
@@ -406,6 +407,116 @@ function requestTherapyAiDraft(clientId, request) {
   };
   TherapyOpsWorkspace.recordAiRequest(queuedRequest);
   return queuedRequest;
+}
+
+function approveTherapySharedFile(clientId, request) {
+  var record = TherapyOpsWorkspace.getClient(clientId);
+  var authorization = TherapyOpsCore.authorizeAction(
+    THERAPY_OPS_CATALOG.workflow,
+    record,
+    "SHARE_CLIENT_VISIBLE_FILE",
+    {
+      sharedFolderTarget: record.sharedFolderId,
+      practitionerApprovedForSharing:
+        request.practitionerApprovedForSharing === true,
+      artifactType: request.artifactType,
+    },
+    "practitioner",
+    therapyOpsNow(),
+  );
+  TherapyOpsWorkspace.appendAudit(authorization.audit);
+  if (!authorization.allowed) {
+    throw new Error(
+      "CLIENT_VISIBLE_COPY_BLOCKED:" + authorization.missing.join(","),
+    );
+  }
+  var source = DriveApp.getFileById(request.sourceFileId);
+  var copy = source.makeCopy(
+    clientId + " - " + request.clientVisibleTitle,
+    DriveApp.getFolderById(record.sharedFolderId),
+  );
+  TherapyOpsWorkspace.appendAudit(
+    TherapyOpsCore.auditEvent(
+      record.clientId,
+      "CLIENT_VISIBLE_COPY_CREATED",
+      "allowed",
+      "practitioner",
+      {
+        artifactType: request.artifactType,
+      },
+      therapyOpsNow(),
+    ),
+  );
+  return {
+    clientId: clientId,
+    copiedFileId: copy.getId(),
+    sharedExternally: false,
+  };
+}
+
+function beginTherapyClosure(clientId, closure) {
+  var record = TherapyOpsWorkspace.getClient(clientId);
+  var outcome = TherapyOpsCore.transition(
+    THERAPY_OPS_CATALOG.workflow,
+    record,
+    "CLOSURE_DUE",
+    {
+      closureReason: closure.closureReason,
+      closureReviewScheduled: closure.closureReviewScheduled,
+    },
+    "practitioner",
+    therapyOpsNow(),
+  );
+  TherapyOpsWorkspace.saveClient(outcome.record);
+  TherapyOpsWorkspace.appendAudit(outcome.audit);
+  return outcome.record;
+}
+
+function completeTherapyClosure(clientId, closure) {
+  var record = TherapyOpsWorkspace.getClient(clientId);
+  var outcome = TherapyOpsCore.transition(
+    THERAPY_OPS_CATALOG.workflow,
+    record,
+    "CLOSED",
+    {
+      sharedMaterialDisposition: closure.sharedMaterialDisposition,
+      invoiceBalanceReviewed: closure.invoiceBalanceReviewed === true,
+      retentionReviewDatesSet: closure.retentionReviewDatesSet === true,
+      closureApprovedByPractitioner:
+        closure.closureApprovedByPractitioner === true,
+    },
+    "practitioner",
+    therapyOpsNow(),
+  );
+  TherapyOpsWorkspace.saveClient(outcome.record);
+  TherapyOpsWorkspace.appendAudit(outcome.audit);
+  return outcome.record;
+}
+
+function reviewTherapyRecordDeletion(clientId, review) {
+  var record = TherapyOpsWorkspace.getClient(clientId);
+  if (record.state !== "CLOSED") {
+    throw new Error("DELETION_REVIEW_NOT_ALLOWED_FOR_STATE:" + record.state);
+  }
+  var authorization = TherapyOpsCore.authorizeAction(
+    THERAPY_OPS_CATALOG.workflow,
+    record,
+    "DELETE_RECORD",
+    {
+      retentionDateReached: review.retentionDateReached === true,
+      noActiveHold: review.noActiveHold === true,
+      practitionerDeletionApproval:
+        review.practitionerDeletionApproval === true,
+    },
+    "practitioner",
+    therapyOpsNow(),
+  );
+  TherapyOpsWorkspace.appendAudit(authorization.audit);
+  return {
+    authorized: authorization.allowed,
+    missing: authorization.missing,
+    deletionPerformed: false,
+  };
 }
 
 function activateTherapyIntakeForm(releaseApproval) {
