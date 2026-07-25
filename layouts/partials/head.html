@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
 <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<link rel="canonical" href="{{ .Permalink }}">
 {{- $ogSlug := "home" }}
 {{- if not .IsHome }}{{ $ogSlug = path.Base (strings.TrimSuffix "/" .RelPermalink) }}{{ end }}
 {{- if not (fileExists (printf "static/og/%s.png" $ogSlug)) }}{{ $ogSlug = "default" }}{{ end }}

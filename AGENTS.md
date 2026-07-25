@@ -107,3 +107,30 @@ Do not use auto-BLUE for product/application code, tests, migrations, refactors,
 - Use `--report --format json` for structured corpus data, `--explain --file <path>` for line-level editorial candidates, and `--baseline <git-ref>` for a before-and-after comparison.
 - The deterministic hard gates reject Unicode em dash characters, broken footnote references or definitions, and missing absolute local Markdown images. Placeholder markers are reported as warnings.
 - Do not add metrics to Hugo section files such as `content/blog/_index.md`.
+
+## Share-friendly blog routes
+
+- Keep each article's dated Hugo URL as its canonical SEO URL.
+- Every article with `draft = false` and `[build] render = "always"` must define
+  at least one short, stable, site-relative root alias in top-level TOML
+  frontmatter, for example `aliases = ["/ai/"]`.
+- Use Hugo `aliases` as the source of truth. Do not hand-edit generated
+  `/blog/` entries in `vercel.json`.
+- After changing article aliases, run:
+
+  ```sh
+  node scripts/sync-share-routes.mjs --write
+  node scripts/sync-share-routes.mjs --check
+  ```
+
+- `build.sh` must keep the `--check` gate so stale, duplicate, malformed,
+  missing, or root-colliding aliases fail before deployment.
+- Choose human-readable aliases that remain permanently tied to one article.
+  Never repoint an existing permanent share route to a newer article.
+- Preserve both generated Vercel source forms, with and without a trailing
+  slash, until production evidence proves Vercel normalizes them identically.
+- Verify short routes as `308`, their `Location` headers as the dated canonical
+  paths, followed responses as `200`, and canonical plus Open Graph metadata on
+  the destination.
+- Read the root `README.md` before changing, publishing, or diagnosing share
+  routes.

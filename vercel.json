@@ -18,5 +18,97 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/agent-boot",
+      "destination": "/blog/2026-03-01-the-elephant/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-boot/",
+      "destination": "/blog/2026-03-01-the-elephant/",
+      "permanent": true
+    },
+    {
+      "source": "/ai",
+      "destination": "/blog/2026-07-23-i-do-not-use-ai-for-one-thing/",
+      "permanent": true
+    },
+    {
+      "source": "/ai/",
+      "destination": "/blog/2026-07-23-i-do-not-use-ai-for-one-thing/",
+      "permanent": true
+    },
+    {
+      "source": "/dispatches",
+      "destination": "/blog/2026-07-23-dispatches-and-deep-arcs/",
+      "permanent": true
+    },
+    {
+      "source": "/dispatches/",
+      "destination": "/blog/2026-07-23-dispatches-and-deep-arcs/",
+      "permanent": true
+    },
+    {
+      "source": "/intelligence-pipeline",
+      "destination": "/blog/2026-04-05-cost-aware-intelligence-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/intelligence-pipeline/",
+      "destination": "/blog/2026-04-05-cost-aware-intelligence-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/kill-signal",
+      "destination": "/blog/2026-03-10-kill-signal/",
+      "permanent": true
+    },
+    {
+      "source": "/kill-signal/",
+      "destination": "/blog/2026-03-10-kill-signal/",
+      "permanent": true
+    },
+    {
+      "source": "/olivia",
+      "destination": "/blog/2026-07-24-the-first-feature-was-a-pleasant-place-to-begin/",
+      "permanent": true
+    },
+    {
+      "source": "/olivia/",
+      "destination": "/blog/2026-07-24-the-first-feature-was-a-pleasant-place-to-begin/",
+      "permanent": true
+    },
+    {
+      "source": "/photo-curation",
+      "destination": "/blog/2026-04-05-photo-curation-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/photo-curation/",
+      "destination": "/blog/2026-04-05-photo-curation-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/sarah",
+      "destination": "/blog/2026-07-23-the-agent-knew-which-plus-button-she-meant/",
+      "permanent": true
+    },
+    {
+      "source": "/sarah/",
+      "destination": "/blog/2026-07-23-the-agent-knew-which-plus-button-she-meant/",
+      "permanent": true
+    },
+    {
+      "source": "/silent-fallbacks",
+      "destination": "/blog/2026-02-19-silent-fallbacks/",
+      "permanent": true
+    },
+    {
+      "source": "/silent-fallbacks/",
+      "destination": "/blog/2026-02-19-silent-fallbacks/",
+      "permanent": true
+    }
   ]
 }

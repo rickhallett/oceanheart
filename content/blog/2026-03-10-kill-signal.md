@@ -4,6 +4,7 @@ date = "2026-03-16"
 description = "Signal was a compressed notation for expressing process discipline. A 3-model adversarial test showed conventional shorthand works just as well with fewer characters. SD-321: Signal has no signal."
 tags = ["signal", "governance", "compression", "honesty"]
 draft = false
+aliases = ["/kill-signal/"]
 
 copy_metrics_version = 2
 copy_word_count = 412

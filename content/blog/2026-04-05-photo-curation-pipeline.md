@@ -4,6 +4,7 @@ date = "2026-04-05"
 description = "Building a resume-safe, multi-pass system that turns 4,700 unsorted iPhone photos into a categorised library - using metadata heuristics, perceptual hashing, and Claude's vision API."
 tags = ["agents", "vision", "pipeline", "python", "engineering"]
 draft = false
+aliases = ["/photo-curation/"]
 
 copy_metrics_version = 2
 copy_word_count = 1356

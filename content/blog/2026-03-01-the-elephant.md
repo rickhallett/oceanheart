@@ -4,6 +4,7 @@ date = "2026-03-01"
 description = "I pointed a tokeniser at the repo. The boot sequence had an elephant in it."
 tags = ["agents", "tokens", "infrastructure", "discipline"]
 draft = false
+aliases = ["/agent-boot/"]
 
 copy_metrics_version = 2
 copy_word_count = 84

@@ -4,6 +4,7 @@ date = "2026-02-19"
 description = "I asked an agent to write about agents producing competent-sounding-but-wrong output. It produced competent-sounding-but-wrong output."
 tags = ["agents", "silent-failures", "honesty"]
 draft = false
+aliases = ["/silent-fallbacks/"]
 
 copy_metrics_version = 2
 copy_word_count = 267

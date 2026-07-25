@@ -4,6 +4,7 @@ date = "2026-07-23"
 description = "A WhatsApp screenshot, a live CMS, a repository full of operating context, and four annotated images. This is what context engineering looks like when it helps a real person use new software."
 tags = ["agents", "context-engineering", "chatgpt", "cms", "human-ai-interface"]
 draft = false
+aliases = ["/sarah/"]
 
 copy_metrics_version = 2
 copy_word_count = 738

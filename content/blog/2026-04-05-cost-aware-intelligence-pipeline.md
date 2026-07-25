@@ -4,6 +4,7 @@ date = "2026-04-05"
 description = "How I built a system that tracks every penny it spends on AI - and why that's the whole point."
 tags = ["engineering", "data", "llm", "cost", "architecture", "jeany"]
 draft = false
+aliases = ["/intelligence-pipeline/"]
 
 copy_metrics_version = 2
 copy_word_count = 2006

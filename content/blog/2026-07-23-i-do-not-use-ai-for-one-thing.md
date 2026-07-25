@@ -4,6 +4,7 @@ date = "2026-07-23"
 description = "Voice dictation, computer use, terminal agents, parallel work, client systems, prompt governance, private telemetry, and a way to check whether speed is improving or hiding my judgment."
 tags = ["agents", "computer-use", "context-engineering", "human-ai-collaboration", "workflow"]
 draft = false
+aliases = ["/ai/"]
 
 copy_metrics_version = 2
 copy_word_count = 2235

@@ -4,6 +4,7 @@ date = "2026-07-24"
 description = "Early decisions from setting up a pleasant launch cockpit where a creative collaborator can run observable experiments without first becoming a project manager."
 tags = ["agents", "human-ai-collaboration", "onboarding", "context-engineering", "experiments", "workflow"]
 draft = false
+aliases = ["/olivia/"]
 
 copy_metrics_version = 2
 copy_word_count = 2233

@@ -4,6 +4,7 @@ date = "2026-07-23"
 description = "A 37-day trace of how I work with agents: hundreds of one-turn dispatches, a small number of deep systems arcs, and 6.4 billion cache-heavy tokens behind them."
 tags = ["agents", "human-ai-collaboration", "telemetry", "context-engineering", "workflow"]
 draft = false
+aliases = ["/dispatches/"]
 
 copy_metrics_version = 2
 copy_word_count = 1553
