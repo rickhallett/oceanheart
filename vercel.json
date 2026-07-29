@@ -31,6 +31,16 @@
       "permanent": true
     },
     {
+      "source": "/agent-os",
+      "destination": "/blog/2026-07-29-the-first-adapter-had-to-earn-the-roadmap/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-os/",
+      "destination": "/blog/2026-07-29-the-first-adapter-had-to-earn-the-roadmap/",
+      "permanent": true
+    },
+    {
       "source": "/ai",
       "destination": "/blog/2026-07-23-i-do-not-use-ai-for-one-thing/",
       "permanent": true
