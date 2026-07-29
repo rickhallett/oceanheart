@@ -121,6 +121,16 @@
       "permanent": true
     },
     {
+      "source": "/two-bookends",
+      "destination": "/blog/2026-07-29-the-work-needs-two-bookends/",
+      "permanent": true
+    },
+    {
+      "source": "/two-bookends/",
+      "destination": "/blog/2026-07-29-the-work-needs-two-bookends/",
+      "permanent": true
+    },
+    {
       "source": "/wispr",
       "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
       "permanent": true
