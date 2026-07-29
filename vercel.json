@@ -81,6 +81,16 @@
       "permanent": true
     },
     {
+      "source": "/next-observation",
+      "destination": "/blog/2026-07-29-the-pole-we-hadnt-looked-at/",
+      "permanent": true
+    },
+    {
+      "source": "/next-observation/",
+      "destination": "/blog/2026-07-29-the-pole-we-hadnt-looked-at/",
+      "permanent": true
+    },
+    {
       "source": "/olivia",
       "destination": "/blog/2026-07-24-the-first-feature-was-a-pleasant-place-to-begin/",
       "permanent": true
