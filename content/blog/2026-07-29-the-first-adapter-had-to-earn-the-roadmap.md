@@ -23,7 +23,7 @@ copy_repeated_ngram_count = 0
 
 [build]
 render = "always"
-list = "never"
+list = "always"
 +++
 
 Agent OS began as a small proof with a deliberately unexciting job.
