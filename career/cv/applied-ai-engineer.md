@@ -8,7 +8,7 @@ Applied AI engineer who makes LLM systems safe to run commercially, with more th
 
 I own delivery end to end - backend, APIs, front end, infrastructure, live support - and I run AI coding agents behind structured review gates as part of that delivery. Everything I build is provider-agnostic by default: no system I ship is locked to a single LLM vendor or its pricing.
 
-Before engineering, fifteen years as a cognitive behavioural therapist. The core clinical skill - noticing when something is producing confident output that is completely wrong - is the same skill that makes evals, adversarial testing, and fail-safe design work.
+Before engineering, I worked as a cognitive behavioural therapist across NHS and private practice. The core clinical skill - noticing when something is producing confident output that is completely wrong - is the same skill that makes evals, adversarial testing, and fail-safe design work.
 
 ---
 

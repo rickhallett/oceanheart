@@ -10,20 +10,36 @@ Canonical sources:
 - `career/cv/forward-deployed-engineer.md`
 - `career/cv/applied-ai-engineer.md`
 
+Experimental Full Complement sources:
+
+- `career/cv/full-complement/frontend-developer.md`
+- `career/cv/full-complement/full-stack-developer.md`
+- `career/cv/full-complement/workflow-automation-engineer.md`
+- `career/cv/full-complement/technical-operations-engineer.md`
+
 Build all upload-ready and public copies:
 
 ```text
 uv run exports/build-cv.py
 ```
 
-Upload these local artifacts:
+Upload only these role-neutral local artifacts:
 
-- `output/pdf/richard-hallett-forward-deployed-engineer.pdf`
-- `output/pdf/richard-hallett-applied-ai-engineer.pdf`
+- `output/pdf/richard-hallett.pdf`: Forward Deployed Engineer variant
+- `output/pdf/richard-j-hallett.pdf`: Applied AI Engineer variant
 
 The build writes only the intentional public mirrors under `static/cv/`. The
 Forward Deployed Engineer variant is the default site CV and compatibility
 download at `static/richard-hallett-cv.pdf`.
+
+Full Complement PDFs are local application artifacts under `output/pdf/` and
+are not mirrored into the public site. Copy the selected variant into the
+private application directory with a role-neutral filename before upload.
+
+The role-specific filenames under `output/pdf/` and `static/cv/` are internal
+build and website artifacts. Never upload them to an application portal. A
+role name in the attachment filename can signal that the CV was prepared for a
+different function.
 
 Source files are authoritative. Never edit a generated PDF directly.
 

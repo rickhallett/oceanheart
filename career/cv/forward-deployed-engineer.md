@@ -6,23 +6,23 @@ Forward Deployed Engineer
 
 Product engineer with 6.5 cumulative years of professional software engineering since April 2019 across salaried roles, contracts, client delivery, and independent product development. I work best where the problem is still moving: embedding with the people affected, finding the operational constraint behind the brief, and carrying a useful system from discovery through production and handoff.
 
-My recent focus has been applied AI and agentic systems, including evaluation, guardrails, fail-closed design, and provider-agnostic delivery. Before engineering, I spent fifteen years as a cognitive behavioural therapist in the NHS and private practice. That background transfers directly to high-stakes discovery, stakeholder trust, and noticing when confident output is wrong.
+My recent focus has been applied AI and agentic systems, including evaluation, guardrails, fail-closed design, and provider-agnostic delivery. Before engineering, I worked as a cognitive behavioural therapist across NHS and private practice. That background transfers directly to high-stakes discovery, stakeholder trust, and noticing when confident output is wrong.
 
 ## Selected engagements
 
 **Loans by MAL - regulated UK lender, contract (2026).** Turned regulatory constraints into a fail-closed conversational system: an untrusted LLM proposes each turn, a deterministic policy validator overrides unsafe output before it reaches a customer, and every turn is audit-traced. Hardened the engine against adversarial, confused, oversharing, and vulnerable personas before happy-path testing. Defined scope across concurrent epics, presented technical direction to C-suite stakeholders, and benchmarked providers on accuracy, cost, and safety behind a swappable adapter. Vue, TypeScript, Node.js, Zod, Terraform, AWS.
 
-**[Sarah Mozer Studio](https://www.sarahmozer.org) - independent client engagement (2026).** Led discovery, implementation, deployment, and ongoing support for a Dorset artist's production commerce system. Built a typed Next.js and TinaCMS catalogue, live Stripe Checkout, a Neon-backed order projection, fail-closed finite-stock controls, and a protected owner guide around a low-administration operating model. Verified paid checkout and signed webhook processing end to end in test mode, then staged the live cutover with production read-back. Continued into owner enablement, using the live CMS, repository rules, and annotated screenshots to help the client edit safely while keeping payment and inventory fields protected.
+**Swanage Traffic Alliance - community campaign (2025).** Delivered a registration and campaign platform for a local traffic consultation, including an administration flow usable by non-technical volunteers. Astro, React, Vercel.
 
 **[Becoming Diamond](https://becoming-diamond.vercel.app/) - coaching business (2025).** Took the product from brief to revenue-ready: an animated marketing site and gated member portal with course content, AI chat, profiles, Stripe payments, and a git-based CMS the client could edit independently. Next.js, React 19, TypeScript, Tailwind, Stripe.
 
 ## Selected systems
 
-**[LoanSlam](https://mal-demo.up.railway.app/) - public demonstrator and evaluation surface.** A drivable, synthetic-data environment for the lending conversation engine, with evaluation reports and observable traces that turn safety claims into inspectable evidence. Vue, TypeScript, Node.js, Zod.
+**[LoanSlam](https://www.oceanheart.ai/projects/fail-closed-llm-engine/) - independent Phase 0 evaluation proof.** A synthetic-scenario environment for the lending conversation engine, with 122 hostile scenarios, trace evidence, and a safety floor designed to report when the system is not ready. Vue, TypeScript, Node.js, Zod.
 
 **[Sortie](https://github.com/rickhallett/sortie) - ensemble AI code review.** Three LLMs review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity. Across six runs on a shipping codebase, 76.9% of distinct findings were surfaced by exactly one of the three reviewing models. One of those model-unique findings was a committed API key. TypeScript, Bun.
 
-**[The Pit](https://thepit.cloud) - agent evaluation and cost visibility.** Structured multi-agent contests with observable traces, rubric scoring, failure tagging, and per-run microdollar cost accounting. Next.js, TypeScript, Postgres, Stripe.
+**The Pit - agent evaluation and cost visibility.** Structured multi-agent contests with observable traces, rubric scoring, failure tagging, and per-run microdollar cost accounting. Next.js, TypeScript, Postgres, Stripe.
 
 ## Experience
 
@@ -40,7 +40,7 @@ My recent focus has been applied AI and agentic systems, including evaluation, g
 
 **Apr 2019-Mar 2020 | Software Developer | School Business Services.** Vue.js front end for school financial-management software.
 
-**2004-2026 | Cognitive Behavioural Therapist | NHS and private practice.** Fifteen years of clinical practice; maintained a small private caseload alongside engineering.
+**2004-2026 | Cognitive Behavioural Therapist | NHS and private practice.** Worked across NHS and private practice; maintained a small private caseload alongside engineering.
 
 ## Education
 

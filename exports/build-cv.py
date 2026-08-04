@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["reportlab==4.4.9"]
+# dependencies = ["pypdf==6.14.2", "reportlab==4.4.9"]
 # ///
 """Build the canonical Oceanheart CV variants as ATS-friendly PDFs."""
 
@@ -32,9 +32,12 @@ from reportlab.platypus import (
     Table,
     TableStyle,
 )
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import BooleanObject, DictionaryObject, NameObject, TextStringObject
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = ROOT / "career" / "cv"
+FULL_COMPLEMENT_SOURCE_DIR = SOURCE_DIR / "full-complement"
 PRIMARY_OUTPUT_DIR = ROOT / "output" / "pdf"
 MIRROR_DIRS = (ROOT / "static" / "cv",)
 PORTRAIT = SOURCE_DIR / "assets" / "richard-hallett-portrait.jpg"
@@ -56,11 +59,39 @@ VARIANTS = {
         "source": SOURCE_DIR / "forward-deployed-engineer.md",
         "label": "Forward Deployed Engineer",
         "descriptor": "Product engineering | applied AI | client delivery",
+        "upload_filename": "richard-hallett.pdf",
+        "public_mirror": True,
     },
     "applied-ai-engineer": {
         "source": SOURCE_DIR / "applied-ai-engineer.md",
         "label": "Applied AI Engineer",
         "descriptor": "Production LLM systems | evaluation | safety",
+        "upload_filename": "richard-j-hallett.pdf",
+        "public_mirror": True,
+    },
+    "frontend-developer": {
+        "source": FULL_COMPLEMENT_SOURCE_DIR / "frontend-developer.md",
+        "label": "Frontend Developer",
+        "descriptor": "React | TypeScript | product interfaces",
+        "public_mirror": False,
+    },
+    "full-stack-developer": {
+        "source": FULL_COMPLEMENT_SOURCE_DIR / "full-stack-developer.md",
+        "label": "Full Stack Developer",
+        "descriptor": "TypeScript | React | Node.js | delivery",
+        "public_mirror": False,
+    },
+    "workflow-automation-engineer": {
+        "source": FULL_COMPLEMENT_SOURCE_DIR / "workflow-automation-engineer.md",
+        "label": "Workflow Automation Engineer",
+        "descriptor": "APIs | agents | operational workflows",
+        "public_mirror": False,
+    },
+    "technical-operations-engineer": {
+        "source": FULL_COMPLEMENT_SOURCE_DIR / "technical-operations-engineer.md",
+        "label": "Technical Operations Engineer",
+        "descriptor": "Support | systems | automation | handoff",
+        "public_mirror": False,
     },
 }
 
@@ -69,6 +100,25 @@ INK = colors.HexColor("#16191D")
 MUTED = colors.HexColor("#586271")
 RULE = colors.HexColor("#D5D9DD")
 PAPER = colors.white
+
+LINK_DESCRIPTIONS = {
+    "mailto:kai@oceanheart.ai": "Email Richard Hallett",
+    "https://github.com/rickhallett": "Richard Hallett on GitHub",
+    "https://www.linkedin.com/in/richardhallett86/": (
+        "Richard Hallett on LinkedIn"
+    ),
+    "https://oceanheart.ai": "Oceanheart website",
+    "https://www.sarahmozer.org": "Sarah Mozer Studio",
+    "https://becoming-diamond.vercel.app/": "Becoming Diamond",
+    "https://mal-demo.up.railway.app/": (
+        "LoanSlam production demonstration"
+    ),
+    "https://www.oceanheart.ai/projects/fail-closed-llm-engine/": (
+        "LoanSlam project page"
+    ),
+    "https://github.com/rickhallett/sortie": "Sortie source repository",
+    "https://thepit.cloud": "The Pit",
+}
 
 
 @dataclass
@@ -342,7 +392,7 @@ def header_story(
 
     fact_cells = []
     facts = (
-        ("BASED / TRAVEL", "Dorset, UK<br/>Remote, hybrid, willing to relocate"),
+        ("BASED / TRAVEL", "United Kingdom<br/>Remote, hybrid, willing to relocate"),
         ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
         ("DELIVERY", "Discovery to production<br/>Support and handoff"),
     )
@@ -535,10 +585,49 @@ def draw_page(canvas, doc, label: str, styles: dict[str, ParagraphStyle]) -> Non
     canvas.restoreState()
 
 
+def add_accessible_pdf_metadata(path: Path) -> None:
+    """Add document language and descriptions to every link annotation."""
+
+    reader = PdfReader(path)
+    writer = PdfWriter()
+    writer.clone_document_from_reader(reader)
+    writer.root_object[NameObject("/Lang")] = TextStringObject("en-GB")
+    writer.root_object[NameObject("/ViewerPreferences")] = DictionaryObject(
+        {NameObject("/DisplayDocTitle"): BooleanObject(True)}
+    )
+
+    for page in writer.pages:
+        for reference in page.get("/Annots", []):
+            annotation = reference.get_object()
+            if annotation.get("/Subtype") != "/Link":
+                continue
+            action = annotation.get("/A")
+            uri = str(action.get("/URI")) if action and action.get("/URI") else ""
+            description = LINK_DESCRIPTIONS.get(uri, f"Open {uri}")
+            annotation[NameObject("/Contents")] = TextStringObject(description)
+
+    with tempfile.NamedTemporaryFile(
+        prefix=f"{path.stem}-accessible-",
+        suffix=".pdf",
+        dir=path.parent,
+        delete=False,
+    ) as handle:
+        temporary = Path(handle.name)
+
+    try:
+        with temporary.open("wb") as stream:
+            writer.write(stream)
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def build_variant(slug: str, config: dict[str, object]) -> Path:
     source = config["source"]
     label = str(config["label"])
     descriptor = str(config["descriptor"])
+    upload_filename = config.get("upload_filename")
+    public_mirror = bool(config.get("public_mirror", False))
     if not isinstance(source, Path) or not source.exists():
         raise FileNotFoundError(f"Missing canonical CV source: {source}")
 
@@ -571,12 +660,17 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             onLaterPages=lambda canvas, doc: draw_page(canvas, doc, label, styles),
         )
         temporary.replace(destination)
+        add_accessible_pdf_metadata(destination)
     finally:
         temporary.unlink(missing_ok=True)
 
-    for directory in MIRROR_DIRS:
-        directory.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(destination, directory / filename)
+    if public_mirror:
+        for directory in MIRROR_DIRS:
+            directory.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(destination, directory / filename)
+
+    if upload_filename:
+        shutil.copy2(destination, PRIMARY_OUTPUT_DIR / str(upload_filename))
 
     return destination
 
