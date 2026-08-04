@@ -4,39 +4,41 @@ Frontend Developer
 
 ---
 
-Frontend product engineer with 6.5 cumulative years of professional software engineering since April 2019. I build responsive product interfaces with React, TypeScript, Next.js, and Vue, and I am comfortable carrying a feature from a design or user problem through APIs, testing, deployment, and live support.
+Frontend developer with 6.5 cumulative years of professional software engineering since April 2019. My primary experience is building responsive product interfaces with React, TypeScript, Next.js, and Vue: component systems, data visualisation, interaction flows, and user-facing features shaped around real product needs.
 
-My experience spans product teams, enterprise data visualisation, legacy modernisation, secure software, and independent client delivery. I work closely with product, design, backend, and client stakeholders, and I use AI coding tools behind normal review and testing gates.
+I work closely with product, design, backend, and client stakeholders to turn requirements into clear, maintainable interfaces. I have full-stack competencies, but frontend development is the centre of my professional experience and the work I am targeting.
 
 ## Selected frontend delivery
 
-**Brandwatch - social intelligence.** Built a greenfield enterprise data-visualisation platform in a team of five, developed scalable React components, modernised a legacy Backbone codebase, and mentored junior developers.
+**Brandwatch - social intelligence.** Built a greenfield enterprise data-visualisation interface in a team of five, developed scalable React components, modernised a legacy Backbone UI, and mentored junior developers.
 
-**EDITED - retail analytics.** Delivered React, TypeScript, and Python data-visualisation features for an AI-driven retail analytics SaaS and worked with the backend team on enterprise API integrations.
+**EDITED - retail analytics.** Built React and TypeScript features for an AI-driven retail analytics product, turning complex model and enterprise data into usable visualisations while working within modern and legacy frontend code.
 
-**Becoming Diamond - independent client delivery.** Built an animated marketing site and gated member portal with course content, an AI chat assistant, profiles, Stripe payments, and a git-based CMS the client could edit independently. Next.js App Router, React 19, TypeScript, Tailwind.
+**Artifice.** Frontend product work focused on the user-facing interface and interaction layer.
 
-**Earlier product work.** Built Vue interfaces for school financial-management software, then CMS modules, customer portals, REST integrations, and responsive interfaces using .NET, JavaScript, and Vue.
+**Becoming Diamond - independent client delivery.** Built an animated marketing interface and responsive member-portal experience spanning course navigation, profile flows, and an AI chat surface. Next.js App Router, React 19, TypeScript, Tailwind.
+
+**Earlier product work.** Built Vue interfaces for school financial-management software, followed by CMS modules, customer portals, SSO landing pages, and responsive product interfaces using JavaScript and Vue.
 
 ## Additional product work
 
-**Loans by MAL - regulated UK lender, contract.** Built the Vue and TypeScript front end for a fail-closed conversational system, sharing typed Zod contracts with a Node.js backend and retaining an audit trace for every turn.
+**Loans by MAL - regulated UK lender, contract.** Built the Vue and TypeScript conversation interface, implementing the user-facing turn flow against shared typed contracts.
 
-**Swanage Traffic Alliance.** Delivered a responsive registration and campaign platform with an administration flow usable by non-technical volunteers. Astro, React, Vercel.
+**Swanage Traffic Alliance.** Built a responsive registration experience and a clear administration flow for non-technical volunteers. Astro, React.
 
 ## Experience
 
-**Oct 2024-present | Software Engineer | Oceanheart.ai, independent.** Client-facing product delivery and independent engineering across websites, member portals, applied AI, evaluation systems, deployment, and support.
+**Oct 2024-present | Software Engineer | Oceanheart.ai, independent.** Frontend-focused client delivery across responsive websites, member portals, product interfaces, and interaction-rich user experiences.
 
-**May-Jun 2026 | Full Stack Engineer | Loans by MAL, contract.** Vue and TypeScript front end, Node.js and TypeScript backend, shared contracts, deterministic safety validation, and Terraform on AWS.
+**May-Jun 2026 | Full Stack Engineer | Loans by MAL, contract.** Frontend focus: built the Vue and TypeScript conversation interface and integrated structured turn states through shared contracts.
 
-**Nov 2023-Mar 2024 | Software Engineer | EDITED, retail analytics.** React, TypeScript, Python, data visualisation, and enterprise API integrations.
+**Nov 2023-Mar 2024 | Software Engineer | EDITED, retail analytics.** React and TypeScript product features, data visualisation, and frontend modernisation.
 
 **Jun 2021-Nov 2023 | Software Engineer | Brandwatch, social intelligence.** Greenfield React product work, scalable components, Backbone modernisation, and junior mentoring.
 
-**Sep 2020-Feb 2021 | Full Stack Engineer | Telesoft Technologies.** TypeScript, Angular, Node.js, Express, and secure cybersecurity features.
+**Sep 2020-Feb 2021 | Full Stack Engineer | Telesoft Technologies.** TypeScript and Angular interfaces for secure cybersecurity products.
 
-**Mar 2020-Aug 2020 | Web and Frontend Developer | Appius.** CMS modules, customer portals, REST integrations, .NET, JavaScript, and Vue.
+**Mar 2020-Aug 2020 | Web and Frontend Developer | Appius.** CMS modules, customer portals, responsive interfaces, JavaScript, and Vue.
 
 **Apr 2019-Mar 2020 | Software Developer | School Business Services.** Vue.js front end for school financial-management software.
 
@@ -50,8 +52,8 @@ My experience spans product teams, enterprise data visualisation, legacy moderni
 
 ## Technical
 
-**Frontend:** React, Next.js, Vue, Angular, Astro, Tailwind, responsive interfaces, data visualisation
+**Frontend:** React, TypeScript, JavaScript, Next.js, Vue, Angular, Astro, HTML, CSS, Tailwind
 
-**Languages and backend:** TypeScript, JavaScript, Python, Go, Node.js, FastAPI, REST APIs, PostgreSQL
+**Interface engineering:** Component architecture, responsive UI, data visualisation, interaction and state design, legacy UI modernisation
 
-**Delivery:** GitHub Actions, AWS, Terraform, Docker, Kubernetes, Vercel, testing and structured AI-assisted review
+**Delivery:** Cypress, API integration, GitHub Actions, Vercel, testing and structured AI-assisted review
