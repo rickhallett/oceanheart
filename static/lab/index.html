@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the lab · oceanheart.ai</title>
+<meta name="description" content="Four experimental redesigns of oceanheart.ai built with Canvas UI. Deliberately incoherent. Pick a door.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4f1ea;
+    --paper-2: #f8f5ee;
+    --panel: #fffdfa;
+    --ink: #1c1a17;
+    --ink-2: #57534e;
+    --faint: #8a857c;
+    --rule: #ddd7ca;
+    --accent: #a13d2d;
+    --accent-soft: #d8b3a8;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink-2);
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 4rem 1.25rem 6rem; }
+  .file-tab {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 2.5rem;
+  }
+  .file-tab a { color: var(--faint); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .file-tab a:hover { color: var(--accent); border-color: var(--accent-soft); }
+  h1 {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 2.05rem;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .lead { margin-bottom: 3rem; }
+  .lead em { color: var(--ink); }
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent-soft);
+    padding: 1.4rem 1.5rem 1.3rem;
+    margin-bottom: 1.1rem;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .card:hover { border-left-color: var(--accent); transform: translateX(2px); }
+  .card .num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+  .card h2 {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 1.35rem;
+    margin-bottom: 0.3rem;
+  }
+  .card p { font-size: 0.97rem; }
+  .card .kit {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--faint);
+    margin-top: 0.6rem;
+    display: block;
+  }
+  .note {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.875rem;
+    color: var(--faint);
+  }
+  .note code {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 0.1em 0.35em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="file-tab">oceanheart.ai / the lab · four doors, one site · <a href="/">back to the real thing</a></p>
+  <h1>Four ways this site could stop behaving.</h1>
+  <p class="lead">Experimental redesigns built on Canvas UI, a WebGL and html-in-canvas component library. Deliberately incoherent as a set: each one takes a single strand of what this site is about and turns it all the way up. <em>None of this is the real homepage. That is the point.</em></p>
+
+  <a class="card" href="/lab/undertow.html">
+    <span class="num">01 / VARIANT</span>
+    <h2>Undertow</h2>
+    <p>The site is named after an ocean and has never once looked like one. Ink and oxblood disperse through pointer-driven water over the same warm paper.</p>
+    <span class="kit">liquid · ripple</span>
+  </a>
+
+  <a class="card" href="/lab/decrypt.html">
+    <span class="num">02 / VARIANT</span>
+    <h2>Decrypt</h2>
+    <p>The homepage as a verification terminal. Copy resolves from scrambled glyphs into verified text; the work presents as audit traces.</p>
+    <span class="kit">glyph-rain · hand-rolled scramble-reveal</span>
+  </a>
+
+  <a class="card" href="/lab/clarity.html">
+    <span class="num">03 / VARIANT</span>
+    <h2>Clarity</h2>
+    <p>Fifteen years of making opaque things legible, played as optics. Frost clears where you look; a lens invites close reading of the work.</p>
+    <span class="kit">frost · glass · magnify</span>
+  </a>
+
+  <a class="card" href="/lab/wrong.html">
+    <span class="num">04 / VARIANT</span>
+    <h2>Sometimes Completely Wrong</h2>
+    <p>Confident, coherent, and periodically corrupted. The page glitches mid-sentence, the verification layer catches it, and the text restores clean. The failure loop is the pitch.</p>
+    <span class="kit">glitch · vhs · shatter</span>
+  </a>
+
+  <p class="note">Built with <code>canvasui.dev</code> vanilla components inlined per page. Full effects need Chrome's html-in-canvas origin trial; every page is designed so the WebGL-overlay fallback is the primary experience. Local branch <code>claude/canvas-ui-lab</code>, not deployed.</p>
+</div>
+</body>
+</html>
