@@ -197,6 +197,13 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 
 /* ---- Hero ----------------------------------------------------- */
 .hero { padding: 1rem 0 0.5rem; max-width: 40ch; }
+.hero-mark {
+  display: block;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: var(--accent);
+  margin: 1.5rem 0 0.4rem;
+}
 .hero-statement {
   font-family: var(--font-serif);
   font-weight: 400;
