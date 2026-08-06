@@ -260,13 +260,26 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .nav-links a.cta { color: var(--accent-lift); }
 
 /* ---- Hero ----------------------------------------------------- */
-.hero { padding: 1rem 0 0.5rem; max-width: 40ch; }
+/* Two columns: the copy speaks on the left, the mark holds the right. */
+.hero {
+  padding: 1.5rem 0 0.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2.5rem 3.5rem;
+  align-items: center;
+}
+.hero-copy { max-width: 40ch; }
 .hero-mark {
   display: block;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: clamp(8rem, 20vw, 12rem);
+  height: auto;
   color: var(--accent-lift);
-  margin: 1.5rem 0 0.9rem;
+  margin: 0 1rem 0 0;
+  justify-self: end;
+}
+@media (max-width: 640px) {
+  .hero { grid-template-columns: 1fr; gap: 2rem; }
+  .hero-mark { width: 6rem; justify-self: start; margin: 0; }
 }
 .hero-statement {
   font-family: var(--font-serif);
