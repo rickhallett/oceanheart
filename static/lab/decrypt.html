@@ -119,19 +119,6 @@ nav .container{display:flex;align-items:center;justify-content:space-between}
 }
 .sysline::before{content:"$";color:var(--accent-lift)}
 .sysline .bar{flex:1;height:1px;background:var(--rule-2)}
-.verdict{
-  font-family:var(--font-mono);
-  font-size:var(--fs-xs);
-  letter-spacing:0.14em;
-  color:var(--accent-lift);
-  border:1px solid var(--accent-soft);
-  padding:0.1rem 0.45rem;
-  white-space:nowrap;
-  opacity:0;
-  transform:translateY(2px);
-  transition:opacity .6s ease,transform .6s ease;
-}
-.verdict.shown{opacity:1;transform:none}
 
 .hero-statement{
   font-family:var(--font-serif);
@@ -206,26 +193,12 @@ nav .container{display:flex;align-items:center;justify-content:space-between}
 }
 
 .trace-foot{
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;
   gap:1rem;flex-wrap:wrap;
   margin-top:1.1rem;
   padding-top:0.85rem;
   border-top:1px solid var(--rule-2);
 }
-.stamp{
-  font-family:var(--font-mono);
-  font-size:var(--fs-xs);
-  font-weight:700;
-  letter-spacing:0.22em;
-  color:var(--accent-lift);
-  border:1px solid var(--accent-soft);
-  padding:0.12rem 0.5rem 0.12rem 0.6rem;
-  white-space:nowrap;
-  transform:rotate(-1.5deg) scale(1.06);
-  opacity:0;
-  transition:opacity .45s ease .45s,transform .45s ease .45s;
-}
-.trace.in .stamp{opacity:0.92;transform:rotate(-1.5deg) scale(1)}
 
 .chips{display:flex;flex-wrap:wrap;align-items:baseline;gap:0}
 .chip{font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--faint);white-space:nowrap}
@@ -293,8 +266,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
 @media (prefers-reduced-motion:reduce){
   #rain{display:none}
   [data-decrypt]{transition:none}
-  .verdict{opacity:1;transform:none;transition:none}
-  .stamp{opacity:0.92;transform:rotate(-1.5deg);transition:none}
 }
 </style>
 </head>
@@ -327,10 +298,9 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
       <p class="sysline">
         <span>decrypt identity.rec</span>
         <span class="bar"></span>
-        <span class="verdict" id="hero-verdict">VERIFIED</span>
       </p>
       <h1 class="hero-statement" data-decrypt>I spent fifteen years as a therapist. Then I shipped production software. Now I build the AI that has to be trusted in front of real people.</h1>
-      <p class="lead" data-decrypt data-after="#hero-verdict">People, and now machines, produce confident, coherent output that's <em>sometimes completely wrong.</em> The real work is building the systems that catch it. That's what I do.</p>
+      <p class="lead" data-decrypt>People, and now machines, produce confident, coherent output that's <em>sometimes completely wrong.</em> The real work is building the systems that catch it. That's what I do.</p>
     </section>
 
     <section class="traces">
@@ -352,7 +322,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
         </p>
         <p class="trace-desc" data-decrypt>My own fail-closed conversation engine for a regulated lending domain, built after a 30-day Loans by MAL contract, as my vision of how it should work. An untrusted LLM proposes; deterministic code decides; every turn is audit-traced. Prototypal, over synthetic data.</p>
         <p class="trace-foot">
-          <span class="stamp">PASS</span>
           <span class="chips">
             <a class="chip" href="https://x827e1872-production.up.railway.app/?devtools=true" rel="noopener">live &#8599;</a>
             <a class="chip" href="/projects/fail-closed-llm-engine/">details &rarr;</a>
@@ -372,7 +341,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
         </p>
         <p class="trace-desc" data-decrypt>Multi-agent AI evaluation platform. Structured contests between agent configurations with observable traces, scoring, failure tagging, and cost visibility.</p>
         <p class="trace-foot">
-          <span class="stamp">PASS</span>
           <span class="chips">
             <a class="chip" href="https://www.thepit.cloud" rel="noopener">live &#8599;</a>
             <a class="chip" href="https://github.com/rickhallett/thepit" rel="noopener">repo &#8599;</a>
@@ -393,7 +361,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
         </p>
         <p class="trace-desc" data-decrypt>Async adversarial multi-model code review system. Parallel LLM fan-out, debrief synthesis with convergence analysis, severity-gated merge blocking. Python.</p>
         <p class="trace-foot">
-          <span class="stamp">PASS</span>
           <span class="chips">
             <a class="chip" href="https://github.com/rickhallett/sortie" rel="noopener">repo &#8599;</a>
             <a class="chip" href="/projects/sortie/">details &rarr;</a>
@@ -413,7 +380,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
         </p>
         <p class="trace-desc" data-decrypt>Paid client build, production and customer-facing: a marketing site plus a gated member portal delivering a 30-day video course, with AI chat, Stripe membership, and a git-based CMS for non-technical editing. Next.js, React 19, TypeScript, Stripe, Decap CMS.</p>
         <p class="trace-foot">
-          <span class="stamp">PASS</span>
           <span class="chips">
             <a class="chip" href="https://becoming-diamond.vercel.app/" rel="noopener">live &#8599;</a>
             <a class="chip" href="/projects/becoming-diamond/">details &rarr;</a>
@@ -433,7 +399,6 @@ footer .sep{margin:0 0.5rem;color:var(--rule)}
         </p>
         <p class="trace-desc" data-decrypt>Agent/tool-layer infrastructure: CLI modules with isolated stores and NATS event sourcing, so humans and agents drive the same tools through the same surface. Python, Docker, Kubernetes.</p>
         <p class="trace-foot">
-          <span class="stamp">PASS</span>
           <span class="chips">
             <a class="chip" href="https://github.com/rickhallett/halo" rel="noopener">repo &#8599;</a>
             <a class="chip" href="/projects/halo/">details &rarr;</a>
@@ -1249,11 +1214,6 @@ function decrypt(el) {
   });
 }
 
-function finish(el) {
-  const target = el.dataset.after && document.querySelector(el.dataset.after);
-  if (target) target.classList.add('shown');
-}
-
 function startRain() {
   const output = document.getElementById('rain');
   if (!output || !window.WebGL2RenderingContext) return;
@@ -1279,40 +1239,28 @@ function startRain() {
 }
 
 function boot() {
-  if (reduceMotion) {
-    document.querySelectorAll('[data-decrypt]').forEach(finish);
-    document.querySelectorAll('.trace').forEach((t) => t.classList.add('in'));
-    return;
-  }
+  /* Text is already final in the DOM, so reduced motion just leaves it alone. */
+  if (reduceMotion) return;
 
   startRain();
-
-  /* Anything already scrolled past (reload at offset, deep link, instant jump)
-     is settled without animating, so stamps never sit invisible. */
-  function settle(el) {
-    if (el.classList.contains('trace')) el.classList.add('in');
-    else finish(el);
-  }
 
   const observer = new IntersectionObserver((entries, obs) => {
     let slot = 0;
     for (const entry of entries) {
       const el = entry.target;
       if (!entry.isIntersecting) {
-        if (entry.boundingClientRect.bottom >= 0) continue;
-        obs.unobserve(el);
-        settle(el);
+        /* Already scrolled past: drop it rather than animate off screen. */
+        if (entry.boundingClientRect.bottom < 0) obs.unobserve(el);
         continue;
       }
       obs.unobserve(el);
-      if (el.classList.contains('trace')) { el.classList.add('in'); continue; }
       const delay = slot++ * 55;
-      setTimeout(() => { decrypt(el).then(() => finish(el)); }, delay);
+      setTimeout(() => { decrypt(el); }, delay);
     }
   }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
 
-  document.querySelectorAll('[data-decrypt], .trace').forEach((el) => {
-    if (el.getBoundingClientRect().bottom < 0) { settle(el); return; }
+  document.querySelectorAll('[data-decrypt]').forEach((el) => {
+    if (el.getBoundingClientRect().bottom < 0) return;
     observer.observe(el);
   });
 }
