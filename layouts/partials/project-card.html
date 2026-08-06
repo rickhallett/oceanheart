@@ -1,9 +1,12 @@
-{{/* Repeatable project card. Call:
+{{/* Repeatable project card, rendered as a trace-log record. Call:
        {{ partial "project-card.html" (dict "page" $somePage "num" 1) }}
+     The trace id is derived from the page path, so it is stable across
+     builds and distinct per project. `num` stays part of the call contract
+     but is no longer displayed: the id carries the identity.
      Reads these from the project's front matter:
        title, description            (always)
-       summary    (string)           short meta line, right of the PROJECT n tag
-       principle  (string)           the big serif claim line  [optional]
+       summary    (string)           short meta line, right of the trace id
+       principle  (string)           the assert line  [optional]
        live, repo (urls)             [optional]
        [artifact]                    [optional] the annotated machine trace
          quote     (string)          customer/input line, shown in quotes
@@ -14,12 +17,12 @@
          note      (string/html)     your serif annotation beside the trace
 */}}
 {{ $p := .page }}
-{{ $num := .num }}
+{{ $trace := substr (sha256 $p.RelPermalink) 0 6 }}
 <article class="project-card">
   <div class="project-card-head">
-    <span class="project-num">PROJECT {{ $num }}</span>
+    <span class="project-num">TRACE 0x{{ $trace }}</span>
     <span class="rule"></span>
-    <span class="project-meta">{{ $p.Title }}{{ with $p.Params.summary }} &middot; {{ . }}{{ end }}</span>
+    <span class="project-meta"><b>{{ $p.Title }}</b>{{ with $p.Params.summary }} &middot; {{ . }}{{ end }}</span>
   </div>
 
   {{ with $p.Params.principle }}<p class="project-principle">{{ . }}</p>{{ end }}
