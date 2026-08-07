@@ -304,15 +304,13 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 /* ---- Trace log: the repeatable project card -------------------- */
 .home-projects { margin-top: 3.5rem; }
 
+/* Records, not boxes: a single hairline opens each one, the page ground
+   shows through, and vertical space does the separating. */
 .project-card {
-  border: 1px solid var(--rule-2);
-  border-left: 2px solid var(--rule);
-  background: linear-gradient(180deg, rgba(33,31,27,0.86), rgba(25,23,20,0.86));
-  padding: 1.15rem 1.3rem 1.25rem;
-  margin-bottom: 1rem;
-  transition: border-left-color 0.3s ease, border-color 0.3s ease;
+  border-top: 1px solid var(--rule);
+  padding: 2.25rem 0;
+  margin: 0;
 }
-.project-card:hover { border-left-color: var(--accent); border-color: var(--rule); }
 
 .project-card-head {
   display: flex; align-items: center; gap: 0.8rem;
@@ -365,12 +363,12 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
   max-width: 66ch;
 }
 
+/* No internal divider: with the card frame gone it competed with the
+   record separator and read as a leftover box edge. Space does the work. */
 .project-links {
   display: flex; align-items: center;
   gap: 1rem; flex-wrap: wrap;
-  margin-top: 1.1rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--rule-2);
+  margin-top: 1.25rem;
 }
 
 /* ---- Annotated artifact (machine speaks, you answer) ---------- */
@@ -565,7 +563,7 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) { transform: rotate(45deg) translate(3px, 3px); }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) { transform: rotate(-45deg) translate(3px, -3px); }
-  .project-card { padding: 1rem 0.95rem 1.1rem; }
+  .project-card { padding: 1.75rem 0; }
   .project-card-head { flex-wrap: wrap; gap: 0.4rem 0.7rem; }
   .project-card-head .rule { display: none; }
   .project-meta { flex-basis: 100%; text-align: left; overflow-wrap: anywhere; }

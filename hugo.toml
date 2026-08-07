@@ -3,7 +3,7 @@ languageCode = 'en-gb'
 title = 'oceanheart.ai'
 
 [params]
-  description = "Rick Hallett, AI-first builder. I turn business problems into working systems, fast, using AI as leverage. Former therapist, with real engineering depth."
+  description = "Rick Hallett. I make AI systems safe to trust for serious work, and I translate between the engineers who build them and the people who depend on them."
   author = "Richard Hallett"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"

@@ -4,7 +4,7 @@ Forward Deployed Engineer
 
 ---
 
-Product engineer with 6.5 cumulative years of professional software engineering since April 2019 across salaried roles, contracts, client delivery, and independent product development. I work best where the problem is still moving: embedding with the people affected, finding the operational constraint behind the brief, and carrying a useful system from discovery through production and handoff.
+I make AI systems safe to trust where mistakes matter: fifteen years of clinical judgment under uncertainty, joined to production engineering. Product engineer with 6.5 cumulative years of professional software engineering since April 2019 across salaried roles, contracts, client delivery, and independent product development. I work best where the problem is still moving: embedding with the people affected, finding the operational constraint behind the brief, and carrying a useful system from discovery through production and handoff.
 
 My recent focus has been applied AI and agentic systems, including evaluation, guardrails, fail-closed design, and provider-agnostic delivery. Before engineering, I worked as a cognitive behavioural therapist across NHS and private practice. That background transfers directly to high-stakes discovery, stakeholder trust, and noticing when confident output is wrong.
 
