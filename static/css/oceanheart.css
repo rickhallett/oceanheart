@@ -301,74 +301,57 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 }
 .lead em { color: var(--ink); font-style: italic; }
 
-/* ---- Trace log: the repeatable project card -------------------- */
+/* ---- The work, written as entries ------------------------------ */
+/* Not cards. Nothing here draws a frame, a fill, a rule or a badge:
+   the entries are paragraphs, and the only thing between them is space.
+   The serif carries them because this is the human voice describing what
+   was built, not the machine reporting a record. */
 .home-projects { margin-top: 3.5rem; }
 
-/* Records, not boxes: a single hairline opens each one, the page ground
-   shows through, and vertical space does the separating. */
-.project-card {
-  border-top: 1px solid var(--rule);
-  padding: 2.25rem 0;
-  margin: 0;
-}
+.entry { margin: 0 0 3rem; max-width: 62ch; }
+.entry:last-of-type { margin-bottom: 0; }
 
-.project-card-head {
-  display: flex; align-items: center; gap: 0.8rem;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  margin-bottom: 1rem;
-}
-/* The trace id. No box, no stamp: a log line. */
-.project-num {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.04em;
-  color: var(--accent-lift);
-  white-space: nowrap;
-}
-.project-card-head .rule { flex: 1; height: 1px; background: var(--rule-2); min-width: 1.5rem; }
-.project-meta {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--faint);
-  text-align: right;
-  letter-spacing: 0.02em;
-}
-.project-meta b { color: var(--ink); font-weight: 500; }
+/* The project name runs in to the sentence it leads. Weight, not size or
+   colour, sets it apart, so the line still reads as one thought. */
+.entry-name { font-weight: 500; color: var(--ink); }
 
-/* The one-line summary, rendered as an assert line. */
-.project-principle {
-  display: flex; gap: 0.9rem; align-items: baseline;
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: 400;
-  line-height: 1.6;
+.entry-lead {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.45;
   color: var(--ink);
-  margin: 0 0 0.9rem;
-  letter-spacing: 0;
-}
-.project-principle::before {
-  content: "assert";
-  color: var(--faint);
-  white-space: nowrap;
-  flex-shrink: 0;
+  margin: 0 0 0.6rem;
 }
 
-.project-desc {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  line-height: 1.7;
+.entry-body {
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: 1.65;
   color: var(--ink-2);
   margin: 0;
-  max-width: 66ch;
 }
+/* An entry with no principle has the name lead the description instead, so
+   the run-in has to hold its own at body size. */
+.entry-body .entry-name { color: var(--ink); }
 
-/* No internal divider: with the card frame gone it competed with the
-   record separator and read as a leftover box edge. Space does the work. */
-.project-links {
-  display: flex; align-items: center;
-  gap: 1rem; flex-wrap: wrap;
-  margin-top: 1.25rem;
+/* A trailing clause, not a toolbar: same serif, lowercase, plain links with
+   a dim middot between them. */
+.entry-links {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--faint);
+  margin: 0.55rem 0 0;
+}
+.entry-links a { color: var(--accent-lift); }
+
+/* The quiet index line under the homepage listing. Deliberately closer to
+   the last entry than the entries are to each other, so it hangs off the
+   listing instead of reading as a sixth one. */
+.all-work {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  margin: 2rem 0 0;
 }
 
 /* ---- Annotated artifact (machine speaks, you answer) ---------- */
@@ -395,32 +378,14 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .engage-line { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.45; color: var(--ink); margin: 0 0 1.1rem; max-width: 48ch; }
 .engage-cta { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent-lift); }
 
-/* ---- Chips (plain inline meta, no boxes) ---------------------- */
-.chips { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; }
-.chip { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); white-space: nowrap; }
-.chip + .chip::before { content: "\00B7"; margin: 0 0.5rem; color: var(--rule); }
-a.chip:hover { color: var(--accent-lift); text-decoration: none; }
-
-/* ---- Buttons -------------------------------------------------- */
-.btn {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  padding: 0.5rem 1.05rem;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  color: var(--ink);
-  background: var(--paper-2);
-  display: inline-block;
-  transition: border-color 0.12s, color 0.12s;
-}
-.btn:hover { border-color: var(--accent); color: var(--accent-lift); text-decoration: none; }
-.btn-primary { border-color: var(--accent); color: var(--accent-lift); }
+/* `.btn`, `.btn-primary`, `.chip` and `.chips` are gone: the buttons were the
+   two CV downloads and the chips were the project link rows, and both now read
+   as ordinary text. The /lab/ snapshots carry their own copies of the chip
+   rules inline, so nothing there depends on this file. */
 
 /* ---- Generic section heads ------------------------------------ */
 .home-section { margin-top: 3.5rem; }
-.home-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-.home-section-head h2 { margin: 0; }
-.home-section-head .more, .see-all { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent-lift); }
+.see-all { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent-lift); }
 .home-lead { font-family: var(--font-serif); font-size: var(--fs-body); color: var(--ink-2); max-width: 60ch; margin-bottom: 1.25rem; }
 .section-header { margin-bottom: 1rem; }
 .section-header p { font-size: var(--fs-sm); color: var(--faint); margin: 0; }
@@ -428,12 +393,8 @@ a.chip:hover { color: var(--accent-lift); text-decoration: none; }
 .page-head { margin-bottom: 2rem; }
 .page-head h1 { margin-top: 0; }
 
-/* ---- Work rows (projects index legacy / blog cross-links) ----- */
-.work-row { display: block; padding: 1rem 0; border-bottom: 1px solid var(--rule-2); }
-.work-row:last-child { border-bottom: none; }
-.work-row-title { font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.02em; color: var(--ink); }
-.work-row:hover .work-row-title { color: var(--accent-lift); }
-.work-row-desc { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.6; margin: 0.4rem 0 0.5rem; }
+/* `.work-row` is gone with layouts/partials/work-row.html, which nothing
+   called. The work listing is `.entry` above. */
 .track { margin-bottom: 2rem; }
 .track-label { font-family: var(--font-mono); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--faint); margin-bottom: 0.6rem; }
 
@@ -517,14 +478,6 @@ article .content img { max-width: 100%; margin: 1.5rem 0; border-radius: 3px; }
 .sloptics-term h3 { margin-top: 0; color: var(--ink); }
 .sloptics-pos { font-family: var(--font-mono); color: var(--faint); font-size: 0.8rem; font-style: normal; }
 
-/* ---- Badges --------------------------------------------------- */
-.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-.badge {
-  font-family: var(--font-mono); font-size: var(--fs-xs);
-  padding: 0.3rem 0.65rem; border: 1px solid var(--rule); border-radius: 3px;
-  color: var(--ink-2); background: var(--paper-2);
-}
-
 /* ---- Footer --------------------------------------------------- */
 footer {
   border-top: 1px solid var(--rule-2);
@@ -563,11 +516,8 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) { transform: rotate(45deg) translate(3px, 3px); }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
   .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) { transform: rotate(-45deg) translate(3px, -3px); }
-  .project-card { padding: 1.75rem 0; }
-  .project-card-head { flex-wrap: wrap; gap: 0.4rem 0.7rem; }
-  .project-card-head .rule { display: none; }
-  .project-meta { flex-basis: 100%; text-align: left; overflow-wrap: anywhere; }
-  .project-principle { flex-direction: column; gap: 0.15rem; }
+  .entry { margin-bottom: 2.5rem; max-width: 100%; }
+  .entry-lead { font-size: 1.1rem; }
   .artifact-wrap { display: block; }
   .artifact { min-width: 0; width: 100%; }
   .artifact-note { min-width: 0; width: 100%; margin-top: 1rem; }

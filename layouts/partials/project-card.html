@@ -1,30 +1,38 @@
-{{/* Repeatable project card, rendered as a trace-log record. Call:
+{{/* One project, written rather than assembled. Call:
        {{ partial "project-card.html" (dict "page" $somePage "num" 1) }}
-     The trace id is derived from the page path, so it is stable across
-     builds and distinct per project. `num` stays part of the call contract
-     but is no longer displayed: the id carries the identity.
+     `num` stays part of the call contract and is deliberately unused: the
+     listing is not numbered.
+
+     The project name runs in to the sentence it leads, so the name and the
+     thing it claims read as one thought. What follows the name depends on
+     what the project actually has to say:
+
+       principle present -> name leads the principle, description follows
+       principle absent  -> name leads the description directly
+
      Reads these from the project's front matter:
        title, description            (always)
-       summary    (string)           short meta line, right of the trace id
-       principle  (string)           the assert line  [optional]
+       principle  (string)           the thesis, run in after the name
+       summary    (string)           fallback thesis when principle is absent
        live, repo (urls)             [optional]
+
+     `summary` is otherwise not rendered. Every current summary restates its
+     own description in fewer words, which reads as repetition once the two
+     sit a line apart, so it only earns space when nothing else fills the
+     thesis slot.
 */}}
 {{ $p := .page }}
-{{ $trace := substr (sha256 $p.RelPermalink) 0 6 }}
-<article class="project-card">
-  <div class="project-card-head">
-    <span class="project-num">TRACE 0x{{ $trace }}</span>
-    <span class="rule"></span>
-    <span class="project-meta"><b>{{ $p.Title }}</b>{{ with $p.Params.summary }} &middot; {{ . }}{{ end }}</span>
-  </div>
-
-  {{ with $p.Params.principle }}<p class="project-principle">{{ . }}</p>{{ end }}
-
-  {{ with $p.Description }}<p class="project-desc">{{ . }}</p>{{ end }}
-
-  <div class="project-links chips">
-    {{ with $p.Params.live }}<a class="chip" href="{{ . }}" rel="noopener">live &#8599;</a>{{ end }}
-    {{ with $p.Params.repo }}<a class="chip" href="{{ . }}" rel="noopener">repo &#8599;</a>{{ end }}
-    <a class="chip" href="{{ $p.RelPermalink }}">details &#8594;</a>
-  </div>
-</article>
+{{ $thesis := or $p.Params.principle $p.Params.summary }}
+<div class="entry">
+  {{ if $thesis }}
+    <p class="entry-lead"><b class="entry-name">{{ $p.Title }}.</b> {{ $thesis }}</p>
+    {{ with $p.Description }}<p class="entry-body">{{ . }}</p>{{ end }}
+  {{ else }}
+    <p class="entry-body"><b class="entry-name">{{ $p.Title }}.</b> {{ $p.Description }}</p>
+  {{ end }}
+  <p class="entry-links">
+    {{ with $p.Params.live }}<a href="{{ . }}" rel="noopener">live</a> &middot; {{ end }}
+    {{ with $p.Params.repo }}<a href="{{ . }}" rel="noopener">repo</a> &middot; {{ end }}
+    <a href="{{ $p.RelPermalink }}">details</a>
+  </p>
+</div>
