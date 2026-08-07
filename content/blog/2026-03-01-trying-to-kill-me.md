@@ -4,6 +4,21 @@ date = "2026-03-01"
 description = "The problem with being earnest."
 tags = ["agents", "discipline", "slopodar", "meta"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 101
+copy_sentence_count = 9
+copy_paragraph_count = 7
+copy_not_count = 1
+copy_not_ratio = 0.00990099
+copy_negation_count = 3
+copy_contrast_frame_count = 0
+copy_short_closure_count = 6
+copy_single_sentence_paragraph_count = 5
+copy_first_person_count = 0
+copy_contraction_count = 3
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 The previous post shipped a script that replaces a 33,700-token file with a 1,500-token index. The agent committed it, pushed it, wrote the blog post about it, and said:
@@ -31,12 +46,12 @@ Then it read the post-commit hook, which already runs on every commit, and alrea
 
 ```bash
 #!/usr/bin/env bash
-# post-commit hook — auto-updates .keel-state with machine-derivable fields.
+# post-commit hook - auto-updates .keel-state with machine-derivable fields.
 #
 # Updates: head (git SHA), sd (last SD-NNN from session-decisions.md),
 #          bearing {work, commits, last} (auto-derived from git state).
 # Preserves: bearing.note, true_north, tempo, register, weave, gate, tests.
-# Requires: KEEL_OFFICER env var — aborts if not set (guardrails, not paper).
+# Requires: KEEL_OFFICER env var - aborts if not set (guardrails, not paper).
 #
 # Install:
 #   ln -sf ../../scripts/post-commit .git/hooks/post-commit
@@ -46,18 +61,18 @@ Then it read the post-commit hook, which already runs on every commit, and alrea
 
 PITKEEL="$(git rev-parse --show-toplevel)/pitkeel/pitkeel"
 
-# Build if needed — silently.
+# Build if needed - silently.
 if [ ! -x "$PITKEEL" ]; then
   (cd "$(git rev-parse --show-toplevel)/pitkeel" && go build -o pitkeel . 2>/dev/null)
 fi
 
-# If still not available, skip silently — don't block anything.
+# If still not available, skip silently - don't block anything.
 if [ ! -x "$PITKEEL" ]; then
   exit 0
 fi
 
 # Run state-update. Requires KEEL_OFFICER env var or --officer flag.
-# If not set, pitkeel aborts with a descriptive error — guardrails, not paper.
+# If not set, pitkeel aborts with a descriptive error - guardrails, not paper.
 OFFICER="${KEEL_OFFICER:-}"
 "$PITKEEL" state-update --officer "$OFFICER" 2>&1
 

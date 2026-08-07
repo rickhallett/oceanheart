@@ -4,9 +4,24 @@ date = "2026-03-01"
 description = "Patterns caught in the wild while building something else entirely."
 tags = ["slopodar", "agents", "discipline", "meta"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 978
+copy_sentence_count = 130
+copy_paragraph_count = 35
+copy_not_count = 4
+copy_not_ratio = 0.00408998
+copy_negation_count = 21
+copy_contrast_frame_count = 0
+copy_short_closure_count = 14
+copy_single_sentence_paragraph_count = 17
+copy_first_person_count = 4
+copy_contraction_count = 8
+copy_editorial_signpost_count = 2
+copy_repeated_ngram_count = 1
 +++
 
-None of these were planned. They were caught while building a Chrome extension, writing agent files, calibrating a voice-distance meter, wiring post-commit hooks, and arguing about test assertions. The extension was the point. The taxonomy was the accident. The taxonomy turned out to be worth more than the extension.
+These were caught while building a Chrome extension, writing agent files, calibrating a voice-distance meter, wiring post-commit hooks and arguing about test assertions. The taxonomy was an accident that turned out to be worth more than the intended extension.
 
 That pattern has a name now: [Learning in the Wild](https://oceanheart.ai/slopodar/).
 
@@ -76,11 +91,11 @@ Claude selected the features. Claude computed the effect sizes. Claude designed 
 
 ---
 
-The extension has 3 commits and the taxonomy has 15 entries. The entries turned out to be worth more than the extension.
+The extension has 3 commits and the taxonomy has 15 entries.
 
 [Slopodar](https://oceanheart.ai/slopodar/) | [Source](https://github.com/rickhallett/thepit/blob/wake/slopodar.yaml)
 
-[^1]: [Redundant Antithesis](https://oceanheart.ai/slopodar/redundant-antithesis/) — slopodar catching slopodar on its own page.
-[^2]: [Right Answer, Wrong Work](https://oceanheart.ai/slopodar/right-answer-wrong-work/) — the first slopodar entry to cross the prose/code boundary.
-[^3]: [Paper Guardrail](https://oceanheart.ai/slopodar/paper-guardrail/) — "The assertion has no enforcement mechanism."
-[^4]: [The Analytical Lullaby](https://oceanheart.ai/slopodar/analytical-lullaby/) — warm numbers instead of warm words.
+[^1]: [Redundant Antithesis](https://oceanheart.ai/slopodar/redundant-antithesis/) - slopodar catching slopodar on its own page.
+[^2]: [Right Answer, Wrong Work](https://oceanheart.ai/slopodar/right-answer-wrong-work/) - the first slopodar entry to cross the prose/code boundary.
+[^3]: [Paper Guardrail](https://oceanheart.ai/slopodar/paper-guardrail/) - "The assertion has no enforcement mechanism."
+[^4]: [The Analytical Lullaby](https://oceanheart.ai/slopodar/analytical-lullaby/) - warm numbers instead of warm words.

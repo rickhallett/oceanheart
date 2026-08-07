@@ -7,5 +7,158 @@
     "env": {
       "HUGO_VERSION": "0.159.1"
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Adventure",
+          "value": "created-by=Warren Robinett, 1979; the-dot-sleeps-where-lost-paths-end; carry-it-home; the-east-wall-below-the-castle-is-thin; map=/llms.txt"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/agent-boot",
+      "destination": "/blog/2026-03-01-the-elephant/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-boot/",
+      "destination": "/blog/2026-03-01-the-elephant/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-os",
+      "destination": "/blog/2026-07-29-the-first-adapter-had-to-earn-the-roadmap/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-os/",
+      "destination": "/blog/2026-07-29-the-first-adapter-had-to-earn-the-roadmap/",
+      "permanent": true
+    },
+    {
+      "source": "/ai",
+      "destination": "/blog/2026-07-23-i-do-not-use-ai-for-one-thing/",
+      "permanent": true
+    },
+    {
+      "source": "/ai/",
+      "destination": "/blog/2026-07-23-i-do-not-use-ai-for-one-thing/",
+      "permanent": true
+    },
+    {
+      "source": "/dispatches",
+      "destination": "/blog/2026-07-23-dispatches-and-deep-arcs/",
+      "permanent": true
+    },
+    {
+      "source": "/dispatches/",
+      "destination": "/blog/2026-07-23-dispatches-and-deep-arcs/",
+      "permanent": true
+    },
+    {
+      "source": "/intelligence-pipeline",
+      "destination": "/blog/2026-04-05-cost-aware-intelligence-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/intelligence-pipeline/",
+      "destination": "/blog/2026-04-05-cost-aware-intelligence-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/kill-signal",
+      "destination": "/blog/2026-03-10-kill-signal/",
+      "permanent": true
+    },
+    {
+      "source": "/kill-signal/",
+      "destination": "/blog/2026-03-10-kill-signal/",
+      "permanent": true
+    },
+    {
+      "source": "/next-observation",
+      "destination": "/blog/2026-07-29-the-pole-we-hadnt-looked-at/",
+      "permanent": true
+    },
+    {
+      "source": "/next-observation/",
+      "destination": "/blog/2026-07-29-the-pole-we-hadnt-looked-at/",
+      "permanent": true
+    },
+    {
+      "source": "/olivia",
+      "destination": "/blog/2026-07-24-the-first-feature-was-a-pleasant-place-to-begin/",
+      "permanent": true
+    },
+    {
+      "source": "/olivia/",
+      "destination": "/blog/2026-07-24-the-first-feature-was-a-pleasant-place-to-begin/",
+      "permanent": true
+    },
+    {
+      "source": "/pattern-before-automation",
+      "destination": "/blog/2026-07-25-pattern-before-automation/",
+      "permanent": true
+    },
+    {
+      "source": "/pattern-before-automation/",
+      "destination": "/blog/2026-07-25-pattern-before-automation/",
+      "permanent": true
+    },
+    {
+      "source": "/photo-curation",
+      "destination": "/blog/2026-04-05-photo-curation-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/photo-curation/",
+      "destination": "/blog/2026-04-05-photo-curation-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/sarah",
+      "destination": "/blog/2026-07-23-the-agent-knew-which-plus-button-she-meant/",
+      "permanent": true
+    },
+    {
+      "source": "/sarah/",
+      "destination": "/blog/2026-07-23-the-agent-knew-which-plus-button-she-meant/",
+      "permanent": true
+    },
+    {
+      "source": "/silent-fallbacks",
+      "destination": "/blog/2026-02-19-silent-fallbacks/",
+      "permanent": true
+    },
+    {
+      "source": "/silent-fallbacks/",
+      "destination": "/blog/2026-02-19-silent-fallbacks/",
+      "permanent": true
+    },
+    {
+      "source": "/two-bookends",
+      "destination": "/blog/2026-07-29-the-work-needs-two-bookends/",
+      "permanent": true
+    },
+    {
+      "source": "/two-bookends/",
+      "destination": "/blog/2026-07-29-the-work-needs-two-bookends/",
+      "permanent": true
+    },
+    {
+      "source": "/wispr",
+      "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
+      "permanent": true
+    },
+    {
+      "source": "/wispr/",
+      "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
+      "permanent": true
+    }
+  ]
 }

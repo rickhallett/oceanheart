@@ -20,6 +20,13 @@ principle = "The AI proposes; the code enforces."
   note = "The model wanted to help. A figure it can't verify routes to a human instead. Every override is recorded with its reason, so &ldquo;why did it say that?&rdquo; always has an answer, for any single message."
 +++
 
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/fail-closed-llm-engine/ and interrogate the architecture with me: where fail-closed validation could still leak, how the audit trace holds up under adversarial input, and what you would probe first in a design review."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to stress-test the fail-closed design with you: validators, audit traces, and where you would attack it first."
+  action="Stress-test it with Claude" >}}
+
+
 ## What it is
 
 LoanSlam is a fail-closed conversation engine for a regulated lending domain. An untrusted language model proposes each turn; deterministic code decides what the customer actually sees. Every turn is audit-traced.

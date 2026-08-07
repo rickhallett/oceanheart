@@ -4,6 +4,21 @@ date = "2026-03-22"
 description = "7 productivity categories assessed. Word processing, spreadsheets, presentations, email, calendar, notes, project management. 4 fully reducible, 2 mostly, 1 taste-required."
 tags = ["agent-native", "productivity", "spreadsheets", "cli"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 373
+copy_sentence_count = 32
+copy_paragraph_count = 8
+copy_not_count = 0
+copy_not_ratio = 0.00000000
+copy_negation_count = 1
+copy_contrast_frame_count = 0
+copy_short_closure_count = 4
+copy_single_sentence_paragraph_count = 0
+copy_first_person_count = 1
+copy_contraction_count = 1
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}
@@ -34,7 +49,7 @@ Jira, Asana, Trello, Linear - all expose APIs. Linear's API is particularly clea
 
 ## Email
 
-IMAP, SMTP, and the Gmail API. Email was always a protocol. The GUI is a viewer and composer. `neomutt`, `aerc`, `himalaya` - CLI email clients have existed for decades. The composition of a well-written email is taste-required; the sending, filtering, and organising of email is not.
+IMAP, SMTP, and the Gmail API. Email was always a protocol. The GUI is a viewer and composer. `neomutt`, `aerc`, `himalaya` - CLI email clients have existed for decades. Composing a well-written email requires taste; sending, filtering and organising one are mechanical operations.
 
 ## Source
 

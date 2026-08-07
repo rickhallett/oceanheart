@@ -2,10 +2,10 @@
 title = "Blog"
 description = "Notes from the workshop. Things I built, broke, and learned from."
 
-# Hidden for now — kept in the repo, not published.
+# Older posts remain hidden until they have been reviewed and authorised.
 [build]
-  render = "never"
-  list = "never"
+  render = "always"
+  list = "always"
 [cascade.build]
   render = "never"
   list = "never"

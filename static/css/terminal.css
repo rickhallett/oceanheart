@@ -8,7 +8,7 @@
   --text:        #a9b1d6;
   --text-bright: #c0caf5;
   --text-secondary: #9aa5ce;
-  --muted:       #565f89;
+  --muted:       #7a84ad; /* 4.66:1 on --bg; the old #565f89 failed AA at 2.76:1 */
   --cyan:        #7dcfff;
   --blue:        #7aa2f7;
   --purple:      #bb9af7;
@@ -158,6 +158,24 @@ pre code {
   margin-top: 2.5rem;
 }
 
+/* Top-of-page PDF row for readers arriving straight from LinkedIn */
+.cv-download-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: baseline;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.cv-download-top .cv-download-note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin: 0;
+}
+
 .content p,
 .cv-content p {
   margin-bottom: 1.15rem;
@@ -301,7 +319,39 @@ nav .container {
 
 /* Homepage — hero */
 .hero {
-  padding: 3.5rem 0 2.25rem;
+  padding: 3.5rem 0 0;
+}
+
+.hero-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(9rem, 12rem);
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero-heading {
+  min-width: 0;
+}
+
+.hero-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+}
+
+.hero-mark {
+  width: 100%;
+  max-width: 12rem;
+  justify-self: end;
+}
+
+.hero-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .hero h1 {
@@ -361,31 +411,24 @@ nav .container {
   background: rgba(192, 202, 245, 0.05);
 }
 
-/* Homepage — metrics band */
-.metrics-band {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--bg-tertiary);
-  border-radius: 2px;
+/* Homepage metrics */
+.metrics-list {
+  list-style: none;
   margin: 0 0 0.75rem;
-  overflow: hidden;
+  padding: 0;
+  border-top: 1px solid var(--bg-tertiary);
 }
 
-/* Keep all five metrics on one row at desktop width */
-@media (min-width: 641px) {
-  .metrics-band {
-    grid-template-columns: repeat(5, 1fr);
-  }
+.metrics-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--bg-tertiary);
 }
 
-.metric {
-  background: var(--bg);
-  padding: 0.9rem 1rem;
-}
-
-.metric-value {
+.metrics-list strong {
+  flex: 0 0 5.5rem;
   font-family: var(--font-mono);
   font-size: var(--fs-h3);
   font-weight: 500;
@@ -393,11 +436,10 @@ nav .container {
   line-height: 1.2;
 }
 
-.metric-label {
+.metrics-list span {
   font-size: var(--fs-xs);
   color: var(--text-secondary);
   line-height: 1.4;
-  margin-top: 0.15rem;
 }
 
 .metrics-note {
@@ -452,11 +494,14 @@ nav .container {
 }
 
 .post-title {
-  font-size: 0.85rem;
-  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-bright);
   text-decoration: none;
   display: block;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .post-title:hover {
@@ -501,6 +546,13 @@ article header .post-meta {
 
 article .content {
   line-height: 1.8;
+}
+
+article .content p {
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 article .content img {
@@ -990,6 +1042,10 @@ footer a:hover {
   margin-top: 3.5rem;
 }
 
+.hero + .home-section {
+  margin-top: 2rem;
+}
+
 .home-section-head {
   display: flex;
   align-items: baseline;
@@ -1098,8 +1154,9 @@ footer a:hover {
 .chip-case,
 .chip-status { color: var(--muted); border-color: var(--bg-tertiary); }
 
-a.chip { text-decoration: none; transition: border-color 0.12s, color 0.12s; }
-a.chip:hover { text-decoration: none; color: var(--cyan); border-color: var(--muted); }
+/* Link chips are the evidence trail (live / repo / details); they earn the accent */
+a.chip { color: var(--cyan); text-decoration: none; transition: border-color 0.12s, color 0.12s; }
+a.chip:hover { text-decoration: underline; color: var(--cyan); border-color: var(--muted); }
 
 a.work-row-title { text-decoration: none; }
 .work-row-title:hover { color: var(--cyan); text-decoration: none; }
@@ -1120,6 +1177,251 @@ a.work-row-title { text-decoration: none; }
   border-radius: 2px;
   color: var(--text-secondary);
   background: var(--bg-alt);
+}
+
+/* The gray dot. Robinett, 1979. It sleeps in the catacombs (404),
+   invisible until bumped, and only reachable by the lost. */
+.catacombs {
+  position: relative;
+}
+
+.gray-dot {
+  position: absolute;
+  left: 21%;
+  bottom: -6rem;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  background: var(--bg);
+  cursor: default;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gray-dot:hover,
+.gray-dot:focus-visible {
+  background: var(--muted);
+  box-shadow: 0 0 8px rgba(122, 132, 173, 0.6);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Carried: the dot travels beside your square, which is to say your pointer */
+.carried-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--muted);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.carried-dot-corner {
+  transform: none !important;
+  top: auto;
+  left: auto;
+  right: 12px;
+  bottom: 12px;
+}
+
+/* The thin section of the east wall, home only, carriers only */
+.east-wall {
+  position: fixed;
+  right: 0;
+  bottom: 15vh;
+  width: 8px;
+  height: 30vh;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: default;
+  z-index: 150;
+  transition: background 0.4s ease;
+}
+
+.east-wall:hover,
+.east-wall:focus-visible {
+  background: rgba(154, 77, 214, 0.35);
+  cursor: pointer;
+  outline: none;
+}
+
+/* The room itself: an Atari 2600 chamber, per the original */
+.atari-room {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #cbcbcb;
+  overflow: hidden;
+}
+
+.atari-wall {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.atari-wall-top { top: 0; }
+.atari-wall-bottom { bottom: 0; }
+
+/* Two purple slabs per wall leave a door gap in the middle */
+.atari-wall span {
+  display: block;
+  height: 100%;
+  background: #9a4dd6;
+  width: calc(50% - 60px);
+}
+
+.atari-text {
+  position: absolute;
+  top: 48px;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  margin: 0;
+  writing-mode: vertical-rl;
+  text-orientation: sideways;
+  font-family: 'Press Start 2P', var(--font-mono);
+  font-size: clamp(14px, 3.2vh, 26px);
+  letter-spacing: 0.4em;
+  color: #3c3cba;
+  animation: robinett 1.6s steps(1) infinite;
+  cursor: default;
+  user-select: none;
+}
+
+@keyframes robinett {
+  0%   { color: #3c3cba; }
+  20%  { color: #b83232; }
+  40%  { color: #2e7d32; }
+  60%  { color: #b8862e; }
+  80%  { color: #7a2eb8; }
+  100% { color: #3c3cba; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atari-text { animation: none; color: #3c3cba; }
+}
+
+.atari-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  background: #9a4dd6;
+}
+
+.atari-contact {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #3a3a3a;
+}
+
+.atari-contact a {
+  color: #3c3cba;
+  text-decoration: underline;
+}
+
+/* Claude coach — prepared-conversation card (shortcode: claude-coach) */
+.claude-coach {
+  --coach-accent: #d97757;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin: 2rem 0 2.4rem;
+  padding: 1.25rem 1.3rem;
+  border: 1px solid rgba(217, 119, 87, 0.48);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  background:
+    radial-gradient(circle at top left, rgba(217, 119, 87, 0.18), transparent 46%),
+    rgba(31, 35, 53, 0.8);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+  text-decoration: none;
+  transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+.claude-coach:hover {
+  border-color: var(--coach-accent);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.claude-coach:focus-visible {
+  outline: 2px solid var(--coach-accent);
+  outline-offset: 4px;
+}
+
+.claude-coach-mark {
+  display: grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff4ed;
+  background: var(--coach-accent);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.claude-coach-copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.claude-coach-eyebrow {
+  color: var(--coach-accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.claude-coach-title {
+  color: var(--text-bright);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.claude-coach-description {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.claude-coach-action {
+  margin-top: 0.25rem;
+  color: #f1a27f;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+@media (max-width: 540px) {
+  .claude-coach {
+    grid-template-columns: 1fr;
+    padding: 1.1rem;
+  }
 }
 
 /* Mermaid architecture diagrams */
@@ -1232,6 +1534,28 @@ a.work-row-title { text-decoration: none; }
 
 @media (max-width: 640px) {
   :root { --fs-hero: 1.9rem; }
+
+  .hero {
+    padding-top: 1rem;
+  }
+
+  .hero-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .hero-mark {
+    order: -1;
+    width: 7.5rem;
+    justify-self: start;
+  }
+
+  /* Justified text at a narrow measure produces rivers and broken words */
+  article .content p {
+    text-align: left;
+    -webkit-hyphens: none;
+    hyphens: none;
+  }
 
   .home-section-head { flex-direction: column; gap: 0.25rem; }
 

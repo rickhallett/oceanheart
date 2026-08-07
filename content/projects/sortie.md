@@ -11,6 +11,13 @@ summary = "adversarial multi-model review"
 principle = "Different models have different blind spots. Make them check each other."
 +++
 
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/sortie/ and discuss adversarial multi-model code review with me: convergence analysis, severity gating, and where single-reviewer blind spots survive."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to discuss adversarial multi-model review: convergence, severity gating, and surviving blind spots."
+  action="Discuss it with Claude" >}}
+
+
 ## What it is
 
 An async adversarial code review system for multi-agent development workflows. Sortie runs a configurable roster of language models (Claude, Codex, Gemini) against a worker's diff in parallel, synthesises their findings through a 4th-model debrief invocation, triages by severity, and gates worktree merges. All findings, dispositions, and cost data are captured in a structured ledger.

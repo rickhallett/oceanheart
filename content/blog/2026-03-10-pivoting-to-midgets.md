@@ -4,6 +4,21 @@ date = "2026-03-17"
 description = "I built a SaaS product with 13 agents and 274 passing tests. Then I realised the conventions were the output, not the code."
 tags = ["midgets", "pivot", "agents", "linux", "containers"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 383
+copy_sentence_count = 18
+copy_paragraph_count = 9
+copy_not_count = 2
+copy_not_ratio = 0.00522193
+copy_negation_count = 3
+copy_contrast_frame_count = 0
+copy_short_closure_count = 5
+copy_single_sentence_paragraph_count = 3
+copy_first_person_count = 6
+copy_contraction_count = 2
+copy_editorial_signpost_count = 1
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}
@@ -12,7 +27,7 @@ draft = true
 
 The Pit was a SaaS debate platform. I built it over 30 days with 13 AI agents, a governance system I was developing alongside it, and a verification pipeline that got more elaborate every week. 274 tests passing. TypeScript, Next.js, the full modern stack. It worked.
 
-I didn't realise until near the end that the product wasn't what I'd actually been building.
+Near the end, I realised that the product was only one part of what I'd actually been building.
 
 ## What actually came out
 
@@ -24,7 +39,7 @@ The SaaS is archived on a git branch. What actually came out of the month was di
 - A **verification pipeline** where 3 different models review the same diff independently, then a 4th synthesises their findings
 - **Operational conventions** that compound - a lexicon, a readback protocol, formatting conventions that reduce ambiguity
 
-The interesting thing is that all of this transfers to any project. The SaaS doesn't.
+The interesting thing is that all of this transfers to any project, while the SaaS remains specific to one.
 
 ## Why midgets
 

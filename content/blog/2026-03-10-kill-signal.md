@@ -3,14 +3,32 @@ title = "I invented a DSL for governance. Then I killed it."
 date = "2026-03-16"
 description = "Signal was a compressed notation for expressing process discipline. A 3-model adversarial test showed conventional shorthand works just as well with fewer characters. SD-321: Signal has no signal."
 tags = ["signal", "governance", "compression", "honesty"]
-draft = true
-+++
+draft = false
+aliases = ["/kill-signal/"]
 
-{{< draft-notice >}}
+copy_metrics_version = 2
+copy_word_count = 412
+copy_sentence_count = 26
+copy_paragraph_count = 10
+copy_not_count = 1
+copy_not_ratio = 0.00242718
+copy_negation_count = 7
+copy_contrast_frame_count = 0
+copy_short_closure_count = 5
+copy_single_sentence_paragraph_count = 2
+copy_first_person_count = 13
+copy_contraction_count = 3
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
+
+[build]
+render = "always"
+list = "always"
++++
 
 ## What Signal was
 
-I spent a week building a notation system for governance rules in an agentic engineering project. It looked like this:
+I spent a few days developing a notation system for governance rules in an agentic engineering project. It looked like this:
 
 ```
 FOOTGUN high_on_own_supply :=
@@ -24,7 +42,7 @@ It decoded well. Claude scored 6/6 on comprehension. GPT-4 scored 8/8 on reasoni
 
 ## The concern
 
-Then the Operator said: "I have serious concerns about Signal compression, and that the same or close cannot be achieved via human shorthand notation."
+"I have serious concerns about Signal compression, and that the same or close cannot be achieved via human shorthand notation."
 
 Which surfaced the question I'd been avoiding: does Signal decode well because of its notation, or just because the content is clear regardless of format?
 
@@ -42,7 +60,7 @@ Shorthand decoded perfectly with 14% fewer characters. The custom operators adde
 
 ## The kill
 
-The Operator: "Signal has no signal. Kill it."
+Me: "Signal has no signal. Kill it."
 
 SD-321, permanent. Signal notation abandoned as governance compression mechanism.
 
@@ -52,11 +70,11 @@ So I converted 27 files from Signal to shorthand. 201 em-dashes replaced. Net: -
 
 1. **Test the null hypothesis.** Signal looked good because I never compared it to the obvious alternative. The 4.5:1 compression claim was measured against verbose prose, not against shorthand. That's like saying your car is fast because it beats walking.
 
-2. **n=1 per cell is a sniff test, not a study.** I noted that in the test design. But the result was clear enough that statistical power was beside the point - shorthand was equal or better on every metric.
+2. **n=1 per cell is a sniff test.** I noted that in the test design, although the result was clear enough that statistical power was beside the point: shorthand was equal or better on every metric.
 
 3. **Kill your darlings means killing things you built.** Signal was mine. It had a PoC, decode tests, reasoning tests. I liked it. But the data was unambiguous, and when the Operator said "kill it," the correct response was "yes."
 
-4. **Content carries; format doesn't.** The governance rules themselves are useful. The notation I wrapped them in was not. Took me a week to discover something most writers learn earlier.
+4. **Content carries.** The governance rules themselves are useful, while the notation added nothing measurable. Took me a week to discover something most writers learn earlier.
 
 ## Source
 

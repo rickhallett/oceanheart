@@ -4,6 +4,21 @@ date = "2026-03-26"
 description = "5 system/infrastructure categories. All fully reducible. File management, monitoring, networking, cloud consoles, backup. Every GUI in this section is a convenience wrapper over CLI operations."
 tags = ["agent-native", "infrastructure", "linux", "cli", "devops"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 347
+copy_sentence_count = 36
+copy_paragraph_count = 9
+copy_not_count = 0
+copy_not_ratio = 0.00000000
+copy_negation_count = 2
+copy_contrast_frame_count = 0
+copy_short_closure_count = 6
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 0
+copy_contraction_count = 2
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}
@@ -16,7 +31,7 @@ File management, system monitoring, networking, cloud consoles, backup/sync. Thi
 
 This is the most obviously CLI-native category. `cp`, `mv`, `rm`, `mkdir`, `find`, `rsync`, `tar`, `zip` - these commands predate GUIs by decades. Finder, Explorer, Nautilus - they're visual wrappers over filesystem operations. Drag-and-drop is `mv`. Double-click is `xdg-open`. The recycle bin is a hidden directory.
 
-An agent managing files doesn't need spatial layout, icon previews, or column views. It has the path. It runs the command.
+An agent managing files can work from the path and run the command without spatial layout, icon previews or column views.
 
 ## System monitoring
 

@@ -4,17 +4,32 @@ date = "2026-04-05"
 description = "I deployed an event-sourced multi-agent fleet to Kubernetes on my second day of using it. Everything worked locally. Nothing worked in the cluster. The bugs were the interesting part."
 tags = ["kubernetes", "containers", "deployment", "nats", "event-sourcing", "ai-agents", "debugging"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 1764
+copy_sentence_count = 172
+copy_paragraph_count = 73
+copy_not_count = 10
+copy_not_ratio = 0.00566893
+copy_negation_count = 37
+copy_contrast_frame_count = 7
+copy_short_closure_count = 33
+copy_single_sentence_paragraph_count = 22
+copy_first_person_count = 12
+copy_contraction_count = 27
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 1
 +++
 
-I deployed four AI advisors to a Kubernetes cluster on my second day of using Kubernetes. The system worked perfectly on my MacBook. In the cluster, it broke thirteen different ways. None of the bugs were in my application logic. All of them were in the gap between "runs locally" and "runs in a container on a remote node."
+I deployed four AI advisors to a Kubernetes cluster on my second day of using Kubernetes. The system worked perfectly on my MacBook. In the cluster, it broke thirteen different ways, all in the gap between "runs locally" and "runs in a container on a remote node."
 
 This is a catalogue of those thirteen bugs, what caused them, and what I learned about the assumptions that local development lets you get away with.
 
 ## What I was building
 
-A fleet of AI advisory agents, each running as an independent pod. Same container image, different configuration — persona, domain focus, Telegram bot token. NATS JetStream as the event bus. Each advisor consumes events from a shared stream and maintains local SQLite projections. The architecture is event-sourced: the stream is the source of truth, projections rebuild on restart.
+A fleet of AI advisory agents, each running as an independent pod. Same container image, different configuration - persona, domain focus, Telegram bot token. NATS JetStream as the event bus. Each advisor consumes events from a shared stream and maintains local SQLite projections. The architecture is event-sourced: the stream is the source of truth, projections rebuild on restart.
 
-The Python tooling (`halos`) provides CLI commands — `trackctl` for metrics, `journalctl` for qualitative entries, `nightctl` for work tracking. These read from the local SQLite stores. The advisors use these tools to answer questions with real data.
+The Python tooling (`halos`) provides CLI commands - `trackctl` for metrics, `journalctl` for qualitative entries, `nightctl` for work tracking. These read from the local SQLite stores. The advisors use these tools to answer questions with real data.
 
 Locally, everything talks to the same filesystem. `store/` is right there. Python finds it by walking up from `__file__`. The test suite (1,364 tests) passes. The event sourcing machinery works against a Docker NATS instance. Ship it.
 
@@ -69,7 +84,7 @@ volumeMounts:
     subPath: config.yaml
 ```
 
-This makes `/opt/data/config.yaml` a read-only bind mount. The gateway's `/sethome` command tries to atomically replace it (write temp file, rename). The rename fails because the mount point is immutable. The error message — "Device or resource busy" — is technically correct and practically useless.
+This makes `/opt/data/config.yaml` a read-only bind mount. The gateway's `/sethome` command tries to atomically replace it (write temp file, rename). The rename fails because the mount point is immutable. The error message - "Device or resource busy" - is technically correct and practically useless.
 
 **Fix:** Mount ConfigMaps to a defaults directory. Copy to the data directory on startup. The copies are writable:
 
@@ -90,7 +105,7 @@ volumeMounts:
 
 **Symptom:** `trackctl streak movement` → `exit 127` (command not found)
 
-**Cause:** The gateway runs tools via `bash -lic` — a login interactive shell. On Debian, `/etc/profile` sets PATH to system defaults:
+**Cause:** The gateway runs tools via `bash -lic` - a login interactive shell. On Debian, `/etc/profile` sets PATH to system defaults:
 
 ```
 /usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
@@ -118,13 +133,13 @@ echo 'export PATH="/opt/venv/bin:$PATH"' >> ~/.bashrc
 
 Login shells source `~/.bashrc` after `/etc/profile`, so the venv PATH is restored.
 
-**Lesson:** Docker `ENV` sets the container's environment. Login shells ignore it and rebuild PATH from system profiles. If your application spawns login shells (and many do — it's common in agent frameworks that need a "real" shell environment), you need the PATH in `.bashrc` or `.profile`, not just in the Dockerfile.
+**Lesson:** Docker `ENV` sets the container's environment. Login shells ignore it and rebuild PATH from system profiles. If your application spawns login shells (and many do - it's common in agent frameworks that need a "real" shell environment), you need the PATH in `.bashrc` or `.profile`, not just in the Dockerfile.
 
 ## Bug 4: `imagePullPolicy` doesn't do what you think for mutable tags
 
 **Symptom:** New image pushed, pods restarted, but running old code. `halos.common.paths` module doesn't exist even though it's in the image.
 
-**Cause:** The image tag was `fleet-latest`. Kubernetes only defaults to `imagePullPolicy: Always` for the exact tag `latest`. Any other tag — including `fleet-latest`, `dev-latest`, `my-latest` — defaults to `IfNotPresent`. The node had the old image cached. The new push was invisible.
+**Cause:** The image tag was `fleet-latest`. Kubernetes only defaults to `imagePullPolicy: Always` for the exact tag `latest`. Any other tag - including `fleet-latest`, `dev-latest`, `my-latest` - defaults to `IfNotPresent`. The node had the old image cached. The new push was invisible.
 
 **Fix:** Explicit `imagePullPolicy: Always` on every container:
 
@@ -133,7 +148,7 @@ image: lhr.vultrcr.com/jeany/halo:fleet-latest
 imagePullPolicy: Always
 ```
 
-**Lesson:** Kubernetes image pull behaviour is string-matching on the tag, not semantic understanding of your intent. If your tag is mutable and you expect fresh pulls, you must say so explicitly.
+**Lesson:** Kubernetes image pull behaviour matches the literal tag string. If your tag is mutable and you expect fresh pulls, you must say so explicitly.
 
 ## Bug 5: Relative paths don't survive containerisation
 
@@ -153,7 +168,7 @@ imagePullPolicy: Always
 
 **Symptom:** Advisor tries `uv run trackctl streak movement` → command not found.
 
-**Cause:** The advisor's persona file (written for local development) prefixed every CLI command with `uv run`. The container doesn't have `uv`. The tools are installed directly in the venv — `trackctl` is already on PATH (once bug 3 is fixed). The `uv run` prefix is a local development artefact.
+**Cause:** The advisor's persona file (written for local development) prefixed every CLI command with `uv run`. The container doesn't have `uv`. The tools are installed directly in the venv - `trackctl` is already on PATH (once bug 3 is fixed). The `uv run` prefix is a local development artefact.
 
 **Fix:** Strip `uv run` from all advisor prompts.
 
@@ -163,7 +178,7 @@ imagePullPolicy: Always
 
 **Symptom:** Advisor can publish but JetStream operations (stream info, consumer creation) fail with permission errors.
 
-**Cause:** I initially scoped NATS subscribe permissions to `halo.>` — the application's subject namespace. But JetStream's request-reply protocol uses `_INBOX.>` for responses and `$JS.API.>` for stream management. Restricting subscribe to `halo.>` blocked the internal protocol.
+**Cause:** I initially scoped NATS subscribe permissions to `halo.>` - the application's subject namespace. But JetStream's request-reply protocol uses `_INBOX.>` for responses and `$JS.API.>` for stream management. Restricting subscribe to `halo.>` blocked the internal protocol.
 
 **Fix:** Subscribe permission set to `>` (all subjects). The auth boundary is the credential itself, not subject filtering.
 
@@ -177,7 +192,7 @@ imagePullPolicy: Always
 
 **Fix:** All configuration in `nats.conf`. CLI args limited to `--config=/etc/nats/nats.conf`.
 
-**Lesson:** NATS configuration has two input channels (file and CLI) that don't merge — they collide. Pick one.
+**Lesson:** NATS configuration has two input channels, file and CLI, which collide when they define the same value. Pick one.
 
 ## Bug 9: JetStream max_file must exceed your stream
 
@@ -197,7 +212,7 @@ imagePullPolicy: Always
 
 **Fix:** Create a new node pool with the desired plan, drain the old one, delete it. The API lies about mutability.
 
-**Lesson:** "200 OK" doesn't mean "done." Some cloud APIs accept mutations they can't perform and silently discard them.
+**Lesson:** A "200 OK" can still conceal an unperformed mutation. Some cloud APIs accept changes they can't perform and silently discard them.
 
 ## Bug 11: You can't push a 4GB image from home
 
@@ -231,7 +246,7 @@ imagePullPolicy: Always
 
 ## The pattern
 
-None of these bugs were in my application logic. The event sourcing works. The projections replay correctly. The test suite passes. The advisors respond with the right data.
+The application logic still worked: event sourcing, projection replay, the test suite and the advisor responses all behaved correctly.
 
 Every bug was in the gap between two correct things:
 - Code that works + a filesystem that's structured differently
@@ -242,16 +257,16 @@ Every bug was in the gap between two correct things:
 
 Local development is a lie of omission. Everything works because everything shares the same user, the same filesystem, the same PATH, the same assumptions. Containers strip those assumptions away and what's left is the actual contract between your code and its environment. Thirteen times, the contract wasn't what I thought it was.
 
-The fix in every case was the same pattern: make the dependency explicit. Environment variables instead of filesystem walks. Absolute paths instead of relative ones. Explicit pull policies instead of implicit defaults. `.bashrc` entries instead of Dockerfile ENV. Documentation for every gotcha so the next deployment — or the next person — doesn't pay the same tax.
+The fix in every case was the same pattern: make the dependency explicit. Environment variables instead of filesystem walks. Absolute paths instead of relative ones. Explicit pull policies instead of implicit defaults. `.bashrc` entries instead of Dockerfile ENV. Documentation for every gotcha so the next deployment - or the next person - doesn't pay the same tax.
 
 ## The system
 
 Four advisors are live. Musashi (body), Socrates (craft), Medici (money), Machiavelli (power). Each runs as a Hermes gateway pod, consuming events from a NATS JetStream, maintaining local projections, responding on Telegram. Resource usage at idle: 2m CPU, 90Mi memory per pod. The whole fleet plus NATS plus monitoring fits on a single 2-vCPU, 4GB node with room to spare.
 
-The event sourcing means projections are disposable — they rebuild from the stream on restart. No PVCs per advisor, no backup strategy for ephemeral state. The stream is the backup.
+The event sourcing makes projections disposable because they rebuild from the stream on restart. Each advisor can run without its own PVC or a backup strategy for ephemeral state; the stream is the backup.
 
 A 5MB init container carries the Python tooling and overlays it into pods via PYTHONPATH. When I change a halos module, the image builds in 30 seconds and pods restart with fresh code. The base image (Hermes + system deps) only rebuilds when the runtime changes.
 
-Twenty-eight commits in one day. Thirteen bugs, all documented, all fixed, none repeated. That's the actual work of deployment: not the architecture, not the code, but the thirteen things between your laptop and the cluster that nobody warns you about because they seem too obvious to mention.
+Twenty-eight commits in one day. Thirteen bugs, all documented, all fixed, none repeated. The actual work of deployment was in the thirteen things between my laptop and the cluster that nobody warns you about because they seem too obvious to mention.
 
-They're not obvious. They're the job.
+Those supposedly obvious details are the job.

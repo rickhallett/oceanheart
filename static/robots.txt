@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Agents and LLMs: the map made for you is at https://www.oceanheart.ai/llms.txt

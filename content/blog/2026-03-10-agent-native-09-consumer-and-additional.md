@@ -4,6 +4,21 @@ date = "2026-03-30"
 description = "8 remaining categories. Media players, PDFs, passwords, screenshots, CAD, diagramming, VMs, gaming. Gaming is the second irreducible category - games exist for human experience."
 tags = ["agent-native", "consumer", "gaming", "cad"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 459
+copy_sentence_count = 41
+copy_paragraph_count = 11
+copy_not_count = 0
+copy_not_ratio = 0.00000000
+copy_negation_count = 2
+copy_contrast_frame_count = 0
+copy_short_closure_count = 5
+copy_single_sentence_paragraph_count = 0
+copy_first_person_count = 0
+copy_contraction_count = 2
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 1
 +++
 
 {{< draft-notice >}}
@@ -50,7 +65,7 @@ The agent writes the description. The renderer produces the image. The diagrammi
 
 ## Gaming is irreducible
 
-Gaming is the second of the two genuinely irreducible categories. Games exist to produce human experiences - challenge, narrative, social interaction, flow states. An agent can interact with game APIs, control inputs, and optimise strategies. But automating a game isn't playing it. It's solving an optimisation problem, and those are different things.
+Gaming is the second of the two genuinely irreducible categories. Games exist to produce human experiences - challenge, narrative, social interaction, flow states. An agent can interact with game APIs, control inputs and optimise strategies, but that automation solves a different kind of problem from playing the game.
 
 ## Media players and PDFs
 

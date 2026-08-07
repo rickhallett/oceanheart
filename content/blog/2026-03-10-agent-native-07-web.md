@@ -4,6 +4,21 @@ date = "2026-03-28"
 description = "4 web/content categories. Web scraping is inherently programmatic. CMS is CRUD on structured content. SEO is data analysis + rule application."
 tags = ["agent-native", "web", "scraping", "cms", "seo"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 402
+copy_sentence_count = 33
+copy_paragraph_count = 10
+copy_not_count = 0
+copy_not_ratio = 0.00000000
+copy_negation_count = 1
+copy_contrast_frame_count = 1
+copy_short_closure_count = 3
+copy_single_sentence_paragraph_count = 0
+copy_first_person_count = 1
+copy_contraction_count = 2
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}
@@ -14,7 +29,7 @@ Web scraping/automation, content management, SEO tools, and web browsers. The fi
 
 ## Web scraping is programming
 
-Scraping a website is not browsing it. The scraper doesn't read the page. It parses the DOM, extracts data from selectors, follows links according to rules, handles pagination, and writes structured output. `curl`, `wget`, `scrapy`, `playwright`, `puppeteer`, `cheerio` - these are programming tools. The browser rendering engine is an implementation detail used to execute JavaScript; the visual rendering is unnecessary.
+Scraping a website is a programming task. The scraper parses the DOM, extracts data from selectors, follows links according to rules, handles pagination and writes structured output. `curl`, `wget`, `scrapy`, `playwright`, `puppeteer`, `cheerio` - these are programming tools. The browser rendering engine is an implementation detail used to execute JavaScript; visual rendering is unnecessary.
 
 Playwright and Puppeteer run headless by default. The browser window is opt-in, for debugging. The agent scripts the interaction: navigate, wait for selector, extract text, click, repeat. Targeted web automation - filling forms, clicking buttons, extracting specific data - is fully programmable.
 
@@ -22,7 +37,7 @@ Playwright and Puppeteer run headless by default. The browser window is opt-in, 
 
 Open-ended research browsing - "find information about X, follow interesting leads" - benefits from visual rendering because web pages are designed for visual consumption. Layout, emphasis, sidebars, navigation menus - these carry information that's lost in raw HTML.
 
-Headless browsers with screenshots close most of this gap. The agent can render a page, capture the screenshot, and use vision capabilities to interpret the layout. But the gap isn't fully closed for dense, visually complex pages where layout carries semantic meaning.
+Headless browsers with screenshots close most of this gap. The agent can render a page, capture the screenshot and use vision capabilities to interpret the layout, although dense pages can still carry semantic meaning in their visual structure.
 
 ## CMS is CRUD
 

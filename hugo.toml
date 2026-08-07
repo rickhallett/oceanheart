@@ -15,6 +15,10 @@ title = 'oceanheart.ai'
     url = '/projects/'
     weight = 10
   [[menus.main]]
+    name = 'blog'
+    url = '/blog/'
+    weight = 20
+  [[menus.main]]
     name = 'about'
     url = '/about/'
     weight = 30
@@ -38,8 +42,14 @@ title = 'oceanheart.ai'
     [markup.goldmark.renderer]
       unsafe = true
 
+[outputFormats]
+  [outputFormats.llms]
+    mediaType = 'text/plain'
+    baseName = 'llms'
+    isPlainText = true
+
 [outputs]
-  home = ['HTML', 'RSS']
+  home = ['HTML', 'RSS', 'llms']
   section = ['HTML', 'RSS']
 
 [taxonomies]

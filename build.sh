@@ -3,6 +3,8 @@ set -euo pipefail
 
 HUGO_VERSION="${HUGO_VERSION:-0.159.1}"
 
+node scripts/sync-share-routes.mjs --check
+
 run_matching_hugo() {
   local bin="$1"
 

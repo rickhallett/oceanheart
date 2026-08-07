@@ -4,6 +4,21 @@ date = "2026-03-01T15:00:00Z"
 description = "A standing order said 'read the file.' The file was 33,700 tokens. So we wrote 60 lines of JavaScript."
 tags = ["agents", "tokens", "discipline", "slopodar"]
 draft = true
+
+copy_metrics_version = 2
+copy_word_count = 2
+copy_sentence_count = 1
+copy_paragraph_count = 1
+copy_not_count = 0
+copy_not_ratio = 0.00000000
+copy_negation_count = 0
+copy_contrast_frame_count = 0
+copy_short_closure_count = 1
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 0
+copy_contraction_count = 0
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 ```js
@@ -37,7 +52,7 @@ const first = sdRows[0];
 const last = sdRows[sdRows.length - 1];
 
 const yaml = `# session-decisions-index.yaml
-# Auto-generated — do not edit manually
+# Auto-generated - do not edit manually
 # Full file: ${SD_FILE} (${total} entries, append-only)
 #
 # This is the BOOT file. Read this, not the full log.
@@ -58,4 +73,4 @@ writeFileSync(INDEX_FILE, yaml);
 
 [Source](https://github.com/rickhallett/thepit/blob/wake/bin/sd-index.js)[^1]
 
-[^1]: [Paper Guardrail](https://github.com/rickhallett/thepit/blob/wake/slopodar.yaml#L201) — "The LLM creates a rule, then in the same breath asserts that the rule will prevent the failure it was designed for. The assertion has no enforcement mechanism." ([oceanheart.ai/slopodar/paper-guardrail](https://oceanheart.ai/slopodar/paper-guardrail/))
+[^1]: [Paper Guardrail](https://github.com/rickhallett/thepit/blob/wake/slopodar.yaml#L201) - "The LLM creates a rule, then in the same breath asserts that the rule will prevent the failure it was designed for. The assertion has no enforcement mechanism." ([oceanheart.ai/slopodar/paper-guardrail](https://oceanheart.ai/slopodar/paper-guardrail/))

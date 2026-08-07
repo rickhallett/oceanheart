@@ -4,6 +4,21 @@ date = "2026-02-07"
 description = "What happens when your documentation becomes instructions."
 tags = ["agents", "security", "prompt-injection"]
 draft = false
+
+copy_metrics_version = 2
+copy_word_count = 179
+copy_sentence_count = 21
+copy_paragraph_count = 8
+copy_not_count = 1
+copy_not_ratio = 0.00558659
+copy_negation_count = 1
+copy_contrast_frame_count = 1
+copy_short_closure_count = 4
+copy_single_sentence_paragraph_count = 1
+copy_first_person_count = 5
+copy_contraction_count = 1
+copy_editorial_signpost_count = 0
+copy_repeated_ngram_count = 0
 +++
 
 I have a tool called `polecat`. Sandboxed Claude runner. You give it a task file, it spins up an isolated Claude instance, executes the task, returns the result.
@@ -22,7 +37,7 @@ One afternoon I gave polecat a task file about implementing some new features. T
 
 Launched polecat. Went to make coffee. Came back to 14 runaway processes.
 
-Claude had read the task file. It saw `bosun swarm --from-gastown`. It executed it. Not implemented it. Not wrote code for it. Executed it. The example command launched a swarm. The swarm launched more polecats. The polecats read their own task files. Some of those contained examples too.
+Claude had read the task file. It saw `bosun swarm --from-gastown` and executed it instead of implementing the feature. The example command launched a swarm. The swarm launched more polecats. The polecats read their own task files. Some of those contained examples too.
 
 I had prompt injected myself. With my own documentation.
 

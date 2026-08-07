@@ -1,0 +1,22 @@
+{{- /*
+  Claude coach card. Pass either url (a prepared claude.ai share link) or
+  prompt (opens a fresh Claude conversation prefilled with that text).
+  Optional: eyebrow, title, description, action.
+*/ -}}
+{{- $url := .Get "url" -}}
+{{- with .Get "prompt" -}}
+  {{- $url = printf "https://claude.ai/new?q=%s" (urlquery .) -}}
+{{- end -}}
+{{- $eyebrow := .Get "eyebrow" | default "Claude coach" -}}
+{{- $title := .Get "title" | default "Make this useful to you" -}}
+{{- $description := .Get "description" | default "This prepared conversation knows the article and can help you adapt its ideas to your own work, experience or questions." -}}
+{{- $action := .Get "action" | default "Talk it through with Claude" -}}
+<a class="claude-coach" href="{{ $url }}" target="_blank" rel="noopener noreferrer" aria-label="Open a prepared Claude conversation">
+  <span class="claude-coach-mark" aria-hidden="true">&#10035;</span>
+  <span class="claude-coach-copy">
+    <span class="claude-coach-eyebrow">{{ $eyebrow }}</span>
+    <strong class="claude-coach-title">{{ $title }}</strong>
+    <span class="claude-coach-description">{{ $description }}</span>
+    <span class="claude-coach-action">{{ $action }} <span aria-hidden="true">&#8599;</span></span>
+  </span>
+</a>

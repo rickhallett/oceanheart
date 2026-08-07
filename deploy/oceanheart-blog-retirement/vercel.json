@@ -1,0 +1,53 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/",
+      "status": 301,
+      "headers": {
+        "Location": "https://www.oceanheart.ai/",
+        "Cache-Control": "public, max-age=300"
+      }
+    },
+    {
+      "src": "/about/?",
+      "status": 301,
+      "headers": {
+        "Location": "https://www.oceanheart.ai/about/",
+        "Cache-Control": "public, max-age=300"
+      }
+    },
+    {
+      "src": "/contact/?",
+      "status": 301,
+      "headers": {
+        "Location": "https://www.oceanheart.ai/about/",
+        "Cache-Control": "public, max-age=300"
+      }
+    },
+    {
+      "src": "/author/richard/?",
+      "status": 301,
+      "headers": {
+        "Location": "https://www.oceanheart.ai/blog/",
+        "Cache-Control": "public, max-age=300"
+      }
+    },
+    {
+      "src": "/tag/(book|science|spirit|story)/?",
+      "status": 301,
+      "headers": {
+        "Location": "https://www.oceanheart.ai/blog/",
+        "Cache-Control": "public, max-age=300"
+      }
+    },
+    {
+      "src": "/robots\\.txt",
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "/.*",
+      "dest": "/api/retired"
+    }
+  ]
+}

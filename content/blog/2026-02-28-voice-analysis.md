@@ -4,6 +4,21 @@ date = "2026-02-28"
 description = "I asked my agent to extract every verbatim thing I'd typed across 20 files in the repo, build a voice profile, then cross-analyse every blog post against it. Every post read like an agent wrote it and a human approved it."
 tags = ["agents", "voice", "honesty", "meta"]
 draft = false
+
+copy_metrics_version = 2
+copy_word_count = 851
+copy_sentence_count = 32
+copy_paragraph_count = 15
+copy_not_count = 10
+copy_not_ratio = 0.01175088
+copy_negation_count = 22
+copy_contrast_frame_count = 1
+copy_short_closure_count = 1
+copy_single_sentence_paragraph_count = 5
+copy_first_person_count = 49
+copy_contraction_count = 6
+copy_editorial_signpost_count = 1
+copy_repeated_ngram_count = 0
 +++
 
 I run a multi-agent system with 12 specialised agents and over 200 session decisions on file. Every decision, every directive, every correction I've typed is recorded verbatim in the repo. That's about 8,000 words of my actual voice, spread across 20 sources.
@@ -35,7 +50,7 @@ Profanity marks inflection points, where patience with abstraction runs out and 
 
 ### 3. Self-deprecation followed by doubling down
 
-I undercut myself constantly, not for sympathy but as evidence of clear-eyed self-assessment. The self-deprecation is always followed by recommitting to the thing.
+I undercut myself constantly as evidence of clear-eyed self-assessment rather than a bid for sympathy. The self-deprecation is always followed by recommitting to the thing.
 
 > "I am about as real a operator as somebody in a Master & Commander style-tuned sailing simulator" → keeps the metaphor because it works
 > "I still sometimes felt like I must sound like a complete lunatic" → keeps explaining
@@ -44,11 +59,11 @@ I undercut myself constantly, not for sympathy but as evidence of clear-eyed sel
 
 ### 4. Lowercase defaults, caps for emphasis only
 
-Apostrophes dropped consistently: "its", "im", "thats", "doesnt", "cant", "dont". Capitalisation reserved for deliberate emphasis: "THATS the sweet spot", "VERBATIM", "DO NOT EXECUTE". This is not laziness, it is a typing register that treats punctuation as optional unless it carries meaning.
+Apostrophes dropped consistently: "its", "im", "thats", "doesnt", "cant", "dont". Capitalisation reserved for deliberate emphasis: "THATS the sweet spot", "VERBATIM", "DO NOT EXECUTE". This typing register treats punctuation as optional unless it carries meaning.
 
 ### 5. Ellipses as thinking pauses
 
-Ellipses mark the moment between thoughts, not trailing off. They hold space while the next idea forms.
+Ellipses mark the moment between thoughts and hold space while the next idea forms.
 
 > "felt...reassuring. Reassuring, yeah."
 > "something about it just feels...off"
@@ -56,7 +71,7 @@ Ellipses mark the moment between thoughts, not trailing off. They hold space whi
 
 ### 6. Short declarative sentences for conclusions
 
-After a stream of thought, I land with something short and flat. No ceremony.
+After a stream of thought, I land with something short and flat, without ceremony.
 
 > "Thats it. Hang me."
 > "We do the actual work."
@@ -66,11 +81,11 @@ After a stream of thought, I land with something short and flat. No ceremony.
 
 ### 7. British English, informal register
 
-"chaps", "frankly", "mate", "colours", "behaviour", "£", "bloody". Sentences that read like spoken English, not written English. I write as I would talk to someone in the room.
+"chaps", "frankly", "mate", "colours", "behaviour", "£", "bloody". Sentences that read like spoken English. I write as I would talk to someone in the room.
 
 ### 8. Honest admission without dressing it up
 
-The strongest writing occurs when admitting uncertainty or limitation. No hedging, no qualifying, no softening.
+The strongest writing occurs when admitting uncertainty or limitation directly.
 
 > "I have given it my all. I have built a system to build a system, and that system maybe building, or may only appear to be building"
 > "I could not help myself."
@@ -83,7 +98,7 @@ The strongest writing occurs when admitting uncertainty or limitation. No hedgin
 |---|---|
 | Clean section headers with `##` | I don't section my thoughts neatly |
 | "Welcome to the flywheel effect." | I would never introduce a concept with a greeting |
-| "Here's the thing:" | Epistemic Theatre — False Candor (I have a [tells entry](/tells/epistemic-theatre/) for this) |
+| "Here's the thing:" | Epistemic Theatre - False Candor (I have a [tells entry](/tells/epistemic-theatre/) for this) |
 | "You see where this is going." | Telling the reader what to think |
 | Bold **concept names** introduced formally | I name things in passing, not ceremony |
 | `Dam it.` emoji pun | I do not use emoji or puns in writing |
@@ -94,9 +109,9 @@ The strongest writing occurs when admitting uncertainty or limitation. No hedgin
 
 ## What I did about it
 
-All 5 blog posts were rewritten using this profile. The rewrites removed agent tells and restructured in continuous prose with flat headers. They do not plant my patterns artificially (no fake typos, no forced profanity). They remove the agent patterns and let the natural register of the stories breathe.
+All 5 blog posts were rewritten using this profile. The rewrites removed agent tells and restructured in continuous prose with flat headers. They avoid planting my patterns artificially through fake typos or forced profanity, leaving the stories' natural register room to breathe.
 
-The analysis itself was performed by an agent. The irony is structural, not incidental. An LLM extracted my voice, diagnosed where its own output diverged from it, and rewrote its own output to converge. Whether the result is closer to my voice or closer to an LLM's model of my voice is a question I cannot answer from inside the process.
+The analysis itself was performed by an agent, which creates a structural irony. An LLM extracted my voice, diagnosed where its own output diverged from it, and rewrote its own output to converge. Whether the result is closer to my voice or closer to an LLM's model of my voice is a question I cannot answer from inside the process.
 
 ---
 

@@ -12,6 +12,13 @@ summary = "production client product"
 principle = "Shipped, paid for, and edited by the client themselves."
 +++
 
+{{< claude-coach
+  prompt="Read https://www.oceanheart.ai/projects/becoming-diamond/ and interrogate the product architecture with me: how the marketing site, gated course, AI chat, Stripe membership, and client-editable CMS fit together; where access-control or lifecycle failures could emerge; and what you would probe first in a design review."
+  title="Interrogate this architecture"
+  description="Open a Claude conversation primed to examine the boundaries between membership, course delivery, AI chat, payments, and client-owned content."
+  action="Discuss it with Claude" >}}
+
+
 ## What it is
 
 A paid client product, in production and serving customers: a public marketing site and a gated member portal behind it. The portal delivers a 30-day video course, an AI chat assistant scoped to the course material, Stripe-backed membership, and a git-based CMS so the client edits their own content without touching code.
