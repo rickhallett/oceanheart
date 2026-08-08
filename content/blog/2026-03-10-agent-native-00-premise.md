@@ -4,21 +4,6 @@ date = "2026-03-21"
 description = "Every piece of software can be decomposed into computation, interface, and feedback. For an agent, the interface is overhead."
 tags = ["agent-native", "taxonomy", "software"]
 draft = true
-
-copy_metrics_version = 2
-copy_word_count = 294
-copy_sentence_count = 17
-copy_paragraph_count = 8
-copy_not_count = 1
-copy_not_ratio = 0.00340136
-copy_negation_count = 2
-copy_contrast_frame_count = 1
-copy_short_closure_count = 4
-copy_single_sentence_paragraph_count = 1
-copy_first_person_count = 5
-copy_contraction_count = 0
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
 +++
 
 {{< draft-notice >}}

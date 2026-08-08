@@ -4,21 +4,6 @@ date = "2026-03-01"
 description = "The problem with being earnest."
 tags = ["agents", "discipline", "slopodar", "meta"]
 draft = true
-
-copy_metrics_version = 2
-copy_word_count = 101
-copy_sentence_count = 9
-copy_paragraph_count = 7
-copy_not_count = 1
-copy_not_ratio = 0.00990099
-copy_negation_count = 3
-copy_contrast_frame_count = 0
-copy_short_closure_count = 6
-copy_single_sentence_paragraph_count = 5
-copy_first_person_count = 0
-copy_contraction_count = 3
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
 +++
 
 The previous post shipped a script that replaces a 33,700-token file with a 1,500-token index. The agent committed it, pushed it, wrote the blog post about it, and said:

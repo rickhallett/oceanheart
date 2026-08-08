@@ -1,40 +1,31 @@
 {{ define "main" }}
-{{ $id := .Params.id }}
-{{ $pattern := false }}
-{{ range hugo.Data.tells.patterns }}
-  {{ if eq .id $id }}
-    {{ $pattern = . }}
-  {{ end }}
-{{ end }}
-
-{{ with $pattern }}
 <article>
   <header>
-    <h1>{{ .name }}</h1>
-    <p style="color: var(--muted); margin-bottom: 2rem;">detected {{ .detected }}</p>
+    <h1>{{ .Title }}</h1>
+    <p style="color: var(--muted); margin-bottom: 2rem;">detected {{ .Params.detected }}</p>
   </header>
 
   <div style="margin-bottom: 1.5rem;">
     <h3>trigger</h3>
-    <p style="color: var(--accent-lift);">"{{ .trigger }}"</p>
+    <p style="color: var(--accent-lift);">"{{ .Params.trigger }}"</p>
   </div>
 
   <div style="margin-bottom: 1.5rem;">
     <h3>what it is</h3>
-    <p>{{ .description }}</p>
+    <p>{{ .Params.description }}</p>
   </div>
 
   <div style="margin-bottom: 1.5rem;">
-    <h3>what it signals</h3>
-    <p>{{ .signal }}</p>
+    <h3>how to detect</h3>
+    <p>{{ .Params.detect }}</p>
   </div>
 
   <div style="margin-bottom: 1.5rem;">
     <h3>instead</h3>
-    <p>{{ .instead }}</p>
+    <p>{{ .Params.instead }}</p>
   </div>
 
-  {{ with .refs }}
+  {{ with .Params.refs }}
   <div style="margin-bottom: 1.5rem;">
     <h3>refs</h3>
     <ul>
@@ -48,5 +39,4 @@
   <hr>
   <a href="/tells/" class="see-all">&larr; all patterns</a>
 </article>
-{{ end }}
 {{ end }}

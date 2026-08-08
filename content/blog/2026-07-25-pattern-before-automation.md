@@ -6,21 +6,6 @@ tags = ["agents", "automation", "human-ai-collaboration", "workflow", "systems-d
 aliases = ["/pattern-before-automation/"]
 draft = false
 
-copy_metrics_version = 2
-copy_word_count = 1809
-copy_sentence_count = 113
-copy_paragraph_count = 38
-copy_not_count = 0
-copy_not_ratio = 0.00000000
-copy_negation_count = 16
-copy_contrast_frame_count = 3
-copy_short_closure_count = 5
-copy_single_sentence_paragraph_count = 5
-copy_first_person_count = 25
-copy_contraction_count = 7
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
-
 [build]
 render = "always"
 list = "always"

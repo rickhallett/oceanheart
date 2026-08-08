@@ -4,21 +4,6 @@ date = "2026-03-18"
 description = "v0.26 of a working vocabulary developed over 30 days of agentic engineering. ~60% maps to established frameworks. ~18% is genuinely novel. The novel parts cluster around context engineering for LLM agents."
 tags = ["lexicon", "vocabulary", "frameworks", "context-engineering"]
 draft = true
-
-copy_metrics_version = 2
-copy_word_count = 728
-copy_sentence_count = 14
-copy_paragraph_count = 8
-copy_not_count = 1
-copy_not_ratio = 0.00137363
-copy_negation_count = 11
-copy_contrast_frame_count = 2
-copy_short_closure_count = 1
-copy_single_sentence_paragraph_count = 4
-copy_first_person_count = 4
-copy_contraction_count = 4
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 2
 +++
 
 {{< draft-notice >}}

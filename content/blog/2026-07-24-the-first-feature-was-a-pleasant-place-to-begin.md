@@ -6,21 +6,6 @@ tags = ["agents", "human-ai-collaboration", "onboarding", "context-engineering",
 draft = false
 aliases = ["/olivia/"]
 
-copy_metrics_version = 2
-copy_word_count = 2233
-copy_sentence_count = 131
-copy_paragraph_count = 51
-copy_not_count = 7
-copy_not_ratio = 0.00313480
-copy_negation_count = 22
-copy_contrast_frame_count = 4
-copy_short_closure_count = 4
-copy_single_sentence_paragraph_count = 12
-copy_first_person_count = 35
-copy_contraction_count = 8
-copy_editorial_signpost_count = 1
-copy_repeated_ngram_count = 0
-
 [build]
 render = "always"
 list = "always"

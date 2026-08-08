@@ -6,21 +6,6 @@ tags = ["agents", "voice", "wispr", "workflow", "human-ai-collaboration"]
 aliases = ["/wispr/"]
 draft = false
 
-copy_metrics_version = 2
-copy_word_count = 1082
-copy_sentence_count = 66
-copy_paragraph_count = 28
-copy_not_count = 1
-copy_not_ratio = 0.00092421
-copy_negation_count = 8
-copy_contrast_frame_count = 0
-copy_short_closure_count = 3
-copy_single_sentence_paragraph_count = 5
-copy_first_person_count = 52
-copy_contraction_count = 6
-copy_editorial_signpost_count = 1
-copy_repeated_ngram_count = 0
-
 [build]
 render = "always"
 list = "always"

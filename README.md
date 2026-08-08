@@ -3,18 +3,25 @@
 Oceanheart is Rick Hallett's Hugo portfolio and working-notes site, deployed to
 Vercel at [www.oceanheart.ai](https://www.oceanheart.ai).
 
-## Local build
+## Verify and preview
 
-The production build pins Hugo through `build.sh`:
+Run the complete production verifier with one command:
 
 ```sh
-hugo
 ./build.sh
-vercel build --prod
 ```
 
-These are separate gates. A local Hugo build does not prove that Vercel's
-production builder accepts the repository.
+It checks the share-route projection and retirement service, resolves exactly
+Hugo 0.159.1, builds into a clean destination, and checks the rendered site.
+On Linux, the build downloads only the matching official Hugo archive and
+verifies its pinned SHA256 before execution. GitHub and Vercel run this same
+command.
+
+For an attended local preview with Hugo 0.159.1 installed:
+
+```sh
+hugo server --bind 0.0.0.0 --port 1313
+```
 
 ## Share-friendly blog routes
 
@@ -64,17 +71,20 @@ node scripts/sync-share-routes.mjs --list
 
 ## Production release
 
-Release only from the clean registered `main` worktree linked to the Vercel
-project named `oceanheart`. After the three build gates pass:
+The main site has one deployment owner: Vercel's Git integration for `main`.
+Release through a reviewed branch after `./build.sh` passes:
 
 1. Commit only the intended files.
-2. Fetch `origin/main` and require no remote-only commits.
-3. Push `main`.
-4. Re-run `vercel build --prod` from the committed state.
-5. Deploy with `vercel deploy --prebuilt --prod`.
+2. Fetch `origin/main` and require the branch is based on current `main`.
+3. Push the review branch and require the GitHub `verify` check to pass.
+4. Merge the reviewed branch into `main`.
+5. Wait for the Git-owned Vercel production deployment to report `Ready`.
 6. Verify every short route returns `308` to its canonical article.
 7. Follow every redirect and require `200`, correct canonical metadata, and the
    expected Open Graph preview metadata.
+
+Do not run `vercel deploy` for the main site. A second deployment path makes
+production lineage ambiguous.
 
 The primary checkout may contain unrelated work. Resolve the registered
 worktree holding `main` before editing or deploying.

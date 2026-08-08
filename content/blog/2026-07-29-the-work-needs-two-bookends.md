@@ -6,21 +6,6 @@ tags = ["agents", "agent-os", "human-ai-collaboration", "git", "systems-design",
 aliases = ["/two-bookends/"]
 draft = false
 
-copy_metrics_version = 2
-copy_word_count = 1769
-copy_sentence_count = 109
-copy_paragraph_count = 31
-copy_not_count = 1
-copy_not_ratio = 0.00056529
-copy_negation_count = 29
-copy_contrast_frame_count = 2
-copy_short_closure_count = 4
-copy_single_sentence_paragraph_count = 1
-copy_first_person_count = 33
-copy_contraction_count = 15
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
-
 [build]
 render = "always"
 list = "never"

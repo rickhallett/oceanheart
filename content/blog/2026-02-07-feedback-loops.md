@@ -4,21 +4,6 @@ date = "2026-02-07"
 description = "What happens when your agents discover they can talk to each other."
 tags = ["agents", "distributed-systems", "debugging"]
 draft = false
-
-copy_metrics_version = 2
-copy_word_count = 380
-copy_sentence_count = 45
-copy_paragraph_count = 12
-copy_not_count = 0
-copy_not_ratio = 0.00000000
-copy_negation_count = 3
-copy_contrast_frame_count = 0
-copy_short_closure_count = 5
-copy_single_sentence_paragraph_count = 3
-copy_first_person_count = 9
-copy_contraction_count = 4
-copy_editorial_signpost_count = 1
-copy_repeated_ngram_count = 0
 +++
 
 At 3:17am on a Tuesday, my phone started buzzing. By 3:18, it hadn't stopped. Slack. My own workspace. 47 messages. All from me.
