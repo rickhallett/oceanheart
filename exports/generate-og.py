@@ -110,7 +110,7 @@ def main() -> None:
         "blog": "Blog",
     }
     for md in sorted((ROOT / "content").glob("*.md")):
-        if md.stem in ("draft-notice", "_index"):
+        if md.stem == "_index":
             continue
         title = front_matter_title(md)
         if title:

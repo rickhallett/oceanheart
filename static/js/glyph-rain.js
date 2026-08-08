@@ -1,7 +1,6 @@
 /* glyph-rain.js
  *
- * Homepage-only background rain. Extracted from the decrypt lab page
- * (static/lab/decrypt.html), which vendored Canvas UI's
+ * Homepage-only background rain. Adapted from Canvas UI's
  * glyph-rain-vanilla (canvasui.dev/r/glyph-rain-vanilla.json),
  * transpiled from TypeScript with esbuild, target es2020.
  *

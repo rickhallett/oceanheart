@@ -1,0 +1,311 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+const SITE_ORIGIN = "https://www.oceanheart.ai";
+const repositoryRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
+const outputDirectory = path.join(repositoryRoot, "public");
+
+function readFile(filePath) {
+  assert.ok(fs.existsSync(filePath), `missing rendered file: ${filePath}`);
+  return fs.readFileSync(filePath, "utf8");
+}
+
+function attribute(tag, name) {
+  const match = tag.match(
+    new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, "i"),
+  );
+  return match ? (match[1] ?? match[2]) : null;
+}
+
+function hasAttribute(tag, name) {
+  return new RegExp(`\\b${name}(?=\\s|=|/?>)`, "i").test(tag);
+}
+
+function openingTags(html, name) {
+  return html.match(new RegExp(`<${name}\\b[^>]*>`, "gi")) ?? [];
+}
+
+function allOpeningTags(html) {
+  return html.match(/<[a-z][a-z0-9:-]*\b[^>]*>/gi) ?? [];
+}
+
+function elements(html, name) {
+  return [
+    ...html.matchAll(new RegExp(`<${name}\\b[^>]*>([\\s\\S]*?)</${name}>`, "gi")),
+  ];
+}
+
+function visibleText(markup) {
+  return markup
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&(?:#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]+);/gi, " ")
+    .trim();
+}
+
+function containsLetterOrNumber(markup) {
+  return /[\p{L}\p{N}]/u.test(visibleText(markup));
+}
+
+function containsMeaningfulContent(markup) {
+  return (
+    containsLetterOrNumber(markup) ||
+    /<(?:img|svg|video|audio|canvas|iframe)\b/i.test(markup)
+  );
+}
+
+function onlyTag(html, name, key, value, route) {
+  const matches = openingTags(html, name).filter(
+    (tag) => attribute(tag, key) === value,
+  );
+  assert.equal(
+    matches.length,
+    1,
+    `${route} must contain exactly one ${name}[${key}="${value}"]`,
+  );
+  return matches[0];
+}
+
+function htmlPathFor(url) {
+  const parsed = new URL(url);
+  assert.equal(parsed.origin, SITE_ORIGIN, `${url} uses the wrong site origin`);
+  assert.equal(parsed.search, "", `${url} contains a query string`);
+  assert.equal(parsed.hash, "", `${url} contains a fragment`);
+  const relativePath = decodeURIComponent(parsed.pathname).replace(/^\//, "");
+  return path.join(outputDirectory, relativePath, "index.html");
+}
+
+function shortList(values) {
+  const shown = values.slice(0, 10);
+  const suffix = values.length > shown.length ? ` and ${values.length - shown.length} more` : "";
+  return `${shown.join(", ")}${suffix}`;
+}
+
+function assertSameRoutes(actual, expected, label) {
+  const actualSet = new Set(actual);
+  const expectedSet = new Set(expected);
+  const missing = expected.filter((route) => !actualSet.has(route));
+  const extra = actual.filter((route) => !expectedSet.has(route));
+
+  assert.equal(
+    missing.length + extra.length,
+    0,
+    `${label}; missing: ${shortList(missing) || "none"}; extra: ${shortList(extra) || "none"}`,
+  );
+}
+
+const sitemap = readFile(path.join(outputDirectory, "sitemap.xml"));
+const canonicalUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+  (match) => match[1].replaceAll("&amp;", "&"),
+);
+
+test("sitemap routes are unique, canonical, and rendered", () => {
+  assert.ok(canonicalUrls.length > 0, "sitemap must contain canonical page URLs");
+  assert.equal(
+    new Set(canonicalUrls).size,
+    canonicalUrls.length,
+    "sitemap contains duplicate canonical URLs",
+  );
+
+  for (const url of canonicalUrls) {
+    readFile(htmlPathFor(url));
+  }
+});
+
+test("canonical pages render meaningful, structurally valid HTML", () => {
+  for (const url of canonicalUrls) {
+    const html = readFile(htmlPathFor(url));
+    const route = new URL(url).pathname;
+    const mains = elements(html, "main");
+
+    assert.equal(mains.length, 1, `${route} must contain exactly one main element`);
+    assert.ok(
+      containsLetterOrNumber(mains[0][1]),
+      `${route} contains no visible text in its main element`,
+    );
+
+    for (const section of elements(html, "section")) {
+      assert.ok(
+        containsMeaningfulContent(section[1]),
+        `${route} contains an empty section`,
+      );
+    }
+
+    const ids = allOpeningTags(html)
+      .map((tag) => attribute(tag, "id"))
+      .filter(Boolean);
+    assert.equal(
+      new Set(ids).size,
+      ids.length,
+      `${route} contains duplicate element IDs`,
+    );
+  }
+});
+
+test("canonical pages expose the required social and favicon metadata", () => {
+  for (const url of canonicalUrls) {
+    const html = readFile(htmlPathFor(url));
+    const route = new URL(url).pathname;
+    const canonical = onlyTag(html, "link", "rel", "canonical", route);
+    const favicon = onlyTag(html, "link", "rel", "icon", route);
+    const twitterCard = onlyTag(html, "meta", "name", "twitter:card", route);
+
+    assert.equal(attribute(canonical, "href"), url, `${route} canonical URL drifted`);
+    assert.equal(
+      attribute(twitterCard, "content"),
+      "summary_large_image",
+      `${route} Twitter card drifted`,
+    );
+
+    const openGraph = new Map();
+    for (const property of [
+      "og:site_name",
+      "og:title",
+      "og:description",
+      "og:type",
+      "og:url",
+      "og:image",
+      "og:image:width",
+      "og:image:height",
+    ]) {
+      const meta = onlyTag(html, "meta", "property", property, route);
+      const content = attribute(meta, "content");
+      assert.ok(content, `${route} ${property} is empty`);
+      openGraph.set(property, content);
+    }
+
+    assert.equal(openGraph.get("og:url"), url, `${route} og:url drifted`);
+
+    for (const [twitterName, openGraphName] of [
+      ["twitter:title", "og:title"],
+      ["twitter:description", "og:description"],
+      ["twitter:image", "og:image"],
+    ]) {
+      const twitter = onlyTag(html, "meta", "name", twitterName, route);
+      assert.equal(
+        attribute(twitter, "content"),
+        openGraph.get(openGraphName),
+        `${route} ${twitterName} drifted from ${openGraphName}`,
+      );
+    }
+
+    for (const assetUrl of [attribute(favicon, "href"), openGraph.get("og:image")]) {
+      const parsedAsset = new URL(assetUrl, SITE_ORIGIN);
+      assert.equal(
+        parsedAsset.origin,
+        SITE_ORIGIN,
+        `${route} metadata asset uses the wrong origin`,
+      );
+      const assetPath = path.join(
+        outputDirectory,
+        decodeURIComponent(parsedAsset.pathname).replace(/^\//, ""),
+      );
+      assert.ok(fs.existsSync(assetPath), `${route} metadata asset is not rendered`);
+    }
+  }
+});
+
+test("the tells index and sitemap expose exactly the same valid detail routes", () => {
+  const indexPath = path.join(outputDirectory, "tells", "index.html");
+  const sitemapRoutes = canonicalUrls
+    .map((url) => new URL(url).pathname)
+    .filter((route) => /^\/tells\/[^/]+\/$/.test(route))
+    .sort();
+
+  if (!fs.existsSync(indexPath)) {
+    assert.deepEqual(sitemapRoutes, [], "sitemap exposes tells detail pages without an index");
+    return;
+  }
+
+  const html = readFile(indexPath);
+  const patternLinks = openingTags(html, "a").filter(
+    (tag) => hasAttribute(tag, "data-pattern"),
+  );
+  const indexRoutes = patternLinks.map((tag) => attribute(tag, "href"));
+  const patternIds = patternLinks.map((tag) => attribute(tag, "id"));
+
+  assert.ok(patternLinks.length > 0, "tells index contains no pattern links");
+  assert.equal(new Set(indexRoutes).size, indexRoutes.length, "tells index repeats a route");
+  assert.equal(new Set(patternIds).size, patternIds.length, "tells index repeats an ID");
+
+  for (let index = 0; index < patternLinks.length; index += 1) {
+    assert.equal(
+      indexRoutes[index],
+      `/tells/${patternIds[index]}/`,
+      `tells ID ${patternIds[index]} does not own its route`,
+    );
+  }
+
+  assertSameRoutes(indexRoutes, sitemapRoutes, "tells index and sitemap detail routes drifted");
+
+  const legacyDirectory = path.join(outputDirectory, "slopodar");
+  const legacyIds = fs
+    .readdirSync(legacyDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  assert.deepEqual(
+    legacyIds,
+    [...patternIds].sort(),
+    "legacy tell aliases and canonical tell IDs drifted",
+  );
+
+  const legacyIndexHtml = readFile(path.join(legacyDirectory, "index.html"));
+  const legacyIndexCanonical = onlyTag(
+    legacyIndexHtml,
+    "link",
+    "rel",
+    "canonical",
+    "/slopodar/",
+  );
+  assert.equal(
+    attribute(legacyIndexCanonical, "href"),
+    `${SITE_ORIGIN}/tells/`,
+    "legacy tells index alias drifted",
+  );
+
+  for (const route of sitemapRoutes) {
+    const patternId = route.split("/").filter(Boolean).at(-1);
+    const detailHtml = readFile(
+      path.join(outputDirectory, route.replace(/^\//, ""), "index.html"),
+    );
+    const detected = detailHtml.match(/<p\b[^>]*>\s*detected\s+([^<]+)<\/p>/i);
+    assert.ok(detected, `${route} contains no detected field`);
+    assert.ok(
+      containsLetterOrNumber(detected[1]),
+      `${route} contains an empty detected field`,
+    );
+    const fields = [
+      ...detailHtml.matchAll(/<h[2-4]\b[^>]*>[\s\S]*?<\/h[2-4]>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi),
+    ];
+    assert.ok(fields.length > 0, `${route} contains no structured pattern fields`);
+    for (const field of fields) {
+      assert.ok(
+        containsLetterOrNumber(field[1]),
+        `${route} contains an empty pattern field`,
+      );
+    }
+    const legacyHtml = readFile(
+      path.join(legacyDirectory, patternId, "index.html"),
+    );
+    const legacyCanonical = onlyTag(
+      legacyHtml,
+      "link",
+      "rel",
+      "canonical",
+      `/slopodar/${patternId}/`,
+    );
+    assert.equal(
+      attribute(legacyCanonical, "href"),
+      `${SITE_ORIGIN}${route}`,
+      `/slopodar/${patternId}/ alias drifted`,
+    );
+  }
+});

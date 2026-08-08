@@ -1,4 +1,5 @@
 {{ define "main" }}
+{{ $patterns := where .RegularPages "Params.id" "ne" nil }}
 <article class="tells-page">
   <header>
     <h1>The Tells</h1>
@@ -12,15 +13,15 @@
   </div>
 
   <p class="tells-count" id="tells-count">
-    {{ len hugo.Data.tells.patterns }} patterns
+    {{ len $patterns }} patterns
   </p>
 
   <div class="tells-grid" id="tells-grid">
-    {{ range sort hugo.Data.tells.patterns "detected" "desc" }}
-    <a href="/tells/{{ .id }}/" class="tells-row" id="{{ .id }}" data-pattern>
-      <span class="tells-row-name">{{ .name }}</span>
-      <span class="tells-row-trigger">"{{ .trigger }}"</span>
-      <span class="tells-row-date">{{ .detected }}</span>
+    {{ range sort $patterns "Params.detected" "desc" }}
+    <a href="{{ .RelPermalink }}" class="tells-row" id="{{ .Params.id }}" data-pattern>
+      <span class="tells-row-name">{{ .Title }}</span>
+      <span class="tells-row-trigger">"{{ .Params.trigger }}"</span>
+      <span class="tells-row-date">{{ .Params.detected }}</span>
       <span class="tells-row-link">&rarr;</span>
     </a>
     {{ end }}

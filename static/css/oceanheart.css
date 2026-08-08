@@ -380,8 +380,7 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 
 /* `.btn`, `.btn-primary`, `.chip` and `.chips` are gone: the buttons were the
    two CV downloads and the chips were the project link rows, and both now read
-   as ordinary text. The /lab/ snapshots carry their own copies of the chip
-   rules inline, so nothing there depends on this file. */
+   as ordinary text. */
 
 /* ---- Generic section heads ------------------------------------ */
 .home-section { margin-top: 3.5rem; }
@@ -442,7 +441,7 @@ article .content img { max-width: 100%; margin: 1.5rem 0; border-radius: 3px; }
 .tech-tag { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); }
 .cv-download { margin-top: 2.5rem; }
 
-/* ---- Slopodar / tells / decisions (data rows) ----------------- */
+/* ---- Tells ---------------------------------------------------- */
 .tells-search input {
   width: 100%; font-family: var(--font-mono); font-size: var(--fs-sm);
   color: var(--ink); background: var(--panel);
@@ -451,18 +450,16 @@ article .content img { max-width: 100%; margin: 1.5rem 0; border-radius: 3px; }
 }
 .tells-search input:focus { border-color: var(--accent); }
 .tells-search input::placeholder { color: var(--faint); }
-.tells-row, .sd-row {
+.tells-row {
   display: flex; align-items: baseline; gap: 1rem;
   padding: 0.5rem 0; border-bottom: 1px solid var(--rule-2);
   text-decoration: none; color: inherit;
 }
-.tells-row:first-child, .sd-row:first-child { border-top: 1px solid var(--rule-2); }
+.tells-row:first-child { border-top: 1px solid var(--rule-2); }
 .tells-row-name { font-family: var(--font-mono); color: var(--ink); font-size: var(--fs-sm); white-space: nowrap; flex-shrink: 0; }
-.tells-row:hover .tells-row-name, .sd-row:hover .sd-row-id { color: var(--accent-lift); }
-.tells-row-trigger, .sd-row-decision { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-.tells-row-date, .tells-row-link, .sd-row-link, .sd-row-id { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-xs); flex-shrink: 0; white-space: nowrap; }
-.sd-row-id { min-width: 4rem; color: var(--accent-lift); }
-.sd-row-status { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+.tells-row:hover .tells-row-name { color: var(--accent-lift); }
+.tells-row-trigger { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.tells-row-date, .tells-row-link { font-family: var(--font-mono); color: var(--faint); font-size: var(--fs-xs); flex-shrink: 0; white-space: nowrap; }
 .tells-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--faint); margin-bottom: 0.5rem; }
 
 /* ---- Sloptics ------------------------------------------------- */
@@ -525,8 +522,8 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .cv-content h1 + p { white-space: normal; }
   .receipt-row { flex-direction: column; gap: 0.15rem; }
   .receipt-source { white-space: normal; }
-  .tells-row, .sd-row { flex-wrap: wrap; gap: 0.15rem 0.8rem; }
-  .tells-row-trigger, .sd-row-decision { flex-basis: 100%; white-space: normal; overflow: visible; }
+  .tells-row { flex-wrap: wrap; gap: 0.15rem 0.8rem; }
+  .tells-row-trigger { flex-basis: 100%; white-space: normal; overflow: visible; }
 }
 
 @media (prefers-reduced-motion: reduce) {

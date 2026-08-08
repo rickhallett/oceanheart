@@ -3,21 +3,6 @@ title = "The Agentic Engineering Bootcamp"
 date = "2026-03-10"
 description = "A first-principles curriculum for SWEs who steer AI agents. Five bootcamps, 51 steps, 208-259 hours. From Linux primitives to evaluation pipelines."
 tags = ["bootcamp", "agentic-engineering", "linux", "learning"]
-
-copy_metrics_version = 2
-copy_word_count = 1243
-copy_sentence_count = 78
-copy_paragraph_count = 29
-copy_not_count = 2
-copy_not_ratio = 0.00160901
-copy_negation_count = 15
-copy_contrast_frame_count = 1
-copy_short_closure_count = 7
-copy_single_sentence_paragraph_count = 4
-copy_first_person_count = 16
-copy_contraction_count = 11
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
 +++
 
 ## The observation
@@ -103,7 +88,7 @@ Bootcamp V (infrastructure) requires I, II, and benefits from IV. Production age
 
 ## Scope
 
-This is self-study material I wrote for myself and am publishing because it might be useful to others. It offers practice rather than certification or a credential. The meaningful test is whether you can read agent-generated code and tell when it's wrong at the system, prompt and evaluation levels.
+This was self-study material I wrote for myself. The curriculum is no longer part of the active site; Git history retains it if a named audience and next use emerge.
 
 Each step has interactive challenges you run in the same environment you're learning about. There are no separate lab setups. The terminal you're reading in is the terminal you practice in.
 
@@ -116,11 +101,3 @@ Every section connects explicitly to agentic engineering. The question "why does
 Software engineers who work with AI agents and want to be competent at governing the full stack of output - from shell scripts to evaluation pipelines. You probably already write code daily. You might use agents for development. You may have noticed that you sometimes can't tell whether an agent's output is correct, and that bothers you.
 
 The total estimated time is 208 to 259 hours across all five bootcamps. That is a substantial investment. But you don't need to do all five. The first three steps of Bootcamp I (process model, shell, filesystem) are roughly 20 hours and change how you read everything an agent produces at the system level. Bootcamp IV alone (evaluation and adversarial testing) is 39-48 hours and covers the methodology that frontier AI labs use to assess model safety and capability.
-
-## Source
-
-- Curriculum overview: [/bootcamp/](/bootcamp/)
-- Bootcamp I steps: `docs/bootcamp/01-process-model.md` through `12-advanced-bash.md`
-- Bootcamp II-V outlines: `docs/bootcamp/BOOTCAMP-{II,III,IV,V}-OUTLINE.md`
-- Derived from: `docs/research/agent-native-software-taxonomy.md`
-- Conventions: no emojis, no em-dashes, all examples runnable on Arch/Debian/Ubuntu

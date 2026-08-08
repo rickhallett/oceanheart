@@ -3,21 +3,6 @@ title = "Building the Same System Twice"
 date = "2026-03-30"
 description = "A take-home assessment. Two implementations. One took 18 hours with 48 adversarial reviews. The other took 1 hour with zero. Both work. What does that tell us?"
 tags = ["engineering-process", "tdd", "adversarial-review", "ai-augmented-development", "agents", "swarm"]
-
-copy_metrics_version = 2
-copy_word_count = 1322
-copy_sentence_count = 90
-copy_paragraph_count = 33
-copy_not_count = 0
-copy_not_ratio = 0.00000000
-copy_negation_count = 12
-copy_contrast_frame_count = 2
-copy_short_closure_count = 9
-copy_single_sentence_paragraph_count = 7
-copy_first_person_count = 5
-copy_contraction_count = 5
-copy_editorial_signpost_count = 1
-copy_repeated_ngram_count = 3
 +++
 
 A shipping startup sent me a take-home: build a carrier integration service. TypeScript, UPS API, OAuth 2.0, multi-carrier extensibility. Standard stuff.

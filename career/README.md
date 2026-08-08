@@ -53,10 +53,8 @@ The current output topology is deliberately narrow:
 Do not create competing copies under `exports/`, Downloads, Documents, or
 application repositories.
 
-Older Oceanheart authoring material is preserved under
-`career/archive/pre-2026-07-23/`. Files under
-`/Users/mrkai/vault/career/cv/` are historical evidence snapshots, not upload
-sources.
+Files under `/Users/mrkai/vault/career/cv/` are historical evidence snapshots,
+not upload sources.
 
 ## Cover letters
 

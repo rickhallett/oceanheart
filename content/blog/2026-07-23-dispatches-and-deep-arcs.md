@@ -6,21 +6,6 @@ tags = ["agents", "human-ai-collaboration", "telemetry", "context-engineering", 
 draft = false
 aliases = ["/dispatches/"]
 
-copy_metrics_version = 2
-copy_word_count = 1553
-copy_sentence_count = 97
-copy_paragraph_count = 49
-copy_not_count = 8
-copy_not_ratio = 0.00515132
-copy_negation_count = 18
-copy_contrast_frame_count = 1
-copy_short_closure_count = 11
-copy_single_sentence_paragraph_count = 20
-copy_first_person_count = 21
-copy_contraction_count = 9
-copy_editorial_signpost_count = 4
-copy_repeated_ngram_count = 2
-
 [build]
 render = "always"
 list = "always"

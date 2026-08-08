@@ -3,4 +3,5 @@ public/
 !deploy/oceanheart-blog-retirement/public/
 !deploy/oceanheart-blog-retirement/public/robots.txt
 resources/
+.hugo_build.lock
 .DS_Store

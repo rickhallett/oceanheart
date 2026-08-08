@@ -6,21 +6,6 @@ tags = ["ai", "human-ai-collaboration", "support-engineering", "troubleshooting"
 aliases = ["/next-observation/"]
 draft = false
 
-copy_metrics_version = 2
-copy_word_count = 1558
-copy_sentence_count = 89
-copy_paragraph_count = 35
-copy_not_count = 0
-copy_not_ratio = 0.00000000
-copy_negation_count = 4
-copy_contrast_frame_count = 1
-copy_short_closure_count = 3
-copy_single_sentence_paragraph_count = 8
-copy_first_person_count = 28
-copy_contraction_count = 3
-copy_editorial_signpost_count = 0
-copy_repeated_ngram_count = 0
-
 [build]
 render = "always"
 list = "never"
