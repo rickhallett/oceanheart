@@ -1,4 +1,6 @@
 .vercel
 public/
+!deploy/oceanheart-blog-retirement/public/
+!deploy/oceanheart-blog-retirement/public/robots.txt
 resources/
 .DS_Store
