@@ -25,7 +25,6 @@ from reportlab.platypus import (
     Image,
     ListFlowable,
     ListItem,
-    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -353,8 +352,10 @@ def header_story(
     if not PORTRAIT.exists():
         raise FileNotFoundError(f"Missing portrait: {PORTRAIT}")
 
-    photo = Image(str(PORTRAIT), width=25.5 * mm, height=34 * mm)
-    photo_box = Table([[photo]], colWidths=[25.5 * mm], rowHeights=[34 * mm])
+    photo_w = 33.9 * mm
+    photo_h = 45.2 * mm
+    photo = Image(str(PORTRAIT), width=photo_w, height=photo_h)
+    photo_box = Table([[photo]], colWidths=[photo_w], rowHeights=[photo_h])
     photo_box.setStyle(
         TableStyle(
             [
@@ -366,15 +367,88 @@ def header_story(
             ]
         )
     )
-    identity = [
-        Paragraph(inline_markup(content.title), styles["name"]),
-        Paragraph(html.escape(label), styles["role"]),
-        Paragraph(html.escape(descriptor), styles["descriptor"]),
-        contact_paragraph(styles),
+    photo_col = photo_w + 2 * mm
+    text_col = width - photo_col - 4 * mm
+    inner = text_col - 4 * mm  # left-cell content width (header adds a 4mm gutter)
+
+    def stacked_group(flowables: list) -> Table:
+        """Box a set of flowables with zero padding so the group's measured
+        height equals its rendered height. That lets us distribute the gaps
+        between groups exactly."""
+        box = Table([[list(flowables)]], colWidths=[inner])
+        box.setStyle(
+            TableStyle(
+                [
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ]
+            )
+        )
+        return box
+
+    # Tight clones drop trailing paragraph space so every inter-group gap is
+    # governed solely by the computed flex gap below.
+    name_style = ParagraphStyle("CvNameGrouped", parent=styles["name"], spaceAfter=0)
+    descriptor_style = ParagraphStyle(
+        "CvDescriptorGrouped", parent=styles["descriptor"], spaceAfter=0
+    )
+
+    facts = (
+        ("BASED / TRAVEL", "United Kingdom<br/>Remote, hybrid, willing to relocate"),
+        ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
+        ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
+    )
+    fact_cells = [
+        [
+            Paragraph(fact_label, styles["fact_label"]),
+            Paragraph(fact_value, styles["fact_value"]),
+        ]
+        for fact_label, fact_value in facts
     ]
+    # Borderless grid: whitespace gutters only, no ruled columns.
+    facts_table = Table([fact_cells], colWidths=[inner / 3] * 3, hAlign="LEFT")
+    facts_table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("LEFTPADDING", (1, 0), (-1, 0), 5 * mm),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]
+        )
+    )
+
+    # Four vertically stacked groups: name, role+descriptor, links, grid.
+    groups = [
+        stacked_group([Paragraph(inline_markup(content.title), name_style)]),
+        stacked_group(
+            [
+                Paragraph(html.escape(label), styles["role"]),
+                Paragraph(html.escape(descriptor), descriptor_style),
+            ]
+        ),
+        stacked_group([contact_paragraph(styles)]),
+        facts_table,
+    ]
+
+    # Distribute the leftover vertical space into equal gaps so the stack's
+    # height equals the photo and the grid's base sits on the photo's edge.
+    heights = [group.wrap(inner, photo_h)[1] for group in groups]
+    gap = max((photo_h - sum(heights)) / (len(groups) - 1), 2 * mm)
+    identity_stack: list = []
+    for index, group in enumerate(groups):
+        if index:
+            identity_stack.append(Spacer(1, gap))
+        identity_stack.append(group)
+
     header = Table(
-        [[identity, photo_box]],
-        colWidths=[width - 31.5 * mm, 27.5 * mm],
+        [[identity_stack, photo_box]],
+        colWidths=[text_col, photo_col],
         hAlign="LEFT",
     )
     header.setStyle(
@@ -390,37 +464,7 @@ def header_story(
         )
     )
 
-    fact_cells = []
-    facts = (
-        ("BASED / TRAVEL", "United Kingdom<br/>Remote, hybrid, willing to relocate"),
-        ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
-        ("DELIVERY", "Discovery to production<br/>Support and handoff"),
-    )
-    for fact_label, fact_value in facts:
-        fact_cells.append(
-            [
-                Paragraph(fact_label, styles["fact_label"]),
-                Paragraph(fact_value, styles["fact_value"]),
-            ]
-        )
-    facts_table = Table([fact_cells], colWidths=[width / 3] * 3, hAlign="LEFT")
-    facts_table.setStyle(
-        TableStyle(
-            [
-                ("LINEABOVE", (0, 0), (-1, 0), 0.6, RULE),
-                ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
-                ("LINEBEFORE", (1, 0), (-1, 0), 0.45, RULE),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 3.5 * mm),
-                ("LEFTPADDING", (0, 0), (0, 0), 0),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 2.5 * mm),
-                ("TOPPADDING", (0, 0), (-1, -1), 2.2 * mm),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2 * mm),
-            ]
-        )
-    )
-
-    return [header, Spacer(1, 4 * mm), facts_table, Spacer(1, 4 * mm)]
+    return [header, Spacer(1, 3 * mm)]
 
 
 def section_heading(
@@ -544,8 +588,6 @@ def markdown_story(
     for section in content.sections:
         if section.heading in skip:
             continue
-        if section.heading == "Experience":
-            story.append(PageBreak())
         if section.heading == "Education" and "Technical" in section_map:
             story.extend(
                 compact_sections(

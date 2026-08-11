@@ -14,7 +14,7 @@ My recent focus has been agentic systems, evaluation, guardrails, and provider-a
 
 **Jeany - content-to-intelligence pipeline.** Combined Python services, a Next.js dashboard, and a Go CLI with Kubernetes, Helm, Terraform, and ArgoCD to move information through an inspectable delivery pipeline.
 
-**Sortie - ensemble AI code review.** Runs Claude, Codex, and Gemini reviews in parallel, synthesises their findings, and can gate merge on convergent severity. Across six runs, 76.9 percent of findings were surfaced by only one reviewer. TypeScript, Bun.
+**Sortie - ensemble AI code review.** Runs Claude, Codex, and Gemini reviews in parallel, synthesises their findings, and can gate merge on convergent severity. TypeScript, Bun.
 
 **The Pit - agent evaluation and cost visibility.** Built structured multi-agent contests with traces, rubric scoring, failure tags, and per-run microdollar cost accounting. Next.js, TypeScript, PostgreSQL, Stripe.
 
