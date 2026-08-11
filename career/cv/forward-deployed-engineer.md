@@ -20,7 +20,7 @@ My recent focus has been applied AI and agentic systems, including evaluation, g
 
 **[LoanSlam](https://www.oceanheart.ai/projects/fail-closed-llm-engine/) - independent Phase 0 evaluation proof.** A synthetic-scenario environment for the lending conversation engine, with 122 hostile scenarios, trace evidence, and a safety floor designed to report when the system is not ready. Vue, TypeScript, Node.js, Zod.
 
-**[Sortie](https://github.com/rickhallett/sortie) - ensemble AI code review.** Three LLMs review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity. Across six runs on a shipping codebase, 76.9% of distinct findings were surfaced by exactly one of the three reviewing models. One of those model-unique findings was a committed API key. TypeScript, Bun.
+**[Sortie](https://github.com/rickhallett/sortie) - ensemble AI code review.** Three LLMs review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity. It surfaced a committed API key in one run. TypeScript, Bun.
 
 **The Pit - agent evaluation and cost visibility.** Structured multi-agent contests with observable traces, rubric scoring, failure tagging, and per-run microdollar cost accounting. Next.js, TypeScript, Postgres, Stripe.
 

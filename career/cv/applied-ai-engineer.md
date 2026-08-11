@@ -16,7 +16,7 @@ Before engineering, I worked as a cognitive behavioural therapist across NHS and
 
 **Fail-closed conversational engine - Loans by MAL (regulated UK lender, contract).** The reference build: an untrusted LLM proposes each turn; a deterministic policy validator enforces hard compliance rules and overrides unsafe output before it reaches a customer - no ungrounded answers, no account-specific promises, credentials and vulnerability cases routed to a human. Hardened against a persona-driven journey simulator (adversarial, confused, oversharing, vulnerable personas) before any happy-path testing, benchmarked across providers on accuracy, cost, and safety. Every turn audited. TypeScript, Zod, provider-agnostic model adapter.
 
-**Sortie: ensemble AI code review.** Three LLMs (Claude, Codex, Gemini) review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity - runnable as a CI or pre-merge hook. Across six runs on a shipping codebase, 76.9% of distinct findings were surfaced by exactly one of the three reviewing models. One of those model-unique findings was a committed API key. TypeScript, Bun.
+**Sortie: ensemble AI code review.** Three LLMs (Claude, Codex, Gemini) review a diff in parallel, a fourth synthesises, and merge is gated on convergent severity - runnable as a CI or pre-merge hook. It surfaced a committed API key in one run. TypeScript, Bun.
 
 **The Pit: agent evaluation and cost visibility.** A platform for evaluating multi-agent systems: structured contests with observable traces, rubric-based scoring, failure tagging, and a cost ledger with per-run microdollar accounting. Next.js, TypeScript, Postgres, Stripe.
 
