@@ -141,6 +141,16 @@
       "permanent": true
     },
     {
+      "source": "/retiring-agent-os",
+      "destination": "/blog/2026-08-18-my-agent-system-passed-331-tests/",
+      "permanent": true
+    },
+    {
+      "source": "/retiring-agent-os/",
+      "destination": "/blog/2026-08-18-my-agent-system-passed-331-tests/",
+      "permanent": true
+    },
+    {
       "source": "/sarah",
       "destination": "/blog/2026-07-23-the-agent-knew-which-plus-button-she-meant/",
       "permanent": true
