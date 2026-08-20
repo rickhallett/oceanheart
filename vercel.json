@@ -71,6 +71,16 @@
       "permanent": true
     },
     {
+      "source": "/keeping-up",
+      "destination": "/blog/2026-08-20-keeping-up-with-my-own-agents/",
+      "permanent": true
+    },
+    {
+      "source": "/keeping-up/",
+      "destination": "/blog/2026-08-20-keeping-up-with-my-own-agents/",
+      "permanent": true
+    },
+    {
       "source": "/kill-signal",
       "destination": "/blog/2026-03-10-kill-signal/",
       "permanent": true
@@ -118,6 +128,16 @@
     {
       "source": "/photo-curation/",
       "destination": "/blog/2026-04-05-photo-curation-pipeline/",
+      "permanent": true
+    },
+    {
+      "source": "/pianola",
+      "destination": "/blog/2026-08-20-a-player-piano-for-web-forms/",
+      "permanent": true
+    },
+    {
+      "source": "/pianola/",
+      "destination": "/blog/2026-08-20-a-player-piano-for-web-forms/",
       "permanent": true
     },
     {
