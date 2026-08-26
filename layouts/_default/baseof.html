@@ -3,18 +3,26 @@
 <head>
   {{ partial "head.html" . }}
 </head>
-<body>
+<body{{ if .Params.privateSurface }} class="private-surface"{{ end }}>
+  {{ if .Params.privateSurface }}
+  {{ partial "therapy-nav.html" . }}
+  {{ else }}
   {{/* Glyph rain is homepage-only: background texture, not site chrome. */}}
   {{ if .IsHome }}<canvas id="rain" aria-hidden="true"></canvas>{{ end }}
   {{ partial "nav.html" . }}
+  {{ end }}
   <main>
     <div class="container">
       {{ block "main" . }}{{ end }}
     </div>
   </main>
+  {{ if .Params.privateSurface }}
+  {{ partial "therapy-footer.html" . }}
+  {{ else }}
   {{ partial "footer.html" . }}
   {{ if not .IsHome }}<script src="/js/decrypt-reveal.js" defer></script>{{ end }}
   {{ if .IsHome }}<script src="/js/glyph-rain.js" defer></script>{{ end }}
+  {{ end }}
   {{ if .Store.Get "hasMermaid" }}
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';

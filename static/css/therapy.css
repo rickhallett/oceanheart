@@ -1,0 +1,152 @@
+.private-surface {
+  --therapy-ink: #202725;
+  --therapy-muted: #5f6d67;
+  --therapy-line: #d9e1dd;
+  --therapy-paper: #f7f8f5;
+  --therapy-accent: #1f6d5a;
+  background: var(--therapy-paper);
+  color: var(--therapy-ink);
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+}
+
+.private-surface main {
+  min-height: 70vh;
+}
+
+.therapy-nav {
+  border-bottom: 1px solid var(--therapy-line);
+  background: rgba(247, 248, 245, 0.96);
+}
+
+.therapy-nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 4.5rem;
+}
+
+.therapy-brand,
+.therapy-contact {
+  color: var(--therapy-ink);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  text-decoration: none;
+}
+
+.therapy-brand {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.therapy-contact {
+  border-bottom: 1px solid var(--therapy-accent);
+  color: var(--therapy-accent);
+  font-size: 0.92rem;
+}
+
+.therapy-page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 4rem 0 2rem;
+}
+
+.therapy-hero {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--therapy-line);
+}
+
+.therapy-kicker {
+  margin: 0 0 0.75rem;
+  color: var(--therapy-accent);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.therapy-hero h1 {
+  margin: 0;
+  color: var(--therapy-ink);
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  font-size: clamp(2.7rem, 8vw, 5.5rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+}
+
+.therapy-lead {
+  max-width: 42rem;
+  margin: 1.5rem 0 0;
+  color: var(--therapy-muted);
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
+  line-height: 1.45;
+}
+
+.therapy-content {
+  padding-top: 1rem;
+}
+
+.therapy-content h2,
+.therapy-enquiry h2 {
+  margin: 3rem 0 0.8rem;
+  color: var(--therapy-ink);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.therapy-content p,
+.therapy-enquiry p {
+  color: var(--therapy-ink);
+  font-size: 1.08rem;
+  line-height: 1.72;
+  text-align: left;
+}
+
+.therapy-enquiry {
+  margin-top: 4rem;
+  padding: 2rem;
+  border: 1px solid var(--therapy-line);
+  background: #ffffff;
+}
+
+.therapy-enquiry h2 {
+  margin-top: 0;
+}
+
+.therapy-enquiry-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--therapy-accent);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 650;
+}
+
+.therapy-footer {
+  margin-top: 3rem;
+  padding: 2.5rem 0 3rem;
+  border-top: 1px solid var(--therapy-line);
+  color: var(--therapy-muted);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.82rem;
+}
+
+.therapy-footer p {
+  margin: 0 0 0.5rem;
+}
+
+.therapy-footer a {
+  color: var(--therapy-accent);
+}
+
+@media (max-width: 640px) {
+  .therapy-page {
+    padding-top: 2.5rem;
+  }
+
+  .therapy-enquiry {
+    padding: 1.35rem;
+  }
+}

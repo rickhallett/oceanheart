@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "serviceId": "oceanheart-private-therapy",
+  "serviceName": "Oceanheart Private Therapy",
+  "copyVersion": "v0.1.0",
+  "copyStatus": "DRAFT_FOR_REVIEW",
+  "operationalStatus": "NOT_APPROVED_FOR_REAL_CLIENT_USE",
+  "scope": {
+    "minimumAge": 18,
+    "clientLocation": "United Kingdom",
+    "format": "remote-individual",
+    "sessionPlatform": "Google Meet",
+    "excludedFromMvp": [
+      "clients under 18",
+      "couples or group therapy",
+      "clients outside the United Kingdom",
+      "emergency or crisis response",
+      "audio or video recording",
+      "solely automated clinical decisions"
+    ]
+  },
+  "commercial": {
+    "sessionsPerBlock": 4,
+    "paymentTiming": "in-advance",
+    "cancellationNoticeHours": 48,
+    "sessionFee": "[SESSION_FEE]",
+    "sessionLengthMinutes": "[SESSION_LENGTH_MINUTES]",
+    "blockExpiry": "[BLOCK_EXPIRY]",
+    "paymentMethod": "[PAYMENT_METHOD]",
+    "coolingOffTreatment": "[REVIEW_AND_CONFIRM_CONSUMER_CANCELLATION_TERMS]"
+  },
+  "practice": {
+    "practitionerName": "Richard Hallett",
+    "practitionerRole": "[PROFESSIONAL_TITLE]",
+    "practiceLegalName": "[PRACTICE_LEGAL_NAME]",
+    "dataControllerLegalName": "[DATA_CONTROLLER_LEGAL_NAME]",
+    "contactEmail": "kai@oceanheart.ai",
+    "businessAddress": "[BUSINESS_CONTACT_ADDRESS]",
+    "professionalBody": "[PROFESSIONAL_BODY]",
+    "membershipNumber": "[MEMBERSHIP_NUMBER]",
+    "supervisorArrangement": "[SUPERVISION_ARRANGEMENT]",
+    "insurer": "[INSURER_NAME]",
+    "insurancePolicyNumber": "[POLICY_NUMBER]",
+    "complaintsRoute": "[COMPLAINTS_ROUTE]"
+  },
+  "dataProtection": {
+    "article6Basis": "[ARTICLE_6_BASIS]",
+    "article9Condition": "[ARTICLE_9_CONDITION]",
+    "administrativeRetention": "[ADMIN_RETENTION_PERIOD]",
+    "clinicalRetention": "[CLINICAL_RETENTION_PERIOD]",
+    "transcriptRetention": "[TRANSCRIPT_RETENTION_PERIOD]",
+    "approvedAiProcessors": [
+      "[APPROVED_AI_PROCESSOR_AND_PRODUCT]"
+    ],
+    "servicePathIfCaptureDeclined": "[SERVICE_PATH_IF_TRANSCRIPTION_OR_AI_DECLINED]",
+    "icoRegistrationNumber": "[ICO_REGISTRATION_NUMBER]"
+  },
+  "workspace": {
+    "rootFolderName": "Private Therapy Operations",
+    "clientFolderPrefix": "Client",
+    "calendarTitlePrefix": "Private session",
+    "formsRequireGoogleAccount": false,
+    "collectCardDetails": false,
+    "automaticallyStartTranscription": false,
+    "automaticallyShareClinicalRecords": false
+  }
+}

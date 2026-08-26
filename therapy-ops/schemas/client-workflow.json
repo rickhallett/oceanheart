@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "states": [
+    "ENQUIRY",
+    "SUITABILITY_CONFIRMED",
+    "INTAKE_RECEIVED",
+    "AGREEMENT_SIGNED",
+    "PAYMENT_RECEIVED",
+    "SESSION_READY",
+    "ACTIVE",
+    "CLOSURE_DUE",
+    "CLOSED"
+  ],
+  "transitions": [
+    {
+      "from": "ENQUIRY",
+      "to": "SUITABILITY_CONFIRMED",
+      "requires": [
+        "manualSuitabilityDecision",
+        "ukAdultRemoteScopeConfirmed"
+      ]
+    },
+    {
+      "from": "SUITABILITY_CONFIRMED",
+      "to": "INTAKE_RECEIVED",
+      "requires": [
+        "intakeComplete",
+        "urgentSafetyReviewClear"
+      ]
+    },
+    {
+      "from": "INTAKE_RECEIVED",
+      "to": "AGREEMENT_SIGNED",
+      "requires": [
+        "agreementVersion",
+        "agreementSignedAt",
+        "privacyNoticeVersionAcknowledged",
+        "captureScheduleVersionRecorded"
+      ]
+    },
+    {
+      "from": "AGREEMENT_SIGNED",
+      "to": "PAYMENT_RECEIVED",
+      "requires": [
+        "paymentReference",
+        "paymentReceivedAt",
+        "sessionsPurchased"
+      ]
+    },
+    {
+      "from": "PAYMENT_RECEIVED",
+      "to": "SESSION_READY",
+      "requires": [
+        "sessionScheduledAt",
+        "fallbackPhoneConfirmed",
+        "remoteChecklistAcknowledged"
+      ]
+    },
+    {
+      "from": "SESSION_READY",
+      "to": "ACTIVE",
+      "requires": [
+        "firstSessionStartedAt"
+      ]
+    },
+    {
+      "from": "ACTIVE",
+      "to": "CLOSURE_DUE",
+      "requires": [
+        "closureReason",
+        "closureReviewScheduled"
+      ]
+    },
+    {
+      "from": "CLOSURE_DUE",
+      "to": "CLOSED",
+      "requires": [
+        "sharedMaterialDisposition",
+        "invoiceBalanceReviewed",
+        "retentionReviewDatesSet",
+        "closureApprovedByPractitioner"
+      ]
+    }
+  ],
+  "failClosedRules": [
+    {
+      "action": "START_TRANSCRIPTION",
+      "requires": [
+        "currentSessionCaptureCheck",
+        "transcriptionAllowedToday",
+        "consentVersion"
+      ]
+    },
+    {
+      "action": "PROCESS_WITH_AI",
+      "requires": [
+        "approvedProcessor",
+        "approvedPurpose",
+        "captureScheduleVersion",
+        "practitionerReviewRequired"
+      ]
+    },
+    {
+      "action": "SHARE_CLIENT_VISIBLE_FILE",
+      "requires": [
+        "sharedFolderTarget",
+        "practitionerApprovedForSharing"
+      ]
+    },
+    {
+      "action": "DELETE_RECORD",
+      "requires": [
+        "retentionDateReached",
+        "noActiveHold",
+        "practitionerDeletionApproval"
+      ]
+    }
+  ]
+}

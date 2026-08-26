@@ -1,0 +1,22 @@
+{{ define "main" }}
+<article class="therapy-page">
+  <header class="therapy-hero">
+    <p class="therapy-kicker">Remote individual therapy for UK adults</p>
+    <h1>{{ .Title }}</h1>
+    <p class="therapy-lead">{{ .Description }}</p>
+  </header>
+  <div class="therapy-content">
+    {{ .Content }}
+  </div>
+  <section class="therapy-enquiry" aria-labelledby="therapy-enquiry-title">
+    <h2 id="therapy-enquiry-title">Begin with a conversation</h2>
+    <p>
+      Please keep an initial email brief. There is no need to send clinical
+      history before we have established whether the service may be suitable.
+    </p>
+    <a class="therapy-enquiry-link" href="mailto:{{ .Site.Params.email }}?subject=Private%20therapy%20enquiry">
+      {{ .Site.Params.email }}
+    </a>
+  </section>
+</article>
+{{ end }}

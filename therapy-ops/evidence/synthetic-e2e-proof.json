@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "dataClassification": "SYNTHETIC_ONLY",
+  "copyVersion": "v0.1.0",
+  "externalCallsPerformed": false,
+  "finalState": "CLOSED",
+  "setup": {
+    "acceptingResponses": false,
+    "rootFolderId": "synthetic-root-folder"
+  },
+  "artifacts": {
+    "provisionedClientRecords": 1,
+    "sessionChecks": 1,
+    "aiRequests": 1,
+    "calendarEvents": 1,
+    "clientVisibleCopies": 1,
+    "transcriptFolder": "OH-AAAAAAAA-clinical"
+  },
+  "blockedOperations": {
+    "suitabilityWithoutScope": "GATE_BLOCKED:ukAdultRemoteScopeConfirmed",
+    "inviteWithoutApproval": "PRACTITIONER_SEND_APPROVAL_REQUIRED",
+    "inviteWithoutCompleteGates": "GATE_BLOCKED:fallbackPhoneConfirmed",
+    "unconsentedAiPurpose": "AI_PURPOSE_NOT_CONSENTED:report-or-letter-drafting",
+    "unapprovedAiProcessor": "AI_PROCESSING_BLOCKED:approvedProcessor",
+    "sharedCopyWithoutApproval": "CLIENT_VISIBLE_COPY_BLOCKED:practitionerApprovedForSharing",
+    "realIntakeActivation": "REAL_CLIENT_USE_NOT_APPROVED"
+  },
+  "verifiedInvariants": {
+    "incompleteInviteSentNoCalendarEvent": true,
+    "validInviteCreatedMeetLink": true,
+    "aiOutputRequiresReview": true,
+    "clientVisibleCopyNotSharedExternally": true,
+    "earlyDeletionBlocked": true,
+    "deletionNeverAutomatic": true,
+    "auditExcludesSyntheticName": true,
+    "auditExcludesSyntheticEmail": true
+  },
+  "audit": {
+    "eventCount": 20,
+    "actions": [
+      "ENQUIRY_CREATED",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "SESSION_CAPTURE_CHECK_RECORDED",
+      "START_TRANSCRIPTION",
+      "START_TRANSCRIPTION",
+      "TRANSCRIPT_ATTACHED",
+      "PROCESS_WITH_AI",
+      "PROCESS_WITH_AI",
+      "SHARE_CLIENT_VISIBLE_FILE",
+      "SHARE_CLIENT_VISIBLE_FILE",
+      "CLIENT_VISIBLE_COPY_CREATED",
+      "STATE_TRANSITION",
+      "STATE_TRANSITION",
+      "DELETE_RECORD",
+      "DELETE_RECORD"
+    ]
+  },
+  "clientId": "OH-AAAAAAAA",
+  "intakeLinkWasPrefilled": true
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-07-25T07:00:39Z",
+  "dataClassification": "SYNTHETIC_ONLY",
+  "route": "/therapy/",
+  "publicationStatus": "DRAFT_ONLY",
+  "build": {
+    "hugoVersion": "0.159.1",
+    "normalBuild": "PASS",
+    "normalBuildContainsRoute": false,
+    "draftBuild": "PASS",
+    "staticIsolationChecker": "PASS",
+    "vercelLocalParity": {
+      "status": "BLOCKED_BY_UPSTREAM_LOCAL_INSTALLER",
+      "detail": "Vercel CLI 54.20.1 expects a macOS Hugo tarball, while Hugo 0.159.1 publishes a macOS package. The repository build script passed with the pinned Hugo version."
+    }
+  },
+  "browser": {
+    "engine": "Codex in-app browser",
+    "desktopViewport": {
+      "width": 1280,
+      "height": 720,
+      "status": "PASS"
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844,
+      "documentScrollWidth": 390,
+      "status": "PASS"
+    },
+    "pageTitle": "Private therapy · oceanheart.ai",
+    "language": "en-gb",
+    "robots": "noindex,nofollow,noarchive",
+    "forms": 0,
+    "externalOrigins": [],
+    "analyticsPresent": false,
+    "externalFontsPresent": false,
+    "consoleWarningsOrErrors": 0,
+    "horizontalOverflow": false
+  }
+}
