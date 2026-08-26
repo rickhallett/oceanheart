@@ -1,0 +1,34 @@
+case_id: progressive-legitimisation-2026-08-25
+status: frozen
+canonical_failure_mode: progressive_legitimisation
+frozen_on: 2026-08-25
+authority: explicit_operator_instruction
+scope: oceanheart_relational_instruments_ecosystem
+
+evidence_state_at_freeze:
+  customer_interviews: 0
+  willingness_to_pay_tests: 0
+  paid_pilots: 0
+  practitioner_usability_tests: 0
+  measured_clinical_utility_tests: 0
+
+allowed_actions:
+  - read_only_analysis
+  - evidence_preservation
+  - canonical_failure_mode_review
+
+prohibited_without_fresh_explicit_operator_authority:
+  - product_implementation
+  - prototype_expansion
+  - product_or_feature_naming
+  - ecosystem_architecture
+  - marketing_page_development
+  - publication
+  - outreach
+  - live_client_use
+
+canonical_record: docs/progressive-legitimisation-case-study-2026-08-25.md
+source_records:
+  - content/research/ai-therapy-opportunity-map-2026.md
+  - docs/oceanheart-relational-instruments-design-log-2026-08-25.md
+
