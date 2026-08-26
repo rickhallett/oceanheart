@@ -1,4 +1,4 @@
-# Richard (Kai) Hallett
+# Richard Hallett
 
 Applied AI Engineer · kai@oceanheart.ai · github.com/rickhallett · oceanheart.ai
 

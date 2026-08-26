@@ -1,4 +1,4 @@
-# Richard (Kai) Hallett
+# Richard Hallett
 
 Forward Deployed Engineer
 
