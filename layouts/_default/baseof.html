@@ -13,7 +13,7 @@
     </div>
   </main>
   {{ partial "footer.html" . }}
-  <script src="/js/decrypt-reveal.js" defer></script>
+  {{ if not .IsHome }}<script src="/js/decrypt-reveal.js" defer></script>{{ end }}
   {{ if .IsHome }}<script src="/js/glyph-rain.js" defer></script>{{ end }}
   {{ if .Store.Get "hasMermaid" }}
   <script type="module">

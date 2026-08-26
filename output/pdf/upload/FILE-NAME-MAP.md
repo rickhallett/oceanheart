@@ -11,7 +11,7 @@ Each lane therefore uses a different personal-name variant. The role a file targ
 
 | Upload file | Targets role | Source | When to use |
 | --- | --- | --- | --- |
-| `Richard Hallett.pdf` | Forward Deployed Engineer | `career/cv/forward-deployed-engineer.md` | Primary lane. Forward deployed, solutions, and product engineering roles. |
+| `Richard Hallett.pdf` | AI Automation & Enablement Engineer | `career/cv/ai-enablement-engineer.md` | Primary lane. Internal AI, automation, enablement, and forward-deployed roles. |
 | `Richard James Hallett.pdf` | Applied AI Engineer | `career/cv/applied-ai-engineer.md` | Primary lane. Applied AI and production LLM roles, regulated and safety angle. |
 | `Rick Hallett.pdf` | Frontend Developer | `career/cv/full-complement/frontend-developer.md` | Full complement. Frontend, React, and UI roles. |
 | `Richard J Hallett.pdf` | Full Stack Developer | `career/cv/full-complement/full-stack-developer.md` | Full complement. General full stack (TypeScript, React, Node) roles. |

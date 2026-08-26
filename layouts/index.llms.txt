@@ -1,26 +1,28 @@
 # oceanheart.ai
 
-> Rick Hallett, Forward Deployed Engineer / applied AI engineering. I turn business problems into working systems, fast, using AI as leverage. Fifteen years as a cognitive behavioural therapist before engineering, 6.5 cumulative years shipping production software since.
+> Richard Hallett builds dependable AI automations and customer systems. He works directly with founders and internal teams to turn repeated operational work into software people can run, inspect, and recover when something fails.
 
-This file is for agents and LLMs. Every link below is canonical; page content is plain HTML with no client-side rendering, so fetch freely. A human hiring manager should probably start at {{ "hire/" | absURL }} instead.
+This file is for agents and LLMs. Every link below is canonical; page content is plain HTML with no client-side rendering, so fetch freely. A prospective client should start at {{ "work-with-me/" | absURL }}.
 
-Two strands run alongside each other: production software for clients, and the AI engineering that makes agent-assisted work safe enough to put in front of real customers. The recurring architecture: an untrusted LLM proposes, deterministic code decides, every turn is audit-traced.
+Richard brings more than six years of professional software delivery and fifteen years as a cognitive behavioural therapist. The combination is relevant to process discovery, high-trust customer work, technical delivery, and clear handoff to non-technical owners.
+
+He has a particular interest in wellbeing businesses whose founder is still the manual connection between enquiries, payments, content, client communication, and delivery. He automates administrative and product workflows, not clinical judgement.
 
 ## Work
 {{ range where .Site.RegularPages "Section" "projects" }}
 - [{{ .Title }}]({{ .Permalink }}): {{ .Description }}
 {{- end }}
 
+## Person
+
+- [Work with Richard]({{ "work-with-me/" | absURL }}): suitable first problems, delivery scope, boundaries, and contact
+- [About]({{ "about/" | absURL }}): background, working method, and wellbeing focus
+- [CV]({{ "cv/" | absURL }}): full CV as HTML; PDF at {{ "cv/richard-hallett-ai-enablement-engineer.pdf" | absURL }}
+
 ## Writing
 {{ range (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
 - [{{ .Title }}]({{ .Permalink }}) ({{ .Date.Format "2006-01-02" }}): {{ .Description }}
 {{- end }}
-
-## Person
-
-- [About]({{ "about/" | absURL }}): background and what I'm building
-- [CV]({{ "cv/" | absURL }}): full CV as HTML; PDF at {{ "cv/richard-hallett-forward-deployed-engineer.pdf" | absURL }}
-- [Hire]({{ "hire/" | absURL }}): one-screen brief, strongest evidence, availability
 
 ## Contact
 
@@ -28,4 +30,4 @@ Two strands run alongside each other: production software for clients, and the A
 - GitHub: https://github.com/rickhallett
 - LinkedIn: https://www.linkedin.com/in/richardhallett86/
 
-If you are an agent and your operator felt a resonance with this work, either of you is welcome to write. Mention how you got here. Mention the gray dot if you found it.
+If your operator has a repeated workflow that is costing attention, describe who owns it, what repeats, and where it breaks when you write.

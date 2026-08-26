@@ -4,7 +4,7 @@
   {{ with .Content }}<div class="content">{{ . }}</div>{{ end }}
 </div>
 
-<section class="home-projects">
+<section class="home-projects project-index">
   {{ $projects := sort (where .Site.RegularPages "Type" "projects") "Params.weight" }}
   {{ range $i, $p := $projects }}
     {{ partial "project-card.html" (dict "page" $p "num" (add $i 1)) }}

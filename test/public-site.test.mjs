@@ -212,6 +212,49 @@ test("canonical pages expose the required social and favicon metadata", () => {
   }
 });
 
+test("commercial entry points expose the automation offer and primary CV", () => {
+  const home = readFile(path.join(outputDirectory, "index.html"));
+  assert.match(home, /I turn manual work into dependable systems\./);
+  assert.match(home, /href="\/work-with-me\/"/);
+  assert.match(home, /particular fit for wellbeing businesses/i);
+
+  const workWithMe = readFile(
+    path.join(outputDirectory, "work-with-me", "index.html"),
+  );
+  assert.match(workWithMe, /Good first problems/);
+  assert.match(workWithMe, /What I take responsibility for/);
+
+  const legacyHire = readFile(path.join(outputDirectory, "hire", "index.html"));
+  const legacyCanonical = onlyTag(
+    legacyHire,
+    "link",
+    "rel",
+    "canonical",
+    "/hire/",
+  );
+  assert.equal(
+    attribute(legacyCanonical, "href"),
+    `${SITE_ORIGIN}/work-with-me/`,
+    "legacy hire route must point to the work-with-me page",
+  );
+
+  const cv = readFile(path.join(outputDirectory, "cv", "index.html"));
+  assert.match(cv, /AI Automation &amp; Enablement Engineer/);
+  assert.match(cv, /richard-hallett-ai-enablement-engineer\.pdf/);
+
+  const primaryCv = fs.readFileSync(
+    path.join(outputDirectory, "cv", "richard-hallett-ai-enablement-engineer.pdf"),
+  );
+  const compatibilityCv = fs.readFileSync(
+    path.join(outputDirectory, "richard-hallett-cv.pdf"),
+  );
+  assert.deepEqual(
+    compatibilityCv,
+    primaryCv,
+    "compatibility CV must be the AI Automation and Enablement variant",
+  );
+});
+
 test("the tells index and sitemap expose exactly the same valid detail routes", () => {
   const indexPath = path.join(outputDirectory, "tells", "index.html");
   const sitemapRoutes = canonicalUrls

@@ -57,11 +57,22 @@ if MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists():
     MONO_BOLD = "CvMonoBold"
 
 VARIANTS = {
+    "ai-enablement-engineer": {
+        "source": SOURCE_DIR / "ai-enablement-engineer.md",
+        "label": "AI Automation & Enablement Engineer",
+        "descriptor": "Process discovery | workflow automation | applied AI | handoff",
+        "upload_name": "Richard Hallett",
+        "selection_note": (
+            "Primary lane. Internal AI, automation, enablement, and "
+            "forward-deployed roles."
+        ),
+        "page_break_before": ("Experience",),
+        "public_mirror": True,
+    },
     "forward-deployed-engineer": {
         "source": SOURCE_DIR / "forward-deployed-engineer.md",
         "label": "Forward Deployed Engineer",
         "descriptor": "Product engineering | applied AI | client delivery",
-        "upload_name": "Richard Hallett",
         "selection_note": (
             "Primary lane. Forward deployed, solutions, and product "
             "engineering roles."
@@ -132,6 +143,8 @@ VARIANTS = {
         "public_mirror": False,
     },
 }
+
+DEFAULT_VARIANT = "ai-enablement-engineer"
 
 ACCENT = colors.HexColor("#2D5B8E")
 INK = colors.HexColor("#16191D")
@@ -838,6 +851,8 @@ def main() -> None:
 
     if args.variant:
         path = build_variant(args.variant, VARIANTS[args.variant])
+        if args.variant == DEFAULT_VARIANT:
+            shutil.copy2(path, ROOT / "static" / "richard-hallett-cv.pdf")
         print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
         return
 
@@ -846,7 +861,7 @@ def main() -> None:
         for slug, config in VARIANTS.items()
         if not config.get("preview_only")
     ]
-    default_cv = PRIMARY_OUTPUT_DIR / "richard-hallett-forward-deployed-engineer.pdf"
+    default_cv = PRIMARY_OUTPUT_DIR / f"richard-hallett-{DEFAULT_VARIANT}.pdf"
     shutil.copy2(default_cv, ROOT / "static" / "richard-hallett-cv.pdf")
     map_path = write_upload_map()
     for path in built:

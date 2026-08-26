@@ -1,26 +1,33 @@
 +++
 title = "About"
-description = "Rick Hallett, AI-first builder and former cognitive behavioural therapist. I turn business problems into working systems with AI-assisted engineering: prototype, evidence, deployment, safety, measurement."
+description = "Richard Hallett is an AI automation and product engineer with fifteen years of CBT practice and more than six years of professional software delivery."
 layout = "about"
 +++
 
-I'm not a traditional developer anymore. I spent fifteen years as a cognitive behavioural therapist, then switched to software engineering and shipped production code at EDITED (retail analytics), Brandwatch (social intelligence), Telesoft (network security), and School Business Services (education), then moved past hand-writing code into building whole business capability with AI-assisted systems.
+I'm Richard Hallett. Most people call me Kai. I build AI automations and customer systems for work where understanding the person is as important as understanding the software.
 
-The through-line across all of it is the same problem: people, and now machines, produce confident, coherent output that's sometimes completely wrong, and the real work is building the systems that catch it.
+I spent fifteen years as a cognitive behavioural therapist across NHS and private practice. Then I moved into software engineering and shipped production work in retail analytics, social intelligence, network security, education, and independent client products.
 
-That's what I do now. I take a business problem and ship the working system end to end: prototype, evidence, deployment, the customer journey, safety, measurement. AI does the work that used to need a team. Two strands run alongside each other: production software for clients, and the AI engineering that makes agent-assisted work safe enough to put in front of real customers. The therapy years aren't a detour; understanding how a real person actually moves through a flow is half of what makes a system work.
+Those careers use more of the same skills than their titles suggest. Listen closely enough to find the real problem. Turn ambiguity into something testable. Notice when a confident answer does not match the evidence. Keep the person affected by the system involved in the decisions.
 
-## What I'm building
+## What I do now
 
-**[LoanSlam](/projects/fail-closed-llm-engine/)**, my flagship, and the most advanced of these. A fail-closed conversation engine for a regulated lending domain: an untrusted LLM proposes each turn, deterministic code decides what a customer sees, and every turn is audit-traced. It started as a 30-day Loans by MAL contract; what's here is my own post-contract take on how it should work: prototypal, demonstrated over synthetic data, and entirely my IP.
+I work with founders and internal teams to remove repetitive operational work and build the missing systems around it. That can mean a customer portal, a payment and content workflow, an integration between business tools, or an AI-assisted process with clear rules and a human recovery path.
 
-**[Becoming Diamond](/projects/becoming-diamond/)**, a production client product: a marketing site and a gated member portal delivering a 30-day video course, with AI chat, Stripe membership, and a git-based CMS the client edits themselves.
+I can stay with the work through discovery, architecture, implementation, deployment, monitoring, support, and handoff. I use AI heavily in engineering, but I remain responsible for the problem framing, technical decisions, review, and evidence that the result works.
 
-**[The Pit](/projects/the-pit/)**, a multi-agent evaluation platform: structured contests between agent configurations with observable traces, rubric-based scoring, a failure taxonomy, and cost visibility per run. The Gauntlet, Darkcat, Tells, and Sortie all began as process infrastructure for it.
+## Why wellbeing is a natural fit
 
-**[Sortie](/projects/sortie/)**, adversarial multi-model code review. Three models review a diff in parallel, a fourth synthesises, and merge gates on convergent severity. Different model families have different blind spots; the tool exists to make them check each other.
+I know the operating reality of a small wellbeing practice from inside it. The work depends on trust, tone, boundaries, and limited attention. A generic automation can save a few clicks while making the client experience worse if it forgets context, sends the wrong message, or hides an error.
 
-**[Halo](/projects/halo/)**, agent/tool-layer infrastructure: CLI modules with isolated stores and NATS event sourcing, so a human and an agent drive the same tools the same way.
+I am interested in the administrative and product work around the relationship: enquiries, enrolment, scheduling, payments, course or membership delivery, content operations, knowledge retrieval, and follow-up. Clinical decisions and sensitive records stay with the practitioner and an approved system of record.
+
+## Evidence
+
+- **[Becoming Diamond](/projects/becoming-diamond/)** is a paid coaching product with a marketing site, gated course, AI chat, Stripe membership, and a client-editable CMS.
+- **[Sarah Mozer Studio](/projects/sarah-mozer-studio/)** is a production commerce system with payments, signed webhooks, inventory controls, and a protected owner workflow.
+- **[LoanSlam](/projects/fail-closed-llm-engine/)** is a synthetic-data evaluation environment for a fail-closed conversational system in regulated lending.
+- **[The Pit](/projects/the-pit/)** and **[Sortie](/projects/sortie/)** make AI-assisted engineering observable through traces, scoring, review, and failure evidence.
 
 ## Contact
 

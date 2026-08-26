@@ -11,7 +11,7 @@
       {{ range .Site.Menus.main }}
       <li><a href="{{ .URL }}"{{ if $.IsMenuCurrent "main" . }} class="active"{{ end }}>{{ .Name }}</a></li>
       {{ end }}
-      <li><a href="mailto:{{ .Site.Params.email }}" class="cta">work with me</a></li>
+      <li><a href="/work-with-me/" class="cta">work with me</a></li>
     </ul>
   </div>
 </nav>
