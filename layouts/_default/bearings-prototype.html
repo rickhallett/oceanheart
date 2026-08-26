@@ -1,0 +1,52 @@
+{{/*
+  Prototype question: three variants of a retrospective subagent bearings view,
+  switchable with ?variant=A|B|C on the local /prototype/bearings/ route.
+*/}}
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="description" content="{{ .Description }}">
+  <title>{{ .Title }} | local Oceanheart prototype</title>
+  {{ $prototypeStyles := resources.Get "css/bearings-prototype.css" }}
+  <link rel="stylesheet" href="{{ $prototypeStyles.RelPermalink }}">
+</head>
+<body>
+  <a class="skip-link" href="#bearings-app">Skip to prototype</a>
+  <header class="prototype-masthead">
+    <div class="prototype-brand">
+      <span class="prototype-mark" aria-hidden="true">B</span>
+      <div>
+        <p class="prototype-kicker">Oceanheart local lab</p>
+        <h1>Bearings</h1>
+      </div>
+    </div>
+    <div class="prototype-intro">
+      <p>Retrospective evidence of how an agent understood the assignment and found useful ground.</p>
+      <span class="prototype-only">Synthetic fixture | draft build only</span>
+    </div>
+  </header>
+
+  <div class="evidence-legend" aria-label="Evidence vocabulary">
+    <span class="evidence-key evidence-key-fact"><i aria-hidden="true"></i>Fact</span>
+    <span class="evidence-key evidence-key-heuristic"><i aria-hidden="true"></i>Heuristic candidate</span>
+    <span class="evidence-key evidence-key-review"><i aria-hidden="true"></i>Reviewer judgment</span>
+    <span class="evidence-key evidence-key-unknown"><i aria-hidden="true"></i>Unknown</span>
+  </div>
+
+  <main id="bearings-app" tabindex="-1">
+    <noscript>This prototype needs JavaScript for event playback and comparison.</noscript>
+  </main>
+
+  <div id="prototype-switcher" class="prototype-switcher" aria-label="Prototype variant switcher">
+    <button type="button" data-switch-variant="previous" aria-label="Previous variant">&#8592;</button>
+    <span id="variant-label" aria-live="polite">A | Watchboard</span>
+    <button type="button" data-switch-variant="next" aria-label="Next variant">&#8594;</button>
+  </div>
+
+  {{ $prototypeScript := resources.Get "js/bearings-prototype.js" }}
+  <script src="{{ $prototypeScript.RelPermalink }}" defer></script>
+</body>
+</html>
