@@ -3,7 +3,7 @@ languageCode = 'en-gb'
 title = 'oceanheart.ai'
 
 [params]
-  description = "Rick Hallett. I make AI systems safe to trust for serious work, and I translate between the engineers who build them and the people who depend on them."
+  description = "Richard Hallett builds dependable AI automations and customer systems for growing businesses, with particular experience in wellbeing, client delivery, and high-trust work."
   author = "Richard Hallett"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
@@ -15,19 +15,18 @@ title = 'oceanheart.ai'
     url = '/projects/'
     weight = 10
   [[menus.main]]
-    name = 'blog'
-    url = '/blog/'
-    weight = 20
-  [[menus.main]]
     name = 'about'
     url = '/about/'
-    weight = 30
+    weight = 20
   [[menus.main]]
     name = 'cv'
     url = '/cv/'
-    weight = 40
+    weight = 30
 
-  # Demoted from the primary nav, surfaced in the footer.
+  [[menus.footer]]
+    name = 'notes'
+    url = '/blog/'
+    weight = 10
   [[menus.footer]]
     name = 'observatory'
     url = 'https://observatory-delta.vercel.app'

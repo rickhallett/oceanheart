@@ -1,4 +1,6 @@
 +++
 title = "Work"
-description = "Two strands: client work, business problems shipped as working systems, and the AI engineering that makes agent-assisted software safe enough to put in front of customers."
+description = "Production client systems, business workflows, and the engineering that makes AI-assisted work observable, recoverable, and safe to operate."
 +++
+
+The common thread is ownership. I work from the person and process through to the deployed system, its failure paths, and the handoff. Production client work appears alongside prototypes and independent engineering, with the status stated on each project.

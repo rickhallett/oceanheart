@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass, field
 import html
 import re
@@ -25,6 +26,7 @@ from reportlab.platypus import (
     Image,
     ListFlowable,
     ListItem,
+    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -55,11 +57,22 @@ if MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists():
     MONO_BOLD = "CvMonoBold"
 
 VARIANTS = {
+    "ai-enablement-engineer": {
+        "source": SOURCE_DIR / "ai-enablement-engineer.md",
+        "label": "AI Automation & Enablement Engineer",
+        "descriptor": "Process discovery | workflow automation | applied AI | handoff",
+        "upload_name": "Richard Hallett",
+        "selection_note": (
+            "Primary lane. Internal AI, automation, enablement, and "
+            "forward-deployed roles."
+        ),
+        "page_break_before": ("Experience",),
+        "public_mirror": True,
+    },
     "forward-deployed-engineer": {
         "source": SOURCE_DIR / "forward-deployed-engineer.md",
         "label": "Forward Deployed Engineer",
         "descriptor": "Product engineering | applied AI | client delivery",
-        "upload_name": "Richard Hallett",
         "selection_note": (
             "Primary lane. Forward deployed, solutions, and product "
             "engineering roles."
@@ -115,6 +128,8 @@ VARIANTS = {
         "public_mirror": False,
     },
 }
+
+DEFAULT_VARIANT = "ai-enablement-engineer"
 
 ACCENT = colors.HexColor("#2D5B8E")
 INK = colors.HexColor("#16191D")
@@ -598,6 +613,7 @@ def markdown_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
+    page_break_before: frozenset[str] = frozenset(),
 ) -> list:
     content = parse_markdown(source)
     story: list = header_story(content, label, descriptor, styles, width)
@@ -610,6 +626,8 @@ def markdown_story(
     for section in content.sections:
         if section.heading in skip:
             continue
+        if section.heading in page_break_before:
+            story.append(PageBreak())
         if section.heading == "Education" and "Technical" in section_map:
             story.extend(
                 compact_sections(
@@ -640,7 +658,7 @@ def draw_page(canvas, doc, label: str, styles: dict[str, ParagraphStyle]) -> Non
     canvas.rect(0, A4[1] - 3.2 * mm, A4[0], 3.2 * mm, stroke=0, fill=1)
     canvas.setFillColor(MUTED)
     canvas.setFont(MONO, 6.2)
-    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD (KAI) HALLETT")
+    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD HALLETT")
     canvas.drawRightString(
         A4[0] - doc.rightMargin,
         7 * mm,
@@ -692,6 +710,7 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
     descriptor = str(config["descriptor"])
     upload_name = config.get("upload_name")
     public_mirror = bool(config.get("public_mirror", False))
+    page_break_before = frozenset(config.get("page_break_before", ()))
     if not isinstance(source, Path) or not source.exists():
         raise FileNotFoundError(f"Missing canonical CV source: {source}")
 
@@ -717,7 +736,14 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             author="Richard Hallett",
             subject="Curriculum vitae",
         )
-        story = markdown_story(source, label, descriptor, styles, document.width)
+        story = markdown_story(
+            source,
+            label,
+            descriptor,
+            styles,
+            document.width,
+            page_break_before=page_break_before,
+        )
         document.build(
             story,
             onFirstPage=lambda canvas, doc: draw_page(canvas, doc, label, styles),
@@ -785,8 +811,23 @@ def write_upload_map() -> Path:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--variant",
+        choices=VARIANTS,
+        help="Build one CV variant without rebuilding the full set.",
+    )
+    args = parser.parse_args()
+
+    if args.variant:
+        path = build_variant(args.variant, VARIANTS[args.variant])
+        if args.variant == DEFAULT_VARIANT:
+            shutil.copy2(path, ROOT / "static" / "richard-hallett-cv.pdf")
+        print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
+        return
+
     built = [build_variant(slug, config) for slug, config in VARIANTS.items()]
-    default_cv = PRIMARY_OUTPUT_DIR / "richard-hallett-forward-deployed-engineer.pdf"
+    default_cv = PRIMARY_OUTPUT_DIR / f"richard-hallett-{DEFAULT_VARIANT}.pdf"
     shutil.copy2(default_cv, ROOT / "static" / "richard-hallett-cv.pdf")
     map_path = write_upload_map()
     for path in built:

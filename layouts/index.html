@@ -1,27 +1,184 @@
 {{ define "main" }}
-<section class="hero">
+<section class="hero hero-business">
   <div class="hero-copy">
-    <h1 class="hero-statement">I spent fifteen years as a therapist. Then I shipped production software. Now I build the AI that has to be trusted in front of real people.</h1>
-    <p class="lead">People, and now machines, produce confident, coherent output that's <em>sometimes completely wrong.</em> The real work is building the systems that catch it. That's what I do.</p>
+    <p class="eyebrow">AI automation and customer systems</p>
+    <h1 class="hero-statement">I turn manual work into dependable systems.</h1>
+    <p class="lead">I work with founders and internal teams whose business has outgrown spreadsheets, copied messages, disconnected tools, and AI experiments that nobody quite trusts.</p>
+    <p class="hero-context">Fifteen years as a therapist taught me how to find the real problem with people. Production engineering taught me how to build, ship, and support the answer.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=The%20work%20that%20keeps%20repeating">Tell me what keeps repeating</a>
+      <a class="button button-quiet" href="#selected-work">See selected work</a>
+    </div>
   </div>
-  <svg class="hero-mark" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-    <path fill="currentColor" fill-rule="evenodd" d="M81 12c24-8 48 4 61 24 11 19 16 47 11 73-4 26-15 51-34 66-20 15-46 12-65-3-20-16-32-40-35-67-3-27 3-56 17-76C47 14 64 9 81 12Zm2 37c-14-5-26 4-32 20-6 16-7 36-3 52 4 17 15 28 28 32 14 5 28-2 35-15 9-16 13-36 11-55-2-18-10-31-23-35-5-2-11-2-16 1Z"/>
-    <path fill="currentColor" d="M151 143c12-4 24 3 27 15 3 11-3 22-14 26-11 3-22-3-25-13-3-11 2-22 12-28Z"/>
-  </svg>
+
+  <aside class="hero-brief" aria-labelledby="useful-when">
+    <p class="brief-label" id="useful-when">I am useful when</p>
+    <ul>
+      <li>The founder is the bridge between every tool and every customer.</li>
+      <li>A repeated workflow depends on memory, copying, or manual checking.</li>
+      <li>An AI prototype needs proper rules, monitoring, and a human recovery path.</li>
+      <li>A customer portal, payment flow, or internal process needs one technical owner.</li>
+    </ul>
+    <p class="brief-foot">Start with the work that is costing attention. AI is only part of the answer when it earns its place.</p>
+  </aside>
 </section>
 
-<section class="home-projects">
-  {{ $order := slice "/projects/fail-closed-llm-engine" "/projects/the-pit" "/projects/sortie" "/projects/becoming-diamond" "/projects/halo" }}
-  {{ range $i, $path := $order }}
-    {{ with $.Site.GetPage $path }}
-      {{ partial "project-card.html" (dict "page" . "num" (add $i 1)) }}
-    {{ end }}
-  {{ end }}
-  <p class="all-work"><a href="/projects/">all work</a></p>
+<section class="credibility-rail" aria-label="Relevant experience">
+  <div>
+    <strong>15 years</strong>
+    <span>clinical practice and high-trust conversations</span>
+  </div>
+  <div>
+    <strong>6+ years</strong>
+    <span>professional software delivery</span>
+  </div>
+  <div>
+    <strong>End to end</strong>
+    <span>discovery, build, deployment, support, and handoff</span>
+  </div>
+</section>
+
+<section class="home-section" id="what-i-build">
+  <div class="section-intro">
+    <p class="eyebrow">What I build</p>
+    <h2>Less admin. Fewer dropped threads. Systems your business can actually rely on.</h2>
+    <p>I combine lightweight automation, custom software, and LLM APIs according to the job. The goal is a working process with an owner, a recovery path, and evidence that it helped.</p>
+  </div>
+  <div class="service-list">
+    <article class="service-row">
+      <div class="service-heading">
+        <p class="service-number">01</p>
+        <h3>Workflow automation</h3>
+      </div>
+      <div class="service-body">
+        <p>Map one repeated process, connect the tools around it, remove avoidable handling, and keep human approval where judgement still matters.</p>
+        <p class="service-examples">Lead routing, onboarding, support triage, content operations, reporting, and internal handoffs.</p>
+      </div>
+    </article>
+    <article class="service-row">
+      <div class="service-heading">
+        <p class="service-number">02</p>
+        <h3>AI inside real work</h3>
+      </div>
+      <div class="service-body">
+        <p>Use models for classification, drafting, retrieval, or assistance without letting plausible output quietly become business truth.</p>
+        <p class="service-examples">Evaluation sets, deterministic checks, audit traces, monitoring, and escalation to a person.</p>
+      </div>
+    </article>
+    <article class="service-row">
+      <div class="service-heading">
+        <p class="service-number">03</p>
+        <h3>Customer systems</h3>
+      </div>
+      <div class="service-body">
+        <p>Build the product around the workflow when an automation is not enough, including portals, payments, content delivery, and owner-facing tools.</p>
+        <p class="service-examples">Membership products, client portals, commerce, CMS workflows, APIs, and secure integrations.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="wellbeing-focus">
+  <div class="wellbeing-copy">
+    <p class="eyebrow">A particular fit for wellbeing businesses</p>
+    <h2>Your clients notice when the system forgets the relationship.</h2>
+    <p>Successful solo practitioners, educators, and creators often become the hidden integration between their audience, inbox, forms, calendar, payments, course platform, and private notes. That works until growth turns every new client into more copying, checking, and remembering.</p>
+    <p>I have run a wellbeing practice myself. I understand the difference between administration that should disappear and judgement that should stay with a person. I build around consent, clear boundaries, recoverable mistakes, and the tone your clients already trust.</p>
+  </div>
+  <div class="boundary-note">
+    <p class="brief-label">The boundary matters</p>
+    <p>I will automate scheduling, enrolment, payments, content delivery, follow-up, knowledge retrieval, and operational handoffs. I will not automate clinical judgement or move sensitive client data into an unapproved system.</p>
+  </div>
+</section>
+
+<section class="home-section" id="selected-work">
+  <div class="section-intro section-intro-split">
+    <div>
+      <p class="eyebrow">Selected proof</p>
+      <h2>Built around real owners and real constraints.</h2>
+    </div>
+    <a class="section-link" href="/projects/">All technical work</a>
+  </div>
+  <div class="proof-list">
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Coaching business</p>
+        <h3><a href="/projects/becoming-diamond/">Becoming Diamond</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A paid customer product with a marketing site, gated course, AI chat, Stripe membership, and a CMS the owner can edit without booking an engineer.</p>
+        <p class="proof-outcome">Production client delivery across product, payments, content, AI, and handoff.</p>
+        <a class="proof-link" href="/projects/becoming-diamond/">Read the project &rarr;</a>
+      </div>
+    </article>
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Independent artist</p>
+        <h3><a href="/projects/sarah-mozer-studio/">Sarah Mozer Studio</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A production commerce system with a client-managed catalogue, Stripe Checkout, signed webhooks, inventory controls, and an owner workflow designed for low administrative burden.</p>
+        <p class="proof-outcome">Discovery, implementation, deployment, live support, and safe owner editing.</p>
+        <a class="proof-link" href="/projects/sarah-mozer-studio/">Read the project &rarr;</a>
+      </div>
+    </article>
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Regulated AI</p>
+        <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A synthetic-data engine where an LLM proposes each turn, deterministic code blocks unsafe output, and every decision carries a trace that can be inspected.</p>
+        <p class="proof-outcome">A prototype and evaluation environment, clearly separated from production claims.</p>
+        <a class="proof-link" href="/projects/fail-closed-llm-engine/">Inspect the architecture &rarr;</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="home-section method-section">
+  <div class="section-intro">
+    <p class="eyebrow">How the work runs</p>
+    <h2>Start with the operating problem. Finish with a system somebody else can own.</h2>
+  </div>
+  <ol class="method-list">
+    <li>
+      <span>01</span>
+      <div><h3>Find the real constraint</h3><p>Walk through the current process with the person doing it. Name the trigger, decisions, exceptions, owner, and present cost.</p></div>
+    </li>
+    <li>
+      <span>02</span>
+      <div><h3>Choose the smallest useful change</h3><p>Decide whether the answer is automation, custom software, AI assistance, or a simpler process. Set a baseline before building.</p></div>
+    </li>
+    <li>
+      <span>03</span>
+      <div><h3>Build for failure as well as success</h3><p>Test with safe data, make errors visible, preserve human approval for consequential actions, and give failed work somewhere to go.</p></div>
+    </li>
+    <li>
+      <span>04</span>
+      <div><h3>Measure and hand over</h3><p>Run the workflow against real work, monitor what breaks, document recovery, and leave the owner able to operate it without depending on me.</p></div>
+    </li>
+  </ol>
+</section>
+
+<section class="technical-depth">
+  <div>
+    <p class="eyebrow">Technical depth</p>
+    <h2>I can hold the relationship and debug the system.</h2>
+  </div>
+  <div>
+    <p>My working stack includes TypeScript, Python, React, Next.js, Node.js, REST APIs, PostgreSQL, signed webhooks, Stripe, Docker, Kubernetes, AWS, Terraform, Vercel, evaluation systems, and LLM provider APIs.</p>
+    <p>The tools change. The useful part is being able to trace what happened across the whole workflow, explain it to the owner, and repair the right boundary.</p>
+  </div>
 </section>
 
 <section class="home-engage">
-  <p class="engage-line">If you have an AI idea stuck in pilot, I take one workflow to a shipped, measured system. Fixed fee. A baseline before a line is built.</p>
-  <a class="engage-cta" href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }} &rarr;</a>
+  <p class="eyebrow">A useful first conversation</p>
+  <h2>What keeps repeating, who handles it, and where does it break?</h2>
+  <p class="engage-line">Send me the rough version. I will tell you plainly whether it looks worth automating and what I would need to learn before proposing a build.</p>
+  <div class="hero-actions">
+    <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=The%20work%20that%20keeps%20repeating">Email {{ .Site.Params.email }}</a>
+    <a class="button button-quiet" href="/work-with-me/">How an engagement works</a>
+  </div>
 </section>
 {{ end }}
