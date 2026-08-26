@@ -10,6 +10,19 @@ Canonical sources:
 - `career/cv/forward-deployed-engineer.md`
 - `career/cv/applied-ai-engineer.md`
 
+Preview candidate, not yet canonical or published:
+
+- `career/cv/ai-enablement-engineer.md`
+
+Build only that preview with:
+
+```text
+uv run exports/build-cv.py --variant ai-enablement-engineer
+```
+
+The full build skips preview-only variants. The AI Enablement preview has no
+role-neutral upload copy or public mirror until it is adopted explicitly.
+
 Experimental Full Complement sources:
 
 - `career/cv/full-complement/frontend-developer.md`
