@@ -73,17 +73,6 @@ body[data-variant='reliquary'] .hero-statement {
   font-weight: 400;
 }
 
-body[data-variant='reliquary'] .hero-statement::before {
-  display: block;
-  width: 3rem;
-  height: 3rem;
-  margin: 0 auto 2rem;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  content: '';
-  box-shadow: inset 0 0 0 0.6rem #210711, inset 0 0 0 0.7rem var(--accent);
-}
-
 body[data-variant='reliquary'] .home-projects,
 body[data-variant='reliquary'] .home-engage,
 body[data-variant='reliquary'] .content,

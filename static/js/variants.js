@@ -14,6 +14,9 @@
 (() => {
   const STORAGE_KEY = 'oceanheart-skin';
   const HINT_KEY = 'oceanheart-skin-hinted';
+  const assetVersion = document.currentScript?.dataset.assetVersion || '';
+  const versioned = (path) =>
+    assetVersion ? `${path}?v=${encodeURIComponent(assetVersion)}` : path;
   const registryNode = document.getElementById('variant-registry');
   const dock = document.querySelector('[data-variant-dock]');
   if (!registryNode || !dock) return;
@@ -64,7 +67,7 @@
     const promise = new Promise((resolve) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = `/css/variants/themes/${slug}.css`;
+      link.href = versioned(`/css/variants/themes/${slug}.css`);
       link.dataset.variantTheme = slug;
       // Fetch now, apply later: a disabled link is never fetched, but
       // media="not all" downloads and stays inert until paint() flips it.
@@ -84,7 +87,7 @@
     if (loadedEffects.has(slug)) return loadedEffects.get(slug);
     const promise = new Promise((resolve) => {
       const script = document.createElement('script');
-      script.src = `/js/variants/${slug}.js`;
+      script.src = versioned(`/js/variants/${slug}.js`);
       script.async = true;
       script.addEventListener('load', resolve, { once: true });
       script.addEventListener('error', resolve, { once: true });

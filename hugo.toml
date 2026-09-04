@@ -6,6 +6,7 @@ title = 'oceanheart.ai'
   description = "Rick Hallett's practice, where people, intelligent machines, and working systems meet. Conversations with AI, human systems, and direct relational work."
   author = "Rick Hallett"
   homeTitle = "Oceanheart · Rick Hallett"
+  assetVersion = "20260904-2"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
   linkedin = "https://www.linkedin.com/in/richardhallett86/"
@@ -44,11 +45,6 @@ title = 'oceanheart.ai'
     name = 'cv'
     url = '/cv/'
     weight = 30
-  [[menus.footer]]
-    name = 'observatory'
-    url = 'https://observatory-delta.vercel.app'
-    weight = 40
-
 [markup]
   [markup.highlight]
     style = 'tokyonight-night'

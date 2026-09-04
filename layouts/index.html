@@ -1,5 +1,6 @@
 {{ define "main" }}
-<section class="hero hero-founder">
+{{ $hasFounderPortrait := fileExists "static/images/rick-hero.webp" }}
+<section class="hero hero-founder{{ if not $hasFounderPortrait }} hero-founder-text-only{{ end }}">
   <div class="hero-copy">
     <h1 class="hero-statement">Stay human. Work with what is coming.</h1>
     <p class="lead">I’m Rick Hallett. I spent fifteen years working with people, then learned to build the systems increasingly shaping them. Oceanheart is where those practices meet.</p>
@@ -9,15 +10,9 @@
       <a class="button button-quiet" href="#contact">Start with a conversation</a>
     </div>
   </div>
-  {{ if fileExists "static/images/rick-hero.webp" }}
+  {{ if $hasFounderPortrait }}
   <figure class="hero-portrait">
     <img src="/images/rick-hero.webp" alt="Rick Hallett" width="960" height="1200">
-  </figure>
-  {{ else }}
-  {{/* Rick authorship gate: replace this mark with an authentic portrait generated from Rick's supplied photographs. */}}
-  <figure class="hero-portrait hero-portrait-pending" aria-label="Portrait of Rick Hallett to come">
-    <span class="hero-portrait-mark" aria-hidden="true">O.</span>
-    <figcaption>Rick Hallett</figcaption>
   </figure>
   {{ end }}
 </section>
@@ -25,12 +20,10 @@
 <section class="home-projects door-list" id="doors" data-door-list>
   <div class="section-intro">
     <h2>Three ways to begin.</h2>
-    <p>Choose by what you are meeting, not by what I am called.</p>
   </div>
 
   <article class="entry door" data-door="ai">
     <div>
-      <p class="door-status" data-state="research">Research stage</p>
       <p class="entry-lead"><b class="entry-name">Meet the machine; master yourself.</b> Conversations with AI.</p>
     </div>
     <div>
@@ -42,7 +35,6 @@
 
   <article class="entry door" data-door="systems">
     <div>
-      <p class="door-status" data-state="open">Open now</p>
       <p class="entry-lead"><b class="entry-name">Bring me the mess. We’ll make a system.</b> Human systems.</p>
     </div>
     <div>
@@ -55,7 +47,6 @@
   {{/* Rick authorship gate: confirm the precise direct-work offer and professional basis before merge. */}}
   <article class="entry door" data-door="relational">
     <div>
-      <p class="door-status" data-state="arranged">By arrangement</p>
       <p class="entry-lead"><b class="entry-name">Come back into contact. In-person, virtually or otherwise.</b> Direct relational work.</p>
     </div>
     <div>
@@ -69,12 +60,11 @@
 <section class="credibility-rail" aria-label="Same person at every door">
   <div><strong>15 years</strong><span>clinical practice and high-trust conversations</span></div>
   <div><strong>6+ years</strong><span>professional software delivery, discovery to handover</span></div>
-  <div><strong>Daily since 2024</strong><span>working with frontier AI, in the loop, not at a distance</span></div>
+  <div><strong>Daily since 2024</strong><span>working with frontier AI, in the loop</span></div>
 </section>
 
 <section class="home-section thread" id="person">
   <div class="section-intro">
-    <p class="brief-label">The person</p>
     <h2>I can hold the relationship and debug the system.</h2>
   </div>
   <div class="thread-copy">
@@ -87,8 +77,8 @@
 
 <section class="home-section flagship-feature" id="conversations-with-ai">
   <div class="flagship-heading">
-    <p class="brief-label">An Oceanheart project · Research stage</p>
     <h2>Meet the machine; master yourself.</h2>
+    <p class="section-context">An Oceanheart project · Research stage</p>
   </div>
   <div class="flagship-copy">
     <p>You talk with a frontier model about something that matters to you, and watch what happens in you as you do: what you expect, what you trust, where your body tightens, when you defer, and when you push back.</p>
@@ -106,9 +96,8 @@
 
 <section class="home-section method-section">
   <div class="section-intro">
-    <p class="brief-label">A way of working</p>
-    <h2>The same way of working at every door.</h2>
-    <p>Whether the constraint is in a person, a relationship, an encounter with a machine, or a workflow, the sequence does not change. The response does.</p>
+    <h2>How I work</h2>
+    <p>Whether the constraint is in a person, a relationship, an encounter with a machine, or a workflow, the sequence does not change.</p>
   </div>
   <ol class="method-list">
     <li><span>Enter</span><div><h3>Enter the real context</h3><p>The conversation, model exchange, or workflow as it actually happens.</p></div></li>
@@ -120,14 +109,13 @@
 
 <section class="home-section" id="selected-work">
   <div class="section-intro">
-    <p class="brief-label">Selected evidence</p>
-    <h2>Real work, with its status left attached.</h2>
+    <h2>Examples of work</h2>
   </div>
   <div class="proof-list">
     <article class="proof-row">
       <div class="proof-heading">
-        <p class="proof-kind">Paid client · Production</p>
         <h3><a href="/projects/sarah-mozer-studio/">Sarah Mozer Studio</a></h3>
+        <p class="proof-context">Paid client · Production</p>
       </div>
       <div class="proof-body">
         <p>A production commerce system whose catalogue, checkout, stock controls, and owner workflow were designed as one operating system.</p>
@@ -137,8 +125,8 @@
     </article>
     <article class="proof-row">
       <div class="proof-heading">
-        <p class="proof-kind">Independent prototype · Synthetic data</p>
         <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
+        <p class="proof-context">Independent prototype · Synthetic data</p>
       </div>
       <div class="proof-body">
         <p>An LLM proposes each turn, deterministic code decides what reaches the user, and every decision carries an inspectable trace.</p>
@@ -148,8 +136,8 @@
     </article>
     <article class="proof-row">
       <div class="proof-heading">
-        <p class="proof-kind">Paid client · Production</p>
         <h3><a href="/projects/becoming-diamond/">Becoming Diamond</a></h3>
+        <p class="proof-context">Paid client · Production</p>
       </div>
       <div class="proof-body">
         <p>A customer product spanning public site, gated course, AI chat, Stripe membership, and a client-editable content system.</p>
@@ -162,11 +150,11 @@
 
 <section class="home-section adaptive-interface" id="interface">
   <div>
-    <p class="brief-label">The site is part of the argument</p>
     <h2>How do you want the system to meet you?</h2>
+    <p class="section-context">The site is part of the argument.</p>
   </div>
   <div>
-    <p>This site has 24 visual systems. Choose one and it stays with you from page to page. The content remains the same while its environment changes around you.</p>
+    <p>This site has 19 visual systems. Choose one and it stays with you from page to page. The content remains the same while its environment changes around you.</p>
     <p class="adaptive-close">Systems can adapt to human beings. And I can make it happen.</p>
     <div class="hero-actions">
       <button class="button button-primary" type="button" data-open-skin-dock>Choose a visual system</button>

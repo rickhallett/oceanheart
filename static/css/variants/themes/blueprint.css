@@ -227,25 +227,6 @@ body[data-variant='blueprint'] main > .container > .hero::before {
   content: 'GA-01  GENERAL ARRANGEMENT';
 }
 
-/* a construction circle with centre lines, sitting behind the copy */
-body[data-variant='blueprint'] .hero::after {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  right: clamp(1rem, 6vw, 5rem);
-  width: clamp(10rem, 26vw, 22rem);
-  aspect-ratio: 1;
-  border: 1px dashed var(--rule-soft);
-  border-radius: 50%;
-  content: '';
-  background:
-    linear-gradient(var(--rule-soft), var(--rule-soft)) center / 1px 120% no-repeat,
-    linear-gradient(var(--rule-soft), var(--rule-soft)) center / 120% 1px no-repeat,
-    radial-gradient(circle, transparent 0 calc(50% - 3rem), var(--rule-soft) calc(50% - 3rem) calc(50% - 3rem + 1px), transparent 0);
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
 body[data-variant='blueprint'] .hero-copy {
   position: relative;
   z-index: 1;
@@ -358,15 +339,12 @@ body[data-variant='blueprint'] .entry-lead {
   color: var(--text);
 }
 
-body[data-variant='blueprint'] .service-number,
-body[data-variant='blueprint'] .proof-kind,
-body[data-variant='blueprint'] .brief-label {
+body[data-variant='blueprint'] .service-number {
   color: var(--muted);
   letter-spacing: 0.22em;
 }
 
-body[data-variant='blueprint'] .service-number::before,
-body[data-variant='blueprint'] .proof-kind::before {
+body[data-variant='blueprint'] .service-number::before {
   content: 'PART \00B7  ';
   opacity: 0.7;
 }
@@ -380,40 +358,6 @@ body[data-variant='blueprint'] .entry-links a {
 
 body[data-variant='blueprint'] .entry-meta span + span::before {
   content: '  |  ';
-}
-
-/* doors: status chips as line-type conventions */
-body[data-variant='blueprint'] .door-status {
-  border: 1px solid var(--rule);
-  color: var(--text);
-  letter-spacing: 0.18em;
-}
-
-body[data-variant='blueprint'] .door-status::before {
-  border-radius: 0;
-  background: var(--muted);
-}
-
-body[data-variant='blueprint'] .door-status[data-state='open'] {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--page);
-}
-
-body[data-variant='blueprint'] .door-status[data-state='open']::before {
-  background: var(--page);
-}
-
-body[data-variant='blueprint'] .door-status[data-state='soon'] {
-  border-style: dashed;
-}
-
-body[data-variant='blueprint'] .door-status[data-state='soon']::before {
-  background: var(--ink);
-}
-
-body[data-variant='blueprint'] .door-status[data-state='research'] {
-  border-style: dotted;
 }
 
 body[data-variant='blueprint'] .door-list .entry.is-first {
@@ -699,7 +643,6 @@ body[data-variant='blueprint'] .bp-dim.is-drawn text {
   body[data-variant='blueprint']::after,
   body[data-variant='blueprint'] main::after,
   body[data-variant='blueprint'] footer::after,
-  body[data-variant='blueprint'] .hero::after,
   body[data-variant='blueprint'] .bp-dim {
     display: none;
   }

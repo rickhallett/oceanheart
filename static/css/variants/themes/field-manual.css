@@ -87,15 +87,6 @@ body[data-variant='field-manual'] .hero-statement {
   text-transform: uppercase;
 }
 
-body[data-variant='field-manual'] h2::before {
-  display: block;
-  margin-bottom: 0.5rem;
-  content: 'SECTION /';
-  color: var(--accent);
-  font: 700 0.65rem 'Courier New', monospace;
-  letter-spacing: 0.12em;
-}
-
 body[data-variant='field-manual'] .entry,
 body[data-variant='field-manual'] .post-item,
 body[data-variant='field-manual'] .tells-row {

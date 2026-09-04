@@ -40,4 +40,4 @@
   <output class="skin-sr" data-dock-live aria-live="polite"></output>
 </div>
 <script type="application/json" id="variant-registry">{{ $skins | jsonify | safeJS }}</script>
-<script src="/js/variants.js" defer></script>
+<script src="/js/variants.js?v={{ .Site.Params.assetVersion }}" data-asset-version="{{ .Site.Params.assetVersion }}" defer></script>

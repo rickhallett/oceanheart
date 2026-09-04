@@ -58,28 +58,6 @@ body[data-variant='tide-table'] .hero {
   border-left: 1px solid var(--rule);
 }
 
-body[data-variant='tide-table'] .hero::before,
-body[data-variant='tide-table'] .hero::after {
-  position: absolute;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  content: '';
-}
-
-body[data-variant='tide-table'] .hero::before {
-  top: 10%;
-  right: -8rem;
-  width: 28rem;
-  height: 28rem;
-}
-
-body[data-variant='tide-table'] .hero::after {
-  top: calc(10% + 3rem);
-  right: -5rem;
-  width: 22rem;
-  height: 22rem;
-}
-
 body[data-variant='tide-table'] .hero-statement {
   max-width: 8ch;
   font-weight: 400;
@@ -121,11 +99,6 @@ body[data-variant='tide-table'] .content h2::before {
 }
 
 @media (max-width: 760px) {
-  body[data-variant='tide-table'] .hero::before,
-  body[data-variant='tide-table'] .hero::after {
-    opacity: 0.35;
-  }
-
   body[data-variant='tide-table'] .home-projects,
   body[data-variant='tide-table'] .home-engage,
   body[data-variant='tide-table'] .post-list,

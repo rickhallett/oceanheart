@@ -30,14 +30,15 @@
 <meta name="twitter:description" content="{{ $description }}">
 <meta name="twitter:image" content="{{ $image }}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/oceanheart.css" id="house-style">
+<link rel="stylesheet" href="/css/oceanheart.css?v={{ .Site.Params.assetVersion }}" id="house-style">
 {{ if not .Params.privateSurface }}
-<link rel="stylesheet" href="/css/variants/base.css">
-<link rel="stylesheet" href="/css/variants/scale.css">
-<link rel="stylesheet" href="/css/variants/dock.css">
+<link rel="stylesheet" href="/css/variants/base.css?v={{ .Site.Params.assetVersion }}">
+<link rel="stylesheet" href="/css/variants/scale.css?v={{ .Site.Params.assetVersion }}">
+<link rel="stylesheet" href="/css/variants/dock.css?v={{ .Site.Params.assetVersion }}">
 <script>
 (function () {
   var known = {{ apply hugo.Data.variants "index" "." "slug" | jsonify | safeJS }};
+  var assetVersion = {{ .Site.Params.assetVersion | jsonify | safeJS }};
   try {
     var params = new URLSearchParams(window.location.search);
     var fromUrl = params.get('theme');
@@ -46,10 +47,14 @@
       if (fromUrl && known.indexOf(fromUrl) !== -1) window.localStorage.setItem('oceanheart-skin', fromUrl);
       else window.localStorage.removeItem('oceanheart-skin');
     }
-    if (!slug || known.indexOf(slug) === -1) return;
+    if (!slug) return;
+    if (known.indexOf(slug) === -1) {
+      window.localStorage.removeItem('oceanheart-skin');
+      return;
+    }
     document.documentElement.setAttribute('data-variant', slug);
     document.getElementById('house-style').disabled = true;
-    document.write('<link rel="stylesheet" href="/css/variants/themes/' + slug + '.css" data-variant-theme="' + slug + '">');
+    document.write('<link rel="stylesheet" href="/css/variants/themes/' + slug + '.css?v=' + encodeURIComponent(assetVersion) + '" data-variant-theme="' + slug + '">');
   } catch (error) {
     /* Storage refused or unavailable: the house style stands. */
   }

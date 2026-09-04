@@ -131,58 +131,6 @@
   },
   {
     "number": "11",
-    "slug": "night-liturgy",
-    "name": "Night liturgy",
-    "family": "world",
-    "premise": "A quiet nocturnal sequence that gives reflection the weight of a repeated practice.",
-    "structure": "Indigo void, silver text, centred procession and measured circular marks",
-    "swatch": [
-      "#c9c3e8",
-      "#0f0c25"
-    ],
-    "effects": false
-  },
-  {
-    "number": "12",
-    "slug": "primary-motion",
-    "name": "Primary motion",
-    "family": "world",
-    "premise": "A Bauhaus playfield where sections collide as colour, type and moving geometry.",
-    "structure": "Cream ground, primary blocks, diagonal flow and asymmetric composition",
-    "swatch": [
-      "#e52b20",
-      "#1b4fb8"
-    ],
-    "effects": false
-  },
-  {
-    "number": "13",
-    "slug": "orbital-desk",
-    "name": "Orbital desk",
-    "family": "instrument",
-    "premise": "A 1970s mission planner built around trajectories, checklists and human judgement.",
-    "structure": "Silver shell, navy panels, circular wayfinding and orange instrument lights",
-    "swatch": [
-      "#ed6a21",
-      "#243b53"
-    ],
-    "effects": false
-  },
-  {
-    "number": "14",
-    "slug": "card-catalogue",
-    "name": "Card catalogue",
-    "family": "object",
-    "premise": "A library index where every page is a physical record filed for later retrieval.",
-    "structure": "Oak desk, cream cards, drawer labels and a persistent subject index",
-    "swatch": [
-      "#eee0bb",
-      "#6c4427"
-    ],
-    "effects": false
-  },
-  {
-    "number": "15",
     "slug": "whiteout",
     "name": "Whiteout",
     "family": "world",
@@ -195,7 +143,7 @@
     "effects": false
   },
   {
-    "number": "16",
+    "number": "12",
     "slug": "packet-garden",
     "name": "Packet garden",
     "family": "world",
@@ -208,7 +156,7 @@
     "effects": true
   },
   {
-    "number": "17",
+    "number": "13",
     "slug": "acid-index",
     "name": "Acid index",
     "family": "object",
@@ -221,7 +169,7 @@
     "effects": true
   },
   {
-    "number": "18",
+    "number": "14",
     "slug": "vector-field",
     "name": "Vector field",
     "family": "instrument",
@@ -234,20 +182,7 @@
     "effects": true
   },
   {
-    "number": "19",
-    "slug": "deep-water",
-    "name": "Deep water",
-    "family": "world",
-    "premise": "The site seen from below the surface: light caustics move across glass panels and nothing sits still.",
-    "structure": "Living canvas water, frosted glass cards, sea-green on abyssal ink, slow refraction on hover",
-    "swatch": [
-      "#7fd6c8",
-      "#041a22"
-    ],
-    "effects": true
-  },
-  {
-    "number": "20",
+    "number": "15",
     "slug": "blueprint",
     "name": "Blueprint",
     "family": "instrument",
@@ -260,7 +195,7 @@
     "effects": true
   },
   {
-    "number": "21",
+    "number": "16",
     "slug": "halftone-press",
     "name": "Halftone press",
     "family": "object",
@@ -273,20 +208,20 @@
     "effects": false
   },
   {
-    "number": "22",
+    "number": "17",
     "slug": "heavy-type",
     "name": "Heavy type",
     "family": "world",
-    "premise": "Nothing but type, and the type has mass: weight and width answer to how fast you scroll.",
-    "structure": "Variable-font axes driven by scroll velocity, one column, black on unbleached white",
+    "premise": "Nothing but type, given enough weight and scale to carry the page without ornament.",
+    "structure": "Static variable type, one column, black on unbleached white",
     "swatch": [
       "#111111",
       "#f2f2ef"
     ],
-    "effects": true
+    "effects": false
   },
   {
-    "number": "23",
+    "number": "18",
     "slug": "glass-cockpit",
     "name": "Glass cockpit",
     "family": "instrument",
@@ -299,7 +234,7 @@
     "effects": true
   },
   {
-    "number": "24",
+    "number": "19",
     "slug": "raked-sand",
     "name": "Raked sand",
     "family": "world",

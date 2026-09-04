@@ -220,6 +220,9 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   assert.match(home, /Meet the machine; master yourself\./);
   assert.match(home, /Bring me the mess\. We’ll make a system\./);
   assert.match(home, /Come back into contact\. In-person, virtually or otherwise\./);
+  assert.match(home, /How I work/);
+  assert.match(home, /Examples of work/);
+  assert.match(home, /This site has 19 visual systems\./);
   assert.equal(
     openingTags(home, "article").filter((tag) => hasAttribute(tag, "data-door"))
       .length,
@@ -232,10 +235,13 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   assert.doesNotMatch(home, /data-door="body"/);
   assert.doesNotMatch(home, /facebook/i);
   assert.doesNotMatch(home, /class="eyebrow"/);
+  assert.doesNotMatch(home, /brief-label|door-status|hero-portrait-pending/);
+  assert.doesNotMatch(home, /Choose by what|not at a distance|The response does/);
+  assert.doesNotMatch(home, /observatory/i);
 
   const llms = readFile(path.join(outputDirectory, "llms.txt"));
   assert.match(llms, /# Oceanheart · Rick Hallett/);
-  assert.match(llms, /Choose by what the person is meeting/);
+  assert.match(llms, /Three ways to begin/);
   assert.doesNotMatch(llms, /Richard Hallett builds dependable AI automations/);
 
   assert.ok(
@@ -286,6 +292,55 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
     compatibilityCv,
     primaryCv,
     "compatibility CV must be the AI Automation and Enablement variant",
+  );
+});
+
+test("the visual-system registry contains only the reviewed skins", () => {
+  const registry = JSON.parse(
+    readFile(path.join(repositoryRoot, "data", "variants.json")),
+  );
+  const rejected = [
+    "night-liturgy",
+    "primary-motion",
+    "orbital-desk",
+    "card-catalogue",
+    "deep-water",
+  ];
+
+  assert.equal(registry.length, 19);
+  assert.deepEqual(
+    registry.map((skin) => skin.number),
+    Array.from({ length: 19 }, (_, index) => String(index + 1).padStart(2, "0")),
+  );
+  assert.deepEqual(
+    registry.filter((skin) => rejected.includes(skin.slug)),
+    [],
+  );
+
+  for (const skin of registry) {
+    assert.ok(
+      fs.existsSync(
+        path.join(repositoryRoot, "static", "css", "variants", "themes", `${skin.slug}.css`),
+      ),
+      `${skin.slug} is missing its stylesheet`,
+    );
+    if (skin.effects) {
+      assert.ok(
+        fs.existsSync(
+          path.join(repositoryRoot, "static", "js", "variants", `${skin.slug}.js`),
+        ),
+        `${skin.slug} is missing its effects module`,
+      );
+    }
+  }
+
+  const heavyType = registry.find((skin) => skin.slug === "heavy-type");
+  assert.equal(heavyType.effects, false);
+  assert.ok(
+    !fs.existsSync(
+      path.join(repositoryRoot, "static", "js", "variants", "heavy-type.js"),
+    ),
+    "Heavy type must not regain a scroll-driven effects module",
   );
 });
 

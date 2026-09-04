@@ -357,9 +357,7 @@ body[data-variant='halftone-press'] .entry-lead {
   color: var(--text);
 }
 
-body[data-variant='halftone-press'] .service-number,
-body[data-variant='halftone-press'] .proof-kind,
-body[data-variant='halftone-press'] .brief-label {
+body[data-variant='halftone-press'] .service-number {
   color: var(--accent);
   font-family: var(--display-font);
   font-size: 0.8rem;
@@ -390,52 +388,6 @@ body[data-variant='halftone-press'] .subject-line {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-/* doors: chips as ink swatches */
-body[data-variant='halftone-press'] .door-status {
-  border: 2px solid var(--ink);
-  color: var(--ink);
-  font-family: var(--body-font);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-body[data-variant='halftone-press'] .door-status::before {
-  border-radius: 0;
-  background: var(--ink);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='open'] {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--page);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='open']::before {
-  background: var(--yellow);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='soon'] {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='soon']::before {
-  background: var(--accent);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='research'] {
-  border-color: var(--cyan);
-  color: #007a8f;
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='research']::before {
-  background: var(--cyan);
-}
-
-body[data-variant='halftone-press'] .door-status[data-state='arranged'] {
-  background: var(--yellow);
 }
 
 body[data-variant='halftone-press'] .door-list .entry.is-first {

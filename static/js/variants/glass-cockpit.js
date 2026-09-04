@@ -1,8 +1,7 @@
 (window.oceanheartSkinEffects = window.oceanheartSkinEffects || {})['glass-cockpit'] = (() => {
   // Pointer-tracking HUD: per-pane tilt (written as --tilt-x / --tilt-y on each
-  // pane, clamped to -1..1; the stylesheet turns that into at most 4deg), a
-  // lagging reticle, and four corner readouts. Throttled to ~30fps and idle
-  // when nothing has moved.
+  // pane, clamped to -1..1; the stylesheet turns that into at most 4deg), and
+  // four corner readouts. Throttled to ~30fps and idle when nothing has moved.
   const PANES =
     '.hero, .entry, .service-row, .proof-row, .post-item, .content, .home-engage, ' +
     '.credibility-rail > div, .method-list > li, .wellbeing-focus, .technical-depth, .thread-copy';
@@ -11,15 +10,12 @@
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
   let panes = [];
   let readouts = null;
-  let reticle = null;
   let raf = 0;
   let last = 0;
   let dirty = true;
   let still = false;
   let lastSecond = -1;
-  let seen = false;
   const pointer = { x: 0, y: 0 };
-  const ret = { x: 0, y: 0 };
 
   const pad = (value, length) => String(Math.max(0, Math.round(value))).padStart(length, '0');
   const clamp = (value) => Math.max(-1, Math.min(1, value));
@@ -37,18 +33,7 @@
   function onMove(event) {
     pointer.x = event.clientX;
     pointer.y = event.clientY;
-    if (!seen) {
-      seen = true;
-      ret.x = pointer.x;
-      ret.y = pointer.y;
-      reticle?.classList.add('is-live');
-    }
     dirty = true;
-  }
-
-  function onLeave() {
-    seen = false;
-    reticle?.classList.remove('is-live');
   }
 
   function onChange() {
@@ -105,14 +90,8 @@
       const depth = max > 0 ? (window.scrollY / max) * 100 : 0;
       readouts.bl.textContent = `DEPTH ${pad(depth, 3)}%`;
     }
-    if (still || !fine.matches || !seen) return;
+    if (still || !fine.matches) return;
     tilt();
-    if (reticle) {
-      ret.x += (pointer.x - ret.x) * 0.22;
-      ret.y += (pointer.y - ret.y) * 0.22;
-      reticle.style.transform = `translate3d(${ret.x.toFixed(1)}px, ${ret.y.toFixed(1)}px, 0)`;
-      if (Math.abs(pointer.x - ret.x) > 0.4 || Math.abs(pointer.y - ret.y) > 0.4) dirty = true;
-    }
   }
 
   function start() {
@@ -139,12 +118,7 @@
       lastSecond = -1;
       clock();
       if (!still && fine.matches) {
-        reticle = document.createElement('div');
-        reticle.className = 'cockpit-reticle';
-        reticle.setAttribute('aria-hidden', 'true');
-        document.body.append(reticle);
         document.addEventListener('pointermove', onMove, { passive: true });
-        document.documentElement.addEventListener('pointerleave', onLeave);
       }
       window.addEventListener('scroll', onChange, { passive: true });
       window.addEventListener('resize', onChange);
@@ -154,7 +128,6 @@
     unmount() {
       stop();
       document.removeEventListener('pointermove', onMove);
-      document.documentElement.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('scroll', onChange);
       window.removeEventListener('resize', onChange);
       document.removeEventListener('visibilitychange', onVisibility);
@@ -167,9 +140,6 @@
       root.style.removeProperty('--tilt-y');
       if (readouts) for (const node of Object.values(readouts)) node.remove();
       readouts = null;
-      reticle?.remove();
-      reticle = null;
-      seen = false;
       dirty = true;
     },
   };

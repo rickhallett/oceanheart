@@ -425,23 +425,7 @@ body[data-variant='raked-sand'] .door-list .entry.is-first {
     0 30px 50px -44px rgba(43, 38, 32, 0.5);
 }
 
-/* ---- chips and meta ------------------------------------------------------ */
-
-body[data-variant='raked-sand'] .door-status {
-  border-color: rgba(43, 38, 32, 0.25);
-  color: var(--muted);
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-}
-
-body[data-variant='raked-sand'] .door-status[data-state='open'] {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-body[data-variant='raked-sand'] .door-status[data-state='soon'] {
-  border-style: dashed;
-}
+/* ---- meta --------------------------------------------------------------- */
 
 body[data-variant='raked-sand'] .entry-meta {
   font-size: 0.62rem;
@@ -469,9 +453,7 @@ body[data-variant='raked-sand'] .post-meta {
   text-transform: uppercase;
 }
 
-body[data-variant='raked-sand'] .service-number,
-body[data-variant='raked-sand'] .proof-kind,
-body[data-variant='raked-sand'] .brief-label {
+body[data-variant='raked-sand'] .service-number {
   color: var(--accent);
   font-size: 0.62rem;
   letter-spacing: 0.24em;

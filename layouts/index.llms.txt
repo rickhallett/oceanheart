@@ -6,7 +6,7 @@ This file is for agents and language models. Every link below is canonical. The 
 
 ## Start here
 
-Choose by what the person is meeting:
+Three ways to begin:
 
 - [Conversations with AI]({{ "projects/conversations-with-ai/" | absURL }}): an early research encounter with a frontier model, with Rick in the loop from the first exchange and personal follow-up afterwards. It is not a course, treatment, or automated substitute for Rick.
 - [Human systems]({{ "work-with-me/" | absURL }}): automation, custom software, and AI inside real work. This door is open now. Rick does not automate clinical judgement or move sensitive information into an unapproved system.

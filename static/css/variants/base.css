@@ -185,6 +185,10 @@ body[data-variant] .hero-founder {
   align-items: center;
 }
 
+body[data-variant] .hero-founder-text-only {
+  grid-template-columns: minmax(0, var(--hero-width, 900px));
+}
+
 body[data-variant] .hero-copy {
   max-width: var(--hero-width, 900px);
 }
@@ -228,29 +232,6 @@ body[data-variant] .hero-portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-body[data-variant] .hero-portrait-pending {
-  display: grid;
-  place-items: center;
-}
-
-body[data-variant] .hero-portrait-mark {
-  color: var(--accent);
-  font-family: var(--display-font);
-  font-size: clamp(6rem, 14vw, 9rem);
-  line-height: 1;
-}
-
-body[data-variant] .hero-portrait figcaption {
-  position: absolute;
-  right: 1rem;
-  bottom: 0.85rem;
-  color: var(--muted);
-  font-family: var(--mono-font, 'Courier New', monospace);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 body[data-variant] .hero-actions {
@@ -584,13 +565,34 @@ body[data-variant] .appointment-frame iframe {
   border: 0;
 }
 
-/* ---- small labels ------------------------------------------------------ */
+/* ---- context and small labels ----------------------------------------- */
+
+body[data-variant] .section-context {
+  max-width: 42rem;
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  font-family: var(--body-font, Georgia, serif);
+  font-size: 0.9em;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+}
+
+body[data-variant] .relational-hero > .section-context {
+  margin-top: 0.75rem;
+}
+
+body[data-variant] .proof-context {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-family: var(--body-font, Georgia, serif);
+  font-size: 0.86em;
+  font-style: italic;
+}
 
 body[data-variant] .post-tag,
 body[data-variant] .service-number,
-body[data-variant] .proof-kind,
-body[data-variant] .brief-label,
-body[data-variant] .door-status,
 body[data-variant] .entry-meta,
 body[data-variant] .proof-link,
 body[data-variant] .method-list > li > span {
@@ -600,9 +602,7 @@ body[data-variant] .method-list > li > span {
   text-transform: uppercase;
 }
 
-body[data-variant] .service-number,
-body[data-variant] .proof-kind,
-body[data-variant] .brief-label {
+body[data-variant] .service-number {
   margin: 0 0 0.6rem;
   color: var(--accent);
 }
@@ -612,35 +612,6 @@ body[data-variant] .post-tag {
   margin-right: 0.5rem;
   padding: 0.2rem 0.45rem;
   border: var(--rule-width, 1px) solid var(--rule);
-}
-
-body[data-variant] .door-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 0 0 0.6rem;
-  padding: 0.2rem 0.6rem 0.2rem 0.45rem;
-  border: var(--rule-width, 1px) solid var(--rule);
-  border-radius: var(--chip-radius, 999px);
-  color: var(--muted);
-}
-
-body[data-variant] .door-status::before {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: var(--muted);
-  content: '';
-}
-
-body[data-variant] .door-status[data-state='open'] {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-body[data-variant] .door-status[data-state='open']::before,
-body[data-variant] .door-status[data-state='soon']::before {
-  background: var(--accent);
 }
 
 body[data-variant] .entry-meta {

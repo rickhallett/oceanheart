@@ -93,7 +93,7 @@ body[data-variant='glass-cockpit'] main {
   perspective-origin: 50% 40%;
 }
 
-/* ---- readouts and reticle (built by the module) --------------------------- */
+/* ---- readouts (built by the module) --------------------------------------- */
 
 body[data-variant='glass-cockpit'] .cockpit-readout {
   position: fixed;
@@ -127,51 +127,6 @@ body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='bl'] {
 body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='br'] {
   right: 1rem;
   bottom: 4.2rem;
-}
-
-body[data-variant='glass-cockpit'] .cockpit-reticle {
-  position: fixed;
-  z-index: 29;
-  top: 0;
-  left: 0;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1px solid rgba(255, 176, 0, 0.75);
-  border-radius: 50%;
-  box-shadow: var(--glow);
-  opacity: 0;
-  transition: opacity 600ms ease;
-  pointer-events: none;
-}
-
-body[data-variant='glass-cockpit'] .cockpit-reticle.is-live {
-  opacity: 1;
-}
-
-body[data-variant='glass-cockpit'] .cockpit-reticle::before,
-body[data-variant='glass-cockpit'] .cockpit-reticle::after {
-  position: absolute;
-  content: '';
-  background: var(--accent);
-}
-
-body[data-variant='glass-cockpit'] .cockpit-reticle::before {
-  top: 50%;
-  left: -9px;
-  width: 52px;
-  height: 1px;
-  -webkit-mask: linear-gradient(90deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
-  mask: linear-gradient(90deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
-}
-
-body[data-variant='glass-cockpit'] .cockpit-reticle::after {
-  top: -9px;
-  left: 50%;
-  width: 1px;
-  height: 52px;
-  -webkit-mask: linear-gradient(180deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
-  mask: linear-gradient(180deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
 }
 
 /* ---- nav ----------------------------------------------------------------- */
@@ -515,37 +470,7 @@ body[data-variant='glass-cockpit'] .door-list .entry.is-first {
   box-shadow: inset 3px 0 0 var(--accent);
 }
 
-/* ---- chips and meta ------------------------------------------------------ */
-
-body[data-variant='glass-cockpit'] .door-status {
-  border-color: rgba(255, 176, 0, 0.35);
-  color: var(--muted);
-  letter-spacing: 0.14em;
-}
-
-body[data-variant='glass-cockpit'] .door-status::before {
-  border-radius: 0;
-  box-shadow: 0 0 6px currentColor;
-}
-
-body[data-variant='glass-cockpit'] .door-status[data-state='open'] {
-  background: rgba(255, 176, 0, 0.12);
-  color: var(--accent);
-  text-shadow: var(--glow);
-}
-
-body[data-variant='glass-cockpit'] .door-status[data-state='open']::before {
-  animation: cockpit-blink 2.4s steps(2, jump-none) infinite;
-}
-
-body[data-variant='glass-cockpit'] .door-status[data-state='soon'] {
-  border-style: dashed;
-  color: var(--link);
-}
-
-body[data-variant='glass-cockpit'] .door-status[data-state='research'] {
-  border-style: dotted;
-}
+/* ---- meta --------------------------------------------------------------- */
 
 body[data-variant='glass-cockpit'] .entry-meta span + span::before {
   content: ' \2502 ';
@@ -558,21 +483,17 @@ body[data-variant='glass-cockpit'] .post-tag {
   color: var(--accent);
 }
 
-body[data-variant='glass-cockpit'] .service-number,
-body[data-variant='glass-cockpit'] .proof-kind,
-body[data-variant='glass-cockpit'] .brief-label {
+body[data-variant='glass-cockpit'] .service-number {
   color: var(--accent);
   text-shadow: var(--glow);
 }
 
-body[data-variant='glass-cockpit'] .service-number::before,
-body[data-variant='glass-cockpit'] .proof-kind::before {
+body[data-variant='glass-cockpit'] .service-number::before {
   content: '[ ';
   opacity: 0.6;
 }
 
-body[data-variant='glass-cockpit'] .service-number::after,
-body[data-variant='glass-cockpit'] .proof-kind::after {
+body[data-variant='glass-cockpit'] .service-number::after {
   content: ' ]';
   opacity: 0.6;
 }
@@ -750,16 +671,6 @@ body[data-variant='glass-cockpit'] footer a:hover {
   }
 }
 
-@keyframes cockpit-blink {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0.25;
-  }
-}
-
 /* ---- small screens ------------------------------------------------------- */
 
 @media (max-width: 760px) {
@@ -768,8 +679,7 @@ body[data-variant='glass-cockpit'] footer a:hover {
     --hero-height: auto;
   }
 
-  body[data-variant='glass-cockpit'] .cockpit-readout,
-  body[data-variant='glass-cockpit'] .cockpit-reticle {
+  body[data-variant='glass-cockpit'] .cockpit-readout {
     display: none;
   }
 
@@ -844,10 +754,6 @@ body[data-variant='glass-cockpit'] footer a:hover {
     animation: none;
   }
 
-  body[data-variant='glass-cockpit'] .door-status[data-state='open']::before {
-    animation: none;
-  }
-
   body[data-variant='glass-cockpit'] .hero,
   body[data-variant='glass-cockpit'] .entry,
   body[data-variant='glass-cockpit'] .service-row,
@@ -864,7 +770,4 @@ body[data-variant='glass-cockpit'] footer a:hover {
     transition: none;
   }
 
-  body[data-variant='glass-cockpit'] .cockpit-reticle {
-    transition: none;
-  }
 }

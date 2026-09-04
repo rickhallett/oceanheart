@@ -1,10 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap');
 
 /*
-  Heavy type. Nothing but type, and the type has mass. One narrow column of
-  Roboto Flex; headings and names take their weight and width from --wght and
-  --wdth, which js/variants/heavy-type.js drives from scroll velocity (300 at
-  rest, 900 at speed). No rules, no boxes: only spacing, size and weight.
+  Heavy type. Nothing but static type with enough weight and scale to carry the
+  page. No rules, no boxes, and no scroll-driven font-axis effects.
 */
 
 body[data-variant='heavy-type'] {
@@ -20,7 +18,7 @@ body[data-variant='heavy-type'] {
   --rule-width: 0;
   --focus: #111111;
   --display-font: 'Roboto Flex', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --display-weight: 300;
+  --display-weight: 650;
   --body-font: 'Roboto Flex', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --mono-font: 'JetBrains Mono', 'Courier New', monospace;
   --content-width: 44rem;
@@ -50,7 +48,7 @@ body[data-variant='heavy-type'] {
   font-optical-sizing: auto;
 }
 
-/* ---- the moving axes ----------------------------------------------------- */
+/* ---- fixed mass ---------------------------------------------------------- */
 
 body[data-variant='heavy-type'] h1,
 body[data-variant='heavy-type'] h2,
@@ -62,8 +60,8 @@ body[data-variant='heavy-type'] .post-title,
 body[data-variant='heavy-type'] .nav-brand,
 body[data-variant='heavy-type'] .credibility-rail strong,
 body[data-variant='heavy-type'] .venture-statement {
-  font-weight: 300;
-  font-variation-settings: 'wght' var(--wght, 300), 'wdth' var(--wdth, 100);
+  font-weight: 650;
+  font-variation-settings: 'wght' 650, 'wdth' 100;
 }
 
 /* ---- nav: one line of text ---------------------------------------------- */
@@ -234,8 +232,8 @@ body[data-variant='heavy-type'] .proof-heading h3 {
   color: var(--heading);
   font-family: var(--display-font);
   font-size: var(--entry-title-size);
-  font-weight: 300;
-  font-variation-settings: 'wght' var(--wght, 300), 'wdth' var(--wdth, 100);
+  font-weight: 650;
+  font-variation-settings: 'wght' 650, 'wdth' 100;
   letter-spacing: -0.04em;
   line-height: 0.98;
 }
@@ -254,9 +252,6 @@ body[data-variant='heavy-type'] .proof-body p {
 }
 
 body[data-variant='heavy-type'] .service-number,
-body[data-variant='heavy-type'] .proof-kind,
-body[data-variant='heavy-type'] .brief-label,
-body[data-variant='heavy-type'] .door-status,
 body[data-variant='heavy-type'] .entry-meta,
 body[data-variant='heavy-type'] .post-date,
 body[data-variant='heavy-type'] .post-meta,
@@ -273,9 +268,7 @@ body[data-variant='heavy-type'] .draft-strip {
   text-transform: uppercase;
 }
 
-body[data-variant='heavy-type'] .service-number,
-body[data-variant='heavy-type'] .proof-kind,
-body[data-variant='heavy-type'] .brief-label {
+body[data-variant='heavy-type'] .service-number {
   margin-bottom: 0.9rem;
 }
 
@@ -301,23 +294,6 @@ body[data-variant='heavy-type'] .proof-link {
 body[data-variant='heavy-type'] .service-examples,
 body[data-variant='heavy-type'] .proof-outcome {
   font-size: 0.95rem;
-}
-
-/* doors: status as a word, not a chip */
-body[data-variant='heavy-type'] .door-status {
-  display: block;
-  margin: 0 0 0.75rem;
-  padding: 0;
-  border: 0;
-  color: var(--muted);
-}
-
-body[data-variant='heavy-type'] .door-status::before {
-  display: none;
-}
-
-body[data-variant='heavy-type'] .door-status[data-state='open'] {
-  color: var(--heading);
 }
 
 body[data-variant='heavy-type'] .door-list .entry.is-first {
@@ -620,12 +596,5 @@ body[data-variant='heavy-type'] footer a {
   body[data-variant='heavy-type'] .credibility-rail > div {
     display: block;
     padding: 0.6rem 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body[data-variant='heavy-type'] {
-    --wght: 600;
-    --wdth: 100;
   }
 }
