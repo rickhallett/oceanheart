@@ -1,0 +1,767 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&display=swap');
+
+/*
+  Raked sand. A dry garden: every content block is a stone, and the effects
+  module rakes lines around them on a fixed canvas. Sumi ink on sand, one
+  vermilion seal, generous space. Slowness is the effect.
+*/
+
+body[data-variant='raked-sand'] {
+  --page: #e4d8bf;
+  --text: #2b2620;
+  --heading: #1d1915;
+  --muted: #6f6656;
+  --accent: #963b2a;
+  --link: #2b2620;
+  --link-hover: #963b2a;
+  --link-rule: rgba(43, 38, 32, 0.35);
+  --rule: rgba(43, 38, 32, 0.2);
+  --focus: #963b2a;
+  --display-font: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, 'Times New Roman', serif;
+  --body-font: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, 'Times New Roman', serif;
+  --mono-font: 'JetBrains Mono', 'Courier New', monospace;
+  --display-weight: 500;
+  --content-width: 1040px;
+  --reading-width: 620px;
+  --heading-spacing: 0.01em;
+  --heading-line: 1.3;
+  --line-height: 1.95;
+  --section-space: clamp(6rem, 12vw, 10rem);
+  --rule-width: 1px;
+  --code-bg: rgba(43, 38, 32, 0.05);
+  --button-bg: transparent;
+  --button-text: var(--text);
+  --button-border: 1px solid var(--text);
+  --button-radius: 0;
+  --chip-radius: 999px;
+  --hero-height: 72vh;
+  --hero-padding: 0;
+  --entry-gap: 3rem;
+  --entry-padding: 2.6rem 2.4rem;
+  --nav-gap: 2.4rem;
+  --main-padding: 4rem 0 12rem;
+  --stone: #ece3cd;
+  --stone-edge: rgba(43, 38, 32, 0.07);
+  --body-size: 15px;
+}
+
+/* ---- garden -------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] .raked-sand-canvas {
+  position: fixed;
+  z-index: 0;
+  top: -50vh;
+  left: 0;
+  width: 100vw;
+  height: 200vh;
+  opacity: 0;
+  transition: opacity 2600ms ease;
+  pointer-events: none;
+}
+
+body[data-variant='raked-sand'] .raked-sand-canvas.is-raked {
+  opacity: 1;
+}
+
+body[data-variant='raked-sand'] nav,
+body[data-variant='raked-sand'] main,
+body[data-variant='raked-sand'] footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- stones -------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] .hero,
+body[data-variant='raked-sand'] .entry,
+body[data-variant='raked-sand'] .service-row,
+body[data-variant='raked-sand'] .proof-row,
+body[data-variant='raked-sand'] .content,
+body[data-variant='raked-sand'] .home-engage,
+body[data-variant='raked-sand'] .method-section,
+body[data-variant='raked-sand'] .credibility-rail,
+body[data-variant='raked-sand'] .wellbeing-focus,
+body[data-variant='raked-sand'] .technical-depth,
+body[data-variant='raked-sand'] .thread,
+body[data-variant='raked-sand'] .post-list,
+body[data-variant='raked-sand'] .section-intro,
+body[data-variant='raked-sand'] .section-header,
+body[data-variant='raked-sand'] .page-head,
+body[data-variant='raked-sand'] article > header {
+  position: relative;
+  border: 0;
+  border-radius: 3px;
+  background: var(--stone);
+  box-shadow:
+    0 0 0 1px var(--stone-edge),
+    inset 0 1px 0 rgba(255, 252, 244, 0.7),
+    0 30px 50px -44px rgba(43, 38, 32, 0.5);
+}
+
+body[data-variant='raked-sand'] .method-section .section-intro,
+body[data-variant='raked-sand'] .post-list .section-header {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ---- vertical labels ----------------------------------------------------- */
+
+body[data-variant='raked-sand'] .hero::before,
+body[data-variant='raked-sand'] .credibility-rail::before,
+body[data-variant='raked-sand'] .home-section::before,
+body[data-variant='raked-sand'] .home-projects::before,
+body[data-variant='raked-sand'] .wellbeing-focus::before,
+body[data-variant='raked-sand'] .technical-depth::before,
+body[data-variant='raked-sand'] .home-engage::before,
+body[data-variant='raked-sand'] .post-list::before,
+body[data-variant='raked-sand'] .content::before,
+body[data-variant='raked-sand'] .section-header::before {
+  position: absolute;
+  top: 0.4rem;
+  left: -2.8rem;
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.58rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  content: '\2014';
+  pointer-events: none;
+}
+
+body[data-variant='raked-sand'] .hero::before {
+  content: 'entrance';
+}
+
+body[data-variant='raked-sand'] .credibility-rail::before {
+  content: 'ground';
+}
+
+body[data-variant='raked-sand'] .home-section::before,
+body[data-variant='raked-sand'] .home-projects::before {
+  content: 'stones';
+}
+
+body[data-variant='raked-sand'] .thread::before {
+  content: 'thread';
+}
+
+body[data-variant='raked-sand'] .method-section::before {
+  content: 'the way';
+}
+
+body[data-variant='raked-sand'] .wellbeing-focus::before {
+  content: 'boundary';
+}
+
+body[data-variant='raked-sand'] .technical-depth::before {
+  content: 'depth';
+}
+
+body[data-variant='raked-sand'] .home-engage::before {
+  content: 'a word';
+}
+
+body[data-variant='raked-sand'] .post-list::before {
+  content: 'notes';
+}
+
+body[data-variant='raked-sand'] .content::before {
+  content: 'reading';
+}
+
+body[data-variant='raked-sand'] .section-header::before {
+  content: 'index';
+}
+
+/* ---- nav ----------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] nav .container {
+  padding: 1.8rem clamp(1.25rem, 3vw, 2.5rem) 0;
+}
+
+body[data-variant='raked-sand'] .nav-brand {
+  color: var(--heading);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+body[data-variant='raked-sand'] .nav-links a {
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  transition: color 700ms ease;
+}
+
+body[data-variant='raked-sand'] .nav-links a:hover,
+body[data-variant='raked-sand'] .nav-links a.active {
+  color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .nav-links a.cta {
+  padding: 0.35rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--text);
+}
+
+/* ---- hero ---------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] .hero {
+  display: grid;
+  align-items: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 7vw, 6rem);
+}
+
+body[data-variant='raked-sand'] .hero-copy {
+  max-width: 640px;
+}
+
+body[data-variant='raked-sand'] .hero-copy::after {
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  margin-top: 3rem;
+  place-items: center;
+  border-radius: 2px;
+  background: var(--accent);
+  color: #f3e9d6;
+  font-family: var(--display-font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  content: '\6D77';
+}
+
+body[data-variant='raked-sand'] .hero-statement {
+  margin-bottom: 2.4rem;
+  font-weight: 500;
+  line-height: 1.32;
+}
+
+body[data-variant='raked-sand'] .hero-mark {
+  color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .lead {
+  color: var(--text);
+  line-height: 1.8;
+}
+
+body[data-variant='raked-sand'] .hero-context {
+  color: var(--muted);
+}
+
+body[data-variant='raked-sand'] .hero-actions {
+  gap: 1rem 1.5rem;
+  margin-top: 2.6rem;
+}
+
+/* ---- headings & prose ---------------------------------------------------- */
+
+body[data-variant='raked-sand'] h2 {
+  margin-bottom: 1.6rem;
+  font-weight: 500;
+}
+
+body[data-variant='raked-sand'] h3 {
+  font-weight: 500;
+}
+
+body[data-variant='raked-sand'] .section-intro {
+  padding: 2rem 2.4rem;
+  margin-bottom: 1.5rem;
+}
+
+body[data-variant='raked-sand'] .section-intro > p:last-child {
+  margin-bottom: 0;
+}
+
+body[data-variant='raked-sand'] .content {
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.6rem, 5vw, 3.6rem);
+}
+
+body[data-variant='raked-sand'] .content > p:first-of-type::first-letter {
+  float: left;
+  margin: 0.15em 0.35em 0 0;
+  color: var(--accent);
+  font-size: 3.2em;
+  font-weight: 500;
+  line-height: 0.8;
+}
+
+body[data-variant='raked-sand'] .content h2 {
+  margin-top: 3em;
+}
+
+body[data-variant='raked-sand'] .content h2::before {
+  display: block;
+  width: 1.4rem;
+  height: 1px;
+  margin: 0 0 1.4rem;
+  background: var(--accent);
+  content: '';
+}
+
+body[data-variant='raked-sand'] .content a {
+  text-decoration-color: rgba(43, 38, 32, 0.35);
+  text-underline-offset: 0.28em;
+  transition: color 600ms ease;
+}
+
+body[data-variant='raked-sand'] blockquote {
+  padding-left: 1.6rem;
+  border-left: 1px solid var(--accent);
+  color: var(--text);
+  font-style: italic;
+}
+
+body[data-variant='raked-sand'] pre {
+  border: 0;
+  background: rgba(43, 38, 32, 0.05);
+}
+
+body[data-variant='raked-sand'] code {
+  font-size: 0.85em;
+}
+
+body[data-variant='raked-sand'] hr {
+  width: 3rem;
+  margin: 4rem auto;
+  border-top-color: var(--accent);
+}
+
+/* ---- records ------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] .service-list,
+body[data-variant='raked-sand'] .proof-list {
+  display: grid;
+  gap: 1.6rem;
+}
+
+body[data-variant='raked-sand'] .door-list .entry {
+  margin-top: 1.6rem;
+}
+
+body[data-variant='raked-sand'] .entry,
+body[data-variant='raked-sand'] .service-row,
+body[data-variant='raked-sand'] .proof-row {
+  grid-template-columns: minmax(10rem, 0.65fr) minmax(0, 1.35fr);
+}
+
+body[data-variant='raked-sand'] .post-list {
+  padding: 1rem 2.4rem;
+}
+
+body[data-variant='raked-sand'] .post-list .section-header {
+  margin: 1.4rem 0 2rem;
+}
+
+body[data-variant='raked-sand'] .post-item {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.8rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+body[data-variant='raked-sand'] .post-item:first-of-type {
+  border-top: 0;
+}
+
+body[data-variant='raked-sand'] .post-item .post-excerpt {
+  grid-column: 2;
+  margin: 0.4rem 0 0;
+}
+
+body[data-variant='raked-sand'] .post-date {
+  font-family: var(--mono-font);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+body[data-variant='raked-sand'] .post-title {
+  color: var(--heading);
+  font-weight: 500;
+}
+
+body[data-variant='raked-sand'] .entry-name,
+body[data-variant='raked-sand'] .service-heading h3,
+body[data-variant='raked-sand'] .proof-heading h3 {
+  color: var(--heading);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+body[data-variant='raked-sand'] .entry-lead {
+  color: var(--text);
+}
+
+body[data-variant='raked-sand'] .entry-links a,
+body[data-variant='raked-sand'] .proof-link {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: color 600ms ease, border-color 600ms ease;
+}
+
+body[data-variant='raked-sand'] .entry-links a:hover,
+body[data-variant='raked-sand'] .proof-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .door-list .entry.is-first {
+  padding-left: 2.4rem;
+  border-left: 0;
+  box-shadow:
+    inset 2px 0 0 var(--accent),
+    0 0 0 1px var(--stone-edge),
+    inset 0 1px 0 rgba(255, 252, 244, 0.7),
+    0 30px 50px -44px rgba(43, 38, 32, 0.5);
+}
+
+/* ---- chips and meta ------------------------------------------------------ */
+
+body[data-variant='raked-sand'] .door-status {
+  border-color: rgba(43, 38, 32, 0.25);
+  color: var(--muted);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+}
+
+body[data-variant='raked-sand'] .door-status[data-state='open'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .door-status[data-state='soon'] {
+  border-style: dashed;
+}
+
+body[data-variant='raked-sand'] .entry-meta {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+}
+
+body[data-variant='raked-sand'] .entry-meta span + span::before {
+  content: ' \00B7 ';
+  color: var(--accent);
+  opacity: 1;
+}
+
+body[data-variant='raked-sand'] .post-tag {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.1rem 0;
+  color: var(--muted);
+}
+
+body[data-variant='raked-sand'] .post-meta {
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+body[data-variant='raked-sand'] .service-number,
+body[data-variant='raked-sand'] .proof-kind,
+body[data-variant='raked-sand'] .brief-label {
+  color: var(--accent);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+}
+
+/* ---- credibility rail ---------------------------------------------------- */
+
+body[data-variant='raked-sand'] .credibility-rail {
+  gap: 2rem;
+  padding: 2.4rem 2.4rem;
+}
+
+body[data-variant='raked-sand'] .credibility-rail strong {
+  margin-bottom: 0.4rem;
+  color: var(--heading);
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 500;
+}
+
+body[data-variant='raked-sand'] .credibility-rail span {
+  color: var(--muted);
+  font-size: 0.82em;
+  line-height: 1.6;
+}
+
+/* ---- method, focus, depth ------------------------------------------------ */
+
+body[data-variant='raked-sand'] .method-section {
+  padding: clamp(2rem, 5vw, 3.6rem) clamp(1.6rem, 4vw, 3rem);
+}
+
+body[data-variant='raked-sand'] .method-section .section-intro {
+  padding: 0;
+}
+
+body[data-variant='raked-sand'] .method-list {
+  border-top: 0;
+}
+
+body[data-variant='raked-sand'] .method-list li {
+  grid-template-columns: 4rem minmax(0, 1fr);
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+body[data-variant='raked-sand'] .method-list li:first-child {
+  padding-top: 0.4rem;
+}
+
+body[data-variant='raked-sand'] .method-list li:last-child {
+  border-bottom: 0;
+}
+
+body[data-variant='raked-sand'] .method-list > li > span {
+  color: var(--accent);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+}
+
+body[data-variant='raked-sand'] .method-list h3 {
+  margin-bottom: 0.5rem;
+}
+
+body[data-variant='raked-sand'] .wellbeing-focus,
+body[data-variant='raked-sand'] .technical-depth {
+  padding: clamp(2rem, 5vw, 3.6rem) clamp(1.6rem, 4vw, 3rem);
+}
+
+body[data-variant='raked-sand'] .boundary-note {
+  padding-left: 1.6rem;
+  border-left: 1px solid var(--accent);
+}
+
+body[data-variant='raked-sand'] .thread {
+  padding: clamp(2rem, 5vw, 3.6rem) clamp(1.6rem, 4vw, 3rem);
+}
+
+body[data-variant='raked-sand'] .thread .section-intro {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ---- engage & buttons ---------------------------------------------------- */
+
+body[data-variant='raked-sand'] .home-engage {
+  padding: clamp(2.4rem, 6vw, 4.5rem) clamp(1.6rem, 5vw, 4rem);
+}
+
+body[data-variant='raked-sand'] .engage-line {
+  color: var(--text);
+}
+
+body[data-variant='raked-sand'] .button,
+body[data-variant='raked-sand'] .cta,
+body[data-variant='raked-sand'] .cv-download,
+body[data-variant='raked-sand'] .engage-cta {
+  padding: 0.85rem 1.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  transition: background-color 700ms ease, color 700ms ease, border-color 700ms ease;
+}
+
+body[data-variant='raked-sand'] .button-primary {
+  border-color: var(--text);
+  background: var(--text);
+  color: #ece3cd;
+}
+
+body[data-variant='raked-sand'] .button-primary:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #f3e9d6;
+}
+
+body[data-variant='raked-sand'] .button-quiet {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  padding-right: 0;
+  padding-left: 0;
+  color: var(--text);
+}
+
+body[data-variant='raked-sand'] .button-quiet:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .intent button {
+  border-color: rgba(43, 38, 32, 0.25);
+  color: var(--text);
+  font-size: 0.8em;
+  transition: border-color 600ms ease, color 600ms ease;
+}
+
+body[data-variant='raked-sand'] .intent button:hover,
+body[data-variant='raked-sand'] .intent button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant='raked-sand'] .subject-line {
+  letter-spacing: 0.08em;
+}
+
+body[data-variant='raked-sand'] .subject-line code {
+  color: var(--accent);
+}
+
+/* ---- draft strip, tells ---------------------------------------------------- */
+
+body[data-variant='raked-sand'] .draft-strip {
+  border-bottom-color: var(--rule);
+}
+
+body[data-variant='raked-sand'] .tells-search {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+}
+
+/* ---- footer -------------------------------------------------------------- */
+
+body[data-variant='raked-sand'] footer {
+  border-top: 0;
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+body[data-variant='raked-sand'] footer .container {
+  justify-content: center;
+  padding: 2rem 0 7rem;
+}
+
+body[data-variant='raked-sand'] footer a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 700ms ease;
+}
+
+body[data-variant='raked-sand'] footer a:hover {
+  color: var(--accent);
+}
+
+/* ---- narrower desks: labels turn horizontal ------------------------------ */
+
+@media (max-width: 1140px) {
+  body[data-variant='raked-sand'] .hero::before,
+  body[data-variant='raked-sand'] .credibility-rail::before,
+  body[data-variant='raked-sand'] .home-section::before,
+  body[data-variant='raked-sand'] .home-projects::before,
+  body[data-variant='raked-sand'] .wellbeing-focus::before,
+  body[data-variant='raked-sand'] .technical-depth::before,
+  body[data-variant='raked-sand'] .home-engage::before,
+  body[data-variant='raked-sand'] .post-list::before,
+  body[data-variant='raked-sand'] .content::before,
+  body[data-variant='raked-sand'] .section-header::before {
+    top: -1.6rem;
+    left: 0;
+    writing-mode: horizontal-tb;
+  }
+}
+
+/* ---- small screens ------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant='raked-sand'] {
+    --entry-padding: 1.6rem 1.3rem;
+    --hero-height: auto;
+    --section-space: 4.5rem;
+    --main-padding: 2rem 0 8rem;
+  }
+
+  body[data-variant='raked-sand'] .hero::before,
+  body[data-variant='raked-sand'] .credibility-rail::before,
+  body[data-variant='raked-sand'] .home-section::before,
+  body[data-variant='raked-sand'] .home-projects::before,
+  body[data-variant='raked-sand'] .wellbeing-focus::before,
+  body[data-variant='raked-sand'] .technical-depth::before,
+  body[data-variant='raked-sand'] .home-engage::before,
+  body[data-variant='raked-sand'] .post-list::before,
+  body[data-variant='raked-sand'] .content::before,
+  body[data-variant='raked-sand'] .section-header::before {
+    display: none;
+  }
+
+  body[data-variant='raked-sand'] nav .container {
+    padding: 1.2rem 1rem 0;
+  }
+
+  body[data-variant='raked-sand'] .nav-links {
+    gap: 0.5rem 1.2rem;
+  }
+
+  body[data-variant='raked-sand'] .hero {
+    min-height: auto;
+    padding: 2.4rem 1.4rem;
+  }
+
+  body[data-variant='raked-sand'] .section-intro,
+  body[data-variant='raked-sand'] .post-list,
+  body[data-variant='raked-sand'] .credibility-rail,
+  body[data-variant='raked-sand'] .method-section,
+  body[data-variant='raked-sand'] .wellbeing-focus,
+  body[data-variant='raked-sand'] .technical-depth,
+  body[data-variant='raked-sand'] .thread,
+  body[data-variant='raked-sand'] .content,
+  body[data-variant='raked-sand'] .home-engage {
+    padding: 1.6rem 1.3rem;
+  }
+
+  body[data-variant='raked-sand'] .entry,
+  body[data-variant='raked-sand'] .service-row,
+  body[data-variant='raked-sand'] .proof-row,
+  body[data-variant='raked-sand'] .method-section,
+  body[data-variant='raked-sand'] .wellbeing-focus,
+  body[data-variant='raked-sand'] .technical-depth {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  body[data-variant='raked-sand'] .credibility-rail {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  body[data-variant='raked-sand'] .post-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 1.3rem 0;
+  }
+
+  body[data-variant='raked-sand'] .post-item .post-excerpt {
+    grid-column: 1;
+  }
+
+  body[data-variant='raked-sand'] .door-list .entry.is-first {
+    padding-left: 1.3rem;
+  }
+
+  body[data-variant='raked-sand'] footer .container {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant='raked-sand'] .raked-sand-canvas {
+    transition: none;
+  }
+}

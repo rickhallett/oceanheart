@@ -1,0 +1,823 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap');
+
+/*
+  Halftone press. A misregistered print proof on unbleached stock: halftone dot
+  fields at real screen angles (K 45, C 15, M 75), colour plates that slip on
+  display type and snap into register on hover, registration marks in the
+  corners, a colour control bar and a PROOF stamp. CSS only.
+*/
+
+body[data-variant='halftone-press'] {
+  --page: #f6f1e6;
+  --ink: #111111;
+  --text: #1b1a17;
+  --heading: #0f0e0c;
+  --muted: #5d5850;
+  --accent: #ff2d95;
+  --cyan: #00c2e0;
+  --yellow: #ffe500;
+  --link: #111111;
+  --link-hover: #ff2d95;
+  --link-rule: #ff2d95;
+  --link-weight: 2px;
+  --rule: #1b1a17;
+  --rule-soft: rgba(27, 26, 23, 0.35);
+  --focus: #00a3c4;
+  --display-font: 'Archivo', 'Arial Black', Impact, Arial, sans-serif;
+  --display-weight: 900;
+  --body-font: 'Archivo', Arial, Helvetica, sans-serif;
+  --mono-font: 'JetBrains Mono', 'Courier New', monospace;
+  --content-width: 1180px;
+  --reading-width: 700px;
+  --body-size: 15px;
+  --reading-size: 0.98rem;
+  --lead-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  --h1: clamp(2.6rem, 5vw, 5.2rem);
+  --h2: clamp(1.7rem, 3vw, 3rem);
+  --h3: clamp(1.1rem, 1.5vw, 1.45rem);
+  --heading-spacing: -0.035em;
+  --heading-line: 0.94;
+  --line-height: 1.6;
+  --rule-width: 2px;
+  --code-bg: #ece5d3;
+  --button-bg: #111111;
+  --button-text: #f6f1e6;
+  --button-border: 2px solid #111111;
+  --button-radius: 0;
+  --chip-radius: 0;
+  --section-space: clamp(4rem, 7vw, 6.5rem);
+  --hero-height: 70vh;
+  --hero-padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 4vw, 4rem);
+  --entry-gap: 3rem;
+  --entry-padding: 2rem 0;
+  --nav-gap: 1.5rem;
+  --main-padding: 2.5rem 0 8rem;
+  --slip: 2px;
+  background-color: var(--page);
+  background-image: radial-gradient(rgba(27, 26, 23, 0.07) 0.5px, transparent 0.9px);
+  background-size: 3px 3px;
+}
+
+/* ---- registration marks, one per corner ---------------------------------- */
+
+body[data-variant='halftone-press']::before,
+body[data-variant='halftone-press']::after,
+body[data-variant='halftone-press'] nav::before,
+body[data-variant='halftone-press'] footer::after {
+  position: fixed;
+  z-index: 60;
+  width: 28px;
+  height: 28px;
+  content: '';
+  pointer-events: none;
+  background:
+    linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat,
+    linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat,
+    radial-gradient(circle at center, transparent 7.5px, var(--ink) 8px 9px, transparent 9.6px);
+}
+
+body[data-variant='halftone-press']::before {
+  top: 10px;
+  left: 10px;
+}
+
+body[data-variant='halftone-press']::after {
+  top: 10px;
+  right: 10px;
+}
+
+body[data-variant='halftone-press'] nav::before {
+  bottom: 10px;
+  left: 10px;
+}
+
+body[data-variant='halftone-press'] footer::after {
+  right: 10px;
+  bottom: 10px;
+}
+
+/* the job slug, bottom-left, as a printer would leave it on the sheet edge */
+body[data-variant='halftone-press'] main::after {
+  position: fixed;
+  z-index: 60;
+  bottom: 14px;
+  left: 48px;
+  content: 'OCEANHEART  \00B7  PROOF 03  \00B7  2026-09-04  \00B7  C M Y K  \00B7  175 LPI';
+  color: var(--muted);
+  font: 700 9px/1 var(--body-font);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* ---- plate slip: cyan and magenta copies behind the black plate ---------- */
+
+body[data-variant='halftone-press'] h1,
+body[data-variant='halftone-press'] h2,
+body[data-variant='halftone-press'] .hero-statement,
+body[data-variant='halftone-press'] .entry-name,
+body[data-variant='halftone-press'] .post-title,
+body[data-variant='halftone-press'] .credibility-rail strong,
+body[data-variant='halftone-press'] .nav-brand,
+body[data-variant='halftone-press'] .service-heading h3,
+body[data-variant='halftone-press'] .proof-heading h3,
+body[data-variant='halftone-press'] .method-list > li > span,
+body[data-variant='halftone-press'] .venture-statement {
+  color: var(--ink);
+  mix-blend-mode: multiply;
+  text-shadow:
+    calc(-1 * var(--slip)) 0 0 var(--cyan),
+    var(--slip) calc(var(--slip) * 0.5) 0 var(--accent);
+  transition: text-shadow 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body[data-variant='halftone-press'] h1:hover,
+body[data-variant='halftone-press'] h2:hover,
+body[data-variant='halftone-press'] .hero-statement:hover,
+body[data-variant='halftone-press'] .entry-name:hover,
+body[data-variant='halftone-press'] .post-title:hover,
+body[data-variant='halftone-press'] .credibility-rail strong:hover,
+body[data-variant='halftone-press'] .nav-brand:hover,
+body[data-variant='halftone-press'] .service-heading h3:hover,
+body[data-variant='halftone-press'] .proof-heading h3:hover,
+body[data-variant='halftone-press'] .method-list > li:hover > span,
+body[data-variant='halftone-press'] h1:focus-within,
+body[data-variant='halftone-press'] h2:focus-within,
+body[data-variant='halftone-press'] .entry-name:focus-within,
+body[data-variant='halftone-press'] .post-title:focus-within,
+body[data-variant='halftone-press'] .proof-heading h3:focus-within {
+  text-shadow: 0 0 0 var(--cyan), 0 0 0 var(--accent);
+}
+
+body[data-variant='halftone-press'] .hero-statement {
+  --slip: 3px;
+}
+
+/* ---- nav --------------------------------------------------------------- */
+
+body[data-variant='halftone-press'] nav {
+  border-bottom: 3px solid var(--ink);
+}
+
+body[data-variant='halftone-press'] nav .container {
+  padding: 1.1rem 3rem;
+}
+
+body[data-variant='halftone-press'] .nav-brand {
+  font-size: 1.35rem;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+body[data-variant='halftone-press'] .nav-links a {
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant='halftone-press'] .nav-links a:hover,
+body[data-variant='halftone-press'] .nav-links a.active {
+  color: var(--accent);
+}
+
+body[data-variant='halftone-press'] nav .cta {
+  padding: 0.45rem 0.8rem;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--page);
+}
+
+body[data-variant='halftone-press'] nav .cta:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--page);
+}
+
+/* ---- hero: the proof sheet ---------------------------------------------- */
+
+body[data-variant='halftone-press'] .hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 3px solid var(--ink);
+  background: var(--page);
+}
+
+/* black plate: 45 degree screen, dots swelling towards the edges */
+body[data-variant='halftone-press'] .hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: -35%;
+  content: '';
+  background-image: radial-gradient(circle, var(--ink) 0 1.4px, transparent 2px);
+  background-size: 7px 7px;
+  opacity: 0.24;
+  transform: rotate(45deg);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 28%, #000 78%);
+  mask-image: radial-gradient(ellipse at center, transparent 28%, #000 78%);
+  pointer-events: none;
+}
+
+/* the proof stamp */
+body[data-variant='halftone-press'] .hero::after {
+  position: absolute;
+  z-index: 1;
+  top: clamp(1rem, 4vw, 3rem);
+  right: clamp(1rem, 5vw, 4rem);
+  padding: 0.6rem 1.1rem;
+  border: 4px double var(--accent);
+  content: 'PROOF\ANOT FOR DISTRIBUTION';
+  color: var(--accent);
+  font: 900 clamp(0.85rem, 1.6vw, 1.35rem)/1.1 var(--display-font);
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre;
+  opacity: 0.78;
+  transform: rotate(-11deg);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+body[data-variant='halftone-press'] .hero-copy {
+  position: relative;
+  max-width: 900px;
+}
+
+/* magenta plate: 75 degree screen, slipped a few px off the black */
+body[data-variant='halftone-press'] .hero-copy::before {
+  position: absolute;
+  z-index: -1;
+  inset: -25% -30%;
+  content: '';
+  background-image: radial-gradient(circle, var(--accent) 0 1px, transparent 1.5px);
+  background-size: 5px 5px;
+  opacity: 0.32;
+  transform: translate(6px, -4px) rotate(75deg);
+  -webkit-mask-image: radial-gradient(ellipse at 35% 35%, #000 0, transparent 60%);
+  mask-image: radial-gradient(ellipse at 35% 35%, #000 0, transparent 60%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+body[data-variant='halftone-press'] .hero-statement {
+  margin: 0 0 1.4rem;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+body[data-variant='halftone-press'] .lead {
+  max-width: 52ch;
+  color: var(--text);
+  font-weight: 500;
+}
+
+body[data-variant='halftone-press'] .hero-context {
+  max-width: 56ch;
+}
+
+/* ---- headings and intros ------------------------------------------------- */
+
+body[data-variant='halftone-press'] .section-intro h2,
+body[data-variant='halftone-press'] .section-header h2 {
+  max-width: 24ch;
+}
+
+body[data-variant='halftone-press'] .section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+body[data-variant='halftone-press'] .section-header h2 {
+  margin: 0;
+}
+
+body[data-variant='halftone-press'] .section-header p {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- buttons ------------------------------------------------------------ */
+
+body[data-variant='halftone-press'] .button,
+body[data-variant='halftone-press'] .cv-download,
+body[data-variant='halftone-press'] .engage-cta {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 200ms ease;
+}
+
+body[data-variant='halftone-press'] .button-quiet {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+body[data-variant='halftone-press'] .button:hover,
+body[data-variant='halftone-press'] .cv-download:hover,
+body[data-variant='halftone-press'] .engage-cta:hover {
+  box-shadow: -3px 0 0 var(--cyan), 3px 2px 0 var(--accent);
+}
+
+/* ---- records ------------------------------------------------------------ */
+
+body[data-variant='halftone-press'] .entry,
+body[data-variant='halftone-press'] .service-row,
+body[data-variant='halftone-press'] .proof-row,
+body[data-variant='halftone-press'] .post-item,
+body[data-variant='halftone-press'] .tells-row {
+  border-top: 2px solid var(--ink);
+}
+
+body[data-variant='halftone-press'] .entry-name,
+body[data-variant='halftone-press'] .post-title {
+  font-family: var(--display-font);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+body[data-variant='halftone-press'] .entry-lead {
+  color: var(--text);
+}
+
+body[data-variant='halftone-press'] .service-number,
+body[data-variant='halftone-press'] .proof-kind,
+body[data-variant='halftone-press'] .brief-label {
+  color: var(--accent);
+  font-family: var(--display-font);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+body[data-variant='halftone-press'] .service-heading h3,
+body[data-variant='halftone-press'] .proof-heading h3 {
+  --slip: 1px;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+body[data-variant='halftone-press'] .proof-link,
+body[data-variant='halftone-press'] .entry-links a,
+body[data-variant='halftone-press'] .section-header p a {
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body[data-variant='halftone-press'] .entry-meta,
+body[data-variant='halftone-press'] .post-date,
+body[data-variant='halftone-press'] .post-meta,
+body[data-variant='halftone-press'] .subject-line {
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* doors: chips as ink swatches */
+body[data-variant='halftone-press'] .door-status {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+body[data-variant='halftone-press'] .door-status::before {
+  border-radius: 0;
+  background: var(--ink);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='open'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--page);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='open']::before {
+  background: var(--yellow);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='soon'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='soon']::before {
+  background: var(--accent);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='research'] {
+  border-color: var(--cyan);
+  color: #007a8f;
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='research']::before {
+  background: var(--cyan);
+}
+
+body[data-variant='halftone-press'] .door-status[data-state='arranged'] {
+  background: var(--yellow);
+}
+
+body[data-variant='halftone-press'] .door-list .entry.is-first {
+  border-left: 6px solid var(--accent);
+  box-shadow: -3px 0 0 var(--cyan);
+}
+
+/* post lists */
+body[data-variant='halftone-press'] .post-item {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.4rem 2rem;
+  padding: 1.4rem 0;
+}
+
+body[data-variant='halftone-press'] .post-item .post-excerpt {
+  grid-column: 2;
+  margin: 0;
+}
+
+body[data-variant='halftone-press'] .post-title {
+  --slip: 1px;
+  display: block;
+}
+
+body[data-variant='halftone-press'] .post-tag {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-weight: 700;
+}
+
+/* ---- credibility rail: big numerals on a fine black screen ---------------- */
+
+body[data-variant='halftone-press'] .credibility-rail {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  padding: 2.25rem 1.5rem;
+}
+
+body[data-variant='halftone-press'] .credibility-rail::before {
+  position: absolute;
+  z-index: -1;
+  inset: -40%;
+  content: '';
+  background-image: radial-gradient(circle, var(--ink) 0 0.8px, transparent 1.2px);
+  background-size: 4px 4px;
+  opacity: 0.14;
+  transform: rotate(45deg);
+  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 20%, #000 100%);
+  pointer-events: none;
+}
+
+body[data-variant='halftone-press'] .credibility-rail strong {
+  margin-bottom: 0.35rem;
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+  letter-spacing: -0.045em;
+}
+
+body[data-variant='halftone-press'] .credibility-rail span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- method: plate numbers ---------------------------------------------- */
+
+body[data-variant='halftone-press'] .method-list {
+  border-top: 3px solid var(--ink);
+}
+
+body[data-variant='halftone-press'] .method-list li {
+  grid-template-columns: 5rem minmax(0, 1fr);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+body[data-variant='halftone-press'] .method-list > li > span {
+  --slip: 2px;
+  padding-top: 0;
+  color: var(--accent);
+  font-family: var(--display-font);
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* ---- focus and depth bands: cyan plate at 15 degrees --------------------- */
+
+body[data-variant='halftone-press'] .wellbeing-focus,
+body[data-variant='halftone-press'] .technical-depth {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  padding: 2.75rem 1.5rem;
+}
+
+body[data-variant='halftone-press'] .wellbeing-focus::before,
+body[data-variant='halftone-press'] .technical-depth::before {
+  position: absolute;
+  z-index: -1;
+  inset: -40%;
+  content: '';
+  background-image: radial-gradient(circle, var(--cyan) 0 1.2px, transparent 1.7px);
+  background-size: 6px 6px;
+  opacity: 0.3;
+  transform: rotate(15deg);
+  -webkit-mask-image: linear-gradient(100deg, #000 0, transparent 55%);
+  mask-image: linear-gradient(100deg, #000 0, transparent 55%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+body[data-variant='halftone-press'] .technical-depth::before {
+  transform: rotate(15deg) scaleX(-1);
+}
+
+body[data-variant='halftone-press'] .boundary-note {
+  padding: 1.25rem 1.4rem;
+  border: 3px solid var(--ink);
+  background: var(--page);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+body[data-variant='halftone-press'] .boundary-note p:last-child,
+body[data-variant='halftone-press'] .technical-depth p:last-child {
+  color: var(--text);
+}
+
+/* ---- engage: magenta and yellow plates ----------------------------------- */
+
+body[data-variant='halftone-press'] .home-engage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-top: 3px solid var(--ink);
+  padding: 3rem 1.5rem 2rem;
+}
+
+body[data-variant='halftone-press'] .home-engage::before {
+  position: absolute;
+  z-index: -1;
+  inset: -40%;
+  content: '';
+  background-image:
+    radial-gradient(circle, var(--accent) 0 1.1px, transparent 1.6px),
+    radial-gradient(circle, var(--yellow) 0 2px, transparent 2.6px);
+  background-position: 0 0, 3px 4px;
+  background-size: 5px 5px, 9px 9px;
+  opacity: 0.32;
+  transform: rotate(75deg);
+  -webkit-mask-image: radial-gradient(ellipse at 90% 60%, #000 0, transparent 55%);
+  mask-image: radial-gradient(ellipse at 90% 60%, #000 0, transparent 55%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+body[data-variant='halftone-press'] .home-engage h2 {
+  max-width: 20ch;
+}
+
+body[data-variant='halftone-press'] .engage-line {
+  color: var(--text);
+  font-weight: 500;
+}
+
+body[data-variant='halftone-press'] .intent button {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: box-shadow 160ms ease;
+}
+
+body[data-variant='halftone-press'] .intent button:hover {
+  box-shadow: -2px 0 0 var(--cyan), 2px 1px 0 var(--accent);
+}
+
+body[data-variant='halftone-press'] .intent button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--page);
+}
+
+body[data-variant='halftone-press'] .subject-line code {
+  color: var(--ink);
+}
+
+/* ---- prose: clean body, slipped display ---------------------------------- */
+
+body[data-variant='halftone-press'] .content > p:first-of-type {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+body[data-variant='halftone-press'] .content h2 {
+  --slip: 2px;
+}
+
+body[data-variant='halftone-press'] .content h3 {
+  --slip: 1px;
+  color: var(--ink);
+  mix-blend-mode: multiply;
+  text-shadow: calc(-1 * var(--slip)) 0 0 var(--cyan), var(--slip) 0 0 var(--accent);
+  transition: text-shadow 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body[data-variant='halftone-press'] .content h3:hover {
+  text-shadow: 0 0 0 var(--cyan), 0 0 0 var(--accent);
+}
+
+body[data-variant='halftone-press'] .content a {
+  font-weight: 700;
+}
+
+body[data-variant='halftone-press'] .content code {
+  padding: 0.1em 0.35em;
+  background: var(--code-bg);
+}
+
+body[data-variant='halftone-press'] .content pre {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--cyan);
+}
+
+body[data-variant='halftone-press'] .content pre code {
+  padding: 0;
+  background: transparent;
+}
+
+body[data-variant='halftone-press'] blockquote {
+  border-left: 6px solid var(--accent);
+  color: var(--text);
+  font-size: 1.05em;
+  font-weight: 500;
+}
+
+body[data-variant='halftone-press'] hr {
+  border-top: 3px solid var(--ink);
+}
+
+body[data-variant='halftone-press'] th {
+  background: var(--ink);
+  color: var(--page);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body[data-variant='halftone-press'] th,
+body[data-variant='halftone-press'] td {
+  border-color: var(--ink);
+}
+
+/* pictures print onto the stock rather than sit on it */
+body[data-variant='halftone-press'] .content img {
+  filter: contrast(1.08);
+  mix-blend-mode: multiply;
+}
+
+body[data-variant='halftone-press'] .post-meta {
+  margin-bottom: 2.5rem;
+}
+
+body[data-variant='halftone-press'] .tells-search {
+  border: 2px solid var(--ink);
+}
+
+/* ---- footer: colour control bar, then the colophon ---------------------- */
+
+body[data-variant='halftone-press'] footer {
+  border-top: 3px solid var(--ink);
+}
+
+body[data-variant='halftone-press'] footer::before {
+  display: block;
+  height: 12px;
+  content: '';
+  background: repeating-linear-gradient(
+    90deg,
+    var(--cyan) 0 2.5rem,
+    var(--accent) 2.5rem 5rem,
+    var(--yellow) 5rem 7.5rem,
+    var(--ink) 7.5rem 10rem,
+    #8a857b 10rem 11.25rem,
+    #c9c3b6 11.25rem 12.5rem,
+    var(--page) 12.5rem 13rem
+  );
+}
+
+body[data-variant='halftone-press'] footer .container {
+  padding: 2rem 0 5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- small screens ------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant='halftone-press']::before,
+  body[data-variant='halftone-press']::after,
+  body[data-variant='halftone-press'] nav::before,
+  body[data-variant='halftone-press'] footer::after,
+  body[data-variant='halftone-press'] main::after {
+    display: none;
+  }
+
+  body[data-variant='halftone-press'] {
+    --slip: 1px;
+    --main-padding: 1.5rem 0 5rem;
+  }
+
+  body[data-variant='halftone-press'] nav .container {
+    padding: 0.9rem 1rem;
+  }
+
+  body[data-variant='halftone-press'] .hero {
+    min-height: 0;
+    padding: 6rem 1.25rem 2.5rem;
+  }
+
+  body[data-variant='halftone-press'] .hero::after {
+    top: 0.9rem;
+    right: 0.9rem;
+    padding: 0.4rem 0.7rem;
+    border-width: 3px;
+    font-size: 0.72rem;
+  }
+
+  body[data-variant='halftone-press'] .hero-statement {
+    --slip: 2px;
+    font-size: clamp(2rem, 8.5vw, 2.5rem);
+  }
+
+  body[data-variant='halftone-press'] .credibility-rail,
+  body[data-variant='halftone-press'] .wellbeing-focus,
+  body[data-variant='halftone-press'] .technical-depth,
+  body[data-variant='halftone-press'] .home-engage {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  body[data-variant='halftone-press'] .post-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  body[data-variant='halftone-press'] .post-item .post-excerpt {
+    grid-column: 1;
+  }
+
+  body[data-variant='halftone-press'] .method-list li {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+  }
+
+  body[data-variant='halftone-press'] .method-list > li > span {
+    font-size: 1.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant='halftone-press'] h1,
+  body[data-variant='halftone-press'] h2,
+  body[data-variant='halftone-press'] .hero-statement,
+  body[data-variant='halftone-press'] .entry-name,
+  body[data-variant='halftone-press'] .post-title,
+  body[data-variant='halftone-press'] .button,
+  body[data-variant='halftone-press'] .intent button {
+    transition: none;
+  }
+}

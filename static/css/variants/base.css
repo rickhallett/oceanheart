@@ -1,0 +1,728 @@
+/*
+  Oceanheart skins: shared base.
+  Every rule is scoped to body[data-variant]; with no skin chosen this file is
+  inert and the house stylesheet (oceanheart.css) carries the page. A skin
+  stylesheet (themes/<slug>.css) sets the variables below and then reshapes
+  whatever it wants on top of this base.
+*/
+
+body[data-variant] {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--body-font);
+  font-size: var(--body-size, 16px);
+  line-height: var(--line-height, 1.65);
+}
+
+body[data-variant] #rain {
+  display: none;
+}
+
+body[data-variant] a {
+  color: var(--link);
+  text-decoration-color: var(--link-rule, currentColor);
+  text-decoration-thickness: var(--link-weight, 1px);
+  text-underline-offset: 0.2em;
+}
+
+body[data-variant] a:hover,
+body[data-variant] a:focus-visible {
+  color: var(--link-hover, var(--link));
+}
+
+body[data-variant] :focus-visible {
+  outline: 3px solid var(--focus, var(--link));
+  outline-offset: 4px;
+}
+
+body[data-variant] nav {
+  position: relative;
+  z-index: 20;
+}
+
+body[data-variant] nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: none;
+}
+
+body[data-variant] .nav-brand {
+  font-family: var(--display-font);
+  font-weight: var(--display-weight, 700);
+  text-decoration: none;
+}
+
+body[data-variant] .nav-toggle,
+body[data-variant] .nav-toggle-label {
+  display: none;
+}
+
+body[data-variant] .nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body[data-variant] .nav-links a {
+  text-decoration: none;
+}
+
+body[data-variant] main {
+  display: block;
+}
+
+body[data-variant] main > .container {
+  width: min(var(--content-width, 1180px), calc(100% - 3rem));
+  max-width: none;
+  margin: 0 auto;
+  padding: var(--main-padding, 4rem 0 8rem);
+}
+
+body[data-variant] h1,
+body[data-variant] h2,
+body[data-variant] h3,
+body[data-variant] h4 {
+  color: var(--heading, var(--text));
+  font-family: var(--display-font);
+  font-weight: var(--display-weight, 700);
+  letter-spacing: var(--heading-spacing, -0.03em);
+  line-height: var(--heading-line, 1.04);
+}
+
+body[data-variant] h1 {
+  margin: 0 0 2rem;
+  font-size: var(--h1, clamp(2.8rem, 7vw, 6rem));
+}
+
+body[data-variant] h2 {
+  margin: 0 0 1.2rem;
+  font-size: var(--h2, clamp(1.75rem, 3.2vw, 3rem));
+}
+
+body[data-variant] h3 {
+  font-size: var(--h3, clamp(1.2rem, 1.7vw, 1.7rem));
+}
+
+body[data-variant] p,
+body[data-variant] ul,
+body[data-variant] ol,
+body[data-variant] blockquote,
+body[data-variant] pre,
+body[data-variant] figure,
+body[data-variant] table {
+  margin-top: 0;
+  margin-bottom: 1.35em;
+}
+
+body[data-variant] img,
+body[data-variant] svg {
+  max-width: 100%;
+}
+
+body[data-variant] hr {
+  border: 0;
+  border-top: var(--rule-width, 1px) solid var(--rule);
+  margin: 3rem 0;
+}
+
+body[data-variant] pre,
+body[data-variant] code {
+  font-family: var(--mono-font, 'Courier New', monospace);
+}
+
+body[data-variant] pre {
+  max-width: 100%;
+  overflow: auto;
+  padding: 1.25rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  background: var(--code-bg, rgba(127, 127, 127, 0.08));
+}
+
+body[data-variant] blockquote {
+  margin-left: 0;
+  padding-left: 1.5rem;
+  border-left: 4px solid var(--accent);
+  color: var(--muted);
+}
+
+body[data-variant] table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+body[data-variant] th,
+body[data-variant] td {
+  padding: 0.7rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* ---- hero ------------------------------------------------------------ */
+
+body[data-variant] .hero {
+  min-height: var(--hero-height, 62vh);
+  padding: var(--hero-padding, 4rem 0 6rem);
+}
+
+body[data-variant] .hero-business,
+body[data-variant] .hero-doors {
+  display: block;
+}
+
+body[data-variant] .hero-copy {
+  max-width: var(--hero-width, 900px);
+}
+
+body[data-variant] .hero-mark {
+  display: block;
+  width: clamp(6rem, 12vw, 10rem);
+  height: auto;
+  color: var(--accent);
+}
+
+body[data-variant] .hero-statement {
+  max-width: var(--hero-heading-width, 11ch);
+}
+
+body[data-variant] .lead {
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: var(--lead-size, clamp(1.1rem, 1.8vw, 1.5rem));
+  line-height: 1.45;
+}
+
+body[data-variant] .hero-context {
+  max-width: 58ch;
+  color: var(--muted);
+}
+
+body[data-variant] .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.8rem;
+}
+
+body[data-variant] section {
+  position: relative;
+}
+
+/* ---- section rhythm ----------------------------------------------------- */
+
+body[data-variant] .home-projects,
+body[data-variant] .home-engage,
+body[data-variant] .home-section,
+body[data-variant] .wellbeing-focus,
+body[data-variant] .technical-depth,
+body[data-variant] .content,
+body[data-variant] .post-list,
+body[data-variant] .tells-page {
+  margin-top: var(--section-space, 5rem);
+}
+
+body[data-variant] .page-head,
+body[data-variant] .section-header,
+body[data-variant] .section-intro,
+body[data-variant] .post-meta {
+  margin-bottom: var(--section-space, 4rem);
+}
+
+body[data-variant] .section-intro {
+  max-width: 62ch;
+  margin-bottom: 2rem;
+}
+
+body[data-variant] .section-intro > p:last-child {
+  color: var(--muted);
+}
+
+/* ---- records: entries, services, proof, posts, tells ----------------------- */
+
+body[data-variant] .entry,
+body[data-variant] .service-row,
+body[data-variant] .proof-row,
+body[data-variant] .post-item,
+body[data-variant] .tells-row {
+  border-top: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .service-list,
+body[data-variant] .proof-list,
+body[data-variant] .method-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body[data-variant] .entry,
+body[data-variant] .service-row,
+body[data-variant] .proof-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.75fr) minmax(0, 1.25fr);
+  gap: var(--entry-gap, 3rem);
+  padding: var(--entry-padding, 2rem 0);
+}
+
+body[data-variant] .entry-name,
+body[data-variant] .post-title,
+body[data-variant] .service-heading h3,
+body[data-variant] .proof-heading h3 {
+  margin: 0 0 0.7rem;
+}
+
+body[data-variant] .service-heading h3,
+body[data-variant] .proof-heading h3 {
+  font-size: var(--entry-title-size, var(--h3));
+}
+
+body[data-variant] .entry-lead,
+body[data-variant] .post-excerpt,
+body[data-variant] .post-date,
+body[data-variant] .post-meta,
+body[data-variant] .entry-links,
+body[data-variant] .entry-meta,
+body[data-variant] .service-examples,
+body[data-variant] .proof-outcome,
+body[data-variant] .tells-row-trigger,
+body[data-variant] .tells-row-date {
+  color: var(--muted);
+}
+
+body[data-variant] .service-body > p:last-child,
+body[data-variant] .proof-body > p:last-child {
+  margin-bottom: 0;
+}
+
+body[data-variant] .post-item {
+  padding: 1.5rem 0;
+}
+
+body[data-variant] .post-title a,
+body[data-variant] .entry-name a,
+body[data-variant] .proof-heading h3 a {
+  text-decoration: none;
+}
+
+body[data-variant] .content {
+  max-width: var(--reading-width, 760px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+body[data-variant] .content > p,
+body[data-variant] .content > ul,
+body[data-variant] .content > ol,
+body[data-variant] .content > blockquote {
+  font-size: var(--reading-size, 1rem);
+}
+
+body[data-variant] .content h2,
+body[data-variant] .content h3 {
+  margin-top: 2.25em;
+}
+
+/* ---- small labels ------------------------------------------------------ */
+
+body[data-variant] .post-tag,
+body[data-variant] .service-number,
+body[data-variant] .proof-kind,
+body[data-variant] .brief-label,
+body[data-variant] .door-status,
+body[data-variant] .entry-meta,
+body[data-variant] .proof-link,
+body[data-variant] .method-list > li > span {
+  font-family: var(--mono-font, 'Courier New', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body[data-variant] .service-number,
+body[data-variant] .proof-kind,
+body[data-variant] .brief-label {
+  margin: 0 0 0.6rem;
+  color: var(--accent);
+}
+
+body[data-variant] .post-tag {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.45rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .door-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.6rem;
+  padding: 0.2rem 0.6rem 0.2rem 0.45rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  border-radius: var(--chip-radius, 999px);
+  color: var(--muted);
+}
+
+body[data-variant] .door-status::before {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--muted);
+  content: '';
+}
+
+body[data-variant] .door-status[data-state='open'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+body[data-variant] .door-status[data-state='open']::before,
+body[data-variant] .door-status[data-state='soon']::before {
+  background: var(--accent);
+}
+
+body[data-variant] .entry-meta {
+  margin: 0.8rem 0 0;
+  letter-spacing: 0.04em;
+}
+
+body[data-variant] .entry-meta span + span::before {
+  content: ' / ';
+  opacity: 0.6;
+}
+
+/* ---- credibility rail -------------------------------------------------- */
+
+body[data-variant] .credibility-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: var(--section-space, 4rem);
+  padding: 2rem 0;
+  border-top: var(--rule-width, 1px) solid var(--rule);
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .credibility-rail strong {
+  display: block;
+  color: var(--heading, var(--text));
+  font-family: var(--display-font);
+  font-size: var(--h3);
+  font-weight: var(--display-weight, 700);
+  line-height: 1.1;
+}
+
+body[data-variant] .credibility-rail span {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* ---- method, depth, focus ---------------------------------------------- */
+
+body[data-variant] .method-section {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 3rem;
+}
+
+body[data-variant] .method-section .section-intro {
+  margin-bottom: 0;
+}
+
+body[data-variant] .method-list {
+  border-top: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .method-list li {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .method-list > li > span {
+  padding-top: 0.35rem;
+  color: var(--accent);
+}
+
+body[data-variant] .method-list h3 {
+  margin: 0 0 0.3rem;
+}
+
+body[data-variant] .method-list p {
+  margin: 0;
+  color: var(--muted);
+}
+
+body[data-variant] .wellbeing-focus,
+body[data-variant] .technical-depth {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.8fr);
+  gap: 3rem;
+  padding: 2.5rem 0;
+  border-top: var(--rule-width, 1px) solid var(--rule);
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .boundary-note {
+  align-self: center;
+  padding-left: 1.4rem;
+  border-left: 4px solid var(--accent);
+}
+
+body[data-variant] .boundary-note p:last-child,
+body[data-variant] .technical-depth p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+/* ---- engage ------------------------------------------------------------ */
+
+body[data-variant] .home-engage h2 {
+  max-width: 22ch;
+}
+
+body[data-variant] .engage-line {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: var(--lead-size, clamp(1.1rem, 1.8vw, 1.5rem));
+  line-height: 1.45;
+}
+
+body[data-variant] .intent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+body[data-variant] .intent button {
+  padding: 0.45rem 0.9rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  border-radius: var(--chip-radius, 999px);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+}
+
+body[data-variant] .intent button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant] .subject-line {
+  color: var(--muted);
+  font-family: var(--mono-font, 'Courier New', monospace);
+  font-size: 0.78rem;
+}
+
+/* ---- buttons ----------------------------------------------------------- */
+
+body[data-variant] .cv-download,
+body[data-variant] .button,
+body[data-variant] .cta,
+body[data-variant] .engage-cta {
+  display: inline-block;
+  padding: 0.7rem 1rem;
+  border: var(--button-border, 1px solid var(--accent));
+  border-radius: var(--button-radius, 0);
+  background: var(--button-bg, transparent);
+  color: var(--button-text, var(--link));
+  font-family: var(--body-font);
+  text-decoration: none;
+}
+
+body[data-variant] .button-quiet {
+  border: var(--rule-width, 1px) solid var(--rule);
+  background: transparent;
+  color: var(--text);
+}
+
+/* ---- tells ------------------------------------------------------------- */
+
+body[data-variant] .tells-search {
+  width: 100%;
+  margin: 1.5rem 0 3rem;
+  padding: 1rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  border-radius: 0;
+  background: var(--page);
+  color: var(--text);
+  font: inherit;
+}
+
+body[data-variant] .tells-row {
+  display: grid;
+  grid-template-columns: 3rem minmax(12rem, 0.7fr) minmax(0, 1.3fr) 7rem;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+/* ---- wellbeing venture page ------------------------------------------- */
+
+body[data-variant] .wellbeing-venture > section {
+  margin-top: var(--section-space, 5rem);
+}
+
+body[data-variant] .venture-shift-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+body[data-variant] .venture-thesis,
+body[data-variant] .venture-build,
+body[data-variant] .venture-proof {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 3rem;
+}
+
+body[data-variant] .venture-statement {
+  font-family: var(--display-font);
+  font-size: var(--h2);
+  color: var(--heading, var(--text));
+}
+
+/* ---- doors landing ------------------------------------------------------ */
+
+body[data-variant] .draft-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin: 0 0 2rem;
+  padding: 0.6rem 0;
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+  color: var(--muted);
+  font-family: var(--mono-font, 'Courier New', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant] .draft-strip button {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+body[data-variant] .draft-strip button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+body[data-variant] .door-list .entry-lead {
+  line-height: 1.4;
+}
+
+body[data-variant] .door-list .entry-name {
+  display: block;
+  margin-bottom: 0.35rem;
+  line-height: 1.12;
+}
+
+body[data-variant] .door-list .entry.is-first {
+  border-left: 4px solid var(--accent);
+  padding-left: 1.25rem;
+}
+
+body[data-variant] .thread-copy p {
+  max-width: 62ch;
+}
+
+body[data-variant] .doors-footnote {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* ---- footer ------------------------------------------------------------ */
+
+body[data-variant] footer {
+  border-top: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] footer .container {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  width: min(var(--content-width, 1180px), calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 6rem;
+}
+
+/* ---- small screens ---------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant] main > .container,
+  body[data-variant] footer .container {
+    width: min(100% - 2rem, var(--content-width, 1180px));
+  }
+
+  body[data-variant] nav .container {
+    flex-wrap: wrap;
+  }
+
+  body[data-variant] .nav-links {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.45rem 1rem;
+  }
+
+  body[data-variant] footer .container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.65rem 1.25rem;
+  }
+
+  body[data-variant] .entry,
+  body[data-variant] .service-row,
+  body[data-variant] .proof-row,
+  body[data-variant] .tells-row,
+  body[data-variant] .method-section,
+  body[data-variant] .wellbeing-focus,
+  body[data-variant] .technical-depth,
+  body[data-variant] .venture-shift-list,
+  body[data-variant] .venture-thesis,
+  body[data-variant] .venture-build,
+  body[data-variant] .venture-proof {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  body[data-variant] .credibility-rail {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  body[data-variant] .door-list .entry.is-first {
+    padding-left: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant] *,
+  body[data-variant] *::before,
+  body[data-variant] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

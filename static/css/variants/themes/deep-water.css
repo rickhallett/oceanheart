@@ -1,0 +1,758 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap');
+
+/*
+  Deep water. The page seen from beneath the surface: a canvas of slow caustic
+  light behind frosted glass panels. Nothing sits still, nothing is fast.
+*/
+
+body[data-variant='deep-water'] {
+  --page: #041a22;
+  --text: #cfe6e1;
+  --heading: #effbf7;
+  --muted: #7fa9a4;
+  --accent: #7fd6c8;
+  --link: #a4ece0;
+  --link-hover: #ffffff;
+  --rule: rgba(127, 214, 200, 0.2);
+  --focus: #7fd6c8;
+  --display-font: 'Alegreya', Georgia, 'Times New Roman', serif;
+  --body-font: 'Alegreya', Georgia, 'Times New Roman', serif;
+  --mono-font: 'JetBrains Mono', 'Courier New', monospace;
+  --display-weight: 500;
+  --content-width: 1140px;
+  --reading-width: 700px;
+  --heading-spacing: -0.015em;
+  --heading-line: 1.08;
+  --line-height: 1.7;
+  --rule-width: 1px;
+  --code-bg: rgba(2, 14, 20, 0.6);
+  --button-bg: rgba(127, 214, 200, 0.14);
+  --button-text: #effbf7;
+  --button-border: 1px solid rgba(127, 214, 200, 0.5);
+  --button-radius: 999px;
+  --chip-radius: 999px;
+  --hero-height: 74vh;
+  --hero-padding: 0;
+  --entry-gap: 2.5rem;
+  --entry-padding: 1.8rem 2rem;
+  --nav-gap: 1.8rem;
+  --main-padding: 3rem 0 8rem;
+  --glass: rgba(6, 36, 46, 0.42);
+  --glass-hot: rgba(10, 50, 62, 0.55);
+  --glass-edge: rgba(127, 214, 200, 0.18);
+  --glass-edge-hot: rgba(127, 214, 200, 0.46);
+  --body-size: 15px;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(127, 214, 200, 0.22), transparent 60%),
+    linear-gradient(180deg, #073039 0%, #041a22 45%, #02111a 100%);
+  background-attachment: fixed;
+}
+
+/* ---- water --------------------------------------------------------------- */
+
+body[data-variant='deep-water']::before {
+  position: fixed;
+  z-index: 0;
+  inset: -30% -20%;
+  content: '';
+  background: repeating-linear-gradient(
+    112deg,
+    transparent 0 14vw,
+    rgba(127, 214, 200, 0.055) 17vw 22vw,
+    transparent 25vw 34vw
+  );
+  filter: blur(28px);
+  animation: dw-shafts 52s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+body[data-variant='deep-water'] .deep-water-canvas {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(5px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+body[data-variant='deep-water'] nav,
+body[data-variant='deep-water'] main,
+body[data-variant='deep-water'] footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- nav ----------------------------------------------------------------- */
+
+body[data-variant='deep-water'] nav {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  border-bottom: 1px solid var(--glass-edge);
+  background: rgba(4, 26, 34, 0.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+}
+
+body[data-variant='deep-water'] nav .container {
+  padding: 1rem clamp(1.25rem, 3vw, 2.5rem);
+}
+
+body[data-variant='deep-water'] .nav-brand {
+  color: var(--heading);
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+body[data-variant='deep-water'] .nav-links a {
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 500ms ease;
+}
+
+body[data-variant='deep-water'] .nav-links a:hover,
+body[data-variant='deep-water'] .nav-links a.active {
+  color: var(--heading);
+}
+
+body[data-variant='deep-water'] .nav-links a.cta {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--glass-edge-hot);
+  border-radius: 999px;
+  color: var(--accent);
+}
+
+/* ---- glass panels -------------------------------------------------------- */
+
+body[data-variant='deep-water'] .hero,
+body[data-variant='deep-water'] .entry,
+body[data-variant='deep-water'] .service-row,
+body[data-variant='deep-water'] .proof-row,
+body[data-variant='deep-water'] .post-item,
+body[data-variant='deep-water'] .content,
+body[data-variant='deep-water'] .home-engage,
+body[data-variant='deep-water'] .credibility-rail > div,
+body[data-variant='deep-water'] .method-list > li,
+body[data-variant='deep-water'] .wellbeing-focus,
+body[data-variant='deep-water'] .technical-depth,
+body[data-variant='deep-water'] .thread-copy {
+  position: relative;
+  border: 1px solid var(--glass-edge);
+  border-radius: 18px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 24px 60px -36px rgba(0, 0, 0, 0.8);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+  transition:
+    transform 1100ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 900ms ease,
+    background-color 900ms ease,
+    box-shadow 900ms ease,
+    -webkit-backdrop-filter 900ms ease,
+    backdrop-filter 900ms ease;
+}
+
+body[data-variant='deep-water'] .hero::after,
+body[data-variant='deep-water'] .entry::after,
+body[data-variant='deep-water'] .service-row::after,
+body[data-variant='deep-water'] .proof-row::after,
+body[data-variant='deep-water'] .post-item::after,
+body[data-variant='deep-water'] .content::after,
+body[data-variant='deep-water'] .home-engage::after,
+body[data-variant='deep-water'] .credibility-rail > div::after,
+body[data-variant='deep-water'] .method-list > li::after,
+body[data-variant='deep-water'] .wellbeing-focus::after,
+body[data-variant='deep-water'] .technical-depth::after,
+body[data-variant='deep-water'] .thread-copy::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  content: '';
+  background: linear-gradient(118deg, transparent 32%, rgba(127, 214, 200, 0.13) 50%, transparent 68%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  transition: background-position 2200ms ease;
+  pointer-events: none;
+}
+
+body[data-variant='deep-water'] .hero:hover,
+body[data-variant='deep-water'] .entry:hover,
+body[data-variant='deep-water'] .service-row:hover,
+body[data-variant='deep-water'] .proof-row:hover,
+body[data-variant='deep-water'] .post-item:hover,
+body[data-variant='deep-water'] .content:hover,
+body[data-variant='deep-water'] .home-engage:hover,
+body[data-variant='deep-water'] .credibility-rail > div:hover,
+body[data-variant='deep-water'] .method-list > li:hover,
+body[data-variant='deep-water'] .wellbeing-focus:hover,
+body[data-variant='deep-water'] .technical-depth:hover,
+body[data-variant='deep-water'] .thread-copy:hover {
+  border-color: var(--glass-edge-hot);
+  background: var(--glass-hot);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 34px 70px -36px rgba(0, 0, 0, 0.9);
+  transform: translateY(-3px) scale(1.004);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6) brightness(1.06);
+  backdrop-filter: blur(20px) saturate(1.6) brightness(1.06);
+}
+
+body[data-variant='deep-water'] .hero:hover::after,
+body[data-variant='deep-water'] .entry:hover::after,
+body[data-variant='deep-water'] .service-row:hover::after,
+body[data-variant='deep-water'] .proof-row:hover::after,
+body[data-variant='deep-water'] .post-item:hover::after,
+body[data-variant='deep-water'] .content:hover::after,
+body[data-variant='deep-water'] .home-engage:hover::after,
+body[data-variant='deep-water'] .credibility-rail > div:hover::after,
+body[data-variant='deep-water'] .method-list > li:hover::after,
+body[data-variant='deep-water'] .wellbeing-focus:hover::after,
+body[data-variant='deep-water'] .technical-depth:hover::after,
+body[data-variant='deep-water'] .thread-copy:hover::after {
+  background-position: 0 0;
+}
+
+body[data-variant='deep-water'] .hero > *,
+body[data-variant='deep-water'] .entry > *,
+body[data-variant='deep-water'] .service-row > *,
+body[data-variant='deep-water'] .proof-row > *,
+body[data-variant='deep-water'] .post-item > *,
+body[data-variant='deep-water'] .content > *,
+body[data-variant='deep-water'] .home-engage > *,
+body[data-variant='deep-water'] .credibility-rail > div > *,
+body[data-variant='deep-water'] .method-list > li > *,
+body[data-variant='deep-water'] .wellbeing-focus > *,
+body[data-variant='deep-water'] .technical-depth > *,
+body[data-variant='deep-water'] .thread-copy > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- hero ---------------------------------------------------------------- */
+
+body[data-variant='deep-water'] .hero {
+  display: flex;
+  align-items: center;
+  padding: clamp(2rem, 6vw, 5rem);
+  border-radius: 26px;
+}
+
+body[data-variant='deep-water'] .hero-copy {
+  max-width: 760px;
+  animation: dw-drift 11s ease-in-out infinite alternate;
+}
+
+body[data-variant='deep-water'] .hero-statement {
+  font-weight: 500;
+  text-shadow: 0 0 40px rgba(127, 214, 200, 0.25);
+}
+
+body[data-variant='deep-water'] .hero-mark {
+  animation: dw-sway 16s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+}
+
+body[data-variant='deep-water'] .lead {
+  color: var(--text);
+  font-style: italic;
+}
+
+body[data-variant='deep-water'] .hero-context {
+  color: var(--muted);
+}
+
+/* ---- headings & prose ---------------------------------------------------- */
+
+body[data-variant='deep-water'] h2 {
+  font-weight: 500;
+}
+
+body[data-variant='deep-water'] .section-intro h2::before {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  margin: 0 0 1.2rem;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  content: '';
+}
+
+body[data-variant='deep-water'] .section-intro > p:last-child {
+  font-style: italic;
+}
+
+body[data-variant='deep-water'] .content {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+body[data-variant='deep-water'] .content > p:first-of-type {
+  color: var(--heading);
+  font-style: italic;
+}
+
+body[data-variant='deep-water'] .content h2 {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+body[data-variant='deep-water'] .content a {
+  text-decoration-color: rgba(127, 214, 200, 0.5);
+}
+
+body[data-variant='deep-water'] blockquote {
+  padding-left: 1.4rem;
+  border-left: 2px solid var(--accent);
+  font-style: italic;
+}
+
+body[data-variant='deep-water'] pre {
+  border-radius: 12px;
+}
+
+body[data-variant='deep-water'] code {
+  font-size: 0.86em;
+}
+
+/* ---- records ------------------------------------------------------------- */
+
+body[data-variant='deep-water'] .service-list,
+body[data-variant='deep-water'] .proof-list,
+body[data-variant='deep-water'] .door-list .entry + .entry,
+body[data-variant='deep-water'] .post-list {
+  margin-top: 0.9rem;
+}
+
+body[data-variant='deep-water'] .service-row + .service-row,
+body[data-variant='deep-water'] .proof-row + .proof-row,
+body[data-variant='deep-water'] .post-item + .post-item {
+  margin-top: 0.9rem;
+}
+
+body[data-variant='deep-water'] .post-item {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.4rem 1.8rem;
+}
+
+body[data-variant='deep-water'] .post-item .post-excerpt {
+  grid-column: 2;
+  margin: 0.3rem 0 0;
+}
+
+body[data-variant='deep-water'] .post-date {
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body[data-variant='deep-water'] .post-title {
+  color: var(--heading);
+}
+
+body[data-variant='deep-water'] .entry-name,
+body[data-variant='deep-water'] .service-heading h3,
+body[data-variant='deep-water'] .proof-heading h3 {
+  color: var(--heading);
+  font-weight: 500;
+}
+
+body[data-variant='deep-water'] .entry-lead {
+  color: var(--text);
+}
+
+body[data-variant='deep-water'] .entry-links a,
+body[data-variant='deep-water'] .proof-link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 400ms ease;
+}
+
+body[data-variant='deep-water'] .entry-links a:hover,
+body[data-variant='deep-water'] .proof-link:hover {
+  color: var(--heading);
+}
+
+body[data-variant='deep-water'] .door-list .entry.is-first {
+  padding-left: 2rem;
+  border-left: 1px solid var(--glass-edge);
+  box-shadow:
+    inset 4px 0 0 var(--accent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 24px 60px -36px rgba(0, 0, 0, 0.8);
+}
+
+/* ---- chips and meta ------------------------------------------------------ */
+
+body[data-variant='deep-water'] .door-status {
+  border-color: rgba(127, 214, 200, 0.28);
+  background: rgba(4, 26, 34, 0.45);
+  color: var(--muted);
+}
+
+body[data-variant='deep-water'] .door-status::before {
+  box-shadow: 0 0 8px currentColor;
+}
+
+body[data-variant='deep-water'] .door-status[data-state='open'] {
+  background: rgba(127, 214, 200, 0.12);
+  color: var(--accent);
+}
+
+body[data-variant='deep-water'] .door-status[data-state='open']::before {
+  animation: dw-pulse 4s ease-in-out infinite;
+}
+
+body[data-variant='deep-water'] .door-status[data-state='soon'] {
+  border-style: dashed;
+  color: #b7e7df;
+}
+
+body[data-variant='deep-water'] .door-status[data-state='research'] {
+  border-style: dotted;
+}
+
+body[data-variant='deep-water'] .entry-meta {
+  color: var(--muted);
+}
+
+body[data-variant='deep-water'] .entry-meta span + span::before {
+  content: ' · ';
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+body[data-variant='deep-water'] .post-tag {
+  border-radius: 999px;
+  border-color: rgba(127, 214, 200, 0.3);
+  color: var(--accent);
+}
+
+body[data-variant='deep-water'] .service-number,
+body[data-variant='deep-water'] .proof-kind,
+body[data-variant='deep-water'] .brief-label {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(127, 214, 200, 0.35);
+}
+
+/* ---- credibility rail ---------------------------------------------------- */
+
+body[data-variant='deep-water'] .credibility-rail {
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+}
+
+body[data-variant='deep-water'] .credibility-rail > div {
+  padding: 1.4rem 1.6rem;
+}
+
+body[data-variant='deep-water'] .credibility-rail strong {
+  color: var(--accent);
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  font-style: italic;
+  text-shadow: 0 0 24px rgba(127, 214, 200, 0.35);
+}
+
+/* ---- method, focus, depth ------------------------------------------------ */
+
+body[data-variant='deep-water'] .method-list {
+  border-top: 0;
+}
+
+body[data-variant='deep-water'] .method-list > li {
+  margin-bottom: 0.8rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--glass-edge);
+}
+
+body[data-variant='deep-water'] .method-list > li > span {
+  padding-top: 0.25rem;
+  color: var(--accent);
+}
+
+body[data-variant='deep-water'] .method-list h3 {
+  font-weight: 500;
+}
+
+body[data-variant='deep-water'] .wellbeing-focus,
+body[data-variant='deep-water'] .technical-depth {
+  padding: clamp(1.5rem, 4vw, 2.8rem);
+}
+
+body[data-variant='deep-water'] .boundary-note {
+  padding-left: 1.4rem;
+  border-left: 2px solid var(--accent);
+}
+
+/* ---- engage & buttons ---------------------------------------------------- */
+
+body[data-variant='deep-water'] .home-engage {
+  padding: clamp(1.8rem, 5vw, 3.5rem);
+  border-radius: 26px;
+}
+
+body[data-variant='deep-water'] .engage-line {
+  color: var(--text);
+  font-style: italic;
+}
+
+body[data-variant='deep-water'] .button,
+body[data-variant='deep-water'] .cta,
+body[data-variant='deep-water'] .cv-download,
+body[data-variant='deep-water'] .engage-cta {
+  padding: 0.75rem 1.3rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  transition:
+    background-color 600ms ease,
+    border-color 600ms ease,
+    color 600ms ease,
+    box-shadow 600ms ease;
+}
+
+body[data-variant='deep-water'] .button-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #041a22;
+  box-shadow: 0 0 0 0 rgba(127, 214, 200, 0);
+}
+
+body[data-variant='deep-water'] .button-primary:hover {
+  background: #a6ede2;
+  color: #041a22;
+  box-shadow: 0 0 34px rgba(127, 214, 200, 0.35);
+}
+
+body[data-variant='deep-water'] .button-quiet {
+  border: 1px solid var(--glass-edge-hot);
+  background: rgba(4, 26, 34, 0.3);
+  color: var(--heading);
+}
+
+body[data-variant='deep-water'] .button-quiet:hover {
+  border-color: var(--accent);
+  background: rgba(127, 214, 200, 0.12);
+}
+
+body[data-variant='deep-water'] .intent button {
+  border-color: rgba(127, 214, 200, 0.3);
+  background: rgba(4, 26, 34, 0.35);
+  color: var(--text);
+  transition: border-color 500ms ease, color 500ms ease, background-color 500ms ease;
+}
+
+body[data-variant='deep-water'] .intent button:hover,
+body[data-variant='deep-water'] .intent button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: rgba(127, 214, 200, 0.14);
+  color: var(--heading);
+}
+
+body[data-variant='deep-water'] .subject-line code {
+  color: var(--accent);
+}
+
+body[data-variant='deep-water'] .doors-footnote {
+  color: var(--muted);
+}
+
+/* ---- draft strip, tells ---------------------------------------------------- */
+
+body[data-variant='deep-water'] .draft-strip {
+  border-bottom-color: var(--glass-edge);
+}
+
+body[data-variant='deep-water'] .tells-search {
+  border-radius: 12px;
+  border-color: var(--glass-edge);
+  background: var(--glass);
+}
+
+/* ---- footer -------------------------------------------------------------- */
+
+body[data-variant='deep-water'] footer {
+  border-top: 1px solid var(--glass-edge);
+  background: rgba(2, 14, 20, 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: var(--muted);
+  font-family: var(--mono-font);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body[data-variant='deep-water'] footer a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 500ms ease;
+}
+
+body[data-variant='deep-water'] footer a:hover {
+  color: var(--accent);
+}
+
+/* ---- motion -------------------------------------------------------------- */
+
+@keyframes dw-shafts {
+  from {
+    transform: translate3d(-4%, 0, 0) rotate(0deg);
+  }
+
+  to {
+    transform: translate3d(4%, 2%, 0) rotate(1.5deg);
+  }
+}
+
+@keyframes dw-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+@keyframes dw-sway {
+  from {
+    transform: rotate(-2deg);
+  }
+
+  to {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes dw-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  50% {
+    box-shadow: 0 0 14px currentColor;
+  }
+}
+
+/* ---- small screens ------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant='deep-water'] {
+    --entry-padding: 1.3rem 1.2rem;
+    --hero-height: auto;
+    background-attachment: scroll;
+  }
+
+  body[data-variant='deep-water']::before {
+    display: none;
+  }
+
+  body[data-variant='deep-water'] .deep-water-canvas {
+    filter: blur(3px);
+    opacity: 0.75;
+  }
+
+  body[data-variant='deep-water'] nav {
+    position: relative;
+  }
+
+  body[data-variant='deep-water'] nav .container {
+    padding: 0.9rem 1rem;
+  }
+
+  body[data-variant='deep-water'] .hero {
+    min-height: auto;
+    padding: 1.6rem 1.3rem;
+    border-radius: 16px;
+  }
+
+  body[data-variant='deep-water'] .hero-copy {
+    animation: none;
+  }
+
+  body[data-variant='deep-water'] .post-item {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 1.2rem 1.2rem;
+  }
+
+  body[data-variant='deep-water'] .post-item .post-excerpt {
+    grid-column: 1;
+  }
+
+  body[data-variant='deep-water'] .content,
+  body[data-variant='deep-water'] .home-engage,
+  body[data-variant='deep-water'] .wellbeing-focus,
+  body[data-variant='deep-water'] .technical-depth {
+    padding: 1.3rem 1.2rem;
+    border-radius: 16px;
+  }
+
+  body[data-variant='deep-water'] .credibility-rail {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-variant='deep-water'] .method-list > li {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    padding: 1rem 1.1rem;
+  }
+
+  body[data-variant='deep-water'] .door-list .entry.is-first {
+    padding-left: 1.4rem;
+  }
+
+  body[data-variant='deep-water'] .hero,
+  body[data-variant='deep-water'] .entry,
+  body[data-variant='deep-water'] .service-row,
+  body[data-variant='deep-water'] .proof-row,
+  body[data-variant='deep-water'] .post-item,
+  body[data-variant='deep-water'] .content,
+  body[data-variant='deep-water'] .home-engage,
+  body[data-variant='deep-water'] .credibility-rail > div,
+  body[data-variant='deep-water'] .method-list > li,
+  body[data-variant='deep-water'] .wellbeing-focus,
+  body[data-variant='deep-water'] .technical-depth,
+  body[data-variant='deep-water'] .thread-copy {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant='deep-water']::before,
+  body[data-variant='deep-water'] .hero-copy,
+  body[data-variant='deep-water'] .hero-mark,
+  body[data-variant='deep-water'] .door-status[data-state='open']::before {
+    animation: none;
+  }
+
+  body[data-variant='deep-water'] .hero:hover,
+  body[data-variant='deep-water'] .entry:hover,
+  body[data-variant='deep-water'] .service-row:hover,
+  body[data-variant='deep-water'] .proof-row:hover,
+  body[data-variant='deep-water'] .post-item:hover,
+  body[data-variant='deep-water'] .content:hover,
+  body[data-variant='deep-water'] .home-engage:hover,
+  body[data-variant='deep-water'] .credibility-rail > div:hover,
+  body[data-variant='deep-water'] .method-list > li:hover,
+  body[data-variant='deep-water'] .wellbeing-focus:hover,
+  body[data-variant='deep-water'] .technical-depth:hover,
+  body[data-variant='deep-water'] .thread-copy:hover {
+    transform: none;
+  }
+}

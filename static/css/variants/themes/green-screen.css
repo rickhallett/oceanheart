@@ -1,0 +1,150 @@
+body[data-variant='green-screen'] {
+  --page: #020d05;
+  --text: #64f389;
+  --heading: #9affb3;
+  --muted: #3fa259;
+  --accent: #d5ff6b;
+  --link: #8cffaa;
+  --link-hover: #fffdb2;
+  --rule: #1d6332;
+  --focus: #fffdb2;
+  --display-font: 'Courier New', monospace;
+  --body-font: 'Courier New', monospace;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1050px;
+  --reading-width: 760px;
+  --h1: clamp(2.3rem, 4.9vw, 4.75rem);
+  --h2: clamp(1.55rem, 2.9vw, 2.55rem);
+  --h3: clamp(1.05rem, 1.6vw, 1.45rem);
+  --lead-size: clamp(1.05rem, 1.45vw, 1.3rem);
+  --reading-size: 0.94rem;
+  --heading-spacing: -0.04em;
+  --heading-line: 1;
+  --line-height: 1.6;
+  --rule-width: 1px;
+  --code-bg: #001e09;
+  --button-bg: #64f389;
+  --button-text: #020d05;
+  --button-border: 0;
+  --body-size: 14px;
+  text-shadow: 0 0 0.45rem rgba(100, 243, 137, 0.34);
+}
+
+body[data-variant='green-screen']::after {
+  position: fixed;
+  z-index: 9998;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.11;
+  background-size: 100% 4px;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-variant='green-screen'] nav {
+  border-bottom: 1px dashed var(--rule);
+}
+
+body[data-variant='green-screen'] nav .container {
+  padding: 1rem 2rem;
+}
+
+body[data-variant='green-screen'] .nav-brand::before {
+  content: 'operator@oceanheart:~$ ';
+  color: var(--muted);
+}
+
+body[data-variant='green-screen'] .nav-links a::before {
+  content: './';
+  color: var(--accent);
+}
+
+body[data-variant='green-screen'] main > .container {
+  padding-top: 2rem;
+}
+
+body[data-variant='green-screen'] .hero {
+  min-height: 60vh;
+  padding: 4rem 2rem;
+  border: 1px solid var(--rule);
+}
+
+body[data-variant='green-screen'] .hero-statement {
+  max-width: 18ch;
+  font-size: clamp(2.4rem, 4.1vw, 3.9rem);
+}
+
+body[data-variant='green-screen'] .hero-mark {
+  margin: 3rem 0 0 auto;
+}
+
+body[data-variant='green-screen'] .hero::before {
+  display: block;
+  margin-bottom: 2rem;
+  content: '> RUN /home/claim --evidence';
+  color: var(--muted);
+}
+
+body[data-variant='green-screen'] h1,
+body[data-variant='green-screen'] h2,
+body[data-variant='green-screen'] h3 {
+  font-weight: 400;
+}
+
+body[data-variant='green-screen'] h1::after,
+body[data-variant='green-screen'] h2::after {
+  content: '_';
+  color: var(--accent);
+}
+
+body[data-variant='green-screen'] .entry,
+body[data-variant='green-screen'] .post-item,
+body[data-variant='green-screen'] .tells-row {
+  padding: 1rem;
+  border: 1px dashed var(--rule);
+}
+
+body[data-variant='green-screen'] .entry + .entry,
+body[data-variant='green-screen'] .post-item + .post-item,
+body[data-variant='green-screen'] .tells-row + .tells-row {
+  margin-top: 0.75rem;
+}
+
+body[data-variant='green-screen'] .content {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px solid var(--rule);
+}
+
+body[data-variant='green-screen'] .content p::before {
+  content: '> ';
+  color: var(--muted);
+}
+
+body[data-variant='green-screen'] .post-tag {
+  border-style: dashed;
+}
+
+body[data-variant='green-screen'] footer {
+  border-top-style: dashed;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='green-screen'] .nav-brand::before {
+    display: none;
+  }
+
+  body[data-variant='green-screen'] .nav-links {
+    flex-wrap: wrap;
+  }
+
+  body[data-variant='green-screen'] .hero {
+    min-height: auto;
+    padding: 2.5rem 1.25rem;
+  }
+
+  body[data-variant='green-screen'] .hero-statement {
+    max-width: none;
+    font-size: clamp(2rem, 8.8vw, 2.25rem);
+  }
+}

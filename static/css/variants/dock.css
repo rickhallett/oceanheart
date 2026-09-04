@@ -1,0 +1,365 @@
+/*
+  The skin dock. Deliberately outside every skin: same fixed palette whether the
+  page underneath is a broadsheet, a terminal, or a drafting sheet, so the
+  control never gets lost in the thing it controls.
+*/
+
+.skin-dock {
+  --dock-bg: #0f100e;
+  --dock-fg: #f7f5ed;
+  --dock-mute: #9da086;
+  --dock-rule: #35372b;
+  --dock-hot: #dfff4f;
+  position: fixed;
+  z-index: 9999;
+  right: 1rem;
+  bottom: 1rem;
+  font: 600 11px/1 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.skin-dock * {
+  box-sizing: border-box;
+}
+
+.skin-dock-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(7rem, auto) auto;
+  align-items: stretch;
+  padding: 0;
+  border: 1px solid var(--dock-hot);
+  background: var(--dock-bg);
+  color: var(--dock-fg);
+  box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.35);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.skin-dock-toggle > span {
+  display: block;
+  padding: 0.9rem 1rem;
+  border-right: 1px solid #46483c;
+  white-space: nowrap;
+}
+
+.skin-dock-toggle > span:last-child {
+  border-right: 0;
+}
+
+.skin-dock-index,
+.skin-dock-action {
+  color: var(--dock-hot);
+}
+
+.skin-dock-name {
+  overflow: hidden;
+  max-width: 14rem;
+  text-overflow: ellipsis;
+}
+
+.skin-dock-action::after {
+  content: ' +';
+}
+
+.skin-dock[data-open='true'] .skin-dock-action::after {
+  content: ' \2212';
+}
+
+.skin-dock-toggle:hover,
+.skin-dock-toggle:focus-visible {
+  background: var(--dock-hot);
+  color: var(--dock-bg);
+  outline: 0;
+}
+
+.skin-dock-toggle:hover span,
+.skin-dock-toggle:focus-visible span {
+  color: var(--dock-bg);
+}
+
+.skin-dock.is-nudging .skin-dock-toggle {
+  animation: skin-dock-nudge 1.6s ease-in-out 2;
+}
+
+@keyframes skin-dock-nudge {
+  0%, 100% { box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.35); }
+  50% { box-shadow: 0 0 0 0.6rem rgba(223, 255, 79, 0.35), 0 0.6rem 2rem rgba(0, 0, 0, 0.35); }
+}
+
+.skin-panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 4.65rem;
+  width: min(72rem, calc(100vw - 2rem));
+  max-height: min(80vh, 52rem);
+  overflow: auto;
+  border: 1px solid var(--dock-hot);
+  background: var(--dock-bg);
+  color: var(--dock-fg);
+  box-shadow: 0 1.2rem 4rem rgba(0, 0, 0, 0.55);
+  text-transform: none;
+}
+
+.skin-panel[hidden] {
+  display: none;
+}
+
+.skin-panel-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+  padding: 1.25rem;
+  border-bottom: 1px solid #46483c;
+}
+
+.skin-panel-head p {
+  margin: 0 0 1.2rem;
+  color: var(--dock-mute);
+  font: 600 10px/1 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.skin-panel-head h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--dock-fg);
+  font: 700 clamp(1.6rem, 3vw, 3rem)/0.92 Arial, Helvetica, sans-serif;
+  letter-spacing: -0.05em;
+  text-align: left;
+  text-transform: none;
+}
+
+.skin-panel-head .skin-panel-note {
+  margin: 0.9rem 0 0;
+  color: var(--dock-mute);
+  font: 12px/1.5 Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.skin-panel-head .skin-panel-note kbd {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid #46483c;
+  border-radius: 2px;
+  color: var(--dock-fg);
+  font: inherit;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+.skin-panel-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.skin-panel-tools button {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #46483c;
+  background: transparent;
+  color: var(--dock-hot);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.skin-panel-tools button:hover,
+.skin-panel-tools button:focus-visible {
+  border-color: var(--dock-hot);
+  background: var(--dock-hot);
+  color: var(--dock-bg);
+  outline: 0;
+}
+
+.skin-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.skin-card {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  min-height: 5.4rem;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid #303228;
+  border-bottom: 1px solid #303228;
+  background: transparent;
+  color: var(--dock-fg);
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.skin-card:nth-child(4n) {
+  border-right: 0;
+}
+
+.skin-swatch {
+  grid-row: 1 / span 2;
+  display: block;
+  border-right: 1px solid #303228;
+  background: var(--swatch-a, #dfff4f);
+  box-shadow: inset 0 -1.6rem 0 var(--swatch-b, #0f100e);
+}
+
+.skin-card-house .skin-swatch {
+  background: #1c1a17;
+  box-shadow: inset 0 -1.6rem 0 #a13d2d;
+}
+
+.skin-card-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  overflow: hidden;
+  padding: 0.85rem 0.8rem 0.2rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.skin-card-title b {
+  color: var(--dock-hot);
+}
+
+.skin-card-premise {
+  overflow: hidden;
+  padding: 0 0.8rem 0.85rem;
+  color: var(--dock-mute);
+  font: 11px/1.4 Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.skin-card:hover,
+.skin-card:focus-visible,
+.skin-card[aria-pressed='true'] {
+  background: var(--dock-hot);
+  color: var(--dock-bg);
+  outline: 0;
+}
+
+.skin-card:hover b,
+.skin-card:focus-visible b,
+.skin-card[aria-pressed='true'] b,
+.skin-card:hover .skin-card-premise,
+.skin-card:focus-visible .skin-card-premise,
+.skin-card[aria-pressed='true'] .skin-card-premise {
+  color: var(--dock-bg);
+}
+
+.skin-card[aria-pressed='true'] .skin-card-title::after {
+  content: '\2022 on';
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.skin-panel-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 0.8rem 1.25rem;
+  color: var(--dock-mute);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.skin-panel-foot output {
+  color: var(--dock-hot);
+}
+
+.skin-sr {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .skin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .skin-card:nth-child(4n) {
+    border-right: 1px solid #303228;
+  }
+
+  .skin-card:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .skin-dock {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .skin-dock-toggle {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .skin-dock-name {
+    max-width: 8rem;
+  }
+
+  .skin-panel {
+    right: 0.5rem;
+    bottom: 4.15rem;
+    width: calc(100vw - 1rem);
+    max-height: calc(100vh - 5rem);
+  }
+
+  .skin-panel-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .skin-panel-tools {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .skin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skin-card,
+  .skin-card:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skin-dock.is-nudging .skin-dock-toggle {
+    animation: none;
+  }
+}
+
+@media print {
+  .skin-dock {
+    display: none;
+  }
+}

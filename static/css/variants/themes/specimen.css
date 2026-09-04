@@ -1,0 +1,160 @@
+body[data-variant='specimen'] {
+  --page: #f4ffff;
+  --text: #17353a;
+  --heading: #003d48;
+  --muted: #5f7f83;
+  --accent: #00a6b8;
+  --link: #007989;
+  --link-hover: #003d48;
+  --rule: #91d7dc;
+  --focus: #e5484d;
+  --display-font: 'Arial Narrow', Arial, sans-serif;
+  --body-font: Arial, Helvetica, sans-serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1120px;
+  --reading-width: 740px;
+  --h1: clamp(2.5rem, 5vw, 4.9rem);
+  --h2: clamp(1.75rem, 3vw, 2.65rem);
+  --h3: clamp(1.15rem, 1.7vw, 1.55rem);
+  --lead-size: clamp(1.1rem, 1.55vw, 1.35rem);
+  --reading-size: 0.96rem;
+  --body-size: 15px;
+  --heading-spacing: -0.055em;
+  --code-bg: #e1f7f8;
+  --button-bg: #003d48;
+  --button-text: #fff;
+  --button-border: 0;
+}
+
+body[data-variant='specimen']::after {
+  position: fixed;
+  z-index: 40;
+  top: 50%;
+  right: -3.2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--rule);
+  content: 'SPECIMEN OH-2026-09';
+  color: var(--accent);
+  background: #f4ffff;
+  font: 10px 'Courier New', monospace;
+  letter-spacing: 0.12em;
+  transform: rotate(90deg);
+}
+
+body[data-variant='specimen'] nav {
+  border-bottom: 1px solid var(--rule);
+}
+
+body[data-variant='specimen'] nav .container {
+  padding: 0.8rem 2rem;
+}
+
+body[data-variant='specimen'] .nav-brand::before {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.6rem;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  content: '';
+}
+
+body[data-variant='specimen'] .nav-links a {
+  color: var(--muted);
+  font: 0.68rem 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant='specimen'] main > .container {
+  border-right: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+  padding-right: clamp(1.5rem, 5vw, 5rem);
+  padding-left: clamp(1.5rem, 5vw, 5rem);
+}
+
+body[data-variant='specimen'] .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8rem;
+  gap: 3rem;
+  min-height: auto;
+  padding-top: clamp(3rem, 6vw, 5rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+body[data-variant='specimen'] .hero::after {
+  width: 7rem;
+  height: 7rem;
+  align-self: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2rem #d4f4f5, inset 0 0 0 2.1rem var(--rule);
+  content: '';
+}
+
+body[data-variant='specimen'] .hero-statement {
+  max-width: 15ch;
+  font-size: clamp(2.65rem, 4.4vw, 4.25rem);
+  font-weight: 300;
+}
+
+body[data-variant='specimen'] h1::before,
+body[data-variant='specimen'] h2::before {
+  display: block;
+  margin-bottom: 0.7rem;
+  content: 'OBSERVATION';
+  color: var(--accent);
+  font: 10px 'Courier New', monospace;
+  letter-spacing: 0.14em;
+}
+
+body[data-variant='specimen'] .entry,
+body[data-variant='specimen'] .post-item,
+body[data-variant='specimen'] .tells-row {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+  border-top: 5px solid var(--accent);
+  background: #fff;
+}
+
+body[data-variant='specimen'] .entry + .entry,
+body[data-variant='specimen'] .post-item + .post-item,
+body[data-variant='specimen'] .tells-row + .tells-row {
+  margin-top: 1.25rem;
+}
+
+body[data-variant='specimen'] .post-meta,
+body[data-variant='specimen'] .post-date,
+body[data-variant='specimen'] .entry-links {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body[data-variant='specimen'] .content {
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--rule);
+  background: #fff;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='specimen']::after {
+    display: none;
+  }
+
+  body[data-variant='specimen'] .hero {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-variant='specimen'] .hero-statement {
+    max-width: none;
+    font-size: clamp(2.1rem, 9.2vw, 2.4rem);
+  }
+
+  body[data-variant='specimen'] .hero::after {
+    display: none;
+  }
+}

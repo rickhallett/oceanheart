@@ -1,0 +1,870 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+/*
+  Glass cockpit. A head-up display: amber marks on near-black glass, panes that
+  tilt toward the pointer (--tilt-x / --tilt-y are written per panel by the
+  effects module, never more than four degrees), a slow scan line, and live
+  readouts in the corners.
+*/
+
+body[data-variant='glass-cockpit'] {
+  --page: #06080a;
+  --text: #e2d6b8;
+  --heading: #ffb000;
+  --muted: #8d8468;
+  --accent: #ffb000;
+  --link: #ffc84a;
+  --link-hover: #fff1c8;
+  --rule: rgba(255, 176, 0, 0.26);
+  --focus: #ffd166;
+  --display-font: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --body-font: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --mono-font: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --display-weight: 500;
+  --content-width: 1180px;
+  --reading-width: 720px;
+  --heading-spacing: -0.01em;
+  --heading-line: 1.2;
+  --line-height: 1.72;
+  --rule-width: 1px;
+  --code-bg: rgba(255, 176, 0, 0.05);
+  --button-bg: transparent;
+  --button-text: var(--accent);
+  --button-border: 1px solid var(--accent);
+  --button-radius: 0;
+  --chip-radius: 0;
+  --hero-height: 70vh;
+  --hero-padding: 0;
+  --entry-gap: 2.5rem;
+  --entry-padding: 1.5rem 1.7rem;
+  --nav-gap: 1.6rem;
+  --main-padding: 3rem 0 9rem;
+  --glass: rgba(9, 13, 16, 0.78);
+  --glow: 0 0 14px rgba(255, 176, 0, 0.3);
+  --tilt-x: 0;
+  --tilt-y: 0;
+  background:
+    radial-gradient(90% 60% at 50% 30%, rgba(255, 176, 0, 0.05), transparent 70%),
+    #06080a;
+}
+
+/* ---- glass: raster, vignette, scan line ---------------------------------- */
+
+body[data-variant='glass-cockpit']::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  content: '';
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(0, 0, 0, 0.6) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 176, 0, 0.035) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit']::after {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 16vh;
+  content: '';
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 176, 0, 0.04) 55%,
+    rgba(255, 176, 0, 0.13) 97%,
+    rgba(255, 176, 0, 0.35) 99%,
+    transparent 100%
+  );
+  animation: cockpit-sweep 12s linear infinite;
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit'] nav,
+body[data-variant='glass-cockpit'] main,
+body[data-variant='glass-cockpit'] footer {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-variant='glass-cockpit'] main {
+  perspective: 1600px;
+  perspective-origin: 50% 40%;
+}
+
+/* ---- readouts and reticle (built by the module) --------------------------- */
+
+body[data-variant='glass-cockpit'] .cockpit-readout {
+  position: fixed;
+  z-index: 30;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(255, 176, 0, 0.35);
+  background: rgba(6, 8, 10, 0.7);
+  color: var(--accent);
+  font: 500 0.62rem/1 var(--mono-font);
+  letter-spacing: 0.14em;
+  text-shadow: var(--glow);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='tl'] {
+  top: 4.4rem;
+  left: 1rem;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='tr'] {
+  top: 4.4rem;
+  right: 1rem;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='bl'] {
+  bottom: 1.1rem;
+  left: 1rem;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-readout[data-corner='br'] {
+  right: 1rem;
+  bottom: 4.2rem;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-reticle {
+  position: fixed;
+  z-index: 29;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(255, 176, 0, 0.75);
+  border-radius: 50%;
+  box-shadow: var(--glow);
+  opacity: 0;
+  transition: opacity 600ms ease;
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-reticle.is-live {
+  opacity: 1;
+}
+
+body[data-variant='glass-cockpit'] .cockpit-reticle::before,
+body[data-variant='glass-cockpit'] .cockpit-reticle::after {
+  position: absolute;
+  content: '';
+  background: var(--accent);
+}
+
+body[data-variant='glass-cockpit'] .cockpit-reticle::before {
+  top: 50%;
+  left: -9px;
+  width: 52px;
+  height: 1px;
+  -webkit-mask: linear-gradient(90deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
+  mask: linear-gradient(90deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
+}
+
+body[data-variant='glass-cockpit'] .cockpit-reticle::after {
+  top: -9px;
+  left: 50%;
+  width: 1px;
+  height: 52px;
+  -webkit-mask: linear-gradient(180deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
+  mask: linear-gradient(180deg, #000 0 8px, transparent 8px calc(100% - 8px), #000 calc(100% - 8px));
+}
+
+/* ---- nav ----------------------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] nav {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  border-bottom: 1px solid rgba(255, 176, 0, 0.4);
+  background: rgba(6, 8, 10, 0.86);
+}
+
+body[data-variant='glass-cockpit'] nav::after {
+  position: absolute;
+  right: 0;
+  bottom: -7px;
+  left: 0;
+  height: 6px;
+  content: '';
+  background: repeating-linear-gradient(90deg, rgba(255, 176, 0, 0.5) 0 1px, transparent 1px 2.5rem);
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit'] nav .container {
+  padding: 0.85rem clamp(1.25rem, 3vw, 2.5rem);
+}
+
+body[data-variant='glass-cockpit'] .nav-brand {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-shadow: var(--glow);
+  text-transform: uppercase;
+}
+
+body[data-variant='glass-cockpit'] .nav-brand::before {
+  content: '+ ';
+  opacity: 0.7;
+}
+
+body[data-variant='glass-cockpit'] .nav-links a {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 200ms linear, text-shadow 200ms linear;
+}
+
+body[data-variant='glass-cockpit'] .nav-links a:hover,
+body[data-variant='glass-cockpit'] .nav-links a.active {
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .nav-links a.active::before {
+  content: '\25B8 ';
+}
+
+body[data-variant='glass-cockpit'] .nav-links a.cta {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(255, 176, 0, 0.5);
+  color: var(--accent);
+}
+
+/* ---- panes --------------------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .hero,
+body[data-variant='glass-cockpit'] .entry,
+body[data-variant='glass-cockpit'] .service-row,
+body[data-variant='glass-cockpit'] .proof-row,
+body[data-variant='glass-cockpit'] .post-item,
+body[data-variant='glass-cockpit'] .content,
+body[data-variant='glass-cockpit'] .home-engage,
+body[data-variant='glass-cockpit'] .credibility-rail > div,
+body[data-variant='glass-cockpit'] .method-list > li,
+body[data-variant='glass-cockpit'] .wellbeing-focus,
+body[data-variant='glass-cockpit'] .technical-depth,
+body[data-variant='glass-cockpit'] .thread-copy {
+  position: relative;
+  border: 1px solid var(--rule);
+  background:
+    linear-gradient(var(--accent), var(--accent)) top right / 14px 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) top right / 2px 14px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px no-repeat,
+    var(--glass);
+  transform: perspective(1200px) rotateX(calc(var(--tilt-y) * 4deg)) rotateY(calc(var(--tilt-x) * -4deg));
+  transition: transform 520ms cubic-bezier(0.22, 0.8, 0.3, 1), border-color 240ms linear, box-shadow 240ms linear;
+  will-change: transform;
+}
+
+body[data-variant='glass-cockpit'] .hero::before,
+body[data-variant='glass-cockpit'] .hero::after,
+body[data-variant='glass-cockpit'] .entry::before,
+body[data-variant='glass-cockpit'] .entry::after,
+body[data-variant='glass-cockpit'] .service-row::before,
+body[data-variant='glass-cockpit'] .service-row::after,
+body[data-variant='glass-cockpit'] .proof-row::before,
+body[data-variant='glass-cockpit'] .proof-row::after,
+body[data-variant='glass-cockpit'] .post-item::before,
+body[data-variant='glass-cockpit'] .post-item::after,
+body[data-variant='glass-cockpit'] .content::before,
+body[data-variant='glass-cockpit'] .content::after,
+body[data-variant='glass-cockpit'] .home-engage::before,
+body[data-variant='glass-cockpit'] .home-engage::after,
+body[data-variant='glass-cockpit'] .credibility-rail > div::before,
+body[data-variant='glass-cockpit'] .credibility-rail > div::after,
+body[data-variant='glass-cockpit'] .method-list > li::before,
+body[data-variant='glass-cockpit'] .method-list > li::after,
+body[data-variant='glass-cockpit'] .wellbeing-focus::before,
+body[data-variant='glass-cockpit'] .wellbeing-focus::after,
+body[data-variant='glass-cockpit'] .technical-depth::before,
+body[data-variant='glass-cockpit'] .technical-depth::after,
+body[data-variant='glass-cockpit'] .thread-copy::before,
+body[data-variant='glass-cockpit'] .thread-copy::after {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 0 solid var(--accent);
+  content: '';
+  pointer-events: none;
+}
+
+body[data-variant='glass-cockpit'] .hero::before,
+body[data-variant='glass-cockpit'] .entry::before,
+body[data-variant='glass-cockpit'] .service-row::before,
+body[data-variant='glass-cockpit'] .proof-row::before,
+body[data-variant='glass-cockpit'] .post-item::before,
+body[data-variant='glass-cockpit'] .content::before,
+body[data-variant='glass-cockpit'] .home-engage::before,
+body[data-variant='glass-cockpit'] .credibility-rail > div::before,
+body[data-variant='glass-cockpit'] .method-list > li::before,
+body[data-variant='glass-cockpit'] .wellbeing-focus::before,
+body[data-variant='glass-cockpit'] .technical-depth::before,
+body[data-variant='glass-cockpit'] .thread-copy::before {
+  top: -1px;
+  left: -1px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+body[data-variant='glass-cockpit'] .hero::after,
+body[data-variant='glass-cockpit'] .entry::after,
+body[data-variant='glass-cockpit'] .service-row::after,
+body[data-variant='glass-cockpit'] .proof-row::after,
+body[data-variant='glass-cockpit'] .post-item::after,
+body[data-variant='glass-cockpit'] .content::after,
+body[data-variant='glass-cockpit'] .home-engage::after,
+body[data-variant='glass-cockpit'] .credibility-rail > div::after,
+body[data-variant='glass-cockpit'] .method-list > li::after,
+body[data-variant='glass-cockpit'] .wellbeing-focus::after,
+body[data-variant='glass-cockpit'] .technical-depth::after,
+body[data-variant='glass-cockpit'] .thread-copy::after {
+  right: -1px;
+  bottom: -1px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+}
+
+body[data-variant='glass-cockpit'] .hero:hover,
+body[data-variant='glass-cockpit'] .entry:hover,
+body[data-variant='glass-cockpit'] .service-row:hover,
+body[data-variant='glass-cockpit'] .proof-row:hover,
+body[data-variant='glass-cockpit'] .post-item:hover,
+body[data-variant='glass-cockpit'] .content:hover,
+body[data-variant='glass-cockpit'] .home-engage:hover,
+body[data-variant='glass-cockpit'] .credibility-rail > div:hover,
+body[data-variant='glass-cockpit'] .method-list > li:hover,
+body[data-variant='glass-cockpit'] .wellbeing-focus:hover,
+body[data-variant='glass-cockpit'] .technical-depth:hover,
+body[data-variant='glass-cockpit'] .thread-copy:hover {
+  border-color: rgba(255, 176, 0, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 176, 0, 0.08), 0 0 40px -10px rgba(255, 176, 0, 0.25);
+}
+
+/* ---- hero ---------------------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .hero {
+  display: flex;
+  align-items: center;
+  padding: clamp(2rem, 6vw, 4.5rem);
+}
+
+body[data-variant='glass-cockpit'] .hero-copy {
+  max-width: 780px;
+}
+
+body[data-variant='glass-cockpit'] .hero-copy::before {
+  display: block;
+  margin: 0 0 1.6rem;
+  content: 'HUD 01 \2022 PRIMARY \2022 SYS NOMINAL';
+  color: var(--muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+}
+
+body[data-variant='glass-cockpit'] .hero-statement {
+  color: var(--accent);
+  font-weight: 500;
+  text-shadow: 0 0 22px rgba(255, 176, 0, 0.35);
+}
+
+body[data-variant='glass-cockpit'] .hero-mark {
+  filter: drop-shadow(var(--glow));
+}
+
+body[data-variant='glass-cockpit'] .lead {
+  color: var(--text);
+  font-weight: 300;
+}
+
+body[data-variant='glass-cockpit'] .hero-context {
+  color: var(--muted);
+}
+
+/* ---- headings & prose ---------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] h1,
+body[data-variant='glass-cockpit'] h2,
+body[data-variant='glass-cockpit'] h3 {
+  text-shadow: 0 0 18px rgba(255, 176, 0, 0.22);
+}
+
+body[data-variant='glass-cockpit'] h2::before {
+  content: '\25B8 ';
+  color: var(--accent);
+  opacity: 0.75;
+}
+
+body[data-variant='glass-cockpit'] h3 {
+  color: var(--link-hover);
+  text-shadow: none;
+}
+
+body[data-variant='glass-cockpit'] .section-intro > p:last-child {
+  color: var(--muted);
+}
+
+body[data-variant='glass-cockpit'] .content {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+body[data-variant='glass-cockpit'] .content > p:first-of-type {
+  color: var(--link-hover);
+}
+
+body[data-variant='glass-cockpit'] .content h2 {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px dashed var(--rule);
+}
+
+body[data-variant='glass-cockpit'] .content h3 {
+  color: var(--accent);
+}
+
+body[data-variant='glass-cockpit'] .content a {
+  text-decoration-color: rgba(255, 176, 0, 0.5);
+}
+
+body[data-variant='glass-cockpit'] blockquote {
+  padding-left: 1.2rem;
+  border-left: 2px solid var(--accent);
+}
+
+body[data-variant='glass-cockpit'] pre {
+  border-color: var(--rule);
+}
+
+body[data-variant='glass-cockpit'] code {
+  color: var(--link-hover);
+  font-size: 0.9em;
+}
+
+body[data-variant='glass-cockpit'] th {
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- records ------------------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .service-row + .service-row,
+body[data-variant='glass-cockpit'] .proof-row + .proof-row,
+body[data-variant='glass-cockpit'] .post-item + .post-item,
+body[data-variant='glass-cockpit'] .door-list .entry + .entry {
+  margin-top: 0.75rem;
+}
+
+body[data-variant='glass-cockpit'] .post-item {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: 1.2rem 1.5rem;
+}
+
+body[data-variant='glass-cockpit'] .post-item .post-excerpt {
+  grid-column: 2;
+  margin: 0.3rem 0 0;
+}
+
+body[data-variant='glass-cockpit'] .post-date {
+  color: var(--accent);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body[data-variant='glass-cockpit'] .post-title {
+  color: var(--link-hover);
+}
+
+body[data-variant='glass-cockpit'] .entry-name,
+body[data-variant='glass-cockpit'] .service-heading h3,
+body[data-variant='glass-cockpit'] .proof-heading h3 {
+  color: var(--link-hover);
+  font-weight: 500;
+}
+
+body[data-variant='glass-cockpit'] .entry-lead {
+  color: var(--text);
+}
+
+body[data-variant='glass-cockpit'] .entry-links a,
+body[data-variant='glass-cockpit'] .proof-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+body[data-variant='glass-cockpit'] .entry-links a:hover,
+body[data-variant='glass-cockpit'] .proof-link:hover {
+  color: var(--link-hover);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .door-list .entry.is-first {
+  padding-left: 1.7rem;
+  border-left: 1px solid var(--rule);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* ---- chips and meta ------------------------------------------------------ */
+
+body[data-variant='glass-cockpit'] .door-status {
+  border-color: rgba(255, 176, 0, 0.35);
+  color: var(--muted);
+  letter-spacing: 0.14em;
+}
+
+body[data-variant='glass-cockpit'] .door-status::before {
+  border-radius: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+body[data-variant='glass-cockpit'] .door-status[data-state='open'] {
+  background: rgba(255, 176, 0, 0.12);
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .door-status[data-state='open']::before {
+  animation: cockpit-blink 2.4s steps(2, jump-none) infinite;
+}
+
+body[data-variant='glass-cockpit'] .door-status[data-state='soon'] {
+  border-style: dashed;
+  color: var(--link);
+}
+
+body[data-variant='glass-cockpit'] .door-status[data-state='research'] {
+  border-style: dotted;
+}
+
+body[data-variant='glass-cockpit'] .entry-meta span + span::before {
+  content: ' \2502 ';
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+body[data-variant='glass-cockpit'] .post-tag {
+  border-color: rgba(255, 176, 0, 0.4);
+  color: var(--accent);
+}
+
+body[data-variant='glass-cockpit'] .service-number,
+body[data-variant='glass-cockpit'] .proof-kind,
+body[data-variant='glass-cockpit'] .brief-label {
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .service-number::before,
+body[data-variant='glass-cockpit'] .proof-kind::before {
+  content: '[ ';
+  opacity: 0.6;
+}
+
+body[data-variant='glass-cockpit'] .service-number::after,
+body[data-variant='glass-cockpit'] .proof-kind::after {
+  content: ' ]';
+  opacity: 0.6;
+}
+
+/* ---- credibility rail ---------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .credibility-rail {
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+}
+
+body[data-variant='glass-cockpit'] .credibility-rail > div {
+  padding: 1.2rem 1.4rem;
+}
+
+body[data-variant='glass-cockpit'] .credibility-rail strong {
+  color: var(--accent);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .credibility-rail span {
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+}
+
+/* ---- method, focus, depth ------------------------------------------------ */
+
+body[data-variant='glass-cockpit'] .method-list {
+  border-top: 0;
+}
+
+body[data-variant='glass-cockpit'] .method-list > li {
+  margin-bottom: 0.6rem;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+body[data-variant='glass-cockpit'] .method-list > li > span {
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .method-list h3 {
+  font-weight: 500;
+}
+
+body[data-variant='glass-cockpit'] .wellbeing-focus,
+body[data-variant='glass-cockpit'] .technical-depth {
+  padding: clamp(1.5rem, 4vw, 2.6rem);
+}
+
+body[data-variant='glass-cockpit'] .boundary-note {
+  padding-left: 1.2rem;
+  border-left: 2px solid var(--accent);
+}
+
+/* ---- engage & buttons ---------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .home-engage {
+  padding: clamp(1.8rem, 5vw, 3.5rem);
+}
+
+body[data-variant='glass-cockpit'] .engage-line {
+  color: var(--text);
+  font-weight: 300;
+}
+
+body[data-variant='glass-cockpit'] .button,
+body[data-variant='glass-cockpit'] .cta,
+body[data-variant='glass-cockpit'] .cv-download,
+body[data-variant='glass-cockpit'] .engage-cta {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  transition: background-color 200ms linear, color 200ms linear, box-shadow 200ms linear;
+}
+
+body[data-variant='glass-cockpit'] .button-primary {
+  background: var(--accent);
+  color: #06080a;
+}
+
+body[data-variant='glass-cockpit'] .button-primary:hover {
+  background: #ffd166;
+  color: #06080a;
+  box-shadow: 0 0 30px rgba(255, 176, 0, 0.4);
+}
+
+body[data-variant='glass-cockpit'] .button-quiet {
+  border: 1px solid rgba(255, 176, 0, 0.45);
+  color: var(--accent);
+}
+
+body[data-variant='glass-cockpit'] .button-quiet:hover {
+  background: rgba(255, 176, 0, 0.12);
+  color: var(--link-hover);
+}
+
+body[data-variant='glass-cockpit'] .intent button {
+  border-color: rgba(255, 176, 0, 0.35);
+  color: var(--text);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant='glass-cockpit'] .intent button:hover,
+body[data-variant='glass-cockpit'] .intent button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: rgba(255, 176, 0, 0.12);
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+body[data-variant='glass-cockpit'] .subject-line code {
+  color: var(--accent);
+}
+
+/* ---- draft strip, tells ---------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] .draft-strip {
+  border-bottom-color: var(--rule);
+}
+
+body[data-variant='glass-cockpit'] .tells-search {
+  border-color: var(--rule);
+  background: var(--glass);
+  color: var(--accent);
+}
+
+/* ---- footer -------------------------------------------------------------- */
+
+body[data-variant='glass-cockpit'] footer {
+  border-top: 1px solid rgba(255, 176, 0, 0.4);
+  background: rgba(6, 8, 10, 0.86);
+  color: var(--muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+body[data-variant='glass-cockpit'] footer::before {
+  display: block;
+  height: 6px;
+  content: '';
+  background: repeating-linear-gradient(90deg, rgba(255, 176, 0, 0.5) 0 1px, transparent 1px 2.5rem);
+}
+
+body[data-variant='glass-cockpit'] footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+body[data-variant='glass-cockpit'] footer a:hover {
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+
+/* ---- motion -------------------------------------------------------------- */
+
+@keyframes cockpit-sweep {
+  from {
+    transform: translate3d(0, -16vh, 0);
+  }
+
+  to {
+    transform: translate3d(0, 100vh, 0);
+  }
+}
+
+@keyframes cockpit-blink {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.25;
+  }
+}
+
+/* ---- small screens ------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant='glass-cockpit'] {
+    --entry-padding: 1.2rem 1.1rem;
+    --hero-height: auto;
+  }
+
+  body[data-variant='glass-cockpit'] .cockpit-readout,
+  body[data-variant='glass-cockpit'] .cockpit-reticle {
+    display: none;
+  }
+
+  body[data-variant='glass-cockpit'] nav {
+    position: relative;
+  }
+
+  body[data-variant='glass-cockpit'] nav .container {
+    padding: 0.8rem 1rem;
+  }
+
+  body[data-variant='glass-cockpit'] main {
+    perspective: none;
+  }
+
+  body[data-variant='glass-cockpit'] .hero,
+  body[data-variant='glass-cockpit'] .entry,
+  body[data-variant='glass-cockpit'] .service-row,
+  body[data-variant='glass-cockpit'] .proof-row,
+  body[data-variant='glass-cockpit'] .post-item,
+  body[data-variant='glass-cockpit'] .content,
+  body[data-variant='glass-cockpit'] .home-engage,
+  body[data-variant='glass-cockpit'] .credibility-rail > div,
+  body[data-variant='glass-cockpit'] .method-list > li,
+  body[data-variant='glass-cockpit'] .wellbeing-focus,
+  body[data-variant='glass-cockpit'] .technical-depth,
+  body[data-variant='glass-cockpit'] .thread-copy {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  body[data-variant='glass-cockpit'] .hero {
+    min-height: auto;
+    padding: 1.6rem 1.2rem;
+  }
+
+  body[data-variant='glass-cockpit'] .post-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 1.1rem;
+  }
+
+  body[data-variant='glass-cockpit'] .post-item .post-excerpt {
+    grid-column: 1;
+  }
+
+  body[data-variant='glass-cockpit'] .content,
+  body[data-variant='glass-cockpit'] .home-engage,
+  body[data-variant='glass-cockpit'] .wellbeing-focus,
+  body[data-variant='glass-cockpit'] .technical-depth {
+    padding: 1.2rem 1.1rem;
+  }
+
+  body[data-variant='glass-cockpit'] .credibility-rail {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-variant='glass-cockpit'] .method-list > li {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    padding: 1rem;
+  }
+
+  body[data-variant='glass-cockpit'] .door-list .entry.is-first {
+    padding-left: 1.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant='glass-cockpit']::after {
+    top: 38vh;
+    animation: none;
+  }
+
+  body[data-variant='glass-cockpit'] .door-status[data-state='open']::before {
+    animation: none;
+  }
+
+  body[data-variant='glass-cockpit'] .hero,
+  body[data-variant='glass-cockpit'] .entry,
+  body[data-variant='glass-cockpit'] .service-row,
+  body[data-variant='glass-cockpit'] .proof-row,
+  body[data-variant='glass-cockpit'] .post-item,
+  body[data-variant='glass-cockpit'] .content,
+  body[data-variant='glass-cockpit'] .home-engage,
+  body[data-variant='glass-cockpit'] .credibility-rail > div,
+  body[data-variant='glass-cockpit'] .method-list > li,
+  body[data-variant='glass-cockpit'] .wellbeing-focus,
+  body[data-variant='glass-cockpit'] .technical-depth,
+  body[data-variant='glass-cockpit'] .thread-copy {
+    transform: none;
+    transition: none;
+  }
+
+  body[data-variant='glass-cockpit'] .cockpit-reticle {
+    transition: none;
+  }
+}

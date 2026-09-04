@@ -1,0 +1,155 @@
+body[data-variant='acid-index'] {
+  --page: #edff00;
+  --text: #080808;
+  --heading: #080808;
+  --muted: #3d2c37;
+  --accent: #ff30c9;
+  --link: #080808;
+  --link-hover: #ffffff;
+  --rule: #080808;
+  --focus: #00a8ff;
+  --display-font: Impact, 'Arial Black', Arial, sans-serif;
+  --body-font: Arial, Helvetica, sans-serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1240px;
+  --reading-width: 760px;
+  --heading-spacing: -0.045em;
+  --heading-line: 0.86;
+  --line-height: 1.48;
+  --rule-width: 2px;
+  --button-bg: #080808;
+  --button-text: #edff00;
+  --button-border: 0;
+}
+
+body[data-variant='acid-index'] nav {
+  border-bottom: 5px solid #080808;
+  background: #ff30c9;
+  transform: rotate(-0.2deg);
+}
+
+body[data-variant='acid-index'] nav .container {
+  padding: 0.75rem 2rem;
+}
+
+body[data-variant='acid-index'] .nav-brand {
+  padding: 0.3rem 0.5rem;
+  background: #080808;
+  color: #fff;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+body[data-variant='acid-index'] .nav-links a {
+  font: 900 0.72rem Arial, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body[data-variant='acid-index'] .nav-links a:hover {
+  color: #fff;
+}
+
+body[data-variant='acid-index'] main > .container {
+  padding-top: 2rem;
+}
+
+body[data-variant='acid-index'] .hero {
+  min-height: 70vh;
+  padding: clamp(2rem, 5vw, 5rem);
+  border: 5px solid #080808;
+  background: #ff30c9;
+  box-shadow: 1rem 1rem 0 #00a8ff;
+  transform: rotate(-0.65deg);
+}
+
+body[data-variant='acid-index'] .hero-copy {
+  max-width: 1050px;
+}
+
+body[data-variant='acid-index'] .hero-statement {
+  max-width: 17ch;
+  text-transform: uppercase;
+}
+
+body[data-variant='acid-index'] .hero .lead {
+  max-width: 45ch;
+  padding: 0.65rem 0.8rem;
+  background: #fff;
+  color: #080808;
+  font-weight: 700;
+}
+
+body[data-variant='acid-index'] .hero-mark {
+  position: absolute;
+  right: 3rem;
+  bottom: 2rem;
+  width: clamp(5rem, 10vw, 8rem);
+  color: #edff00;
+  transform: rotate(12deg);
+}
+
+body[data-variant='acid-index'] .home-projects,
+body[data-variant='acid-index'] .home-engage,
+body[data-variant='acid-index'] .post-list,
+body[data-variant='acid-index'] .tells-page {
+  padding: 1.5rem;
+  border: 5px solid #080808;
+  background: #fff;
+  box-shadow: -0.75rem 0.75rem 0 #ff30c9;
+}
+
+body[data-variant='acid-index'] .entry,
+body[data-variant='acid-index'] .post-item,
+body[data-variant='acid-index'] .tells-row {
+  position: relative;
+  margin: 0.8rem 0;
+  padding: 1.25rem;
+  border: 2px solid #080808;
+  background: #edff00;
+  transform: rotate(var(--record-tilt, 0deg));
+}
+
+body[data-variant='acid-index'] .entry::after,
+body[data-variant='acid-index'] .post-item::after,
+body[data-variant='acid-index'] .tells-row::after {
+  position: absolute;
+  top: -0.65rem;
+  right: 0.8rem;
+  padding: 0.2rem 0.45rem;
+  content: attr(data-record);
+  background: #080808;
+  color: #fff;
+  font: 700 0.62rem 'Courier New', monospace;
+}
+
+body[data-variant='acid-index'] .content {
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border: 5px solid #080808;
+  background: #fff;
+  box-shadow: 1rem 1rem 0 #00a8ff;
+}
+
+body[data-variant='acid-index'] .content h2 {
+  margin-left: -1rem;
+  padding: 0.3rem 0.6rem;
+  background: #ff30c9;
+  box-decoration-break: clone;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='acid-index'] nav .container {
+    padding: 0.75rem 1rem;
+  }
+
+  body[data-variant='acid-index'] .hero {
+    min-height: 0;
+    padding: 2rem 1.25rem 7rem;
+    box-shadow: 0.5rem 0.5rem 0 #00a8ff;
+  }
+
+  body[data-variant='acid-index'] .hero-mark {
+    right: 1.25rem;
+    bottom: 1rem;
+  }
+}

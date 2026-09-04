@@ -88,3 +88,35 @@ production lineage ambiguous.
 
 The primary checkout may contain unrelated work. Resolve the registered
 worktree holding `main` before editing or deploying.
+
+## Skins (visitor-chosen visual systems)
+
+Every public page can be re-skinned in place by the visitor. The dock in the
+bottom-right corner lists the systems; a choice persists in `localStorage`
+(`oceanheart-skin`) and is mirrored into `?theme=<slug>` so a link carries the
+skin. `[` and `]` cycle, `Esc` closes, `oceanheartSkins.apply('<slug>')` works
+from the console. Private surfaces (`privateSurface = true`) never load skins.
+
+How it fits together:
+
+- `data/variants.json` is the registry: number, slug, name, family, premise,
+  structure, a two-colour swatch, and whether the skin has an effects module.
+- `static/css/variants/base.css` restyles the site's class vocabulary through
+  CSS variables. It is inert until `body[data-variant]` is set.
+- `static/css/variants/themes/<slug>.css` sets the variables and reshapes the
+  page. Every rule is scoped to `body[data-variant='<slug>']`.
+- `static/js/variants/<slug>.js` (optional) registers
+  `window.oceanheartSkinEffects['<slug>'] = { mount, unmount }`. `unmount`
+  must leave no trace: skins are previewed on hover.
+- `static/js/variants.js` loads skins on demand, swaps them without a page
+  load (View Transitions where available), and drives the dock.
+- `layouts/partials/head.html` applies the stored or URL skin before first
+  paint; `layouts/partials/variant-dock.html` renders the dock from the registry.
+
+To add a skin: append a registry entry, add the theme stylesheet, add an
+effects module if `effects` is true, and optionally one line in
+`static/css/variants/scale.css` for its title sizes.
+
+`/doors/` is a draft landing-page route (`content/doors.md`, `draft = true`)
+that reuses the same vocabulary, so every skin styles it. Build with `-D` to
+preview it; `?from=swanage|ai|systems` changes which door comes first.

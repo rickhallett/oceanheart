@@ -1,0 +1,314 @@
+[
+  {
+    "number": "01",
+    "slug": "signal-room",
+    "name": "Signal room",
+    "family": "instrument",
+    "premise": "A live operations console where every claim reads like an observable system state.",
+    "structure": "Fixed telemetry rail, dense status rows, amber-on-black controls",
+    "swatch": [
+      "#ffbd28",
+      "#070906"
+    ],
+    "effects": false
+  },
+  {
+    "number": "02",
+    "slug": "looseleaf",
+    "name": "Looseleaf",
+    "family": "object",
+    "premise": "A working notebook with pencilled marginalia, taped evidence and uneven page edges.",
+    "structure": "Paper sheets, handwritten side notes, loose editorial rhythm",
+    "swatch": [
+      "#f0e6cd",
+      "#244a6b"
+    ],
+    "effects": false
+  },
+  {
+    "number": "03",
+    "slug": "redline",
+    "name": "Redline",
+    "family": "object",
+    "premise": "A severe Swiss poster system that turns each page into a public declaration.",
+    "structure": "Overscale type, hard grid, red indexing and exposed numbering",
+    "swatch": [
+      "#e1211a",
+      "#f2efe5"
+    ],
+    "effects": false
+  },
+  {
+    "number": "04",
+    "slug": "specimen",
+    "name": "Specimen",
+    "family": "instrument",
+    "premise": "A clinical observation bench where projects are cases and methods are protocols.",
+    "structure": "White lab field, cyan rules, labelled samples and a vertical index",
+    "swatch": [
+      "#00a6b8",
+      "#f4ffff"
+    ],
+    "effects": false
+  },
+  {
+    "number": "05",
+    "slug": "reliquary",
+    "name": "Reliquary",
+    "family": "object",
+    "premise": "A dark cabinet of hard-won objects, closer to a private museum than a portfolio.",
+    "structure": "Burgundy chambers, brass frames, centred serif inscriptions",
+    "swatch": [
+      "#d7b46a",
+      "#2e0714"
+    ],
+    "effects": false
+  },
+  {
+    "number": "06",
+    "slug": "the-daily",
+    "name": "The Daily",
+    "family": "object",
+    "premise": "A broadsheet newspaper that treats technical work as reported fact.",
+    "structure": "Masthead, black ink, ruled columns and front-page hierarchy",
+    "swatch": [
+      "#181815",
+      "#e9e4d6"
+    ],
+    "effects": false
+  },
+  {
+    "number": "07",
+    "slug": "construction-notice",
+    "name": "Construction notice",
+    "family": "instrument",
+    "premise": "A public works board: blunt, temporary-looking and impossible to ignore.",
+    "structure": "Safety yellow, black slabs, stencil labels and taped boundaries",
+    "swatch": [
+      "#ffd400",
+      "#0a0a0a"
+    ],
+    "effects": false
+  },
+  {
+    "number": "08",
+    "slug": "tide-table",
+    "name": "Tide table",
+    "family": "world",
+    "premise": "A slow marine chart where work appears as bearings, depth and change over time.",
+    "structure": "Deep blue field, pale soundings, drifting columns and contour rules",
+    "swatch": [
+      "#9fe3dd",
+      "#052c3a"
+    ],
+    "effects": false
+  },
+  {
+    "number": "09",
+    "slug": "green-screen",
+    "name": "Green screen",
+    "family": "instrument",
+    "premise": "A phosphor terminal that strips the site back to commands, records and traces.",
+    "structure": "CRT scanlines, compact monospace, prompt navigation and zero ornament",
+    "swatch": [
+      "#60ff8e",
+      "#031508"
+    ],
+    "effects": false
+  },
+  {
+    "number": "10",
+    "slug": "field-manual",
+    "name": "Field manual",
+    "family": "object",
+    "premise": "A battered operator handbook designed to be used with cold hands and bad signal.",
+    "structure": "Olive canvas, orange tabs, binder sections and numbered procedures",
+    "swatch": [
+      "#ff9f1c",
+      "#3f4630"
+    ],
+    "effects": false
+  },
+  {
+    "number": "11",
+    "slug": "night-liturgy",
+    "name": "Night liturgy",
+    "family": "world",
+    "premise": "A quiet nocturnal sequence that gives reflection the weight of a repeated practice.",
+    "structure": "Indigo void, silver text, centred procession and measured circular marks",
+    "swatch": [
+      "#c9c3e8",
+      "#0f0c25"
+    ],
+    "effects": false
+  },
+  {
+    "number": "12",
+    "slug": "primary-motion",
+    "name": "Primary motion",
+    "family": "world",
+    "premise": "A Bauhaus playfield where sections collide as colour, type and moving geometry.",
+    "structure": "Cream ground, primary blocks, diagonal flow and asymmetric composition",
+    "swatch": [
+      "#e52b20",
+      "#1b4fb8"
+    ],
+    "effects": false
+  },
+  {
+    "number": "13",
+    "slug": "orbital-desk",
+    "name": "Orbital desk",
+    "family": "instrument",
+    "premise": "A 1970s mission planner built around trajectories, checklists and human judgement.",
+    "structure": "Silver shell, navy panels, circular wayfinding and orange instrument lights",
+    "swatch": [
+      "#ed6a21",
+      "#243b53"
+    ],
+    "effects": false
+  },
+  {
+    "number": "14",
+    "slug": "card-catalogue",
+    "name": "Card catalogue",
+    "family": "object",
+    "premise": "A library index where every page is a physical record filed for later retrieval.",
+    "structure": "Oak desk, cream cards, drawer labels and a persistent subject index",
+    "swatch": [
+      "#eee0bb",
+      "#6c4427"
+    ],
+    "effects": false
+  },
+  {
+    "number": "15",
+    "slug": "whiteout",
+    "name": "Whiteout",
+    "family": "world",
+    "premise": "An almost empty typographic landscape that makes one sentence occupy a room.",
+    "structure": "White space, hairline navigation, isolated text and extreme scale shifts",
+    "swatch": [
+      "#ffffff",
+      "#d9d9d9"
+    ],
+    "effects": false
+  },
+  {
+    "number": "16",
+    "slug": "packet-garden",
+    "name": "Packet garden",
+    "family": "world",
+    "premise": "A living network where signals sprout, branch and answer the visitor's movement.",
+    "structure": "Bioluminescent nodes, organic circuitry, reactive depth and soft system telemetry",
+    "swatch": [
+      "#b8ff5c",
+      "#432a78"
+    ],
+    "effects": true
+  },
+  {
+    "number": "17",
+    "slug": "acid-index",
+    "name": "Acid index",
+    "family": "object",
+    "premise": "A photocopied culture sheet dragged through fluorescent ink and hard editorial cuts.",
+    "structure": "Torn blocks, poisonous colour, rotated records and aggressive marginal type",
+    "swatch": [
+      "#ff4fd8",
+      "#edff00"
+    ],
+    "effects": true
+  },
+  {
+    "number": "18",
+    "slug": "vector-field",
+    "name": "Vector field",
+    "family": "instrument",
+    "premise": "A spatial command surface whose geometry responds to the person reading it.",
+    "structure": "Coordinate frames, kinetic type, pointer-reactive planes and electric plotting marks",
+    "swatch": [
+      "#35f2ff",
+      "#ff3158"
+    ],
+    "effects": true
+  },
+  {
+    "number": "19",
+    "slug": "deep-water",
+    "name": "Deep water",
+    "family": "world",
+    "premise": "The site seen from below the surface: light caustics move across glass panels and nothing sits still.",
+    "structure": "Living canvas water, frosted glass cards, sea-green on abyssal ink, slow refraction on hover",
+    "swatch": [
+      "#7fd6c8",
+      "#041a22"
+    ],
+    "effects": true
+  },
+  {
+    "number": "20",
+    "slug": "blueprint",
+    "name": "Blueprint",
+    "family": "instrument",
+    "premise": "A cyanotype drafting sheet where every section is a drawn part and dimensions appear as you read.",
+    "structure": "Prussian blue ground, white line-work, title block, dimension lines drawn on scroll",
+    "swatch": [
+      "#eaf3ff",
+      "#0b3d91"
+    ],
+    "effects": true
+  },
+  {
+    "number": "21",
+    "slug": "halftone-press",
+    "name": "Halftone press",
+    "family": "object",
+    "premise": "A misregistered print proof: CMYK plates slip, halftone dots swell, and headlines bleed at the edges.",
+    "structure": "Halftone dot fields, offset colour plates, registration marks, stamped proof marks",
+    "swatch": [
+      "#ff2d95",
+      "#f6f1e6"
+    ],
+    "effects": false
+  },
+  {
+    "number": "22",
+    "slug": "heavy-type",
+    "name": "Heavy type",
+    "family": "world",
+    "premise": "Nothing but type, and the type has mass: weight and width answer to how fast you scroll.",
+    "structure": "Variable-font axes driven by scroll velocity, one column, black on unbleached white",
+    "swatch": [
+      "#111111",
+      "#f2f2ef"
+    ],
+    "effects": true
+  },
+  {
+    "number": "23",
+    "slug": "glass-cockpit",
+    "name": "Glass cockpit",
+    "family": "instrument",
+    "premise": "A head-up display floating in three dimensions; panels tilt toward the pointer and readouts track you.",
+    "structure": "Perspective-tilted panes, amber HUD marks, sweeping scan line, live pointer readouts",
+    "swatch": [
+      "#ffb000",
+      "#06080a"
+    ],
+    "effects": true
+  },
+  {
+    "number": "24",
+    "slug": "raked-sand",
+    "name": "Raked sand",
+    "family": "world",
+    "premise": "A dry garden: raked lines flow around each section like stones, and the page asks for slowness.",
+    "structure": "Generative raked-line canvas, sumi ink type, vertical labels, unhurried spacing",
+    "swatch": [
+      "#e4d8bf",
+      "#2b2620"
+    ],
+    "effects": true
+  }
+]

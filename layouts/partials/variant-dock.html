@@ -1,0 +1,43 @@
+{{- $skins := site.Data.variants -}}
+<div class="skin-dock" data-variant-dock data-open="false">
+  <button class="skin-dock-toggle" type="button" data-dock-toggle aria-expanded="false" aria-controls="skin-panel" aria-label="Change the visual system for this site">
+    <span class="skin-dock-index" data-dock-index>00/{{ printf "%02d" (len $skins) }}</span>
+    <span class="skin-dock-name" data-dock-name>House style</span>
+    <span class="skin-dock-action">Skin</span>
+  </button>
+  <div class="skin-panel" id="skin-panel" data-dock-panel hidden>
+    <header class="skin-panel-head">
+      <div>
+        <p>Oceanheart / visual systems</p>
+        <h2>Same site. {{ len $skins }} skins.<br>Pick one and it stays.</h2>
+        <p class="skin-panel-note">Hover to try, click to keep. Every page follows you. <kbd>[</kbd> and <kbd>]</kbd> cycle, <kbd>Esc</kbd> closes.</p>
+      </div>
+      <div class="skin-panel-tools">
+        <button type="button" data-skin-shuffle>Surprise me</button>
+        <button type="button" data-skin-share>Copy a link to this skin</button>
+      </div>
+    </header>
+    <div class="skin-grid" role="group" aria-label="Visual systems">
+      <button type="button" class="skin-card skin-card-house" data-skin="" aria-pressed="true">
+        <i class="skin-swatch" aria-hidden="true"></i>
+        <span class="skin-card-title"><b>00</b> House style</span>
+        <span class="skin-card-premise">The site as shipped: warm dark ground, bone type, one oxblood mark.</span>
+      </button>
+      {{- range $skins }}
+      <button type="button" class="skin-card" data-skin="{{ .slug }}" aria-pressed="false" style="--swatch-a: {{ index .swatch 0 }}; --swatch-b: {{ index .swatch 1 }};">
+        <i class="skin-swatch" aria-hidden="true"></i>
+        <span class="skin-card-title"><b>{{ .number }}</b> {{ .name }}</span>
+        <span class="skin-card-premise">{{ .premise }}</span>
+      </button>
+      {{- end }}
+    </div>
+    <footer class="skin-panel-foot">
+      <span>{{ len $skins }} systems &times; every route</span>
+      <span>Built in CSS, JavaScript and HTML. No page reload.</span>
+      <span>One body of work</span>
+    </footer>
+  </div>
+  <output class="skin-sr" data-dock-live aria-live="polite"></output>
+</div>
+<script type="application/json" id="variant-registry">{{ $skins | jsonify | safeJS }}</script>
+<script src="/js/variants.js" defer></script>

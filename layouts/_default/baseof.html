@@ -4,6 +4,7 @@
   {{ partial "head.html" . }}
 </head>
 <body{{ if .Params.privateSurface }} class="private-surface"{{ end }}>
+  {{ if not .Params.privateSurface }}<script>(function(){var v=document.documentElement.getAttribute('data-variant');if(v){document.body.setAttribute('data-variant',v);}})();</script>{{ end }}
   {{ if .Params.privateSurface }}
   {{ partial "therapy-nav.html" . }}
   {{ else }}
@@ -20,6 +21,7 @@
   {{ partial "therapy-footer.html" . }}
   {{ else }}
   {{ partial "footer.html" . }}
+  {{ partial "variant-dock.html" . }}
   {{ if not .IsHome }}<script src="/js/decrypt-reveal.js" defer></script>{{ end }}
   {{ if .IsHome }}<script src="/js/glyph-rain.js" defer></script>{{ end }}
   {{ end }}

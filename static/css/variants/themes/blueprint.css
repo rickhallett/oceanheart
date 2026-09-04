@@ -1,0 +1,763 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+
+/*
+  Blueprint. A cyanotype drafting sheet: Prussian blue ground, pale line-work,
+  grid paper, a fixed title block, and (via js/variants/blueprint.js) dimension
+  lines that draw themselves as each part scrolls into view.
+*/
+
+body[data-variant='blueprint'] {
+  --page: #0b3d91;
+  --ink: #eaf3ff;
+  --text: #d9e7fb;
+  --heading: #ffffff;
+  --muted: #9dbbe6;
+  --accent: #eaf3ff;
+  --link: #ffffff;
+  --link-hover: #ffe58a;
+  --link-rule: rgba(234, 243, 255, 0.5);
+  --rule: rgba(234, 243, 255, 0.6);
+  --rule-soft: rgba(234, 243, 255, 0.28);
+  --focus: #ffe58a;
+  --display-font: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', monospace;
+  --display-weight: 500;
+  --body-font: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', monospace;
+  --mono-font: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', monospace;
+  --content-width: 1180px;
+  --reading-width: 74ch;
+  --h1: clamp(1.9rem, 3vw, 3rem);
+  --h2: clamp(1.15rem, 1.7vw, 1.65rem);
+  --h3: clamp(0.95rem, 1.1vw, 1.1rem);
+  --lead-size: clamp(0.95rem, 1.1vw, 1.08rem);
+  --heading-spacing: 0.05em;
+  --heading-line: 1.2;
+  --line-height: 1.7;
+  --rule-width: 1px;
+  --code-bg: rgba(3, 18, 54, 0.45);
+  --button-bg: #eaf3ff;
+  --button-text: #0b3d91;
+  --button-border: 1px solid #eaf3ff;
+  --button-radius: 0;
+  --chip-radius: 0;
+  --section-space: clamp(4rem, 7vw, 6rem);
+  --hero-height: 66vh;
+  --hero-padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 3.5rem);
+  --entry-gap: 3rem;
+  --entry-padding: 2rem 0;
+  --nav-gap: 1.75rem;
+  --main-padding: 3.5rem 0 13rem;
+  background-color: var(--page);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(234, 243, 255, 0.14) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(90deg, rgba(234, 243, 255, 0.14) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(234, 243, 255, 0.055) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(234, 243, 255, 0.055) 0 1px, transparent 1px 12px);
+  background-position: -1px -1px;
+}
+
+/* uneven cyanotype exposure, behind everything */
+body[data-variant='blueprint']::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 20% 10%, rgba(255, 255, 255, 0.07), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgba(1, 10, 38, 0.5), transparent 62%);
+}
+
+/* the sheet border: double frame inside the viewport */
+body[data-variant='blueprint']::after {
+  position: fixed;
+  z-index: 30;
+  inset: 10px;
+  content: '';
+  pointer-events: none;
+  border: 1px solid rgba(234, 243, 255, 0.75);
+  outline: 1px solid rgba(234, 243, 255, 0.3);
+  outline-offset: 3px;
+}
+
+/* the title block, bottom-left, drawn entirely from one pseudo-element */
+body[data-variant='blueprint'] main::after {
+  position: fixed;
+  z-index: 31;
+  bottom: 22px;
+  left: 22px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  content: 'SHEET   OH-2026 / A1\ATITLE   OCEANHEART\ASCALE   1 : 1  AT 100%\ADRAWN   KAI\ADATE    2026-09\AREV     C';
+  color: var(--ink);
+  background-color: var(--page);
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 17px, var(--rule-soft) 17px 18px),
+    linear-gradient(90deg, transparent 0 calc(6.4ch + 0.8em), var(--rule-soft) 0 calc(6.4ch + 0.8em + 1px), transparent 0);
+  background-clip: content-box;
+  background-origin: content-box;
+  font: 500 10px/18px var(--mono-font);
+  letter-spacing: 0.12em;
+  white-space: pre;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* the note that every drawing carries */
+body[data-variant='blueprint'] footer::after {
+  position: fixed;
+  z-index: 31;
+  top: 16px;
+  right: 24px;
+  content: 'DO NOT SCALE  \00B7  DIMENSIONS IN PX';
+  color: var(--muted);
+  font: 500 10px/1 var(--mono-font);
+  letter-spacing: 0.18em;
+  pointer-events: none;
+}
+
+/* ---- nav --------------------------------------------------------------- */
+
+body[data-variant='blueprint'] nav {
+  border-bottom: 1px solid var(--rule);
+}
+
+body[data-variant='blueprint'] nav .container {
+  padding: 2.2rem 2.5rem 1rem;
+}
+
+body[data-variant='blueprint'] .nav-brand {
+  display: inline-flex;
+  align-items: center;
+  color: var(--heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] .nav-brand::before {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.7rem;
+  border: 1px solid var(--ink);
+  content: '';
+  box-shadow: inset 0 0 0 2px var(--page), inset 0 0 0 3px var(--ink);
+}
+
+body[data-variant='blueprint'] .nav-links a {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] .nav-links a:hover,
+body[data-variant='blueprint'] .nav-links a.active {
+  color: var(--heading);
+}
+
+body[data-variant='blueprint'] nav .cta {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--heading);
+}
+
+body[data-variant='blueprint'] nav .cta:hover {
+  border-color: var(--link-hover);
+  color: var(--link-hover);
+}
+
+/* ---- section callouts: every block is a numbered detail ------------------ */
+
+body[data-variant='blueprint'] main > .container {
+  counter-reset: bp-detail;
+}
+
+body[data-variant='blueprint'] main > .container > section,
+body[data-variant='blueprint'] main > .container > .post-list {
+  position: relative;
+  border-top: 1px solid var(--rule);
+  padding-top: 2.25rem;
+}
+
+body[data-variant='blueprint'] main > .container > section::before,
+body[data-variant='blueprint'] main > .container > .post-list::before {
+  position: absolute;
+  z-index: 3;
+  top: -0.7rem;
+  left: 1rem;
+  padding: 0 0.6rem;
+  counter-increment: bp-detail;
+  content: 'DETAIL ' counter(bp-detail, decimal-leading-zero);
+  color: var(--ink);
+  background: var(--page);
+  font: 500 10px/1.4 var(--mono-font);
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+
+body[data-variant='blueprint'] main > .container > .credibility-rail::before {
+  content: 'SCHEDULE  ' counter(bp-detail, decimal-leading-zero);
+}
+
+body[data-variant='blueprint'] main > .container > .method-section::before {
+  content: 'SEQUENCE  ' counter(bp-detail, decimal-leading-zero);
+}
+
+body[data-variant='blueprint'] main > .container > .home-engage::before {
+  content: 'NOTES  ' counter(bp-detail, decimal-leading-zero);
+}
+
+/* ---- hero: the general arrangement --------------------------------------- */
+
+body[data-variant='blueprint'] main > .container > .hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  padding: var(--hero-padding);
+  margin-top: 0.5rem;
+}
+
+body[data-variant='blueprint'] main > .container > .hero::before {
+  counter-increment: none;
+  content: 'GA-01  GENERAL ARRANGEMENT';
+}
+
+/* a construction circle with centre lines, sitting behind the copy */
+body[data-variant='blueprint'] .hero::after {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: clamp(1rem, 6vw, 5rem);
+  width: clamp(10rem, 26vw, 22rem);
+  aspect-ratio: 1;
+  border: 1px dashed var(--rule-soft);
+  border-radius: 50%;
+  content: '';
+  background:
+    linear-gradient(var(--rule-soft), var(--rule-soft)) center / 1px 120% no-repeat,
+    linear-gradient(var(--rule-soft), var(--rule-soft)) center / 120% 1px no-repeat,
+    radial-gradient(circle, transparent 0 calc(50% - 3rem), var(--rule-soft) calc(50% - 3rem) calc(50% - 3rem + 1px), transparent 0);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+body[data-variant='blueprint'] .hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+}
+
+body[data-variant='blueprint'] .hero-statement {
+  margin: 0 0 1.5rem;
+  color: var(--heading);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  text-transform: none;
+}
+
+body[data-variant='blueprint'] .lead {
+  max-width: 60ch;
+  color: var(--text);
+}
+
+body[data-variant='blueprint'] .hero-context {
+  max-width: 60ch;
+  font-size: 0.85rem;
+}
+
+body[data-variant='blueprint'] .hero-mark {
+  color: var(--ink);
+}
+
+/* ---- headings: drafting lettering --------------------------------------- */
+
+body[data-variant='blueprint'] h2,
+body[data-variant='blueprint'] h3,
+body[data-variant='blueprint'] h4 {
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] h1 {
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+}
+
+body[data-variant='blueprint'] .section-intro {
+  max-width: 68ch;
+}
+
+body[data-variant='blueprint'] .section-intro h2,
+body[data-variant='blueprint'] .section-header h2 {
+  max-width: 36ch;
+}
+
+body[data-variant='blueprint'] .section-header p a {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---- buttons ------------------------------------------------------------ */
+
+body[data-variant='blueprint'] .button,
+body[data-variant='blueprint'] .cv-download,
+body[data-variant='blueprint'] .engage-cta {
+  padding: 0.8rem 1.15rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+body[data-variant='blueprint'] .button-primary:hover {
+  border-color: var(--link-hover);
+  background: var(--link-hover);
+  color: var(--page);
+}
+
+body[data-variant='blueprint'] .button-quiet {
+  border: 1px solid var(--rule);
+  color: var(--heading);
+}
+
+body[data-variant='blueprint'] .button-quiet:hover {
+  border-color: var(--ink);
+  background: rgba(234, 243, 255, 0.08);
+}
+
+/* ---- records: parts list ------------------------------------------------ */
+
+body[data-variant='blueprint'] .entry,
+body[data-variant='blueprint'] .service-row,
+body[data-variant='blueprint'] .proof-row,
+body[data-variant='blueprint'] .post-item,
+body[data-variant='blueprint'] .tells-row {
+  position: relative;
+  border-top: 1px solid var(--rule-soft);
+}
+
+body[data-variant='blueprint'] .entry-name,
+body[data-variant='blueprint'] .post-title {
+  color: var(--heading);
+  font-family: var(--display-font);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] .entry-lead {
+  color: var(--text);
+}
+
+body[data-variant='blueprint'] .service-number,
+body[data-variant='blueprint'] .proof-kind,
+body[data-variant='blueprint'] .brief-label {
+  color: var(--muted);
+  letter-spacing: 0.22em;
+}
+
+body[data-variant='blueprint'] .service-number::before,
+body[data-variant='blueprint'] .proof-kind::before {
+  content: 'PART \00B7  ';
+  opacity: 0.7;
+}
+
+body[data-variant='blueprint'] .proof-link,
+body[data-variant='blueprint'] .entry-links a {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+body[data-variant='blueprint'] .entry-meta span + span::before {
+  content: '  |  ';
+}
+
+/* doors: status chips as line-type conventions */
+body[data-variant='blueprint'] .door-status {
+  border: 1px solid var(--rule);
+  color: var(--text);
+  letter-spacing: 0.18em;
+}
+
+body[data-variant='blueprint'] .door-status::before {
+  border-radius: 0;
+  background: var(--muted);
+}
+
+body[data-variant='blueprint'] .door-status[data-state='open'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--page);
+}
+
+body[data-variant='blueprint'] .door-status[data-state='open']::before {
+  background: var(--page);
+}
+
+body[data-variant='blueprint'] .door-status[data-state='soon'] {
+  border-style: dashed;
+}
+
+body[data-variant='blueprint'] .door-status[data-state='soon']::before {
+  background: var(--ink);
+}
+
+body[data-variant='blueprint'] .door-status[data-state='research'] {
+  border-style: dotted;
+}
+
+body[data-variant='blueprint'] .door-list .entry.is-first {
+  border-left: 1px solid var(--ink);
+  box-shadow: inset 3px 0 0 var(--page), inset 4px 0 0 var(--ink);
+}
+
+/* post lists */
+body[data-variant='blueprint'] .post-item {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 0.4rem 2rem;
+  padding: 1.5rem 0;
+}
+
+body[data-variant='blueprint'] .post-item .post-excerpt {
+  grid-column: 2;
+  margin: 0;
+}
+
+body[data-variant='blueprint'] .post-date,
+body[data-variant='blueprint'] .post-meta {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] .post-tag {
+  border-color: var(--rule-soft);
+}
+
+/* ---- credibility rail: a schedule --------------------------------------- */
+
+body[data-variant='blueprint'] .credibility-rail {
+  gap: 0;
+  padding: 2.25rem 0 1.75rem;
+}
+
+body[data-variant='blueprint'] .credibility-rail > div {
+  padding: 0 1.5rem;
+  border-left: 1px solid var(--rule-soft);
+}
+
+body[data-variant='blueprint'] .credibility-rail > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+body[data-variant='blueprint'] .credibility-rail strong {
+  margin-bottom: 0.4rem;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+body[data-variant='blueprint'] .credibility-rail span {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---- method: a sequence with detail bubbles ----------------------------- */
+
+body[data-variant='blueprint'] .method-section {
+  gap: 3rem;
+}
+
+body[data-variant='blueprint'] .method-list li {
+  grid-template-columns: minmax(3.5rem, auto) minmax(0, 1fr);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+body[data-variant='blueprint'] .method-list > li > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.8rem;
+  min-width: 2.6rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+}
+
+/* ---- focus and depth bands --------------------------------------------- */
+
+body[data-variant='blueprint'] .wellbeing-focus,
+body[data-variant='blueprint'] .technical-depth {
+  position: relative;
+}
+
+body[data-variant='blueprint'] .boundary-note {
+  padding: 1.25rem 1.4rem;
+  border: 1px dashed var(--rule);
+  border-left: 1px dashed var(--rule);
+}
+
+body[data-variant='blueprint'] .boundary-note p:last-child,
+body[data-variant='blueprint'] .technical-depth p:last-child {
+  color: var(--text);
+}
+
+/* ---- engage ------------------------------------------------------------ */
+
+body[data-variant='blueprint'] .home-engage {
+  position: relative;
+}
+
+body[data-variant='blueprint'] .home-engage h2 {
+  max-width: 34ch;
+}
+
+body[data-variant='blueprint'] .engage-line {
+  color: var(--text);
+}
+
+body[data-variant='blueprint'] .intent button {
+  border-color: var(--rule);
+  color: var(--text);
+  font-family: var(--mono-font);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+body[data-variant='blueprint'] .intent button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--page);
+}
+
+body[data-variant='blueprint'] .subject-line code {
+  color: var(--heading);
+}
+
+/* ---- prose: the notes sheet --------------------------------------------- */
+
+body[data-variant='blueprint'] .content {
+  position: relative;
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule-soft);
+  padding: 2.25rem 0 0 clamp(1.25rem, 3vw, 2.5rem);
+}
+
+body[data-variant='blueprint'] .content::before {
+  position: absolute;
+  z-index: 3;
+  top: -0.7rem;
+  left: 1rem;
+  padding: 0 0.6rem;
+  content: 'NOTES  SHEET 2';
+  color: var(--ink);
+  background: var(--page);
+  font: 500 10px/1.4 var(--mono-font);
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+
+body[data-variant='blueprint'] .content > p:first-of-type {
+  color: var(--heading);
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+body[data-variant='blueprint'] .content h2::before,
+body[data-variant='blueprint'] .content h3::before {
+  display: inline-block;
+  width: 1.2rem;
+  margin-right: 0.6rem;
+  border-top: 1px solid var(--rule);
+  content: '';
+  vertical-align: middle;
+}
+
+body[data-variant='blueprint'] .content code {
+  padding: 0.1em 0.35em;
+  background: var(--code-bg);
+  color: var(--heading);
+}
+
+body[data-variant='blueprint'] .content pre {
+  border-color: var(--rule-soft);
+}
+
+body[data-variant='blueprint'] .content pre code {
+  padding: 0;
+  background: transparent;
+}
+
+body[data-variant='blueprint'] blockquote {
+  border-left: 1px dashed var(--rule);
+  color: var(--text);
+  font-style: italic;
+}
+
+body[data-variant='blueprint'] hr {
+  border-top: 1px dashed var(--rule);
+}
+
+body[data-variant='blueprint'] th,
+body[data-variant='blueprint'] td {
+  border-color: var(--rule-soft);
+}
+
+body[data-variant='blueprint'] th {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* photographs print as cyanotypes: grey values screened onto the blue */
+body[data-variant='blueprint'] .content img {
+  border: 1px solid var(--rule);
+  filter: grayscale(1) contrast(1.05);
+  mix-blend-mode: screen;
+}
+
+body[data-variant='blueprint'] .post-meta {
+  margin-bottom: 2rem;
+}
+
+body[data-variant='blueprint'] .tells-search {
+  border-color: var(--rule);
+}
+
+/* ---- footer ------------------------------------------------------------ */
+
+body[data-variant='blueprint'] footer {
+  border-top: 1px solid var(--rule);
+}
+
+body[data-variant='blueprint'] footer .container {
+  justify-content: flex-end;
+  padding: 2rem 0 11rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---- dimension overlays (markup injected by the effects module) ---------- */
+
+body[data-variant='blueprint'] .bp-dim {
+  position: absolute;
+  z-index: 2;
+  top: -24px;
+  left: -24px;
+  overflow: visible;
+  max-width: none;
+  pointer-events: none;
+}
+
+body[data-variant='blueprint'] .bp-dim path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-linecap: square;
+  transition: stroke-dashoffset 1100ms cubic-bezier(0.25, 0.7, 0.2, 1);
+}
+
+body[data-variant='blueprint'] .bp-dim rect {
+  fill: var(--page);
+}
+
+body[data-variant='blueprint'] .bp-dim text {
+  fill: var(--ink);
+  font: 500 10px var(--mono-font);
+  letter-spacing: 0.14em;
+  dominant-baseline: middle;
+  opacity: 0;
+  transition: opacity 400ms ease 850ms;
+}
+
+body[data-variant='blueprint'] .bp-dim.is-drawn text {
+  opacity: 1;
+}
+
+/* ---- small screens ------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  body[data-variant='blueprint']::after,
+  body[data-variant='blueprint'] main::after,
+  body[data-variant='blueprint'] footer::after,
+  body[data-variant='blueprint'] .hero::after,
+  body[data-variant='blueprint'] .bp-dim {
+    display: none;
+  }
+
+  body[data-variant='blueprint'] {
+    --main-padding: 2rem 0 5rem;
+  }
+
+  body[data-variant='blueprint'] nav .container {
+    padding: 1rem 1rem 0.8rem;
+  }
+
+  body[data-variant='blueprint'] main > .container > .hero {
+    min-height: 0;
+    padding: 2.25rem 1.25rem 2rem;
+  }
+
+  body[data-variant='blueprint'] .hero-statement {
+    font-size: clamp(1.6rem, 6.8vw, 2rem);
+  }
+
+  body[data-variant='blueprint'] .credibility-rail > div {
+    padding: 0.75rem 0 0;
+    border-top: 1px solid var(--rule-soft);
+    border-left: 0;
+  }
+
+  body[data-variant='blueprint'] .credibility-rail > div:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  body[data-variant='blueprint'] .post-item {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  body[data-variant='blueprint'] .post-item .post-excerpt {
+    grid-column: 1;
+  }
+
+  body[data-variant='blueprint'] .content {
+    padding-left: 1rem;
+  }
+
+  body[data-variant='blueprint'] footer .container {
+    justify-content: flex-start;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-variant='blueprint'] .bp-dim path,
+  body[data-variant='blueprint'] .bp-dim text {
+    transition: none;
+  }
+
+  body[data-variant='blueprint'] .bp-dim text {
+    opacity: 1;
+  }
+}

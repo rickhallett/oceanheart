@@ -44,6 +44,8 @@
   /* Whole-page opt out. The sloptics page is typographic argument: its ASCII
      banner and its own stylesheet both make a scramble pass wrong there. */
   function pageOptedOut() {
+    /* A visitor-chosen skin owns the page's typography; leave it alone. */
+    if (document.body && document.body.hasAttribute('data-variant')) return true;
     return !!document.querySelector('.sloptics-page');
   }
 

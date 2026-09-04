@@ -1,0 +1,80 @@
+/*
+  A shared editorial scale sits above every art direction. The themes may still
+  shout through composition, colour and rhythm; they no longer need billboard
+  typography to prove they are different. Selectors carry an extra `html` so
+  they outrank a theme regardless of which stylesheet loaded last.
+*/
+html body[data-variant] {
+  --body-size: 14px;
+  --reading-size: 0.875rem;
+  --lead-size: clamp(0.95rem, 1.05vw, 1.06rem);
+  --h1: clamp(1.8rem, 2.8vw, 3rem);
+  --h2: clamp(1.3rem, 1.8vw, 1.85rem);
+  --h3: clamp(1rem, 1.25vw, 1.25rem);
+  --section-space: clamp(3rem, 6vw, 5rem);
+  --hero-title-size: clamp(2.15rem, 3.6vw, 3.75rem);
+  --hero-title-width: 18ch;
+  --entry-title-size: clamp(1.12rem, 1.3vw, 1.3rem);
+}
+
+html body[data-variant] .hero-statement {
+  max-width: var(--hero-title-width);
+  font-size: var(--hero-title-size);
+}
+
+html body[data-variant] .entry-name,
+html body[data-variant] .post-title,
+html body[data-variant] .service-heading h3,
+html body[data-variant] .proof-heading h3 {
+  font-size: var(--entry-title-size);
+}
+
+html body[data-variant] .content > p:first-of-type {
+  font-size: var(--reading-size);
+}
+
+html body[data-variant='signal-room'] { --hero-title-size: clamp(2.2rem, 3.7vw, 3.85rem); --hero-title-width: 16ch; }
+html body[data-variant='looseleaf'] { --hero-title-size: clamp(2.15rem, 3.3vw, 3.45rem); --hero-title-width: 19ch; }
+html body[data-variant='redline'] { --hero-title-size: clamp(2.35rem, 4vw, 4.2rem); --hero-title-width: 15ch; --entry-title-size: clamp(1.22rem, 1.5vw, 1.5rem); }
+html body[data-variant='specimen'] { --hero-title-size: clamp(2.1rem, 3vw, 3.15rem); --hero-title-width: 20ch; }
+html body[data-variant='reliquary'] { --hero-title-size: clamp(2.15rem, 3.2vw, 3.35rem); --hero-title-width: 19ch; }
+html body[data-variant='the-daily'] { --reading-size: 0.875rem; --hero-title-size: clamp(2rem, 2.65vw, 2.8rem); --hero-title-width: 24ch; --entry-title-size: clamp(1.1rem, 1.15vw, 1.2rem); }
+html body[data-variant='construction-notice'] { --hero-title-size: clamp(2.35rem, 4vw, 4.2rem); --hero-title-width: 15ch; --entry-title-size: clamp(1.22rem, 1.6vw, 1.55rem); }
+html body[data-variant='tide-table'] { --hero-title-size: clamp(2.2rem, 3.6vw, 3.75rem); --hero-title-width: 17ch; }
+html body[data-variant='green-screen'] { --reading-size: 0.875rem; --hero-title-size: clamp(2rem, 3.2vw, 3.35rem); --hero-title-width: 20ch; }
+html body[data-variant='field-manual'] { --hero-title-size: clamp(2.2rem, 3.6vw, 3.75rem); --hero-title-width: 17ch; }
+html body[data-variant='night-liturgy'] { --hero-title-size: clamp(2.1rem, 3.1vw, 3.2rem); --hero-title-width: 20ch; }
+html body[data-variant='primary-motion'] { --hero-title-size: clamp(2.35rem, 4vw, 4.2rem); --hero-title-width: 14ch; --entry-title-size: clamp(1.22rem, 1.5vw, 1.5rem); }
+html body[data-variant='orbital-desk'] { --hero-title-size: clamp(2.2rem, 3.6vw, 3.75rem); --hero-title-width: 18ch; }
+html body[data-variant='card-catalogue'] { --hero-title-size: clamp(2.15rem, 3.2vw, 3.35rem); --hero-title-width: 19ch; }
+html body[data-variant='whiteout'] { --hero-title-size: clamp(2.45rem, 4vw, 4.25rem); --hero-title-width: 13ch; --entry-title-size: clamp(1.45rem, 2.1vw, 2.1rem); }
+html body[data-variant='packet-garden'] { --hero-title-size: clamp(2.2rem, 3.5vw, 3.65rem); --hero-title-width: 19ch; }
+html body[data-variant='acid-index'] { --hero-title-size: clamp(2.3rem, 3.8vw, 3.95rem); --hero-title-width: 21ch; --entry-title-size: clamp(1.22rem, 1.6vw, 1.55rem); }
+html body[data-variant='vector-field'] { --hero-title-size: clamp(2.25rem, 3.7vw, 3.85rem); --hero-title-width: 18ch; }
+html body[data-variant='blueprint'] { --hero-title-size: clamp(2rem, 3.2vw, 3.3rem); --hero-title-width: 24ch; --entry-title-size: clamp(1rem, 1.15vw, 1.15rem); }
+html body[data-variant='halftone-press'] { --hero-title-size: clamp(2.5rem, 4.6vw, 4.9rem); --hero-title-width: 13ch; --entry-title-size: clamp(1.3rem, 1.7vw, 1.7rem); }
+html body[data-variant='heavy-type'] { --hero-title-size: clamp(3rem, 7.4vw, 6.75rem); --hero-title-width: 100%; --entry-title-size: clamp(1.7rem, 2.8vw, 2.7rem); }
+html body[data-variant='deep-water'] { --hero-title-size: clamp(2.3rem, 3.8vw, 3.95rem); --hero-title-width: 17ch; }
+html body[data-variant='glass-cockpit'] { --hero-title-size: clamp(1.9rem, 2.9vw, 3rem); --hero-title-width: 22ch; --entry-title-size: clamp(1.05rem, 1.2vw, 1.2rem); }
+html body[data-variant='raked-sand'] { --hero-title-size: clamp(2rem, 3vw, 3.1rem); --hero-title-width: 20ch; }
+
+@media (max-width: 760px) {
+  html body[data-variant] {
+    --body-size: 14px;
+    --reading-size: 0.875rem;
+    --h1: clamp(1.7rem, 7vw, 2.1rem);
+    --h2: clamp(1.25rem, 5.5vw, 1.65rem);
+    --hero-title-size: clamp(1.85rem, 7.5vw, 2.2rem);
+    --hero-title-width: 100%;
+    --entry-title-size: clamp(1.08rem, 4.5vw, 1.3rem);
+  }
+
+  html body[data-variant='whiteout'],
+  html body[data-variant='redline'],
+  html body[data-variant='construction-notice'],
+  html body[data-variant='primary-motion'],
+  html body[data-variant='acid-index'] {
+    --hero-title-size: clamp(2rem, 8.2vw, 2.4rem);
+    --entry-title-size: clamp(1.18rem, 5.2vw, 1.5rem);
+  }
+}

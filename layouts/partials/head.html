@@ -26,7 +26,32 @@
 <meta name="twitter:description" content="{{ $description }}">
 <meta name="twitter:image" content="{{ $image }}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/oceanheart.css">
+<link rel="stylesheet" href="/css/oceanheart.css" id="house-style">
+{{ if not .Params.privateSurface }}
+<link rel="stylesheet" href="/css/variants/base.css">
+<link rel="stylesheet" href="/css/variants/scale.css">
+<link rel="stylesheet" href="/css/variants/dock.css">
+<script>
+(function () {
+  var known = {{ apply site.Data.variants "index" "." "slug" | jsonify | safeJS }};
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var fromUrl = params.get('theme');
+    var slug = fromUrl !== null ? fromUrl : window.localStorage.getItem('oceanheart-skin');
+    if (fromUrl !== null) {
+      if (fromUrl && known.indexOf(fromUrl) !== -1) window.localStorage.setItem('oceanheart-skin', fromUrl);
+      else window.localStorage.removeItem('oceanheart-skin');
+    }
+    if (!slug || known.indexOf(slug) === -1) return;
+    document.documentElement.setAttribute('data-variant', slug);
+    document.getElementById('house-style').disabled = true;
+    document.write('<link rel="stylesheet" href="/css/variants/themes/' + slug + '.css" data-variant-theme="' + slug + '">');
+  } catch (error) {
+    /* Storage refused or unavailable: the house style stands. */
+  }
+})();
+</script>
+{{ end }}
 {{ if .Params.privateSurface }}<link rel="stylesheet" href="/css/therapy.css">{{ end }}
 {{ if not .Params.noExternalFonts }}
 <link rel="preconnect" href="https://fonts.googleapis.com">

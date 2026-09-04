@@ -1,0 +1,145 @@
+{{ define "main" }}
+{{ if .Draft }}
+<div class="draft-strip" data-doors-strip>
+  <span>Draft route &middot; copy not yet authored</span>
+  <span>Arriving from</span>
+  <button type="button" data-entry="home" aria-pressed="true">Direct</button>
+  <button type="button" data-entry="swanage" aria-pressed="false">Swanage Facebook</button>
+  <button type="button" data-entry="ai" aria-pressed="false">AI post</button>
+  <button type="button" data-entry="systems" aria-pressed="false">LinkedIn</button>
+</div>
+{{ end }}
+
+<section class="hero hero-doors">
+  <div class="hero-copy">
+    <h1 class="hero-statement" data-doors="h1">I work where the change actually has to happen.</h1>
+    <p class="lead" data-doors="lead">Sometimes that is a body that will not settle. Sometimes it is a conversation nobody has had yet. Sometimes it is a system that keeps breaking. Increasingly it is a person meeting AI for the first time and wondering what to trust.</p>
+    <p class="hero-context" data-doors="context">Fifteen years as a therapist. Six years shipping production software. Two years working with AI every day. One practice, several doors.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="#doors" data-doors="cta">Choose a door</a>
+      <a class="button button-quiet" href="#contact">Not sure? Start with a conversation</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-projects door-list" id="doors" data-door-list>
+  <div class="section-intro">
+    <h2>Four doors. Same person behind each one.</h2>
+    <p>Choose by what you want, not by what I am called.</p>
+  </div>
+
+  <article class="entry door" data-door="body">
+    <div>
+      <p class="door-status" data-state="soon">Opening when ready</p>
+      <p class="entry-lead"><b class="entry-name">Come in person.</b> Nervous system first.</p>
+    </div>
+    <div>
+      <p class="entry-body">An ordinary first massage session in a warm, private garden treatment room in Swanage. Plain boundaries, stated before you arrive.</p>
+      <p class="entry-meta"><span>Swanage</span><span>garden treatment room</span><span>mobile visits later</span></p>
+      <p class="entry-links"><a href="#contact">Tell me when booking opens &rarr;</a></p>
+    </div>
+  </article>
+
+  <article class="entry door" data-door="integrative">
+    <div>
+      <p class="door-status" data-state="arranged">By arrangement</p>
+      <p class="entry-lead"><b class="entry-name">Work something through.</b> Body and mind in one relationship.</p>
+    </div>
+    <div>
+      <p class="entry-body">For people who want more than relaxation. Scope, professional basis, and what this is not are agreed in writing before we begin.</p>
+      <p class="entry-meta"><span>in person or remote</span><span>scoped separately from massage</span></p>
+      <p class="entry-links"><a href="#contact">Ask whether it is a fit &rarr;</a></p>
+    </div>
+  </article>
+
+  <article class="entry door" data-door="ai">
+    <div>
+      <p class="door-status" data-state="research">Research stage</p>
+      <p class="entry-lead"><b class="entry-name">Learn to work with AI.</b> While watching yourself do it.</p>
+    </div>
+    <div>
+      <p class="entry-body">Meet a frontier model with a person in the loop from the first exchange. I follow up personally after every use. Therapists and wellbeing practitioners first.</p>
+      <p class="entry-meta"><span>conversationswithai.me</span><span>an Oceanheart project</span></p>
+      <p class="entry-links"><a href="https://conversationswithai.me" rel="noopener">Take part in v0.1 &rarr;</a></p>
+    </div>
+  </article>
+
+  <article class="entry door" data-door="systems">
+    <div>
+      <p class="door-status" data-state="open">Open now</p>
+      <p class="entry-lead"><b class="entry-name">Build a more human system.</b> A person kept where judgement matters.</p>
+    </div>
+    <div>
+      <p class="entry-body">Automation, custom software, and AI inside real work, for founders, teams, and practitioners whose way of running things has become fragile.</p>
+      <p class="entry-meta"><span>discovery to handover</span><span>LoanSlam, Becoming Diamond, Sarah Mozer Studio</span></p>
+      <p class="entry-links"><a href="/work-with-me/">Send me the untidy version &rarr;</a></p>
+    </div>
+  </article>
+</section>
+
+<section class="credibility-rail" aria-label="Same person at every door">
+  <div><strong>15 years</strong><span>clinical practice and high-trust conversations</span></div>
+  <div><strong>6+ years</strong><span>professional software delivery, discovery to handover</span></div>
+  <div><strong>Daily since 2024</strong><span>working with frontier AI, in the loop, not at a distance</span></div>
+</section>
+
+<section class="home-section thread" id="about">
+  <div class="section-intro">
+    <h2>One practice, several doors.</h2>
+  </div>
+  <div class="thread-copy">
+    <p>I spent fifteen years finding the real problem with people, then six years building and supporting the systems that were supposed to solve it. The thing I am good at sits in between: entering someone's actual situation, noticing what is live, and responding with whatever fits, whether that is a hand on a shoulder, a hard question, or a piece of software with an owner and a recovery path.</p>
+    <p>Oceanheart is the name for that way of working. It is not a technique yet. It becomes one through use, in public, with the people who come through these doors.</p>
+    <p><a href="/about/">Read the full story and current qualifications &rarr;</a></p>
+  </div>
+</section>
+
+<section class="home-section method-section">
+  <div class="section-intro">
+    <h2>The same way of working at every door.</h2>
+    <p>Whether the constraint is in a body, a relationship, or a workflow, the sequence does not change.</p>
+  </div>
+  <ol class="method-list">
+    <li><span>Enter</span><div><h3>Enter the real context</h3><p>Not the description of it. The room, the inbox, the breath, the process as it actually runs.</p></div></li>
+    <li><span>Find</span><div><h3>Find the live constraint</h3><p>Name the thing that is actually holding, its trigger, its cost, and who is carrying it.</p></div></li>
+    <li><span>Respond</span><div><h3>Respond with what fits</h3><p>Touch, a conversation, a boundary, a behavioural experiment, an automation. The smallest response that could work.</p></div></li>
+    <li><span>Stay</span><div><h3>Stay close enough to see</h3><p>Follow up. Notice what changed and what did not. Let the next step come from evidence, not the plan.</p></div></li>
+  </ol>
+</section>
+
+{{ $notes := where site.RegularPages "Section" "blog" | first 3 }}
+{{ if $notes }}
+<section class="post-list notes-list">
+  <div class="section-header">
+    <h2>Learning in public.</h2>
+    <p><a href="/blog/">All notes &rarr;</a></p>
+  </div>
+  {{ range $notes }}
+  <article class="post-item">
+    <p class="post-date">{{ .Date.Format "January 2006" }}</p>
+    <h3 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+    {{ with .Description }}<p class="post-excerpt">{{ . }}</p>{{ end }}
+  </article>
+  {{ end }}
+</section>
+{{ end }}
+
+<section class="home-engage" id="contact">
+  <h2 data-doors="contact">Not sure which door? Start with the conversation.</h2>
+  <p class="engage-line">Send me the rough version of what is going on. I will tell you plainly whether I can help, which door it belongs behind, and what I would need to know first.</p>
+  <div class="intent" role="group" aria-label="What is this about?">
+    <button type="button" data-subject="I want to come in person" aria-pressed="false">Coming in person</button>
+    <button type="button" data-subject="Something to work through" aria-pressed="false">Something to work through</button>
+    <button type="button" data-subject="Conversations with AI" aria-pressed="false">Working with AI</button>
+    <button type="button" data-subject="The work that keeps repeating" aria-pressed="false">A system that keeps breaking</button>
+    <button type="button" data-subject="Not sure yet" aria-pressed="true">Not sure yet</button>
+  </div>
+  <p class="subject-line">Subject line: <code data-subject-preview>Not sure yet</code></p>
+  <div class="hero-actions">
+    <a class="button button-primary" data-mail-link href="mailto:{{ .Site.Params.email }}?subject=Not%20sure%20yet">Email {{ .Site.Params.email }}</a>
+    <a class="button button-quiet" data-facebook-link href="https://www.facebook.com/" rel="noopener" hidden>Message on Facebook (Swanage)</a>
+  </div>
+  <p class="doors-footnote">Trading entity, registration, and privacy wording pending confirmation. Conversations with AI is an Oceanheart project at conversationswithai.me.</p>
+</section>
+<script src="/js/doors.js" defer></script>
+{{ end }}

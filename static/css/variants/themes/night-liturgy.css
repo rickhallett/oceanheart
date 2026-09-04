@@ -1,0 +1,150 @@
+body[data-variant='night-liturgy'] {
+  --page: #0d0a21;
+  --text: #d2cce7;
+  --heading: #f1edf9;
+  --muted: #8880a7;
+  --accent: #b99ee8;
+  --link: #d9c7ff;
+  --link-hover: #fff;
+  --rule: #37304f;
+  --focus: #d9c7ff;
+  --display-font: Georgia, 'Times New Roman', serif;
+  --body-font: Georgia, 'Times New Roman', serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 980px;
+  --reading-width: 650px;
+  --h1: clamp(4rem, 10vw, 9rem);
+  --h2: clamp(2.4rem, 5vw, 4.6rem);
+  --heading-spacing: -0.035em;
+  --heading-line: 0.92;
+  --line-height: 1.85;
+  --section-space: 8rem;
+  --code-bg: #080617;
+}
+
+body[data-variant='night-liturgy'] nav {
+  position: fixed;
+  z-index: 60;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid var(--rule);
+  background: rgba(13, 10, 33, 0.96);
+}
+
+body[data-variant='night-liturgy'] nav .container {
+  padding: 0.8rem 1.5rem;
+}
+
+body[data-variant='night-liturgy'] .nav-brand {
+  color: var(--heading);
+  font-style: italic;
+  font-weight: 400;
+}
+
+body[data-variant='night-liturgy'] .nav-links a {
+  color: var(--muted);
+  font-variant: small-caps;
+  letter-spacing: 0.09em;
+}
+
+body[data-variant='night-liturgy'] main > .container {
+  padding-bottom: 11rem;
+}
+
+body[data-variant='night-liturgy'] .hero {
+  display: grid;
+  place-items: center;
+  min-height: 94vh;
+  text-align: center;
+}
+
+body[data-variant='night-liturgy'] .hero-copy {
+  max-width: 720px;
+}
+
+body[data-variant='night-liturgy'] .hero-statement {
+  max-width: 9ch;
+  margin-right: auto;
+  margin-left: auto;
+  font-weight: 400;
+}
+
+body[data-variant='night-liturgy'] .hero::before,
+body[data-variant='night-liturgy'] .hero::after {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  content: '';
+}
+
+body[data-variant='night-liturgy'] .hero::before {
+  width: min(74vw, 48rem);
+  height: min(74vw, 48rem);
+}
+
+body[data-variant='night-liturgy'] .hero::after {
+  width: min(54vw, 34rem);
+  height: min(54vw, 34rem);
+}
+
+body[data-variant='night-liturgy'] .home-projects,
+body[data-variant='night-liturgy'] .home-engage,
+body[data-variant='night-liturgy'] .page-head,
+body[data-variant='night-liturgy'] .section-header {
+  text-align: center;
+}
+
+body[data-variant='night-liturgy'] .entry {
+  display: block;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+body[data-variant='night-liturgy'] .entry::before,
+body[data-variant='night-liturgy'] .post-item::before {
+  display: block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin: 0 auto 2rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  content: '';
+}
+
+body[data-variant='night-liturgy'] .post-item {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+body[data-variant='night-liturgy'] .content {
+  text-align: left;
+}
+
+body[data-variant='night-liturgy'] .content > p:first-of-type {
+  color: var(--heading);
+  font-size: 1.35rem;
+  text-align: center;
+}
+
+body[data-variant='night-liturgy'] footer {
+  margin-bottom: 4rem;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='night-liturgy'] nav {
+    position: relative;
+  }
+
+  body[data-variant='night-liturgy'] nav .container {
+    display: block;
+  }
+
+  body[data-variant='night-liturgy'] .nav-links {
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,169 @@
+body[data-variant='packet-garden'] {
+  --page: #100f1c;
+  --text: #e9f9d7;
+  --heading: #d7ff9f;
+  --muted: #9e93b6;
+  --accent: #b8ff5c;
+  --link: #caff7f;
+  --link-hover: #ffffff;
+  --rule: #43345f;
+  --focus: #f39cff;
+  --display-font: 'Trebuchet MS', Arial, sans-serif;
+  --body-font: 'Trebuchet MS', Arial, sans-serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1160px;
+  --reading-width: 720px;
+  --heading-spacing: -0.055em;
+  --heading-line: 0.92;
+  --code-bg: #19152a;
+  --button-bg: #b8ff5c;
+  --button-text: #100f1c;
+  --button-border: 0;
+}
+
+body[data-variant='packet-garden'] .packet-field {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+body[data-variant='packet-garden'] .packet-field i {
+  position: absolute;
+  top: var(--node-y);
+  left: var(--node-x);
+  width: var(--node-size);
+  height: var(--node-size);
+  border: 1px solid #b8ff5c;
+  border-radius: 50%;
+  opacity: 0.32;
+  box-shadow: 0 0 0 7px rgba(184, 255, 92, 0.04), 0 0 1.8rem #6e36a5;
+}
+
+body[data-variant='packet-garden'] nav,
+body[data-variant='packet-garden'] main,
+body[data-variant='packet-garden'] footer {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-variant='packet-garden'] nav {
+  border-bottom: 1px solid var(--rule);
+  background: rgba(16, 15, 28, 0.92);
+}
+
+body[data-variant='packet-garden'] nav .container {
+  padding: 0.9rem 2rem;
+}
+
+body[data-variant='packet-garden'] .nav-brand {
+  color: var(--heading);
+  font: 700 0.92rem 'Courier New', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body[data-variant='packet-garden'] .nav-brand::before {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.65rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 1rem var(--accent);
+  content: '';
+}
+
+body[data-variant='packet-garden'] .nav-links a {
+  color: var(--muted);
+  font: 700 0.66rem 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant='packet-garden'] .hero {
+  display: grid;
+  min-height: 78vh;
+  grid-template-columns: minmax(0, 1fr) 10rem;
+  align-items: center;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+body[data-variant='packet-garden'] .hero-copy {
+  position: relative;
+  padding-left: clamp(1rem, 4vw, 4rem);
+}
+
+body[data-variant='packet-garden'] .hero-copy::before {
+  position: absolute;
+  top: 0.25em;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 1rem var(--accent);
+  content: '';
+}
+
+body[data-variant='packet-garden'] .hero-statement {
+  max-width: 13ch;
+  font-weight: 700;
+}
+
+body[data-variant='packet-garden'] .hero-mark {
+  width: 100%;
+  color: #b36cea;
+  filter: drop-shadow(0 0 1.8rem #6d2c9c);
+}
+
+body[data-variant='packet-garden'] .home-projects,
+body[data-variant='packet-garden'] .home-engage,
+body[data-variant='packet-garden'] .post-list,
+body[data-variant='packet-garden'] .tells-page {
+  padding: clamp(1.2rem, 3vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 2rem 0.3rem 2rem 0.3rem;
+  background: rgba(20, 18, 35, 0.9);
+}
+
+body[data-variant='packet-garden'] .entry,
+body[data-variant='packet-garden'] .post-item,
+body[data-variant='packet-garden'] .tells-row {
+  border-color: #4f3d6b;
+}
+
+body[data-variant='packet-garden'] .entry-name::before,
+body[data-variant='packet-garden'] .post-title::before {
+  content: '● ';
+  color: var(--accent);
+  text-shadow: 0 0 0.8rem var(--accent);
+}
+
+body[data-variant='packet-garden'] .content {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--rule);
+  border-radius: 0 2.5rem 0 2.5rem;
+  background: #151225;
+}
+
+body[data-variant='packet-garden'] .content h2 {
+  color: #f3a6ff;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='packet-garden'] nav .container {
+    padding: 0.85rem 1rem;
+  }
+
+  body[data-variant='packet-garden'] .hero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    padding: 4rem 0;
+  }
+
+  body[data-variant='packet-garden'] .hero-mark {
+    width: 5rem;
+  }
+}

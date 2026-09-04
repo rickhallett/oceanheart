@@ -1,0 +1,145 @@
+body[data-variant='construction-notice'] {
+  --page: #ffd51c;
+  --text: #0b0b09;
+  --heading: #050504;
+  --muted: #403d26;
+  --accent: #050504;
+  --link: #050504;
+  --link-hover: #d83418;
+  --rule: #050504;
+  --focus: #d83418;
+  --display-font: Impact, 'Arial Black', sans-serif;
+  --body-font: Arial, Helvetica, sans-serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1320px;
+  --reading-width: 900px;
+  --h1: clamp(4rem, 12vw, 12rem);
+  --h2: clamp(2.5rem, 6vw, 6rem);
+  --heading-spacing: -0.035em;
+  --heading-line: 0.82;
+  --rule-width: 5px;
+  --button-bg: #050504;
+  --button-text: #ffd51c;
+  --button-border: 0;
+}
+
+body[data-variant='construction-notice'] nav {
+  background: #050504;
+  color: #ffd51c;
+}
+
+body[data-variant='construction-notice'] nav .container {
+  padding: 0.7rem clamp(1rem, 4vw, 4rem);
+}
+
+body[data-variant='construction-notice'] .nav-brand,
+body[data-variant='construction-notice'] .nav-links a {
+  color: #ffd51c;
+  font-family: Impact, 'Arial Black', sans-serif;
+  text-transform: uppercase;
+}
+
+body[data-variant='construction-notice'] .nav-brand::before {
+  content: 'CAUTION / ';
+  color: #fff;
+}
+
+body[data-variant='construction-notice'] .nav-links a {
+  padding: 0.5rem;
+  border: 1px solid #ffd51c;
+}
+
+body[data-variant='construction-notice'] main > .container {
+  padding-top: 0;
+}
+
+body[data-variant='construction-notice'] .hero {
+  min-height: 82vh;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding: clamp(2rem, 6vw, 6rem) max(1.5rem, calc((100vw - 1320px) / 2));
+  overflow: hidden;
+}
+
+body[data-variant='construction-notice'] .hero::after {
+  position: absolute;
+  right: -8%;
+  bottom: 7%;
+  width: 48%;
+  height: 5rem;
+  content: '';
+  background: #050504;
+  transform: rotate(-11deg);
+}
+
+body[data-variant='construction-notice'] .hero-statement {
+  max-width: 9ch;
+  text-transform: uppercase;
+}
+
+body[data-variant='construction-notice'] .lead {
+  max-width: 42ch;
+  padding: 1rem;
+  background: #fff5b5;
+  color: #050504;
+  font-weight: 700;
+}
+
+body[data-variant='construction-notice'] h2 {
+  text-transform: uppercase;
+}
+
+body[data-variant='construction-notice'] .entry,
+body[data-variant='construction-notice'] .post-item,
+body[data-variant='construction-notice'] .tells-row {
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border: 5px solid #050504;
+  background: #ffd51c;
+}
+
+body[data-variant='construction-notice'] .entry:nth-child(even),
+body[data-variant='construction-notice'] .post-item:nth-child(even),
+body[data-variant='construction-notice'] .tells-row:nth-child(even) {
+  background: #050504;
+  color: #fff;
+}
+
+body[data-variant='construction-notice'] .entry:nth-child(even) a,
+body[data-variant='construction-notice'] .post-item:nth-child(even) a,
+body[data-variant='construction-notice'] .tells-row:nth-child(even) a {
+  color: #ffd51c;
+}
+
+body[data-variant='construction-notice'] .content {
+  max-width: 1050px;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border: 5px solid #050504;
+  background: #fff4b0;
+  box-shadow: 1.2rem 1.2rem 0 #050504;
+}
+
+body[data-variant='construction-notice'] .post-tag {
+  border-width: 3px;
+  font-weight: 700;
+}
+
+body[data-variant='construction-notice'] footer {
+  border-top: 5px solid #050504;
+  background: #050504;
+  color: #ffd51c;
+}
+
+body[data-variant='construction-notice'] footer a {
+  color: #ffd51c;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='construction-notice'] .nav-links {
+    flex-wrap: wrap;
+  }
+
+  body[data-variant='construction-notice'] .hero::after {
+    display: none;
+  }
+}

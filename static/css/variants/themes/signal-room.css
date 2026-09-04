@@ -1,0 +1,168 @@
+body[data-variant='signal-room'] {
+  --page: #070906;
+  --text: #ffbd28;
+  --heading: #ffe6a0;
+  --muted: #8b936d;
+  --accent: #ff8a00;
+  --link: #ffd45f;
+  --link-hover: #fff4d1;
+  --rule: #344123;
+  --focus: #f5ff87;
+  --display-font: 'Arial Narrow', Arial, sans-serif;
+  --body-font: 'Courier New', monospace;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1220px;
+  --reading-width: 880px;
+  --h1: clamp(3.5rem, 8vw, 8.5rem);
+  --heading-spacing: -0.06em;
+  --rule-width: 1px;
+  --code-bg: #10160c;
+  --button-bg: #ffbd28;
+  --button-text: #070906;
+  --button-border: 0;
+  letter-spacing: 0.015em;
+}
+
+body[data-variant='signal-room']::before {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  width: 14rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #344123;
+  content: 'OCEANHEART / LIVE SYSTEM';
+  color: #8b936d;
+  font: 11px 'Courier New', monospace;
+}
+
+body[data-variant='signal-room'] nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 14rem;
+  border-right: 1px solid var(--rule);
+  background: #0b0e09;
+}
+
+body[data-variant='signal-room'] nav .container {
+  height: 100%;
+  padding: 4rem 1rem 7rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+body[data-variant='signal-room'] .nav-brand {
+  padding: 0.8rem;
+  border: 1px solid var(--rule);
+  color: var(--heading);
+  font: 700 1rem 'Courier New', monospace;
+  text-transform: uppercase;
+}
+
+body[data-variant='signal-room'] .nav-links {
+  display: block;
+}
+
+body[data-variant='signal-room'] .nav-links a {
+  display: block;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+body[data-variant='signal-room'] .nav-links a::before {
+  content: '[ + ] ';
+  color: var(--accent);
+}
+
+body[data-variant='signal-room'] main,
+body[data-variant='signal-room'] footer {
+  margin-left: 14rem;
+}
+
+body[data-variant='signal-room'] main > .container {
+  padding-top: 2rem;
+}
+
+body[data-variant='signal-room'] .hero {
+  display: grid;
+  align-items: end;
+  border: 1px solid var(--rule);
+  padding: 2rem;
+}
+
+body[data-variant='signal-room'] .hero::before {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  content: 'PRIMARY CLAIM / VERIFIED COPY';
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+body[data-variant='signal-room'] .hero-statement {
+  max-width: 8ch;
+  text-transform: uppercase;
+}
+
+body[data-variant='signal-room'] .entry,
+body[data-variant='signal-room'] .post-item,
+body[data-variant='signal-room'] .tells-row {
+  margin-bottom: 0.75rem;
+  padding: 1.1rem;
+  border: 1px solid var(--rule);
+  background: #0d110a;
+}
+
+body[data-variant='signal-room'] .entry::before,
+body[data-variant='signal-room'] .post-item::before {
+  content: 'STATUS: OBSERVED';
+  color: #76a33e;
+  font-size: 0.62rem;
+}
+
+body[data-variant='signal-room'] .content {
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border: 1px solid var(--rule);
+  background: #0b0e09;
+}
+
+body[data-variant='signal-room'] h2 {
+  padding-top: 0.4rem;
+  border-top: 5px solid var(--accent);
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  body[data-variant='signal-room']::before {
+    display: none;
+  }
+
+  body[data-variant='signal-room'] nav {
+    position: relative;
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  body[data-variant='signal-room'] nav .container {
+    padding: 1rem;
+    flex-direction: row;
+  }
+
+  body[data-variant='signal-room'] .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  body[data-variant='signal-room'] main,
+  body[data-variant='signal-room'] footer {
+    margin-left: 0;
+  }
+}

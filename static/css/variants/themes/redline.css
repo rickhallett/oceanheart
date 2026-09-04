@@ -1,0 +1,149 @@
+body[data-variant='redline'] {
+  --page: #f0eee7;
+  --text: #11110f;
+  --heading: #0a0a09;
+  --muted: #5c5a54;
+  --accent: #e2261a;
+  --link: #d11c13;
+  --link-hover: #000;
+  --rule: #141412;
+  --focus: #e2261a;
+  --display-font: Arial, Helvetica, sans-serif;
+  --body-font: Arial, Helvetica, sans-serif;
+  --mono-font: 'Courier New', monospace;
+  --content-width: 1320px;
+  --reading-width: 820px;
+  --h1: clamp(4.5rem, 13vw, 13rem);
+  --h2: clamp(2.8rem, 6vw, 6rem);
+  --heading-spacing: -0.085em;
+  --heading-line: 0.84;
+  --rule-width: 2px;
+  --button-bg: #e2261a;
+  --button-text: #fff;
+  --button-border: 0;
+}
+
+body[data-variant='redline']::before {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: clamp(1rem, 7vw, 7rem);
+  content: '';
+  background: var(--accent);
+}
+
+body[data-variant='redline'] nav {
+  border-bottom: 2px solid var(--rule);
+}
+
+body[data-variant='redline'] nav .container {
+  padding: 1rem clamp(1.5rem, 4vw, 4rem) 1rem clamp(3rem, 10vw, 11rem);
+}
+
+body[data-variant='redline'] .nav-brand {
+  color: #000;
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  letter-spacing: -0.07em;
+}
+
+body[data-variant='redline'] .nav-links {
+  gap: 0;
+}
+
+body[data-variant='redline'] .nav-links a {
+  padding: 0.5rem 0.8rem;
+  border-left: 2px solid var(--rule);
+  color: #111;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+body[data-variant='redline'] main > .container {
+  width: min(var(--content-width), calc(100% - clamp(4rem, 14vw, 15rem)));
+  margin-left: clamp(3rem, 10vw, 11rem);
+}
+
+body[data-variant='redline'] .hero {
+  min-height: 78vh;
+  border-bottom: 2px solid var(--rule);
+}
+
+body[data-variant='redline'] .hero::before {
+  content: '01';
+  color: var(--accent);
+  font: 900 clamp(5rem, 16vw, 18rem)/0.8 Arial, sans-serif;
+}
+
+body[data-variant='redline'] .hero-statement {
+  max-width: 7ch;
+  margin-top: -0.4em;
+  text-transform: uppercase;
+}
+
+body[data-variant='redline'] .entry {
+  grid-template-columns: 5rem minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+  padding: 2rem 0;
+}
+
+body[data-variant='redline'] .entry::before {
+  content: counter(list-item, decimal-leading-zero);
+  color: var(--accent);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+body[data-variant='redline'] .home-projects,
+body[data-variant='redline'] .post-list {
+  counter-reset: list-item;
+}
+
+body[data-variant='redline'] .entry,
+body[data-variant='redline'] .post-item {
+  counter-increment: list-item;
+}
+
+body[data-variant='redline'] .post-item {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1.5rem 0;
+}
+
+body[data-variant='redline'] .content {
+  margin-left: 0;
+  border-left: 2px solid var(--rule);
+  padding-left: clamp(1.5rem, 4vw, 4rem);
+}
+
+body[data-variant='redline'] .content > p:first-of-type {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+body[data-variant='redline'] footer .container {
+  width: min(var(--content-width), calc(100% - clamp(4rem, 14vw, 15rem)));
+  margin-left: clamp(3rem, 10vw, 11rem);
+}
+
+@media (max-width: 760px) {
+  body[data-variant='redline']::before {
+    width: 0.75rem;
+  }
+
+  body[data-variant='redline'] nav .container,
+  body[data-variant='redline'] main > .container,
+  body[data-variant='redline'] footer .container {
+    width: calc(100% - 2.5rem);
+    margin-left: 1.5rem;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  body[data-variant='redline'] .entry,
+  body[data-variant='redline'] .post-item {
+    grid-template-columns: 1fr;
+  }
+}
