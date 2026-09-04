@@ -354,6 +354,7 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 }
 .relational-hero > .section-context { margin-top: 0.75rem; }
 .home-section { margin-top: 6.5rem; }
+section[id] { scroll-margin-top: calc(var(--nav-height) + 1rem); }
 .section-intro { max-width: 46rem; margin-bottom: 2rem; }
 .section-intro h2,
 .wellbeing-focus h2,
@@ -370,6 +371,14 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
   margin: 0 0 1rem;
 }
 .section-intro > p:last-child { max-width: 42rem; color: var(--ink-2); margin-bottom: 0; }
+.section-more {
+  margin: 1.3rem 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+.section-more a { color: var(--accent-lift); }
+.section-more a:hover { color: var(--ink); text-decoration: none; }
+.method-more { grid-column: 2; }
 .service-list,
 .proof-list { border-top: 1px solid var(--rule); }
 .service-row,
@@ -416,7 +425,12 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .proof-outcome { color: var(--faint); }
 .proof-link { font-size: var(--fs-xs); }
 
-.method-section { display: grid; grid-template-columns: minmax(17rem, 0.75fr) minmax(0, 1.25fr); gap: 4rem; }
+.method-section {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.75fr) minmax(0, 1.25fr);
+  column-gap: 4rem;
+  row-gap: 0;
+}
 .method-list { list-style: none; margin: 0; border-top: 1px solid var(--rule); }
 .method-list li { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--rule); }
 .method-list > li > span { color: var(--accent-lift); font-size: var(--fs-xs); padding-top: 0.2rem; }
@@ -803,6 +817,7 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .boundary-note { max-width: 38rem; }
   .method-section, .technical-depth { grid-template-columns: 1fr; gap: 1.5rem; }
   .method-section .section-intro { margin-bottom: 0; }
+  .method-more { grid-column: 1; margin-top: 0; }
   .venture-thesis, .venture-build, .venture-proof, .venture-shift { grid-template-columns: 1fr; gap: 1.5rem; }
   .venture-proof aside { max-width: 40rem; }
   .relational-orientation, .relational-boundary, .relational-intake-section { grid-template-columns: 1fr; gap: 1.5rem; }

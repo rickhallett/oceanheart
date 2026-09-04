@@ -30,14 +30,9 @@ Oceanheart is the name for that way of working. It is not a technique yet. It be
 
 ## How I work
 
-1. **Enter the real context.** Start from the situation as it actually runs, not the description of it.
-2. **Find the live constraint.** Name what is holding, what triggers it, what it costs, and who is carrying it.
-3. **Respond with what fits.** Choose the smallest useful response in the register the situation asks for.
-4. **Stay close enough to see.** Follow up, notice what changed, and let evidence shape the next move.
+I enter the situation as it actually runs, find the live constraint, choose the smallest useful response, and stay close enough to see what changed. That sequence holds across direct work, encounters with AI, and software systems.
 
-In systems work, my working stack includes TypeScript, Python, React, Next.js, Node.js, REST APIs, PostgreSQL, signed webhooks, Stripe, Docker, Kubernetes, AWS, Terraform, Vercel, evaluation systems, and LLM provider APIs.
-
-The tools change. The useful part is being able to trace what happened across the whole workflow, explain it to the owner, and repair the right boundary.
+[Read the working principles in full](/approach/).
 
 ## Current boundaries
 

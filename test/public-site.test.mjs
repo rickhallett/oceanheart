@@ -231,6 +231,8 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   );
   assert.match(home, /href="\/work-with-me\/"/);
   assert.match(home, /href="\/projects\/conversations-with-ai\/"/);
+  assert.match(home, /href="\/approach\/"/);
+  assert.match(home, /href="\/projects\/"/);
   assert.match(home, /Systems can adapt to human beings\./);
   assert.doesNotMatch(home, /data-door="body"/);
   assert.doesNotMatch(home, /facebook/i);
@@ -271,6 +273,14 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   assert.match(workWithMe, /Human systems/);
   assert.match(workWithMe, /Good first problems/);
   assert.match(workWithMe, /What I take responsibility for/);
+
+  const approach = readFile(path.join(outputDirectory, "approach", "index.html"));
+  assert.match(approach, /<h1>How I work<\/h1>/);
+  assert.match(approach, /Enter the real context/);
+  assert.match(approach, /Choose the smallest useful response/);
+  assert.match(approach, /Build for failure as well as success/);
+  assert.match(approach, /Keep the human boundary explicit/);
+  assert.match(approach, /The handover matters\./);
 
   const legacyHire = readFile(path.join(outputDirectory, "hire", "index.html"));
   const legacyCanonical = onlyTag(
@@ -393,6 +403,7 @@ test("direct relational work begins with a data-minimal enquiry", () => {
   assert.doesNotMatch(relational, /posthog/i);
   assert.doesNotMatch(relational, /appointment-|data-booking-state|Calendar connection/);
   assert.doesNotMatch(relational, /A time comes after the scope|Choose a time/);
+  assert.doesNotMatch(relational, /href="#scheduling"/);
   assert.doesNotMatch(relational, /<iframe\b/i);
   assert.match(relational, /Nothing has been sent\./);
 

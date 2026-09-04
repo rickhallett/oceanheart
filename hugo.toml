@@ -6,7 +6,7 @@ title = 'oceanheart.ai'
   description = "Rick Hallett's practice, where people, intelligent machines, and working systems meet. Conversations with AI, human systems, and direct relational work."
   author = "Rick Hallett"
   homeTitle = "Oceanheart · Rick Hallett"
-  assetVersion = "20260904-4"
+  assetVersion = "20260904-5"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
   linkedin = "https://www.linkedin.com/in/richardhallett86/"
@@ -33,6 +33,10 @@ title = 'oceanheart.ai'
     name = 'relational work'
     url = '/relational-work/'
     weight = 15
+  [[menus.footer]]
+    name = 'approach'
+    url = '/approach/'
+    weight = 17
   [[menus.footer]]
     name = 'notes'
     url = '/blog/'
