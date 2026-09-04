@@ -1,7 +1,7 @@
 /*
   Founder-led homepage routing. The hero remains immutable. A source hint may
   reorder the three doors and prime the contact subject, but it never changes
-  Kai's identity or the claims on the page.
+  Rick's identity or the claims on the page.
 */
 (() => {
   const entries = {

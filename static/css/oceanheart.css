@@ -549,6 +549,69 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .home-engage h2 { max-width: 20ch; }
 .engage-line { font-family: var(--font-serif); font-size: 1.15rem; line-height: 1.55; color: var(--ink-2); margin: 0; max-width: 52ch; }
 
+/* ---- Direct relational work ---------------------------------- */
+.container > .relational-page { max-width: 64rem; margin: 0 auto; }
+.relational-hero { max-width: 52rem; padding: 2.6rem 0 3rem; }
+.relational-hero h1 {
+  max-width: 12ch; margin: 0; color: var(--ink); font-family: var(--font-serif);
+  font-size: clamp(3rem, 7vw, 5.8rem); font-weight: 400; line-height: 0.98; letter-spacing: -0.02em;
+}
+.relational-deck { margin: 1rem 0 0; color: var(--accent-lift); font-family: var(--font-serif); font-size: clamp(1.35rem, 2.5vw, 1.9rem); }
+.relational-lead { max-width: 48rem; margin: 2rem 0 0; color: var(--ink-2); font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.6; }
+.relational-orientation,
+.relational-boundary,
+.relational-intake-section,
+.appointment-panel {
+  display: grid; grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.25fr); gap: 3.5rem;
+  margin-top: 5.5rem; padding-top: 2.5rem; border-top: 1px solid var(--rule);
+}
+.relational-page section h2 { margin: 0; color: var(--ink); font-family: var(--font-serif); font-size: clamp(2rem, 3.6vw, 2.8rem); font-weight: 400; line-height: 1.12; }
+.relational-prose > p { max-width: 42rem; font-family: var(--font-serif); font-size: 1.08rem; line-height: 1.65; }
+.relational-terms { margin: 2rem 0 0; border-top: 1px solid var(--rule); }
+.relational-terms > div { display: grid; grid-template-columns: 6rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--rule); }
+.relational-terms dt { color: var(--accent-lift); font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; }
+.relational-terms dd { margin: 0; color: var(--ink-2); font-family: var(--font-serif); }
+.relational-boundary { border-top-color: var(--accent-soft); }
+.intake-intro p:last-child { max-width: 36rem; color: var(--ink-2); font-family: var(--font-serif); line-height: 1.6; }
+.relational-intake { display: grid; gap: 1.15rem; min-width: 0; }
+.relational-intake label > span:first-child { display: block; margin-bottom: 0.4rem; color: var(--ink); font-size: var(--fs-sm); }
+.relational-intake label small { color: var(--faint); font-size: var(--fs-xs); }
+.relational-intake input[type="text"],
+.relational-intake select,
+.relational-intake textarea {
+  width: 100%; min-height: 2.8rem; padding: 0.7rem 0.8rem; border: 1px solid var(--rule);
+  border-radius: 2px; background: var(--panel); color: var(--ink); font: inherit;
+}
+.relational-intake textarea { min-height: 7rem; resize: vertical; }
+.relational-intake input:focus,
+.relational-intake select:focus,
+.relational-intake textarea:focus { outline: 2px solid var(--accent-lift); outline-offset: 2px; }
+.intake-consent { display: grid; grid-template-columns: auto 1fr; gap: 0.7rem; align-items: start; color: var(--ink-2); font-size: var(--fs-sm); line-height: 1.55; }
+.intake-consent input { margin-top: 0.25rem; accent-color: var(--accent); }
+.intake-consent > span:first-child { margin: 0; }
+.relational-intake .button { justify-self: start; }
+.intake-fallback { margin: 0; color: var(--faint); font-size: var(--fs-xs); }
+.intake-prepared { grid-column: 2; padding: 1.25rem; border-left: 2px solid var(--accent); background: var(--paper-2); }
+.intake-prepared p { color: var(--ink-2); font-size: var(--fs-sm); }
+.intake-prepared p:last-child { margin: 0.75rem 0 0; color: var(--faint); font-size: var(--fs-xs); }
+.appointment-heading > p:last-child { max-width: 34rem; color: var(--ink-2); font-family: var(--font-serif); line-height: 1.6; }
+.appointment-shell,
+.appointment-ready,
+.appointment-frame { min-width: 0; border: 1px solid var(--rule); background: var(--paper-2); }
+.appointment-status { display: flex; justify-content: space-between; gap: 1rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule); color: var(--faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.appointment-status strong { color: var(--accent-lift); font-weight: 500; }
+.appointment-shell ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 0; padding: 0; list-style: none; }
+.appointment-shell li { display: grid; align-content: start; gap: 0.5rem; min-height: 9rem; padding: 1rem; border-right: 1px solid var(--rule); }
+.appointment-shell li:last-child { border-right: 0; }
+.appointment-shell li > span { color: var(--accent-lift); font-size: var(--fs-xs); }
+.appointment-shell li > strong { color: var(--ink); font-family: var(--font-serif); font-size: 1.1rem; font-weight: 400; }
+.appointment-shell li > small { color: var(--faint); line-height: 1.5; }
+.appointment-ready { padding: 1.4rem; }
+.appointment-ready p { max-width: 38rem; color: var(--ink-2); font-family: var(--font-serif); }
+.appointment-frame iframe { display: block; width: 100%; min-height: 44rem; border: 0; }
+.appointment-fallback,
+.appointment-note { grid-column: 2; max-width: 42rem; margin: 0; color: var(--faint); font-size: var(--fs-xs); line-height: 1.65; }
+
 /* ---- Wellbeing systems alternate ------------------------------ */
 .container > .wellbeing-venture {
   --venture-accent: #c2aa7d;
@@ -764,6 +827,8 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .method-section .section-intro { margin-bottom: 0; }
   .venture-thesis, .venture-build, .venture-proof, .venture-shift { grid-template-columns: 1fr; gap: 1.5rem; }
   .venture-proof aside { max-width: 40rem; }
+  .relational-orientation, .relational-boundary, .relational-intake-section, .appointment-panel { grid-template-columns: 1fr; gap: 1.5rem; }
+  .intake-prepared, .appointment-fallback, .appointment-note { grid-column: 1; }
 }
 
 @media (max-width: 640px) {
@@ -786,6 +851,13 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .method-list li { grid-template-columns: 4.5rem 1fr; gap: 0.65rem; }
   .technical-depth { padding: 1.6rem 0; }
   .home-engage { padding-top: 2rem; }
+  .relational-hero { padding-top: 1.4rem; }
+  .relational-orientation, .relational-boundary, .relational-intake-section, .appointment-panel { margin-top: 4rem; padding-top: 2rem; }
+  .relational-terms > div { grid-template-columns: 1fr; gap: 0.25rem; }
+  .relational-intake .button { width: 100%; }
+  .appointment-shell ol { grid-template-columns: 1fr; }
+  .appointment-shell li { min-height: 0; border-right: 0; border-bottom: 1px solid var(--rule); }
+  .appointment-shell li:last-child { border-bottom: 0; }
   .container > .wellbeing-venture { padding-top: 1rem; }
   .venture-hero { padding: 1.5rem 0 4.5rem; }
   .venture-hero h1 { font-size: clamp(3rem, 15vw, 4.6rem); }

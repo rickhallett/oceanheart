@@ -9,7 +9,7 @@ There are three ways to begin with Oceanheart.
 
 - **[Conversations with AI](/projects/conversations-with-ai/):** an early research encounter with a frontier model, with me in the loop.
 - **Human systems:** the work described on this page, open now.
-- **[Direct relational work](mailto:kai@oceanheart.ai?subject=Working%20with%20you%20directly):** by arrangement, with scope, professional basis, and format agreed in writing.
+- **[Direct relational work](/relational-work/):** by arrangement, with scope, professional basis, and format agreed in writing.
 
 ## Human systems
 

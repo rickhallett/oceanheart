@@ -378,6 +378,212 @@ body[data-variant] .content h3 {
   margin-top: 2.25em;
 }
 
+/* ---- direct relational work ------------------------------------------- */
+
+body[data-variant] .relational-page {
+  max-width: var(--content-width, 1180px);
+  margin: 0 auto;
+}
+
+body[data-variant] .relational-hero {
+  max-width: 58rem;
+  padding: var(--hero-padding, 4rem 0 6rem);
+}
+
+body[data-variant] .relational-hero h1 {
+  max-width: 12ch;
+}
+
+body[data-variant] .relational-deck {
+  color: var(--accent);
+  font-family: var(--display-font);
+  font-size: var(--lead-size, clamp(1.2rem, 2vw, 1.7rem));
+}
+
+body[data-variant] .relational-lead {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: var(--lead-size, clamp(1.1rem, 1.8vw, 1.5rem));
+}
+
+body[data-variant] .relational-orientation,
+body[data-variant] .relational-boundary,
+body[data-variant] .relational-intake-section,
+body[data-variant] .appointment-panel {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.75fr) minmax(0, 1.25fr);
+  gap: 3rem;
+  margin-top: var(--section-space, 5rem);
+  padding-top: 2.5rem;
+  border-top: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .relational-prose > p,
+body[data-variant] .intake-intro > p:last-child,
+body[data-variant] .appointment-heading > p:last-child {
+  max-width: 60ch;
+  color: var(--muted);
+}
+
+body[data-variant] .relational-terms,
+body[data-variant] .appointment-shell ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body[data-variant] .relational-terms {
+  border-top: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .relational-terms > div {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .relational-terms dt,
+body[data-variant] .appointment-status,
+body[data-variant] .appointment-shell li > span {
+  color: var(--accent);
+  font-family: var(--mono-font, 'Courier New', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-variant] .relational-terms dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+body[data-variant] .relational-intake {
+  display: grid;
+  gap: 1.15rem;
+  min-width: 0;
+}
+
+body[data-variant] .relational-intake label > span:first-child {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+body[data-variant] .relational-intake input[type='text'],
+body[data-variant] .relational-intake select,
+body[data-variant] .relational-intake textarea {
+  width: 100%;
+  min-height: 2.8rem;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: var(--rule-width, 1px) solid var(--rule);
+  border-radius: var(--button-radius, 0);
+  background: var(--page);
+  color: var(--text);
+  font: inherit;
+}
+
+body[data-variant] .relational-intake textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+body[data-variant] .intake-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: start;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+body[data-variant] .intake-consent > span:first-child {
+  margin: 0;
+}
+
+body[data-variant] .relational-intake .button {
+  justify-self: start;
+}
+
+body[data-variant] .intake-fallback,
+body[data-variant] .intake-prepared p,
+body[data-variant] .appointment-note,
+body[data-variant] .appointment-fallback {
+  color: var(--muted);
+  font-size: 0.82em;
+}
+
+body[data-variant] .intake-prepared,
+body[data-variant] .appointment-note,
+body[data-variant] .appointment-fallback {
+  grid-column: 2;
+}
+
+body[data-variant] .intake-prepared {
+  padding: 1.25rem;
+  border-left: 4px solid var(--accent);
+  background: var(--code-bg, rgba(127, 127, 127, 0.08));
+}
+
+body[data-variant] .appointment-shell,
+body[data-variant] .appointment-ready,
+body[data-variant] .appointment-frame {
+  min-width: 0;
+  border: var(--rule-width, 1px) solid var(--rule);
+  background: var(--code-bg, rgba(127, 127, 127, 0.08));
+}
+
+body[data-variant] .appointment-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .appointment-status strong {
+  color: var(--accent);
+}
+
+body[data-variant] .appointment-shell ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body[data-variant] .appointment-shell li {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  min-height: 9rem;
+  padding: 1rem;
+  border-right: var(--rule-width, 1px) solid var(--rule);
+}
+
+body[data-variant] .appointment-shell li:last-child {
+  border-right: 0;
+}
+
+body[data-variant] .appointment-shell li > strong {
+  color: var(--heading, var(--text));
+  font-family: var(--display-font);
+}
+
+body[data-variant] .appointment-shell li > small {
+  color: var(--muted);
+}
+
+body[data-variant] .appointment-ready {
+  padding: 1.4rem;
+}
+
+body[data-variant] .appointment-frame iframe {
+  display: block;
+  width: 100%;
+  min-height: 44rem;
+  border: 0;
+}
+
 /* ---- small labels ------------------------------------------------------ */
 
 body[data-variant] .post-tag,
@@ -815,6 +1021,10 @@ body[data-variant] footer .container {
   body[data-variant] .method-section,
   body[data-variant] .flagship-feature,
   body[data-variant] .adaptive-interface,
+  body[data-variant] .relational-orientation,
+  body[data-variant] .relational-boundary,
+  body[data-variant] .relational-intake-section,
+  body[data-variant] .appointment-panel,
   body[data-variant] .wellbeing-focus,
   body[data-variant] .technical-depth,
   body[data-variant] .venture-shift-list,
@@ -842,6 +1052,27 @@ body[data-variant] footer .container {
   body[data-variant] .project-facts > div {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  body[data-variant] .intake-prepared,
+  body[data-variant] .appointment-note,
+  body[data-variant] .appointment-fallback {
+    grid-column: 1;
+  }
+
+  body[data-variant] .relational-terms > div,
+  body[data-variant] .appointment-shell ol {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-variant] .appointment-shell li {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: var(--rule-width, 1px) solid var(--rule);
+  }
+
+  body[data-variant] .appointment-shell li:last-child {
+    border-bottom: 0;
   }
 }
 

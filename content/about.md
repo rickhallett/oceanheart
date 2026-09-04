@@ -1,14 +1,14 @@
 +++
 title = "About"
-description = "Kai Hallett runs Oceanheart, a practice where experience with people, intelligent machines, and working systems comes together."
+description = "Rick Hallett runs Oceanheart, a practice where experience with people, intelligent machines, and working systems comes together."
 layout = "about"
 +++
 
-I'm Kai Hallett. Richard is my legal name, and the name used on my CV.
+I'm Rick Hallett. My formal CV uses Richard. Kai, short for Kaishin, is my dharma name. It remains part of me; Rick is the name I now use for Oceanheart.
 
 I spent fifteen years as a cognitive behavioural therapist across NHS and private practice. Then I moved into software engineering and shipped production work in retail analytics, social intelligence, network security, education, and independent client products.
 
-<!-- KAI AUTHORSHIP GATE: add exact dates and current accreditation or registration status before merge if this page is to carry a qualifications claim. -->
+<!-- RICK AUTHORSHIP GATE: add exact dates and current accreditation or registration status before merge if this page is to carry a qualifications claim. -->
 
 Those careers use more of the same skills than their titles suggest. Listen closely enough to find the real problem. Turn ambiguity into something testable. Notice when a confident answer does not match the evidence. Keep the person affected by a system involved in its decisions.
 
@@ -18,7 +18,7 @@ Oceanheart has three ways in.
 
 - **[Conversations with AI](/projects/conversations-with-ai/)** is an early research project about meeting a frontier model while noticing what happens in you.
 - **[Human systems](/work-with-me/)** is my open systems practice: automation, custom software, and AI inside real work, with a person kept where judgement matters.
-- **Direct relational work** is available by arrangement. Scope, professional basis, and format are agreed in writing before anything begins.
+- **[Direct relational work](/relational-work/)** is available by arrangement. Scope, professional basis, and format are agreed in writing before anything begins.
 
 ## Where the work sits
 

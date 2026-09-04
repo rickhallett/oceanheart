@@ -214,9 +214,9 @@ test("canonical pages expose the required social and favicon metadata", () => {
 
 test("founder-led entry points expose three honest doors and the primary CV", () => {
   const home = readFile(path.join(outputDirectory, "index.html"));
-  assert.match(home, /<title>Oceanheart · Kai Hallett<\/title>/);
+  assert.match(home, /<title>Oceanheart · Rick Hallett<\/title>/);
   assert.match(home, /Stay human\. Work with what is coming\./);
-  assert.match(home, /I’m Kai Hallett\./);
+  assert.match(home, /I’m Rick Hallett\./);
   assert.match(home, /Meet the machine; master yourself\./);
   assert.match(home, /Bring me the mess\. We’ll make a system\./);
   assert.match(home, /Come back into contact\. In-person, virtually or otherwise\./);
@@ -234,7 +234,7 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   assert.doesNotMatch(home, /class="eyebrow"/);
 
   const llms = readFile(path.join(outputDirectory, "llms.txt"));
-  assert.match(llms, /# Oceanheart · Kai Hallett/);
+  assert.match(llms, /# Oceanheart · Rick Hallett/);
   assert.match(llms, /Choose by what the person is meeting/);
   assert.doesNotMatch(llms, /Richard Hallett builds dependable AI automations/);
 
@@ -286,6 +286,44 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
     compatibilityCv,
     primaryCv,
     "compatibility CV must be the AI Automation and Enablement variant",
+  );
+});
+
+test("direct relational work begins with a data-minimal enquiry", () => {
+  const relational = readFile(
+    path.join(outputDirectory, "relational-work", "index.html"),
+  );
+
+  assert.match(relational, /Come back into contact\./);
+  assert.match(relational, /In-person, virtually or otherwise\./);
+  assert.match(relational, /data-intake-form/);
+  assert.match(relational, /name="name"[^>]*required/);
+  assert.match(relational, /name="for"[^>]*required/);
+  assert.match(relational, /name="format"[^>]*required/);
+  assert.match(relational, /name="minimum-information"[^>]*required/);
+  assert.doesNotMatch(relational, /<input\b[^>]*type="email"/i);
+  assert.doesNotMatch(relational, /<form\b[^>]*action="https?:/i);
+  assert.doesNotMatch(relational, /posthog/i);
+  assert.match(relational, /data-booking-state="unconfigured"/);
+  assert.doesNotMatch(relational, /<iframe\b/i);
+  assert.match(relational, /Nothing has been sent\./);
+
+  for (const relativePath of [
+    "index.html",
+    path.join("about", "index.html"),
+    path.join("work-with-me", "index.html"),
+  ]) {
+    const html = readFile(path.join(outputDirectory, relativePath));
+    assert.match(
+      html,
+      /href="\/relational-work\/"/,
+      `${relativePath} must link to direct relational work`,
+    );
+  }
+
+  assert.ok(
+    fs.existsSync(path.join(outputDirectory, "js", "relational-intake.js")),
+    "relational intake script must be rendered",
   );
 });
 

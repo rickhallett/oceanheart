@@ -1,6 +1,6 @@
-# Oceanheart · Kai Hallett
+# Oceanheart · Rick Hallett
 
-> Oceanheart is Kai Hallett's practice, where people, intelligent machines, and working systems meet. Kai spent fifteen years working with people, then learned to build the systems increasingly shaping them.
+> Oceanheart is Rick Hallett's practice, where people, intelligent machines, and working systems meet. Rick spent fifteen years working with people, then learned to build the systems increasingly shaping them.
 
 This file is for agents and language models. Every link below is canonical. The public site is plain HTML with no client-side rendering requirement.
 
@@ -8,14 +8,14 @@ This file is for agents and language models. Every link below is canonical. The 
 
 Choose by what the person is meeting:
 
-- [Conversations with AI]({{ "projects/conversations-with-ai/" | absURL }}): an early research encounter with a frontier model, with Kai in the loop from the first exchange and personal follow-up afterwards. It is not a course, treatment, or automated substitute for Kai.
-- [Human systems]({{ "work-with-me/" | absURL }}): automation, custom software, and AI inside real work. This door is open now. Kai does not automate clinical judgement or move sensitive information into an unapproved system.
-- Direct relational work: available by arrangement. Scope, professional basis, and format are agreed in writing before anything begins. Start by emailing kai@oceanheart.ai with the subject "Working with you directly" and include as little sensitive information as possible.
+- [Conversations with AI]({{ "projects/conversations-with-ai/" | absURL }}): an early research encounter with a frontier model, with Rick in the loop from the first exchange and personal follow-up afterwards. It is not a course, treatment, or automated substitute for Rick.
+- [Human systems]({{ "work-with-me/" | absURL }}): automation, custom software, and AI inside real work. This door is open now. Rick does not automate clinical judgement or move sensitive information into an unapproved system.
+- [Direct relational work]({{ "relational-work/" | absURL }}): available by arrangement. Scope, professional basis, and format are agreed in writing before anything begins. The public intake prepares an email locally and does not send data to a site database.
 
 ## Person
 
-- [About Kai]({{ "about/" | absURL }}): background, the three doors, working position, and current boundaries
-- [CV]({{ "cv/" | absURL }}): Richard Hallett is Kai's legal name and remains the name used on the CV; PDF at {{ "cv/richard-hallett-ai-enablement-engineer.pdf" | absURL }}
+- [About Rick]({{ "about/" | absURL }}): background, the three doors, working position, and current boundaries. Richard is the formal name used on the CV. Kai, short for Kaishin, is Rick's dharma name.
+- [CV]({{ "cv/" | absURL }}): the legal name remains on the CV; PDF at {{ "cv/richard-hallett-ai-enablement-engineer.pdf" | absURL }}
 
 ## Selected evidence
 

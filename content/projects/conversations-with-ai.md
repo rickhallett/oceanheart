@@ -1,7 +1,7 @@
 +++
 title = "Conversations with AI"
 date = "2026-09-04"
-description = "An early Oceanheart research project: meet a frontier model with Kai in the loop, and notice what happens in you while you do."
+description = "An early Oceanheart research project: meet a frontier model with Rick in the loop, and notice what happens in you while you do."
 tags = ["ai", "research", "interaction-design", "human-systems"]
 track = "research"
 tier = "flagship"
@@ -19,7 +19,7 @@ I am in the loop from the first exchange and I follow up with you afterwards. Wh
 
 The first audience is therapists and wellbeing practitioners, whose work already depends on attention, language, judgement, and boundaries.
 
-<!-- KAI AUTHORSHIP GATE: confirm the precise encounter, participation terms, and privacy promise before merge. -->
+<!-- RICK AUTHORSHIP GATE: confirm the precise encounter, participation terms, and privacy promise before merge. -->
 
 ## The roles
 
@@ -37,4 +37,4 @@ Please keep an initial enquiry brief and leave out sensitive personal informatio
 
 ## Register your interest
 
-[Email Kai](mailto:kai@oceanheart.ai?subject=Conversations%20with%20AI) with a short note about what brings you to the project. Please do not send the conversation itself or any sensitive background in the first message.
+[Email Rick](mailto:kai@oceanheart.ai?subject=Conversations%20with%20AI) with a short note about what brings you to the project. Please do not send the conversation itself or any sensitive background in the first message.

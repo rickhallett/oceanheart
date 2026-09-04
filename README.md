@@ -1,6 +1,6 @@
 # Oceanheart
 
-Oceanheart is Kai Hallett's Hugo practice and working-notes site, deployed to
+Oceanheart is Rick Hallett's Hugo practice and working-notes site, deployed to
 Vercel at [www.oceanheart.ai](https://www.oceanheart.ai).
 
 ## Verify and preview
@@ -120,3 +120,24 @@ effects module if `effects` is true, and optionally one line in
 The homepage is the canonical three-door entry. `?from=ai` and `?from=systems`
 may change which door comes first and prime the contact subject, while the hero
 and public claims remain fixed.
+
+## Relational intake and scheduling
+
+`/relational-work/` owns a data-minimal, analytics-free intake form. JavaScript
+turns the selected values into a local `mailto:` draft; the form sends none of
+those values to the site or an analytics service. The visitor reviews the
+complete draft in their own mail application before sending it.
+
+`layouts/partials/appointment-panel.html` is the reusable scheduling shell. It
+inherits every site skin and has three states:
+
+- With both scheduling parameters blank, it explains the enquiry, scope, and
+  booking sequence without exposing fake availability.
+- `params.relationalBookingUrl` adds a reviewed external booking link.
+- `params.relationalBookingEmbedUrl` adds a provider-owned inline frame, with
+  the external link retained as a fallback when both are set.
+
+For Google Calendar, use an Appointment Schedule booking URL or the `src` from
+Google's Inline booking page embed. Do not embed or make the underlying working
+calendar public. The surrounding Oceanheart component is theme-coherent; the
+contents of a cross-origin provider frame remain controlled by that provider.

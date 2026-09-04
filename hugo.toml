@@ -3,12 +3,16 @@ languageCode = 'en-gb'
 title = 'oceanheart.ai'
 
 [params]
-  description = "Kai Hallett's practice, where people, intelligent machines, and working systems meet. Conversations with AI, human systems, and direct relational work."
-  author = "Kai Hallett"
-  homeTitle = "Oceanheart · Kai Hallett"
+  description = "Rick Hallett's practice, where people, intelligent machines, and working systems meet. Conversations with AI, human systems, and direct relational work."
+  author = "Rick Hallett"
+  homeTitle = "Oceanheart · Rick Hallett"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
   linkedin = "https://www.linkedin.com/in/richardhallett86/"
+  # Optional scheduling component. Keep blank until the public booking page and
+  # its identity, availability, and intake fields have been reviewed.
+  relationalBookingUrl = ""
+  relationalBookingEmbedUrl = ""
 
 [menus]
   [[menus.main]]
@@ -28,6 +32,10 @@ title = 'oceanheart.ai'
     name = 'Conversations with AI'
     url = '/projects/conversations-with-ai/'
     weight = 10
+  [[menus.footer]]
+    name = 'relational work'
+    url = '/relational-work/'
+    weight = 15
   [[menus.footer]]
     name = 'notes'
     url = '/blog/'

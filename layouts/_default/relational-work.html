@@ -1,0 +1,103 @@
+{{ define "main" }}
+<article class="relational-page">
+  <header class="relational-hero">
+    <p class="brief-label">Direct relational work · By arrangement</p>
+    <h1>Come back into contact.</h1>
+    <p class="relational-deck">In-person, virtually or otherwise.</p>
+    <p class="relational-lead">For a person, a pair, or a small team where something is not settling. We begin by finding out whether working together is appropriate, then agree the scope, professional basis, format, and limits in writing.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="#intake">Start with a careful enquiry</a>
+      <a class="button button-quiet" href="#scheduling">How scheduling will work</a>
+    </div>
+  </header>
+
+  <section class="relational-orientation">
+    <div>
+      <p class="brief-label">The shape of it</p>
+      <h2>A real situation, held by a real person.</h2>
+    </div>
+    <div class="relational-prose">
+      <p>This is a bounded piece of work around a situation that needs attention. It may begin with a conversation, a silence, a question, a boundary, or a closer look at the environment around the people involved.</p>
+      <p>I do not decide the form before meeting the situation. I do make the frame explicit before we begin.</p>
+      <dl class="relational-terms">
+        <div><dt>Scope</dt><dd>What we are looking at, and what sits outside the work.</dd></div>
+        <div><dt>Basis</dt><dd>The professional basis on which I am offering the work.</dd></div>
+        <div><dt>Format</dt><dd>Who is present, where we meet, and what follow-up exists.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="relational-boundary">
+    <div>
+      <p class="brief-label">Before contact</p>
+      <h2>The boundary begins here.</h2>
+    </div>
+    <div class="relational-prose">
+      <p>An enquiry does not create a booking or a professional relationship. This public page is not the place for health history, intimate detail, client material, or the names of other people.</p>
+      <p>If somebody is in immediate danger or needs urgent support, use the appropriate emergency or crisis service rather than this form.</p>
+    </div>
+  </section>
+
+  <section class="relational-intake-section" id="intake">
+    <div class="intake-intro">
+      <p class="brief-label">A small first step</p>
+      <h2>Start with the least you need to say.</h2>
+      <p>The form prepares an email on your device. It does not send anything to an Oceanheart database. You will see the complete message in your mail application before choosing whether to send it.</p>
+    </div>
+
+    <form class="relational-intake" data-intake-form data-recipient="{{ .Site.Params.email }}" action="mailto:{{ .Site.Params.email }}" method="post" enctype="text/plain">
+      <label>
+        <span>Your name</span>
+        <input type="text" name="name" autocomplete="name" maxlength="80" required>
+      </label>
+
+      <label>
+        <span>This enquiry is for</span>
+        <select name="for" required>
+          <option value="">Choose one</option>
+          <option value="One person">One person</option>
+          <option value="A pair">A pair</option>
+          <option value="A small team">A small team</option>
+          <option value="Not sure yet">Not sure yet</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Preferred format</span>
+        <select name="format" required>
+          <option value="">Choose one</option>
+          <option value="Online">Online</option>
+          <option value="In person">In person</option>
+          <option value="Either">Either</option>
+          <option value="Not sure yet">Not sure yet</option>
+        </select>
+      </label>
+
+      <label>
+        <span>One-sentence context <small>optional, 280 characters</small></span>
+        <textarea name="context" rows="4" maxlength="280" placeholder="Keep this broad. No health history, other people’s names, or confidential details."></textarea>
+      </label>
+
+      <label class="intake-consent">
+        <input type="checkbox" name="minimum-information" required>
+        <span>I have left out health history, other people’s names, and confidential client or workplace details.</span>
+      </label>
+
+      <button class="button button-primary" type="submit">Prepare my email</button>
+      <p class="intake-fallback">No JavaScript? <a href="mailto:{{ .Site.Params.email }}?subject=Direct%20relational%20work%20enquiry">Email {{ .Site.Params.email }} directly</a>.</p>
+    </form>
+
+    <div class="intake-prepared" data-intake-prepared hidden aria-live="polite">
+      <p data-intake-summary>Your draft is ready. Nothing has been sent.</p>
+      <a class="button button-primary" data-intake-mail href="mailto:{{ .Site.Params.email }}?subject=Direct%20relational%20work%20enquiry">Open the prepared email</a>
+      <p>You can edit or abandon it in your mail application.</p>
+    </div>
+  </section>
+
+  {{ partial "appointment-panel.html" (dict
+      "bookingUrl" .Site.Params.relationalBookingUrl
+      "embedUrl" .Site.Params.relationalBookingEmbedUrl
+  ) }}
+</article>
+<script src="/js/relational-intake.js" defer></script>
+{{ end }}
