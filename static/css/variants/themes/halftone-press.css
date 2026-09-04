@@ -117,7 +117,6 @@ body[data-variant='halftone-press'] h2,
 body[data-variant='halftone-press'] .hero-statement,
 body[data-variant='halftone-press'] .entry-name,
 body[data-variant='halftone-press'] .post-title,
-body[data-variant='halftone-press'] .credibility-rail strong,
 body[data-variant='halftone-press'] .nav-brand,
 body[data-variant='halftone-press'] .service-heading h3,
 body[data-variant='halftone-press'] .proof-heading h3,
@@ -136,7 +135,6 @@ body[data-variant='halftone-press'] h2:hover,
 body[data-variant='halftone-press'] .hero-statement:hover,
 body[data-variant='halftone-press'] .entry-name:hover,
 body[data-variant='halftone-press'] .post-title:hover,
-body[data-variant='halftone-press'] .credibility-rail strong:hover,
 body[data-variant='halftone-press'] .nav-brand:hover,
 body[data-variant='halftone-press'] .service-heading h3:hover,
 body[data-variant='halftone-press'] .proof-heading h3:hover,
@@ -420,44 +418,6 @@ body[data-variant='halftone-press'] .post-tag {
   font-weight: 700;
 }
 
-/* ---- credibility rail: big numerals on a fine black screen ---------------- */
-
-body[data-variant='halftone-press'] .credibility-rail {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  border-top: 3px solid var(--ink);
-  border-bottom: 3px solid var(--ink);
-  padding: 2.25rem 1.5rem;
-}
-
-body[data-variant='halftone-press'] .credibility-rail::before {
-  position: absolute;
-  z-index: -1;
-  inset: -40%;
-  content: '';
-  background-image: radial-gradient(circle, var(--ink) 0 0.8px, transparent 1.2px);
-  background-size: 4px 4px;
-  opacity: 0.14;
-  transform: rotate(45deg);
-  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000 100%);
-  mask-image: linear-gradient(90deg, transparent 20%, #000 100%);
-  pointer-events: none;
-}
-
-body[data-variant='halftone-press'] .credibility-rail strong {
-  margin-bottom: 0.35rem;
-  font-size: clamp(1.9rem, 3.2vw, 3rem);
-  letter-spacing: -0.045em;
-}
-
-body[data-variant='halftone-press'] .credibility-rail span {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 /* ---- method: plate numbers ---------------------------------------------- */
 
 body[data-variant='halftone-press'] .method-list {
@@ -736,7 +696,6 @@ body[data-variant='halftone-press'] footer .container {
     font-size: clamp(2rem, 8.5vw, 2.5rem);
   }
 
-  body[data-variant='halftone-press'] .credibility-rail,
   body[data-variant='halftone-press'] .wellbeing-focus,
   body[data-variant='halftone-press'] .technical-depth,
   body[data-variant='halftone-press'] .home-engage {

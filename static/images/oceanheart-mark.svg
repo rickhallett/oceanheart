@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <rect width="200" height="200" rx="38" fill="#1c1a17"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title">
+  <title id="title">Oceanheart zero and dot mark</title>
   <path
-    fill="#d2604a"
+    fill="currentColor"
     fill-rule="evenodd"
     d="M81 12c24-8 48 4 61 24 11 19 16 47 11 73-4 26-15 51-34 66-20 15-46 12-65-3-20-16-32-40-35-67-3-27 3-56 17-76C47 14 64 9 81 12Zm2 37c-14-5-26 4-32 20-6 16-7 36-3 52 4 17 15 28 28 32 14 5 28-2 35-15 9-16 13-36 11-55-2-18-10-31-23-35-5-2-11-2-16 1Z"
   />
   <path
-    fill="#d2604a"
+    fill="currentColor"
     d="M151 143c12-4 24 3 27 15 3 11-3 22-14 26-11 3-22-3-25-13-3-11 2-22 12-28Z"
   />
 </svg>

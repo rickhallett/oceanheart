@@ -6,7 +6,7 @@
   // translated with the page, and re-raked once the scroll settles.
   const STONES =
     '.hero, .entry, .service-row, .proof-row, .content, .home-engage, .method-section, ' +
-    '.credibility-rail, .wellbeing-focus, .technical-depth, .thread, .post-list, ' +
+    '.wellbeing-focus, .technical-depth, .thread, .post-list, ' +
     '.section-intro, .section-header, .page-head, article > header';
   const SPACING = 11;
   const STEP = 3;

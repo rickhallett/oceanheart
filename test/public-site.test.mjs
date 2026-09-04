@@ -222,7 +222,7 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   assert.match(home, /Come back into contact\. In-person, virtually or otherwise\./);
   assert.match(home, /How I work/);
   assert.match(home, /Examples of work/);
-  assert.match(home, /This site has 19 visual systems\./);
+  assert.match(home, /This site is available in twelve visual systems\./);
   assert.equal(
     openingTags(home, "article").filter((tag) => hasAttribute(tag, "data-door"))
       .length,
@@ -231,13 +231,21 @@ test("founder-led entry points expose three honest doors and the primary CV", ()
   );
   assert.match(home, /href="\/work-with-me\/"/);
   assert.match(home, /href="\/projects\/conversations-with-ai\/"/);
-  assert.match(home, /Systems can adapt to human beings\. And I can make it happen\./);
+  assert.match(home, /Systems can adapt to human beings\./);
   assert.doesNotMatch(home, /data-door="body"/);
   assert.doesNotMatch(home, /facebook/i);
   assert.doesNotMatch(home, /class="eyebrow"/);
-  assert.doesNotMatch(home, /brief-label|door-status|hero-portrait-pending/);
+  assert.doesNotMatch(home, /brief-label|door-status|hero-portrait-pending|credibility-rail/);
   assert.doesNotMatch(home, /Choose by what|not at a distance|The response does/);
+  assert.doesNotMatch(home, /Pick one and it stays|Every page follows you|stays with you/);
+  assert.doesNotMatch(home, /15 years|6\+ years|Daily since 2024|And I can make it happen/);
   assert.doesNotMatch(home, /observatory/i);
+  assert.match(home, /class="nav-brand-mark"/);
+
+  assert.ok(
+    fs.existsSync(path.join(outputDirectory, "images", "oceanheart-mark.svg")),
+    "the original Oceanheart mark must be rendered",
+  );
 
   const llms = readFile(path.join(outputDirectory, "llms.txt"));
   assert.match(llms, /# Oceanheart · Rick Hallett/);
@@ -299,7 +307,28 @@ test("the visual-system registry contains only the reviewed skins", () => {
   const registry = JSON.parse(
     readFile(path.join(repositoryRoot, "data", "variants.json")),
   );
-  const rejected = [
+  const expected = [
+    "signal-room",
+    "specimen",
+    "the-daily",
+    "construction-notice",
+    "green-screen",
+    "field-manual",
+    "acid-index",
+    "blueprint",
+    "halftone-press",
+    "glass-cockpit",
+    "raked-sand",
+  ];
+  const retired = [
+    "looseleaf",
+    "redline",
+    "reliquary",
+    "tide-table",
+    "whiteout",
+    "packet-garden",
+    "vector-field",
+    "heavy-type",
     "night-liturgy",
     "primary-motion",
     "orbital-desk",
@@ -307,13 +336,13 @@ test("the visual-system registry contains only the reviewed skins", () => {
     "deep-water",
   ];
 
-  assert.equal(registry.length, 19);
+  assert.deepEqual(registry.map((skin) => skin.slug), expected);
   assert.deepEqual(
     registry.map((skin) => skin.number),
-    Array.from({ length: 19 }, (_, index) => String(index + 1).padStart(2, "0")),
+    Array.from({ length: expected.length }, (_, index) => String(index + 1).padStart(2, "0")),
   );
   assert.deepEqual(
-    registry.filter((skin) => rejected.includes(skin.slug)),
+    registry.filter((skin) => retired.includes(skin.slug)),
     [],
   );
 
@@ -334,13 +363,16 @@ test("the visual-system registry contains only the reviewed skins", () => {
     }
   }
 
-  const heavyType = registry.find((skin) => skin.slug === "heavy-type");
-  assert.equal(heavyType.effects, false);
-  assert.ok(
-    !fs.existsSync(
-      path.join(repositoryRoot, "static", "js", "variants", "heavy-type.js"),
-    ),
-    "Heavy type must not regain a scroll-driven effects module",
+  const themeDirectory = path.join(repositoryRoot, "static", "css", "variants", "themes");
+  const themeFiles = fs
+    .readdirSync(themeDirectory)
+    .filter((name) => name.endsWith(".css"))
+    .map((name) => name.replace(/\.css$/, ""))
+    .sort();
+  assert.deepEqual(
+    themeFiles,
+    [...expected].sort(),
+    "retired theme stylesheets must not remain in the production bundle",
   );
 });
 
@@ -359,7 +391,8 @@ test("direct relational work begins with a data-minimal enquiry", () => {
   assert.doesNotMatch(relational, /<input\b[^>]*type="email"/i);
   assert.doesNotMatch(relational, /<form\b[^>]*action="https?:/i);
   assert.doesNotMatch(relational, /posthog/i);
-  assert.match(relational, /data-booking-state="unconfigured"/);
+  assert.doesNotMatch(relational, /appointment-|data-booking-state|Calendar connection/);
+  assert.doesNotMatch(relational, /A time comes after the scope|Choose a time/);
   assert.doesNotMatch(relational, /<iframe\b/i);
   assert.match(relational, /Nothing has been sent\./);
 

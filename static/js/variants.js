@@ -8,7 +8,7 @@
 
   Public surface, for anyone poking at the console:
     oceanheartSkins.list()          -> the registry
-    oceanheartSkins.apply('redline') -> switch and remember
+    oceanheartSkins.apply('specimen') -> switch and remember
     oceanheartSkins.apply('')        -> back to the house style
 */
 (() => {
@@ -160,7 +160,7 @@
     else storage('remove');
     await show(slug, options);
     syncUrl(slug);
-    announce(slug ? `${bySlug.get(slug).name} on every page` : 'House style restored');
+    announce(slug ? `${bySlug.get(slug).name} selected` : 'House style selected');
   }
 
   function syncUrl(slug) {

@@ -1,11 +1,11 @@
 (window.oceanheartSkinEffects = window.oceanheartSkinEffects || {})['glass-cockpit'] = (() => {
   // Pointer-tracking HUD: per-pane tilt (written as --tilt-x / --tilt-y on each
-  // pane, clamped to -1..1; the stylesheet turns that into at most 4deg), and
-  // four corner readouts. Throttled to ~30fps and idle when nothing has moved.
+  // pane, clamped to -1..1; the stylesheet turns that into at most 1.25deg),
+  // and four corner readouts. Throttled to ~20fps and idle when nothing moves.
   const PANES =
     '.hero, .entry, .service-row, .proof-row, .post-item, .content, .home-engage, ' +
-    '.credibility-rail > div, .method-list > li, .wellbeing-focus, .technical-depth, .thread-copy';
-  const FRAME = 1000 / 30;
+    '.method-list > li, .wellbeing-focus, .technical-depth, .thread-copy';
+  const FRAME = 1000 / 20;
   const root = document.documentElement;
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
   let panes = [];

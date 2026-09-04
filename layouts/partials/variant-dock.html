@@ -1,4 +1,5 @@
 {{- $skins := hugo.Data.variants -}}
+{{- $systemCount := add (len $skins) 1 -}}
 <div class="skin-dock" data-variant-dock data-open="false">
   <button class="skin-dock-toggle" type="button" data-dock-toggle aria-expanded="false" aria-controls="skin-panel" aria-label="Change the visual system for this site">
     <span class="skin-dock-index" data-dock-index>00/{{ printf "%02d" (len $skins) }}</span>
@@ -9,8 +10,8 @@
     <header class="skin-panel-head">
       <div>
         <p>Oceanheart / visual systems</p>
-        <h2>Same site. {{ len $skins }} skins.<br>Pick one and it stays.</h2>
-        <p class="skin-panel-note">Hover to try, click to keep. Every page follows you. <kbd>[</kbd> and <kbd>]</kbd> cycle, <kbd>Esc</kbd> closes.</p>
+        <h2>Choose a visual system.</h2>
+        <p class="skin-panel-note">Hover to preview. Click to select. <kbd>[</kbd> and <kbd>]</kbd> cycle, <kbd>Esc</kbd> closes.</p>
       </div>
       <div class="skin-panel-tools">
         <button type="button" data-skin-shuffle>Surprise me</button>
@@ -32,9 +33,9 @@
       {{- end }}
     </div>
     <footer class="skin-panel-foot">
-      <span>{{ len $skins }} systems &times; every route</span>
+      <span>{{ $systemCount }} production-ready systems</span>
       <span>Built in CSS, JavaScript and HTML. No page reload.</span>
-      <span>One body of work</span>
+      <span>One body of work, rendered twelve ways</span>
     </footer>
   </div>
   <output class="skin-sr" data-dock-live aria-live="polite"></output>

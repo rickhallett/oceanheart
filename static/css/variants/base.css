@@ -52,9 +52,22 @@ body[data-variant] nav .container {
 }
 
 body[data-variant] .nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
   font-family: var(--display-font);
   font-weight: var(--display-weight, 700);
   text-decoration: none;
+}
+
+body[data-variant] .nav-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(1.25rem, 0.72em, 2.4rem);
+  aspect-ratio: 1;
+  background: currentColor;
+  -webkit-mask: url('/images/oceanheart-mark.svg') center / contain no-repeat;
+  mask: url('/images/oceanheart-mark.svg') center / contain no-repeat;
 }
 
 body[data-variant] .nav-toggle,
@@ -389,8 +402,7 @@ body[data-variant] .relational-lead {
 
 body[data-variant] .relational-orientation,
 body[data-variant] .relational-boundary,
-body[data-variant] .relational-intake-section,
-body[data-variant] .appointment-panel {
+body[data-variant] .relational-intake-section {
   display: grid;
   grid-template-columns: minmax(14rem, 0.75fr) minmax(0, 1.25fr);
   gap: 3rem;
@@ -400,14 +412,12 @@ body[data-variant] .appointment-panel {
 }
 
 body[data-variant] .relational-prose > p,
-body[data-variant] .intake-intro > p:last-child,
-body[data-variant] .appointment-heading > p:last-child {
+body[data-variant] .intake-intro > p:last-child {
   max-width: 60ch;
   color: var(--muted);
 }
 
-body[data-variant] .relational-terms,
-body[data-variant] .appointment-shell ol {
+body[data-variant] .relational-terms {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -425,9 +435,7 @@ body[data-variant] .relational-terms > div {
   border-bottom: var(--rule-width, 1px) solid var(--rule);
 }
 
-body[data-variant] .relational-terms dt,
-body[data-variant] .appointment-status,
-body[data-variant] .appointment-shell li > span {
+body[data-variant] .relational-terms dt {
   color: var(--accent);
   font-family: var(--mono-font, 'Courier New', monospace);
   font-size: 0.72rem;
@@ -488,16 +496,12 @@ body[data-variant] .relational-intake .button {
 }
 
 body[data-variant] .intake-fallback,
-body[data-variant] .intake-prepared p,
-body[data-variant] .appointment-note,
-body[data-variant] .appointment-fallback {
+body[data-variant] .intake-prepared p {
   color: var(--muted);
   font-size: 0.82em;
 }
 
-body[data-variant] .intake-prepared,
-body[data-variant] .appointment-note,
-body[data-variant] .appointment-fallback {
+body[data-variant] .intake-prepared {
   grid-column: 2;
 }
 
@@ -505,64 +509,6 @@ body[data-variant] .intake-prepared {
   padding: 1.25rem;
   border-left: 4px solid var(--accent);
   background: var(--code-bg, rgba(127, 127, 127, 0.08));
-}
-
-body[data-variant] .appointment-shell,
-body[data-variant] .appointment-ready,
-body[data-variant] .appointment-frame {
-  min-width: 0;
-  border: var(--rule-width, 1px) solid var(--rule);
-  background: var(--code-bg, rgba(127, 127, 127, 0.08));
-}
-
-body[data-variant] .appointment-status {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.85rem 1rem;
-  border-bottom: var(--rule-width, 1px) solid var(--rule);
-}
-
-body[data-variant] .appointment-status strong {
-  color: var(--accent);
-}
-
-body[data-variant] .appointment-shell ol {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-body[data-variant] .appointment-shell li {
-  display: grid;
-  align-content: start;
-  gap: 0.5rem;
-  min-height: 9rem;
-  padding: 1rem;
-  border-right: var(--rule-width, 1px) solid var(--rule);
-}
-
-body[data-variant] .appointment-shell li:last-child {
-  border-right: 0;
-}
-
-body[data-variant] .appointment-shell li > strong {
-  color: var(--heading, var(--text));
-  font-family: var(--display-font);
-}
-
-body[data-variant] .appointment-shell li > small {
-  color: var(--muted);
-}
-
-body[data-variant] .appointment-ready {
-  padding: 1.4rem;
-}
-
-body[data-variant] .appointment-frame iframe {
-  display: block;
-  width: 100%;
-  min-height: 44rem;
-  border: 0;
 }
 
 /* ---- context and small labels ----------------------------------------- */
@@ -624,32 +570,6 @@ body[data-variant] .entry-meta span + span::before {
   opacity: 0.6;
 }
 
-/* ---- credibility rail -------------------------------------------------- */
-
-body[data-variant] .credibility-rail {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-top: var(--section-space, 4rem);
-  padding: 2rem 0;
-  border-top: var(--rule-width, 1px) solid var(--rule);
-  border-bottom: var(--rule-width, 1px) solid var(--rule);
-}
-
-body[data-variant] .credibility-rail strong {
-  display: block;
-  color: var(--heading, var(--text));
-  font-family: var(--display-font);
-  font-size: var(--h3);
-  font-weight: var(--display-weight, 700);
-  line-height: 1.1;
-}
-
-body[data-variant] .credibility-rail span {
-  color: var(--muted);
-  font-size: 0.85em;
-}
-
 /* ---- method, depth, focus ---------------------------------------------- */
 
 body[data-variant] .method-section {
@@ -688,6 +608,7 @@ body[data-variant] .method-list p {
   color: var(--muted);
 }
 
+body[data-variant] .thread,
 body[data-variant] .flagship-feature,
 body[data-variant] .adaptive-interface {
   display: grid;
@@ -698,9 +619,14 @@ body[data-variant] .adaptive-interface {
   border-bottom: var(--rule-width, 1px) solid var(--rule);
 }
 
+body[data-variant] .thread .section-intro h2,
 body[data-variant] .flagship-heading h2,
 body[data-variant] .adaptive-interface h2 {
   max-width: 14ch;
+}
+
+body[data-variant] .thread .section-intro {
+  margin-bottom: 0;
 }
 
 body[data-variant] .flagship-copy > p,
@@ -989,13 +915,13 @@ body[data-variant] footer .container {
   body[data-variant] .proof-row,
   body[data-variant] .tells-row,
   body[data-variant] .hero-founder,
+  body[data-variant] .thread,
   body[data-variant] .method-section,
   body[data-variant] .flagship-feature,
   body[data-variant] .adaptive-interface,
   body[data-variant] .relational-orientation,
   body[data-variant] .relational-boundary,
   body[data-variant] .relational-intake-section,
-  body[data-variant] .appointment-panel,
   body[data-variant] .wellbeing-focus,
   body[data-variant] .technical-depth,
   body[data-variant] .venture-shift-list,
@@ -1004,11 +930,6 @@ body[data-variant] footer .container {
   body[data-variant] .venture-proof {
     grid-template-columns: 1fr;
     gap: 0.7rem;
-  }
-
-  body[data-variant] .credibility-rail {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   body[data-variant] .door-list .entry.is-first {
@@ -1025,26 +946,14 @@ body[data-variant] footer .container {
     gap: 0.25rem;
   }
 
-  body[data-variant] .intake-prepared,
-  body[data-variant] .appointment-note,
-  body[data-variant] .appointment-fallback {
+  body[data-variant] .intake-prepared {
     grid-column: 1;
   }
 
-  body[data-variant] .relational-terms > div,
-  body[data-variant] .appointment-shell ol {
+  body[data-variant] .relational-terms > div {
     grid-template-columns: 1fr;
   }
 
-  body[data-variant] .appointment-shell li {
-    min-height: 0;
-    border-right: 0;
-    border-bottom: var(--rule-width, 1px) solid var(--rule);
-  }
-
-  body[data-variant] .appointment-shell li:last-child {
-    border-bottom: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

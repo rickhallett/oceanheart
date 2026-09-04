@@ -245,10 +245,22 @@ nav {
 }
 nav .container { display: flex; align-items: center; justify-content: space-between; }
 .nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   letter-spacing: 0;
   color: var(--ink);
+}
+.nav-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(1.25rem, 0.72em, 2.4rem);
+  aspect-ratio: 1;
+  background: currentColor;
+  -webkit-mask: url('/images/oceanheart-mark.svg') center / contain no-repeat;
+  mask: url('/images/oceanheart-mark.svg') center / contain no-repeat;
 }
 .nav-brand:hover { color: var(--accent-lift); text-decoration: none; }
 .nav-links { display: flex; gap: 1.25rem; list-style: none; }
@@ -341,18 +353,6 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
   line-height: 1.5;
 }
 .relational-hero > .section-context { margin-top: 0.75rem; }
-.credibility-rail {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem 2.2rem;
-  margin-top: 3.4rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--rule);
-}
-.credibility-rail div { display: flex; align-items: baseline; gap: 0.55rem; }
-.credibility-rail strong { color: var(--ink); font-family: var(--font-serif); font-size: 1.02rem; font-weight: 500; }
-.credibility-rail span { color: var(--faint); font-size: var(--fs-xs); line-height: 1.55; }
-
 .home-section { margin-top: 6.5rem; }
 .section-intro { max-width: 46rem; margin-bottom: 2rem; }
 .section-intro h2,
@@ -557,8 +557,7 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .relational-lead { max-width: 48rem; margin: 2rem 0 0; color: var(--ink-2); font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.6; }
 .relational-orientation,
 .relational-boundary,
-.relational-intake-section,
-.appointment-panel {
+.relational-intake-section {
   display: grid; grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.25fr); gap: 3.5rem;
   margin-top: 5.5rem; padding-top: 2.5rem; border-top: 1px solid var(--rule);
 }
@@ -591,24 +590,6 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .intake-prepared { grid-column: 2; padding: 1.25rem; border-left: 2px solid var(--accent); background: var(--paper-2); }
 .intake-prepared p { color: var(--ink-2); font-size: var(--fs-sm); }
 .intake-prepared p:last-child { margin: 0.75rem 0 0; color: var(--faint); font-size: var(--fs-xs); }
-.appointment-heading > p:last-child { max-width: 34rem; color: var(--ink-2); font-family: var(--font-serif); line-height: 1.6; }
-.appointment-shell,
-.appointment-ready,
-.appointment-frame { min-width: 0; border: 1px solid var(--rule); background: var(--paper-2); }
-.appointment-status { display: flex; justify-content: space-between; gap: 1rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule); color: var(--faint); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; }
-.appointment-status strong { color: var(--accent-lift); font-weight: 500; }
-.appointment-shell ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 0; padding: 0; list-style: none; }
-.appointment-shell li { display: grid; align-content: start; gap: 0.5rem; min-height: 9rem; padding: 1rem; border-right: 1px solid var(--rule); }
-.appointment-shell li:last-child { border-right: 0; }
-.appointment-shell li > span { color: var(--accent-lift); font-size: var(--fs-xs); }
-.appointment-shell li > strong { color: var(--ink); font-family: var(--font-serif); font-size: 1.1rem; font-weight: 400; }
-.appointment-shell li > small { color: var(--faint); line-height: 1.5; }
-.appointment-ready { padding: 1.4rem; }
-.appointment-ready p { max-width: 38rem; color: var(--ink-2); font-family: var(--font-serif); }
-.appointment-frame iframe { display: block; width: 100%; min-height: 44rem; border: 0; }
-.appointment-fallback,
-.appointment-note { grid-column: 2; max-width: 42rem; margin: 0; color: var(--faint); font-size: var(--fs-xs); line-height: 1.65; }
-
 /* ---- Wellbeing systems alternate ------------------------------ */
 .container > .wellbeing-venture {
   --venture-accent: #c2aa7d;
@@ -824,8 +805,8 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .method-section .section-intro { margin-bottom: 0; }
   .venture-thesis, .venture-build, .venture-proof, .venture-shift { grid-template-columns: 1fr; gap: 1.5rem; }
   .venture-proof aside { max-width: 40rem; }
-  .relational-orientation, .relational-boundary, .relational-intake-section, .appointment-panel { grid-template-columns: 1fr; gap: 1.5rem; }
-  .intake-prepared, .appointment-fallback, .appointment-note { grid-column: 1; }
+  .relational-orientation, .relational-boundary, .relational-intake-section { grid-template-columns: 1fr; gap: 1.5rem; }
+  .intake-prepared { grid-column: 1; }
 }
 
 @media (max-width: 640px) {
@@ -838,10 +819,6 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .lead { font-size: 1.16rem; }
   .hero-actions { display: grid; grid-template-columns: 1fr; }
   .button { width: 100%; }
-  .credibility-rail { display: block; }
-  .credibility-rail div { display: block; margin-bottom: 0.6rem; }
-  .credibility-rail div:last-child { margin-bottom: 0; }
-  .credibility-rail strong { margin-right: 0.35rem; }
   .home-section, .wellbeing-focus, .technical-depth, .home-engage { margin-top: 4.5rem; }
   .service-row, .proof-row { grid-template-columns: 1fr; gap: 1rem; padding: 1.45rem 0 1.6rem; }
   .wellbeing-focus { padding-top: 2rem; }
@@ -849,12 +826,9 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .technical-depth { padding: 1.6rem 0; }
   .home-engage { padding-top: 2rem; }
   .relational-hero { padding-top: 1.4rem; }
-  .relational-orientation, .relational-boundary, .relational-intake-section, .appointment-panel { margin-top: 4rem; padding-top: 2rem; }
+  .relational-orientation, .relational-boundary, .relational-intake-section { margin-top: 4rem; padding-top: 2rem; }
   .relational-terms > div { grid-template-columns: 1fr; gap: 0.25rem; }
   .relational-intake .button { width: 100%; }
-  .appointment-shell ol { grid-template-columns: 1fr; }
-  .appointment-shell li { min-height: 0; border-right: 0; border-bottom: 1px solid var(--rule); }
-  .appointment-shell li:last-child { border-bottom: 0; }
   .container > .wellbeing-venture { padding-top: 1rem; }
   .venture-hero { padding: 1.5rem 0 4.5rem; }
   .venture-hero h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
@@ -928,7 +902,14 @@ footer a:hover { color: var(--ink); text-decoration: none; }
 .door-list .entry-links { margin: 1rem 0 0; font-size: var(--fs-sm); }
 .door-list .entry-links a { color: var(--accent-lift); }
 .door-list .entry-links a:hover { color: var(--ink); text-decoration: none; }
-.thread { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 2rem 4rem; }
+.thread {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 4rem;
+  padding: 2.8rem 0;
+  border-top: 1px solid var(--accent-soft);
+  border-bottom: 1px solid var(--rule);
+}
 .thread .section-intro { margin: 0; }
 .thread-copy p { font-family: var(--font-serif); font-size: 1.06rem; line-height: 1.55; max-width: 42rem; }
 .thread-copy p:last-child { font-family: var(--font-mono); font-size: var(--fs-sm); }

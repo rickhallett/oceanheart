@@ -2,8 +2,8 @@
 
 /*
   Glass cockpit. A head-up display: amber marks on near-black glass, panes that
-  tilt toward the pointer (--tilt-x / --tilt-y are written per panel by the
-  effects module, never more than four degrees), a slow scan line, and live
+  respond slightly to the pointer (--tilt-x / --tilt-y are written per panel by
+  the effects module, never more than 1.25 degrees), a slow scan line, and live
   readouts in the corners.
 */
 
@@ -77,7 +77,7 @@ body[data-variant='glass-cockpit']::after {
     rgba(255, 176, 0, 0.35) 99%,
     transparent 100%
   );
-  animation: cockpit-sweep 12s linear infinite;
+  animation: cockpit-sweep 18s linear infinite;
   pointer-events: none;
 }
 
@@ -202,7 +202,6 @@ body[data-variant='glass-cockpit'] .proof-row,
 body[data-variant='glass-cockpit'] .post-item,
 body[data-variant='glass-cockpit'] .content,
 body[data-variant='glass-cockpit'] .home-engage,
-body[data-variant='glass-cockpit'] .credibility-rail > div,
 body[data-variant='glass-cockpit'] .method-list > li,
 body[data-variant='glass-cockpit'] .wellbeing-focus,
 body[data-variant='glass-cockpit'] .technical-depth,
@@ -215,8 +214,8 @@ body[data-variant='glass-cockpit'] .thread-copy {
     linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px no-repeat,
     linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px no-repeat,
     var(--glass);
-  transform: perspective(1200px) rotateX(calc(var(--tilt-y) * 4deg)) rotateY(calc(var(--tilt-x) * -4deg));
-  transition: transform 520ms cubic-bezier(0.22, 0.8, 0.3, 1), border-color 240ms linear, box-shadow 240ms linear;
+  transform: perspective(1200px) rotateX(calc(var(--tilt-y) * 1.25deg)) rotateY(calc(var(--tilt-x) * -1.25deg));
+  transition: transform 720ms cubic-bezier(0.22, 0.8, 0.3, 1), border-color 240ms linear, box-shadow 240ms linear;
   will-change: transform;
 }
 
@@ -234,8 +233,6 @@ body[data-variant='glass-cockpit'] .content::before,
 body[data-variant='glass-cockpit'] .content::after,
 body[data-variant='glass-cockpit'] .home-engage::before,
 body[data-variant='glass-cockpit'] .home-engage::after,
-body[data-variant='glass-cockpit'] .credibility-rail > div::before,
-body[data-variant='glass-cockpit'] .credibility-rail > div::after,
 body[data-variant='glass-cockpit'] .method-list > li::before,
 body[data-variant='glass-cockpit'] .method-list > li::after,
 body[data-variant='glass-cockpit'] .wellbeing-focus::before,
@@ -259,7 +256,6 @@ body[data-variant='glass-cockpit'] .proof-row::before,
 body[data-variant='glass-cockpit'] .post-item::before,
 body[data-variant='glass-cockpit'] .content::before,
 body[data-variant='glass-cockpit'] .home-engage::before,
-body[data-variant='glass-cockpit'] .credibility-rail > div::before,
 body[data-variant='glass-cockpit'] .method-list > li::before,
 body[data-variant='glass-cockpit'] .wellbeing-focus::before,
 body[data-variant='glass-cockpit'] .technical-depth::before,
@@ -277,7 +273,6 @@ body[data-variant='glass-cockpit'] .proof-row::after,
 body[data-variant='glass-cockpit'] .post-item::after,
 body[data-variant='glass-cockpit'] .content::after,
 body[data-variant='glass-cockpit'] .home-engage::after,
-body[data-variant='glass-cockpit'] .credibility-rail > div::after,
 body[data-variant='glass-cockpit'] .method-list > li::after,
 body[data-variant='glass-cockpit'] .wellbeing-focus::after,
 body[data-variant='glass-cockpit'] .technical-depth::after,
@@ -295,7 +290,6 @@ body[data-variant='glass-cockpit'] .proof-row:hover,
 body[data-variant='glass-cockpit'] .post-item:hover,
 body[data-variant='glass-cockpit'] .content:hover,
 body[data-variant='glass-cockpit'] .home-engage:hover,
-body[data-variant='glass-cockpit'] .credibility-rail > div:hover,
 body[data-variant='glass-cockpit'] .method-list > li:hover,
 body[data-variant='glass-cockpit'] .wellbeing-focus:hover,
 body[data-variant='glass-cockpit'] .technical-depth:hover,
@@ -498,31 +492,6 @@ body[data-variant='glass-cockpit'] .service-number::after {
   opacity: 0.6;
 }
 
-/* ---- credibility rail ---------------------------------------------------- */
-
-body[data-variant='glass-cockpit'] .credibility-rail {
-  gap: 0.75rem;
-  padding: 0;
-  border: 0;
-}
-
-body[data-variant='glass-cockpit'] .credibility-rail > div {
-  padding: 1.2rem 1.4rem;
-}
-
-body[data-variant='glass-cockpit'] .credibility-rail strong {
-  color: var(--accent);
-  font-size: clamp(1.4rem, 2.2vw, 2rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  text-shadow: var(--glow);
-}
-
-body[data-variant='glass-cockpit'] .credibility-rail span {
-  font-size: 0.78em;
-  letter-spacing: 0.04em;
-}
-
 /* ---- method, focus, depth ------------------------------------------------ */
 
 body[data-variant='glass-cockpit'] .method-list {
@@ -702,7 +671,6 @@ body[data-variant='glass-cockpit'] footer a:hover {
   body[data-variant='glass-cockpit'] .post-item,
   body[data-variant='glass-cockpit'] .content,
   body[data-variant='glass-cockpit'] .home-engage,
-  body[data-variant='glass-cockpit'] .credibility-rail > div,
   body[data-variant='glass-cockpit'] .method-list > li,
   body[data-variant='glass-cockpit'] .wellbeing-focus,
   body[data-variant='glass-cockpit'] .technical-depth,
@@ -734,10 +702,6 @@ body[data-variant='glass-cockpit'] footer a:hover {
     padding: 1.2rem 1.1rem;
   }
 
-  body[data-variant='glass-cockpit'] .credibility-rail {
-    grid-template-columns: 1fr;
-  }
-
   body[data-variant='glass-cockpit'] .method-list > li {
     grid-template-columns: 3rem minmax(0, 1fr);
     padding: 1rem;
@@ -761,7 +725,6 @@ body[data-variant='glass-cockpit'] footer a:hover {
   body[data-variant='glass-cockpit'] .post-item,
   body[data-variant='glass-cockpit'] .content,
   body[data-variant='glass-cockpit'] .home-engage,
-  body[data-variant='glass-cockpit'] .credibility-rail > div,
   body[data-variant='glass-cockpit'] .method-list > li,
   body[data-variant='glass-cockpit'] .wellbeing-focus,
   body[data-variant='glass-cockpit'] .technical-depth,

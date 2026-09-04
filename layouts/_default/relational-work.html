@@ -91,10 +91,6 @@
     </div>
   </section>
 
-  {{ partial "appointment-panel.html" (dict
-      "bookingUrl" .Site.Params.relationalBookingUrl
-      "embedUrl" .Site.Params.relationalBookingEmbedUrl
-  ) }}
 </article>
 <script src="/js/relational-intake.js" defer></script>
 {{ end }}

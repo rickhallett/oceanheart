@@ -199,10 +199,6 @@ body[data-variant='blueprint'] main > .container > .post-list::before {
   pointer-events: none;
 }
 
-body[data-variant='blueprint'] main > .container > .credibility-rail::before {
-  content: 'SCHEDULE  ' counter(bp-detail, decimal-leading-zero);
-}
-
 body[data-variant='blueprint'] main > .container > .method-section::before {
   content: 'SEQUENCE  ' counter(bp-detail, decimal-leading-zero);
 }
@@ -387,36 +383,6 @@ body[data-variant='blueprint'] .post-meta {
 
 body[data-variant='blueprint'] .post-tag {
   border-color: var(--rule-soft);
-}
-
-/* ---- credibility rail: a schedule --------------------------------------- */
-
-body[data-variant='blueprint'] .credibility-rail {
-  gap: 0;
-  padding: 2.25rem 0 1.75rem;
-}
-
-body[data-variant='blueprint'] .credibility-rail > div {
-  padding: 0 1.5rem;
-  border-left: 1px solid var(--rule-soft);
-}
-
-body[data-variant='blueprint'] .credibility-rail > div:first-child {
-  padding-left: 0;
-  border-left: 0;
-}
-
-body[data-variant='blueprint'] .credibility-rail strong {
-  margin-bottom: 0.4rem;
-  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
-  font-weight: 300;
-  letter-spacing: -0.01em;
-}
-
-body[data-variant='blueprint'] .credibility-rail span {
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 /* ---- method: a sequence with detail bubbles ----------------------------- */
@@ -662,17 +628,6 @@ body[data-variant='blueprint'] .bp-dim.is-drawn text {
 
   body[data-variant='blueprint'] .hero-statement {
     font-size: clamp(1.6rem, 6.8vw, 2rem);
-  }
-
-  body[data-variant='blueprint'] .credibility-rail > div {
-    padding: 0.75rem 0 0;
-    border-top: 1px solid var(--rule-soft);
-    border-left: 0;
-  }
-
-  body[data-variant='blueprint'] .credibility-rail > div:first-child {
-    padding-top: 0;
-    border-top: 0;
   }
 
   body[data-variant='blueprint'] .post-item {

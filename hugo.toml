@@ -6,14 +6,10 @@ title = 'oceanheart.ai'
   description = "Rick Hallett's practice, where people, intelligent machines, and working systems meet. Conversations with AI, human systems, and direct relational work."
   author = "Rick Hallett"
   homeTitle = "Oceanheart · Rick Hallett"
-  assetVersion = "20260904-2"
+  assetVersion = "20260904-4"
   email = "kai@oceanheart.ai"
   github = "https://github.com/rickhallett"
   linkedin = "https://www.linkedin.com/in/richardhallett86/"
-  # Optional scheduling component. Keep blank until the public booking page and
-  # its identity, availability, and intake fields have been reviewed.
-  relationalBookingUrl = ""
-  relationalBookingEmbedUrl = ""
 
 [menus]
   [[menus.main]]

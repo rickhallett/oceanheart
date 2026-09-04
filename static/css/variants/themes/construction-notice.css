@@ -55,8 +55,8 @@ body[data-variant='construction-notice'] main > .container {
 
 body[data-variant='construction-notice'] .hero {
   min-height: 82vh;
-  margin-right: calc(50% - 50vw);
-  margin-left: calc(50% - 50vw);
+  margin-right: 0;
+  margin-left: 0;
   padding: clamp(2rem, 6vw, 6rem) max(1.5rem, calc((100vw - 1320px) / 2));
   overflow: hidden;
 }

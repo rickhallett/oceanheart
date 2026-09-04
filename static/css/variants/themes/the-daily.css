@@ -83,8 +83,33 @@ body[data-variant='the-daily'] .hero .lead {
   max-width: 44ch;
   margin-right: auto;
   margin-left: auto;
-  font-size: clamp(1rem, 1.2vw, 1.08rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
+  font-style: italic;
+  line-height: 1.35;
   text-align: center;
+}
+
+body[data-variant='the-daily'] .hero-context {
+  max-width: 58ch;
+  margin-right: auto;
+  margin-left: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+body[data-variant='the-daily'] .hero-actions {
+  justify-content: center;
+}
+
+body[data-variant='the-daily'] .button,
+body[data-variant='the-daily'] .intent button {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 body[data-variant='the-daily'] .hero-mark {
@@ -101,6 +126,23 @@ body[data-variant='the-daily'] .section-header h1 {
   border-top: 2px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   text-align: center;
+}
+
+body[data-variant='the-daily'] .section-intro h2,
+body[data-variant='the-daily'] .flagship-heading h2,
+body[data-variant='the-daily'] .adaptive-interface h2,
+body[data-variant='the-daily'] .home-engage h2 {
+  font-family: 'Arial Narrow', 'Franklin Gothic Medium', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+body[data-variant='the-daily'] .section-context,
+body[data-variant='the-daily'] .proof-context {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  letter-spacing: 0;
 }
 
 body[data-variant='the-daily'] .home-projects,
@@ -125,8 +167,32 @@ body[data-variant='the-daily'] .post-item {
 
 body[data-variant='the-daily'] .entry-name,
 body[data-variant='the-daily'] .post-title {
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 1.55rem;
-  line-height: 1;
+  font-weight: 700;
+  line-height: 1.02;
+}
+
+body[data-variant='the-daily'] .proof-heading h3 {
+  font-family: 'Arial Narrow', 'Franklin Gothic Medium', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+body[data-variant='the-daily'] .thread-copy > p:first-child,
+body[data-variant='the-daily'] .flagship-copy > p:first-child {
+  font-size: clamp(1.15rem, 1.45vw, 1.32rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+body[data-variant='the-daily'] .method-list h3,
+body[data-variant='the-daily'] .project-facts dt {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
 }
 
 body[data-variant='the-daily'] .content {

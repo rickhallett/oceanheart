@@ -79,7 +79,6 @@ body[data-variant='raked-sand'] .proof-row,
 body[data-variant='raked-sand'] .content,
 body[data-variant='raked-sand'] .home-engage,
 body[data-variant='raked-sand'] .method-section,
-body[data-variant='raked-sand'] .credibility-rail,
 body[data-variant='raked-sand'] .wellbeing-focus,
 body[data-variant='raked-sand'] .technical-depth,
 body[data-variant='raked-sand'] .thread,
@@ -102,76 +101,6 @@ body[data-variant='raked-sand'] .method-section .section-intro,
 body[data-variant='raked-sand'] .post-list .section-header {
   background: transparent;
   box-shadow: none;
-}
-
-/* ---- vertical labels ----------------------------------------------------- */
-
-body[data-variant='raked-sand'] .hero::before,
-body[data-variant='raked-sand'] .credibility-rail::before,
-body[data-variant='raked-sand'] .home-section::before,
-body[data-variant='raked-sand'] .home-projects::before,
-body[data-variant='raked-sand'] .wellbeing-focus::before,
-body[data-variant='raked-sand'] .technical-depth::before,
-body[data-variant='raked-sand'] .home-engage::before,
-body[data-variant='raked-sand'] .post-list::before,
-body[data-variant='raked-sand'] .content::before,
-body[data-variant='raked-sand'] .section-header::before {
-  position: absolute;
-  top: 0.4rem;
-  left: -2.8rem;
-  color: var(--muted);
-  font-family: var(--mono-font);
-  font-size: 0.58rem;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-  content: '\2014';
-  pointer-events: none;
-}
-
-body[data-variant='raked-sand'] .hero::before {
-  content: 'entrance';
-}
-
-body[data-variant='raked-sand'] .credibility-rail::before {
-  content: 'ground';
-}
-
-body[data-variant='raked-sand'] .home-section::before,
-body[data-variant='raked-sand'] .home-projects::before {
-  content: 'stones';
-}
-
-body[data-variant='raked-sand'] .thread::before {
-  content: 'thread';
-}
-
-body[data-variant='raked-sand'] .method-section::before {
-  content: 'the way';
-}
-
-body[data-variant='raked-sand'] .wellbeing-focus::before {
-  content: 'boundary';
-}
-
-body[data-variant='raked-sand'] .technical-depth::before {
-  content: 'depth';
-}
-
-body[data-variant='raked-sand'] .home-engage::before {
-  content: 'a word';
-}
-
-body[data-variant='raked-sand'] .post-list::before {
-  content: 'notes';
-}
-
-body[data-variant='raked-sand'] .content::before {
-  content: 'reading';
-}
-
-body[data-variant='raked-sand'] .section-header::before {
-  content: 'index';
 }
 
 /* ---- nav ----------------------------------------------------------------- */
@@ -218,22 +147,6 @@ body[data-variant='raked-sand'] .hero {
 
 body[data-variant='raked-sand'] .hero-copy {
   max-width: 640px;
-}
-
-body[data-variant='raked-sand'] .hero-copy::after {
-  display: grid;
-  width: 2.1rem;
-  height: 2.1rem;
-  margin-top: 3rem;
-  place-items: center;
-  border-radius: 2px;
-  background: var(--accent);
-  color: #f3e9d6;
-  font-family: var(--display-font);
-  font-size: 1.1rem;
-  font-weight: 700;
-  line-height: 1;
-  content: '\6D77';
 }
 
 body[data-variant='raked-sand'] .hero-statement {
@@ -459,26 +372,6 @@ body[data-variant='raked-sand'] .service-number {
   letter-spacing: 0.24em;
 }
 
-/* ---- credibility rail ---------------------------------------------------- */
-
-body[data-variant='raked-sand'] .credibility-rail {
-  gap: 2rem;
-  padding: 2.4rem 2.4rem;
-}
-
-body[data-variant='raked-sand'] .credibility-rail strong {
-  margin-bottom: 0.4rem;
-  color: var(--heading);
-  font-size: clamp(1.3rem, 2vw, 1.8rem);
-  font-weight: 500;
-}
-
-body[data-variant='raked-sand'] .credibility-rail span {
-  color: var(--muted);
-  font-size: 0.82em;
-  line-height: 1.6;
-}
-
 /* ---- method, focus, depth ------------------------------------------------ */
 
 body[data-variant='raked-sand'] .method-section {
@@ -641,25 +534,6 @@ body[data-variant='raked-sand'] footer a:hover {
   color: var(--accent);
 }
 
-/* ---- narrower desks: labels turn horizontal ------------------------------ */
-
-@media (max-width: 1140px) {
-  body[data-variant='raked-sand'] .hero::before,
-  body[data-variant='raked-sand'] .credibility-rail::before,
-  body[data-variant='raked-sand'] .home-section::before,
-  body[data-variant='raked-sand'] .home-projects::before,
-  body[data-variant='raked-sand'] .wellbeing-focus::before,
-  body[data-variant='raked-sand'] .technical-depth::before,
-  body[data-variant='raked-sand'] .home-engage::before,
-  body[data-variant='raked-sand'] .post-list::before,
-  body[data-variant='raked-sand'] .content::before,
-  body[data-variant='raked-sand'] .section-header::before {
-    top: -1.6rem;
-    left: 0;
-    writing-mode: horizontal-tb;
-  }
-}
-
 /* ---- small screens ------------------------------------------------------- */
 
 @media (max-width: 760px) {
@@ -668,19 +542,6 @@ body[data-variant='raked-sand'] footer a:hover {
     --hero-height: auto;
     --section-space: 4.5rem;
     --main-padding: 2rem 0 8rem;
-  }
-
-  body[data-variant='raked-sand'] .hero::before,
-  body[data-variant='raked-sand'] .credibility-rail::before,
-  body[data-variant='raked-sand'] .home-section::before,
-  body[data-variant='raked-sand'] .home-projects::before,
-  body[data-variant='raked-sand'] .wellbeing-focus::before,
-  body[data-variant='raked-sand'] .technical-depth::before,
-  body[data-variant='raked-sand'] .home-engage::before,
-  body[data-variant='raked-sand'] .post-list::before,
-  body[data-variant='raked-sand'] .content::before,
-  body[data-variant='raked-sand'] .section-header::before {
-    display: none;
   }
 
   body[data-variant='raked-sand'] nav .container {
@@ -698,7 +559,6 @@ body[data-variant='raked-sand'] footer a:hover {
 
   body[data-variant='raked-sand'] .section-intro,
   body[data-variant='raked-sand'] .post-list,
-  body[data-variant='raked-sand'] .credibility-rail,
   body[data-variant='raked-sand'] .method-section,
   body[data-variant='raked-sand'] .wellbeing-focus,
   body[data-variant='raked-sand'] .technical-depth,
@@ -716,11 +576,6 @@ body[data-variant='raked-sand'] footer a:hover {
   body[data-variant='raked-sand'] .technical-depth {
     grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  body[data-variant='raked-sand'] .credibility-rail {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
   }
 
   body[data-variant='raked-sand'] .post-item {
