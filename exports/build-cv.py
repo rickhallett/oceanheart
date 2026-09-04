@@ -90,21 +90,6 @@ VARIANTS = {
         ),
         "public_mirror": True,
     },
-    "ai-enablement-engineer": {
-        "source": SOURCE_DIR / "ai-enablement-engineer.md",
-        "label": "AI Enablement Engineer",
-        "descriptor": "Process discovery | applied AI | adoption and handoff",
-        "preview_only": True,
-        "facts": (
-            (
-                "BASED / TRAVEL",
-                "United Kingdom<br/>Remote, hybrid, willing to relocate",
-            ),
-            ("ENGINEERING", "6+ professional years<br/>Product and AI delivery"),
-            ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
-        ),
-        "page_break_before": ("Experience",),
-    },
     "frontend-developer": {
         "source": FULL_COMPLEMENT_SOURCE_DIR / "frontend-developer.md",
         "label": "Frontend Developer",

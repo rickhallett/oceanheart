@@ -1,26 +1,14 @@
 {{ define "main" }}
 <section class="hero hero-business">
   <div class="hero-copy">
-    <p class="eyebrow">AI automation and customer systems</p>
     <h1 class="hero-statement">I turn manual work into dependable systems.</h1>
-    <p class="lead">I work with founders and internal teams whose business has outgrown spreadsheets, copied messages, disconnected tools, and AI experiments that nobody quite trusts.</p>
+    <p class="lead">I work with founders and internal teams whose business has outgrown spreadsheets, copied messages, disconnected tools, and AI experiments you can't trust.</p>
     <p class="hero-context">Fifteen years as a therapist taught me how to find the real problem with people. Production engineering taught me how to build, ship, and support the answer.</p>
     <div class="hero-actions">
-      <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=The%20work%20that%20keeps%20repeating">Tell me what keeps repeating</a>
+      <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=Where%20the%20work%20gets%20stuck">Show me where the work gets stuck</a>
       <a class="button button-quiet" href="#selected-work">See selected work</a>
     </div>
   </div>
-
-  <aside class="hero-brief" aria-labelledby="useful-when">
-    <p class="brief-label" id="useful-when">I am useful when</p>
-    <ul>
-      <li>The founder is the bridge between every tool and every customer.</li>
-      <li>A repeated workflow depends on memory, copying, or manual checking.</li>
-      <li>An AI prototype needs proper rules, monitoring, and a human recovery path.</li>
-      <li>A customer portal, payment flow, or internal process needs one technical owner.</li>
-    </ul>
-    <p class="brief-foot">Start with the work that is costing attention. AI is only part of the answer when it earns its place.</p>
-  </aside>
 </section>
 
 <section class="credibility-rail" aria-label="Relevant experience">
@@ -40,7 +28,6 @@
 
 <section class="home-section" id="what-i-build">
   <div class="section-intro">
-    <p class="eyebrow">What I build</p>
     <h2>Less admin. Fewer dropped threads. Systems your business can actually rely on.</h2>
     <p>I combine lightweight automation, custom software, and LLM APIs according to the job. The goal is a working process with an owner, a recovery path, and evidence that it helped.</p>
   </div>
@@ -61,7 +48,7 @@
         <h3>AI inside real work</h3>
       </div>
       <div class="service-body">
-        <p>Use models for classification, drafting, retrieval, or assistance without letting plausible output quietly become business truth.</p>
+        <p>Use models for classification, drafting, retrieval, or assistance without letting plausible output become business truth.</p>
         <p class="service-examples">Evaluation sets, deterministic checks, audit traces, monitoring, and escalation to a person.</p>
       </div>
     </article>
@@ -80,8 +67,7 @@
 
 <section class="wellbeing-focus">
   <div class="wellbeing-copy">
-    <p class="eyebrow">A particular fit for wellbeing businesses</p>
-    <h2>Your clients notice when the system forgets the relationship.</h2>
+    <h2>Become fully reliable.</h2>
     <p>Successful solo practitioners, educators, and creators often become the hidden integration between their audience, inbox, forms, calendar, payments, course platform, and private notes. That works until growth turns every new client into more copying, checking, and remembering.</p>
     <p>I have run a wellbeing practice myself. I understand the difference between administration that should disappear and judgement that should stay with a person. I build around consent, clear boundaries, recoverable mistakes, and the tone your clients already trust.</p>
   </div>
@@ -92,14 +78,21 @@
 </section>
 
 <section class="home-section" id="selected-work">
-  <div class="section-intro section-intro-split">
-    <div>
-      <p class="eyebrow">Selected proof</p>
-      <h2>Built around real owners and real constraints.</h2>
-    </div>
-    <a class="section-link" href="/projects/">All technical work</a>
+  <div class="section-intro">
+    <h2>Built around real owners and real constraints.</h2>
   </div>
   <div class="proof-list">
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Regulated AI</p>
+        <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A synthetic-data engine where an LLM proposes each turn, deterministic code blocks unsafe output, and every decision carries a trace that can be inspected.</p>
+        <p class="proof-outcome">A prototype and evaluation environment, clearly separated from production claims.</p>
+        <a class="proof-link" href="/projects/fail-closed-llm-engine/">Inspect the architecture &rarr;</a>
+      </div>
+    </article>
     <article class="proof-row">
       <div class="proof-heading">
         <p class="proof-kind">Coaching business</p>
@@ -122,23 +115,11 @@
         <a class="proof-link" href="/projects/sarah-mozer-studio/">Read the project &rarr;</a>
       </div>
     </article>
-    <article class="proof-row">
-      <div class="proof-heading">
-        <p class="proof-kind">Regulated AI</p>
-        <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
-      </div>
-      <div class="proof-body">
-        <p>A synthetic-data engine where an LLM proposes each turn, deterministic code blocks unsafe output, and every decision carries a trace that can be inspected.</p>
-        <p class="proof-outcome">A prototype and evaluation environment, clearly separated from production claims.</p>
-        <a class="proof-link" href="/projects/fail-closed-llm-engine/">Inspect the architecture &rarr;</a>
-      </div>
-    </article>
   </div>
 </section>
 
 <section class="home-section method-section">
   <div class="section-intro">
-    <p class="eyebrow">How the work runs</p>
     <h2>Start with the operating problem. Finish with a system somebody else can own.</h2>
   </div>
   <ol class="method-list">
@@ -163,7 +144,6 @@
 
 <section class="technical-depth">
   <div>
-    <p class="eyebrow">Technical depth</p>
     <h2>I can hold the relationship and debug the system.</h2>
   </div>
   <div>
@@ -173,7 +153,6 @@
 </section>
 
 <section class="home-engage">
-  <p class="eyebrow">A useful first conversation</p>
   <h2>What keeps repeating, who handles it, and where does it break?</h2>
   <p class="engage-line">Send me the rough version. I will tell you plainly whether it looks worth automating and what I would need to learn before proposing a build.</p>
   <div class="hero-actions">

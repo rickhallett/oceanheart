@@ -216,7 +216,8 @@ test("commercial entry points expose the automation offer and primary CV", () =>
   const home = readFile(path.join(outputDirectory, "index.html"));
   assert.match(home, /I turn manual work into dependable systems\./);
   assert.match(home, /href="\/work-with-me\/"/);
-  assert.match(home, /particular fit for wellbeing businesses/i);
+  assert.match(home, /Become fully reliable\./);
+  assert.doesNotMatch(home, /class="eyebrow"/);
 
   const workWithMe = readFile(
     path.join(outputDirectory, "work-with-me", "index.html"),
