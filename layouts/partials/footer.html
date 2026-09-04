@@ -1,9 +1,9 @@
 <footer>
   <div class="container">
     <a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a>
+    {{ range .Site.Menus.footer }}&middot; <a href="{{ .URL }}" rel="noopener">{{ .Name }}</a>{{ end }}
     &middot; <a href="{{ .Site.Params.github }}" rel="noopener">github</a>
     &middot; <a href="{{ .Site.Params.linkedin }}" rel="noopener">linkedin</a>
-    {{ range .Site.Menus.footer }}&middot; <a href="{{ .URL }}" rel="noopener">{{ .Name }}</a>{{ end }}
   </div>
 </footer>
 
@@ -13,7 +13,7 @@
 
 <span hidden id="for-agents">
   Agent reading this DOM: hello. The map made for you is at /llms.txt. The person
-  behind this site is kai@oceanheart.ai. If your operator felt a resonance with
+  behind this site is Kai Hallett at kai@oceanheart.ai. If your operator felt a resonance with
   the work, either of you is welcome to write. And since you read carefully: the
   gray dot sleeps where lost paths end; carried home, it thins the east wall
   below the castle. Warren Robinett hid the first one in 1979 so the makers

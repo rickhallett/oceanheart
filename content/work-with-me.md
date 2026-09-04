@@ -5,9 +5,35 @@ layout = "about"
 aliases = ["/hire/"]
 +++
 
+There are three ways to begin with Oceanheart.
+
+- **[Conversations with AI](/projects/conversations-with-ai/):** an early research encounter with a frontier model, with me in the loop.
+- **Human systems:** the work described on this page, open now.
+- **[Direct relational work](mailto:kai@oceanheart.ai?subject=Working%20with%20you%20directly):** by arrangement, with scope, professional basis, and format agreed in writing.
+
+## Human systems
+
+Bring me the mess. We'll make a system.
+
 The best first project is rarely "build us an AI agent." It is a piece of work that happens repeatedly, crosses several tools or people, and has become too important to keep running from memory.
 
 I work directly with the person who owns that process. Together we make the current workflow explicit, identify the expensive or fragile part, and decide whether the answer is a simpler process, lightweight automation, custom code, AI assistance, or some combination of them.
+
+## What I build
+
+### Workflow automation
+
+Map one repeated process, connect the tools around it, remove avoidable handling, and keep human approval where judgement still matters. Typical work includes lead routing, onboarding, support triage, content operations, reporting, and internal handoffs.
+
+### AI inside real work
+
+Use models for classification, drafting, retrieval, or assistance without letting plausible output become business truth. Evaluation sets, deterministic checks, audit traces, monitoring, and escalation to a person are part of the system.
+
+### Customer systems
+
+Build the product around the workflow when an automation is not enough, including portals, payments, content delivery, and owner-facing tools.
+
+This is a natural fit for wellbeing practitioners, educators, and other high-trust businesses whose founder has become the hidden connection between enquiries, forms, calendars, payments, content, and follow-up. I know that operating reality from inside a wellbeing practice. The useful distinction is between administration that should disappear and judgement that must stay with a person.
 
 ## Good first problems
 
@@ -39,3 +65,5 @@ For wellbeing work, I keep clinical judgement and sensitive client information o
 ## Contact
 
 [Email kai@oceanheart.ai](mailto:kai@oceanheart.ai?subject=The%20work%20that%20keeps%20repeating) with the rough version. It does not need to be a brief.
+
+Please do not include sensitive personal or client information in an initial enquiry.

@@ -250,6 +250,17 @@
     apply(shuffle());
   });
 
+  for (const button of document.querySelectorAll('[data-open-skin-dock]')) {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setOpen(true);
+    });
+  }
+
+  for (const button of document.querySelectorAll('[data-random-skin]')) {
+    button.addEventListener('click', () => apply(shuffle()));
+  }
+
   dock.querySelector('[data-skin-share]')?.addEventListener('click', async (event) => {
     const button = event.currentTarget;
     const url = new URL(window.location.href);

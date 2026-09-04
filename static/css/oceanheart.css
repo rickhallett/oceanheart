@@ -271,6 +271,24 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 }
 .hero-business { display: block; }
 .hero-copy { max-width: 42rem; }
+.hero-founder { align-items: center; }
+.hero-portrait {
+  position: relative;
+  width: min(100%, 25rem);
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  justify-self: end;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+}
+.hero-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-portrait-pending { display: grid; place-items: center; }
+.hero-portrait-mark { color: var(--accent); font-family: var(--font-serif); font-size: clamp(6rem, 14vw, 9rem); line-height: 1; }
+.hero-portrait figcaption {
+  position: absolute; right: 1rem; bottom: 0.85rem;
+  color: var(--faint); font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase;
+}
 .hero-statement {
   font-family: var(--font-serif);
   font-weight: 400;
@@ -343,6 +361,8 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 .section-intro h2,
 .wellbeing-focus h2,
 .technical-depth h2,
+.flagship-feature h2,
+.adaptive-interface h2,
 .home-engage h2 {
   font-family: var(--font-serif);
   font-size: clamp(1.9rem, 3.5vw, 2.55rem);
@@ -401,7 +421,7 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 
 .method-section { display: grid; grid-template-columns: minmax(17rem, 0.75fr) minmax(0, 1.25fr); gap: 4rem; }
 .method-list { list-style: none; margin: 0; border-top: 1px solid var(--rule); }
-.method-list li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--rule); }
+.method-list li { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--rule); }
 .method-list > li > span { color: var(--accent-lift); font-size: var(--fs-xs); padding-top: 0.2rem; }
 .method-list h3 { margin: 0 0 0.3rem; font-size: 0.94rem; }
 .method-list p { font-family: var(--font-serif); margin: 0; line-height: 1.58; }
@@ -417,6 +437,39 @@ nav .container { display: flex; align-items: center; justify-content: space-betw
 }
 .technical-depth p { font-family: var(--font-serif); font-size: 1.07rem; line-height: 1.65; }
 .technical-depth p:last-child { margin-bottom: 0; color: var(--faint); }
+
+.flagship-feature,
+.adaptive-interface {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 4rem;
+  padding: 2.8rem 0;
+  border-top: 1px solid var(--accent-soft);
+  border-bottom: 1px solid var(--rule);
+}
+.flagship-heading h2,
+.adaptive-interface h2 { max-width: 14ch; }
+.flagship-copy > p,
+.adaptive-interface > div:last-child > p {
+  max-width: 42rem;
+  font-family: var(--font-serif);
+  font-size: 1.07rem;
+  line-height: 1.65;
+}
+.project-facts { margin: 2rem 0; border-top: 1px solid var(--rule); }
+.project-facts > div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.project-facts dt { color: var(--accent-lift); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.project-facts dd { margin: 0; color: var(--ink-2); font-family: var(--font-serif); line-height: 1.5; }
+.privacy-note,
+.contact-safety { max-width: 54ch; color: var(--faint); font-size: var(--fs-xs); line-height: 1.65; }
+.adaptive-close { color: var(--ink) !important; font-size: 1.25rem !important; }
+.button[type="button"] { cursor: pointer; }
 
 /* ---- The work, written as entries ------------------------------ */
 /* Not cards. Nothing here draws a frame, a fill, a rule or a badge:
@@ -730,7 +783,7 @@ footer a:hover { color: var(--ink); text-decoration: none; }
   .home-section, .wellbeing-focus, .technical-depth, .home-engage { margin-top: 4.5rem; }
   .service-row, .proof-row { grid-template-columns: 1fr; gap: 1rem; padding: 1.45rem 0 1.6rem; }
   .wellbeing-focus { padding-top: 2rem; }
-  .method-list li { grid-template-columns: 2rem 1fr; gap: 0.65rem; }
+  .method-list li { grid-template-columns: 4.5rem 1fr; gap: 0.65rem; }
   .technical-depth { padding: 1.6rem 0; }
   .home-engage { padding-top: 2rem; }
   .container > .wellbeing-venture { padding-top: 1rem; }
@@ -799,6 +852,8 @@ footer a:hover { color: var(--ink); text-decoration: none; }
 .door-list .entry-lead { font-family: var(--font-serif); font-size: 1.55rem; line-height: 1.15; color: var(--ink-2); margin: 0; }
 .door-list .entry-name { color: var(--ink); font-weight: 400; display: block; }
 .door-list .entry-body { font-family: var(--font-serif); font-size: 1.06rem; line-height: 1.5; color: var(--ink-2); max-width: 46ch; margin: 0; }
+.door-boundary { max-width: 50ch; margin: 0.8rem 0 0; color: var(--faint); font-size: var(--fs-xs); line-height: 1.6; }
+.door-boundary strong { color: var(--ink-2); font-weight: 500; }
 .door-status {
   display: inline-flex; align-items: center; gap: 0.4rem; margin: 0 0 0.6rem;
   font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -836,9 +891,11 @@ footer a:hover { color: var(--ink); text-decoration: none; }
 .subject-line { font-size: var(--fs-xs); color: var(--faint); margin: 0 0 1rem; }
 .subject-line code { color: var(--ink-2); background: transparent; padding: 0; }
 .home-engage .hero-actions { margin-top: 0.5rem; }
-.doors-footnote { margin-top: 2rem; max-width: 52ch; font-size: var(--fs-xs); color: var(--faint); }
+.contact-safety { margin-top: 1.5rem; }
 @media (max-width: 720px) {
   .door-list .entry { grid-template-columns: 1fr; gap: 0.6rem; padding: 1.5rem 0; }
   .door-list .entry-lead { font-size: 1.35rem; }
-  .thread { grid-template-columns: 1fr; }
+  .thread, .flagship-feature, .adaptive-interface { grid-template-columns: 1fr; }
+  .hero-portrait { width: min(100%, 28rem); justify-self: start; }
+  .project-facts > div { grid-template-columns: 1fr; gap: 0.25rem; }
 }

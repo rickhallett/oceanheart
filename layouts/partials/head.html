@@ -1,11 +1,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {{- $pageTitle := .Site.Title }}
-{{- if not .IsHome }}{{ $pageTitle = .Title }}{{ end }}
+{{- if .IsHome }}
+  {{- with .Site.Params.homeTitle }}{{ $pageTitle = . }}{{ end }}
+{{- else }}
+  {{- $pageTitle = printf "%s · %s" .Title .Site.Title }}
+{{- end }}
 {{- $description := .Site.Params.description }}
 {{- with .Description }}{{ $description = . }}{{ end }}
 {{- $canonical := .Permalink }}
-<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+<title>{{ $pageTitle }}</title>
 <meta name="description" content="{{ $description }}">
 <link rel="canonical" href="{{ $canonical }}">
 {{ if .Params.noIndex }}<meta name="robots" content="noindex,nofollow,noarchive">{{ end }}
@@ -33,7 +37,7 @@
 <link rel="stylesheet" href="/css/variants/dock.css">
 <script>
 (function () {
-  var known = {{ apply site.Data.variants "index" "." "slug" | jsonify | safeJS }};
+  var known = {{ apply hugo.Data.variants "index" "." "slug" | jsonify | safeJS }};
   try {
     var params = new URLSearchParams(window.location.search);
     var fromUrl = params.get('theme');

@@ -1,163 +1,215 @@
 {{ define "main" }}
-<section class="hero hero-business">
+<section class="hero hero-founder">
   <div class="hero-copy">
-    <h1 class="hero-statement">I turn manual work into dependable systems.</h1>
-    <p class="lead">I work with founders and internal teams whose business has outgrown spreadsheets, copied messages, disconnected tools, and AI experiments you can't trust.</p>
-    <p class="hero-context">Fifteen years as a therapist taught me how to find the real problem with people. Production engineering taught me how to build, ship, and support the answer.</p>
+    <h1 class="hero-statement">Stay human. Work with what is coming.</h1>
+    <p class="lead">I’m Kai Hallett. I spent fifteen years working with people, then learned to build the systems increasingly shaping them. Oceanheart is where those practices meet.</p>
+    <p class="hero-context">Oceanheart designs encounters between human beings and intelligent systems, and changes the environment around the person, rather than forcing the person into it.</p>
     <div class="hero-actions">
-      <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=Where%20the%20work%20gets%20stuck">Show me where the work gets stuck</a>
-      <a class="button button-quiet" href="#selected-work">See selected work</a>
+      <a class="button button-primary" href="#doors">Choose a door</a>
+      <a class="button button-quiet" href="#contact">Start with a conversation</a>
     </div>
   </div>
+  {{ if fileExists "static/images/kai-hero.webp" }}
+  <figure class="hero-portrait">
+    <img src="/images/kai-hero.webp" alt="Kai Hallett" width="960" height="1200">
+  </figure>
+  {{ else }}
+  {{/* Kai authorship gate: replace this mark with an authentic portrait generated from Kai's supplied photographs. */}}
+  <figure class="hero-portrait hero-portrait-pending" aria-label="Portrait of Kai Hallett to come">
+    <span class="hero-portrait-mark" aria-hidden="true">O.</span>
+    <figcaption>Kai Hallett</figcaption>
+  </figure>
+  {{ end }}
 </section>
 
-<section class="credibility-rail" aria-label="Relevant experience">
-  <div>
-    <strong>15 years</strong>
-    <span>clinical practice and high-trust conversations</span>
-  </div>
-  <div>
-    <strong>6+ years</strong>
-    <span>professional software delivery</span>
-  </div>
-  <div>
-    <strong>End to end</strong>
-    <span>discovery, build, deployment, support, and handoff</span>
-  </div>
-</section>
-
-<section class="home-section" id="what-i-build">
+<section class="home-projects door-list" id="doors" data-door-list>
   <div class="section-intro">
-    <h2>Less admin. Fewer dropped threads. Systems your business can actually rely on.</h2>
-    <p>I combine lightweight automation, custom software, and LLM APIs according to the job. The goal is a working process with an owner, a recovery path, and evidence that it helped.</p>
+    <h2>Three ways to begin.</h2>
+    <p>Choose by what you are meeting, not by what I am called.</p>
   </div>
-  <div class="service-list">
-    <article class="service-row">
-      <div class="service-heading">
-        <p class="service-number">01</p>
-        <h3>Workflow automation</h3>
-      </div>
-      <div class="service-body">
-        <p>Map one repeated process, connect the tools around it, remove avoidable handling, and keep human approval where judgement still matters.</p>
-        <p class="service-examples">Lead routing, onboarding, support triage, content operations, reporting, and internal handoffs.</p>
-      </div>
-    </article>
-    <article class="service-row">
-      <div class="service-heading">
-        <p class="service-number">02</p>
-        <h3>AI inside real work</h3>
-      </div>
-      <div class="service-body">
-        <p>Use models for classification, drafting, retrieval, or assistance without letting plausible output become business truth.</p>
-        <p class="service-examples">Evaluation sets, deterministic checks, audit traces, monitoring, and escalation to a person.</p>
-      </div>
-    </article>
-    <article class="service-row">
-      <div class="service-heading">
-        <p class="service-number">03</p>
-        <h3>Customer systems</h3>
-      </div>
-      <div class="service-body">
-        <p>Build the product around the workflow when an automation is not enough, including portals, payments, content delivery, and owner-facing tools.</p>
-        <p class="service-examples">Membership products, client portals, commerce, CMS workflows, APIs, and secure integrations.</p>
-      </div>
-    </article>
-  </div>
+
+  <article class="entry door" data-door="ai">
+    <div>
+      <p class="door-status" data-state="research">Research stage</p>
+      <p class="entry-lead"><b class="entry-name">Meet the machine; master yourself.</b> Conversations with AI.</p>
+    </div>
+    <div>
+      <p class="entry-body">Sit with a frontier model and notice what happens in you while you do. I am in the loop from the first exchange, and I follow up personally.</p>
+      <p class="door-boundary"><strong>Boundary.</strong> Not a course, not a treatment, and not a substitute for me.</p>
+      <p class="entry-links"><a href="/projects/conversations-with-ai/">Register your interest &rarr;</a></p>
+    </div>
+  </article>
+
+  <article class="entry door" data-door="systems">
+    <div>
+      <p class="door-status" data-state="open">Open now</p>
+      <p class="entry-lead"><b class="entry-name">Bring me the mess. We’ll make a system.</b> Human systems.</p>
+    </div>
+    <div>
+      <p class="entry-body">Automation, custom software, and AI inside real work, for founders, teams, and practitioners whose way of running things has become fragile. A person stays where judgement matters.</p>
+      <p class="door-boundary"><strong>Boundary.</strong> I do not automate clinical judgement or move sensitive information into an unapproved system.</p>
+      <p class="entry-links"><a href="/work-with-me/">Send me the untidy version &rarr;</a></p>
+    </div>
+  </article>
+
+  {{/* Kai authorship gate: confirm the precise direct-work offer and professional basis before merge. */}}
+  <article class="entry door" data-door="relational">
+    <div>
+      <p class="door-status" data-state="arranged">By arrangement</p>
+      <p class="entry-lead"><b class="entry-name">Come back into contact. In-person, virtually or otherwise.</b> Direct relational work.</p>
+    </div>
+    <div>
+      <p class="entry-body">For a person, a pair, or a small team where something is not settling. Scope, professional basis, and format are agreed in writing before we begin.</p>
+      <p class="door-boundary"><strong>Boundary.</strong> What this is, and is not, is written down before the first session. An initial enquiry should contain as little sensitive information as possible.</p>
+      <p class="entry-links"><a href="#contact" data-contact-subject="Working with you directly">Ask whether it is a fit &rarr;</a></p>
+    </div>
+  </article>
 </section>
 
-<section class="wellbeing-focus">
-  <div class="wellbeing-copy">
-    <h2>Become fully reliable.</h2>
-    <p>Successful solo practitioners, educators, and creators often become the hidden integration between their audience, inbox, forms, calendar, payments, course platform, and private notes. That works until growth turns every new client into more copying, checking, and remembering.</p>
-    <p>I have run a wellbeing practice myself. I understand the difference between administration that should disappear and judgement that should stay with a person. I build around consent, clear boundaries, recoverable mistakes, and the tone your clients already trust.</p>
-  </div>
-  <div class="boundary-note">
-    <p class="brief-label">The boundary matters</p>
-    <p>I will automate scheduling, enrolment, payments, content delivery, follow-up, knowledge retrieval, and operational handoffs. I will not automate clinical judgement or move sensitive client data into an unapproved system.</p>
-  </div>
+<section class="credibility-rail" aria-label="Same person at every door">
+  <div><strong>15 years</strong><span>clinical practice and high-trust conversations</span></div>
+  <div><strong>6+ years</strong><span>professional software delivery, discovery to handover</span></div>
+  <div><strong>Daily since 2024</strong><span>working with frontier AI, in the loop, not at a distance</span></div>
 </section>
 
-<section class="home-section" id="selected-work">
+<section class="home-section thread" id="person">
   <div class="section-intro">
-    <h2>Built around real owners and real constraints.</h2>
+    <p class="brief-label">The person</p>
+    <h2>I can hold the relationship and debug the system.</h2>
   </div>
-  <div class="proof-list">
-    <article class="proof-row">
-      <div class="proof-heading">
-        <p class="proof-kind">Regulated AI</p>
-        <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
-      </div>
-      <div class="proof-body">
-        <p>A synthetic-data engine where an LLM proposes each turn, deterministic code blocks unsafe output, and every decision carries a trace that can be inspected.</p>
-        <p class="proof-outcome">A prototype and evaluation environment, clearly separated from production claims.</p>
-        <a class="proof-link" href="/projects/fail-closed-llm-engine/">Inspect the architecture &rarr;</a>
-      </div>
-    </article>
-    <article class="proof-row">
-      <div class="proof-heading">
-        <p class="proof-kind">Coaching business</p>
-        <h3><a href="/projects/becoming-diamond/">Becoming Diamond</a></h3>
-      </div>
-      <div class="proof-body">
-        <p>A paid customer product with a marketing site, gated course, AI chat, Stripe membership, and a CMS the owner can edit without booking an engineer.</p>
-        <p class="proof-outcome">Production client delivery across product, payments, content, AI, and handoff.</p>
-        <a class="proof-link" href="/projects/becoming-diamond/">Read the project &rarr;</a>
-      </div>
-    </article>
-    <article class="proof-row">
-      <div class="proof-heading">
-        <p class="proof-kind">Independent artist</p>
-        <h3><a href="/projects/sarah-mozer-studio/">Sarah Mozer Studio</a></h3>
-      </div>
-      <div class="proof-body">
-        <p>A production commerce system with a client-managed catalogue, Stripe Checkout, signed webhooks, inventory controls, and an owner workflow designed for low administrative burden.</p>
-        <p class="proof-outcome">Discovery, implementation, deployment, live support, and safe owner editing.</p>
-        <a class="proof-link" href="/projects/sarah-mozer-studio/">Read the project &rarr;</a>
-      </div>
-    </article>
+  <div class="thread-copy">
+    <p>My scarce product is attention: the ability to perceive what is happening in a person and a system, respond across several registers, and design the next move.</p>
+    <p>I spent fifteen years finding the real problem with people, then learned to build and support the systems that were supposed to solve it. The work now sits between therapist, experience designer and engineer. I can stay with silence, ask the hard question, make a boundary explicit, or trace a failure through software until it has an owner and a recovery path.</p>
+    <p>Oceanheart is the name for that way of working. It is not a technique yet. It becomes one through use, in public, with the people who come through these doors.</p>
+    <p><a href="/about/">Read the full story &rarr;</a></p>
+  </div>
+</section>
+
+<section class="home-section flagship-feature" id="conversations-with-ai">
+  <div class="flagship-heading">
+    <p class="brief-label">An Oceanheart project · Research stage</p>
+    <h2>Meet the machine; master yourself.</h2>
+  </div>
+  <div class="flagship-copy">
+    <p>You talk with a frontier model about something that matters to you, and watch what happens in you as you do: what you expect, what you trust, where your body tightens, when you defer, and when you push back.</p>
+    <p>I am in the loop from the first exchange and I follow up with you afterwards. What we learn goes back into the design.</p>
+    <dl class="project-facts">
+      <div><dt>Your role</dt><dd>Bring a real question and stay curious about the encounter.</dd></div>
+      <div><dt>My role</dt><dd>Set the frame, remain in the loop, and follow up personally.</dd></div>
+      <div><dt>Early audience</dt><dd>Therapists and wellbeing practitioners first.</dd></div>
+      <div><dt>Status</dt><dd>Early research and design, with participation by invitation.</dd></div>
+    </dl>
+    <p class="privacy-note">Before anything begins, you will know exactly what the model sees, what is kept, who can read it, and how to stop. Nothing about you is used for research without your specific agreement.</p>
+    <p><a class="button button-primary" href="/projects/conversations-with-ai/">See the research project</a></p>
   </div>
 </section>
 
 <section class="home-section method-section">
   <div class="section-intro">
-    <h2>Start with the operating problem. Finish with a system somebody else can own.</h2>
+    <p class="brief-label">A way of working</p>
+    <h2>The same way of working at every door.</h2>
+    <p>Whether the constraint is in a person, a relationship, an encounter with a machine, or a workflow, the sequence does not change. The response does.</p>
   </div>
   <ol class="method-list">
-    <li>
-      <span>01</span>
-      <div><h3>Find the real constraint</h3><p>Walk through the current process with the person doing it. Name the trigger, decisions, exceptions, owner, and present cost.</p></div>
-    </li>
-    <li>
-      <span>02</span>
-      <div><h3>Choose the smallest useful change</h3><p>Decide whether the answer is automation, custom software, AI assistance, or a simpler process. Set a baseline before building.</p></div>
-    </li>
-    <li>
-      <span>03</span>
-      <div><h3>Build for failure as well as success</h3><p>Test with safe data, make errors visible, preserve human approval for consequential actions, and give failed work somewhere to go.</p></div>
-    </li>
-    <li>
-      <span>04</span>
-      <div><h3>Measure and hand over</h3><p>Run the workflow against real work, monitor what breaks, document recovery, and leave the owner able to operate it without depending on me.</p></div>
-    </li>
+    <li><span>Enter</span><div><h3>Enter the real context</h3><p>The conversation, model exchange, or workflow as it actually happens.</p></div></li>
+    <li><span>Find</span><div><h3>Find the live constraint</h3><p>Name what is holding, what triggers it, what it costs, and who is carrying it.</p></div></li>
+    <li><span>Respond</span><div><h3>Respond with what fits</h3><p>A question, a boundary, a change in the environment, or a working piece of software.</p></div></li>
+    <li><span>Stay</span><div><h3>Stay close enough to see</h3><p>Follow up, notice what changed, and let evidence shape the next move.</p></div></li>
   </ol>
 </section>
 
-<section class="technical-depth">
-  <div>
-    <h2>I can hold the relationship and debug the system.</h2>
+<section class="home-section" id="selected-work">
+  <div class="section-intro">
+    <p class="brief-label">Selected evidence</p>
+    <h2>Real work, with its status left attached.</h2>
   </div>
-  <div>
-    <p>My working stack includes TypeScript, Python, React, Next.js, Node.js, REST APIs, PostgreSQL, signed webhooks, Stripe, Docker, Kubernetes, AWS, Terraform, Vercel, evaluation systems, and LLM provider APIs.</p>
-    <p>The tools change. The useful part is being able to trace what happened across the whole workflow, explain it to the owner, and repair the right boundary.</p>
+  <div class="proof-list">
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Paid client · Production</p>
+        <h3><a href="/projects/sarah-mozer-studio/">Sarah Mozer Studio</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A production commerce system whose catalogue, checkout, stock controls, and owner workflow were designed as one operating system.</p>
+        <p class="proof-outcome">It proves end-to-end client delivery and safe owner editing. It does not claim that every commerce problem is the same.</p>
+        <a class="proof-link" href="/projects/sarah-mozer-studio/">Read the project &rarr;</a>
+      </div>
+    </article>
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Independent prototype · Synthetic data</p>
+        <h3><a href="/projects/fail-closed-llm-engine/">LoanSlam</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>An LLM proposes each turn, deterministic code decides what reaches the user, and every decision carries an inspectable trace.</p>
+        <p class="proof-outcome">It proves an implemented fail-closed architecture. It is prototypal, not a production lending service.</p>
+        <a class="proof-link" href="/projects/fail-closed-llm-engine/">Inspect the architecture &rarr;</a>
+      </div>
+    </article>
+    <article class="proof-row">
+      <div class="proof-heading">
+        <p class="proof-kind">Paid client · Production</p>
+        <h3><a href="/projects/becoming-diamond/">Becoming Diamond</a></h3>
+      </div>
+      <div class="proof-body">
+        <p>A customer product spanning public site, gated course, AI chat, Stripe membership, and a client-editable content system.</p>
+        <p class="proof-outcome">It proves delivery across product, payments, content, AI, and handover. It does not turn a scoped assistant into a general intelligence claim.</p>
+        <a class="proof-link" href="/projects/becoming-diamond/">Read the project &rarr;</a>
+      </div>
+    </article>
   </div>
 </section>
 
-<section class="home-engage">
-  <h2>What keeps repeating, who handles it, and where does it break?</h2>
-  <p class="engage-line">Send me the rough version. I will tell you plainly whether it looks worth automating and what I would need to learn before proposing a build.</p>
-  <div class="hero-actions">
-    <a class="button button-primary" href="mailto:{{ .Site.Params.email }}?subject=The%20work%20that%20keeps%20repeating">Email {{ .Site.Params.email }}</a>
-    <a class="button button-quiet" href="/work-with-me/">How an engagement works</a>
+<section class="home-section adaptive-interface" id="interface">
+  <div>
+    <p class="brief-label">The site is part of the argument</p>
+    <h2>How do you want the system to meet you?</h2>
+  </div>
+  <div>
+    <p>This site has 24 visual systems. Choose one and it stays with you from page to page. The content remains the same while its environment changes around you.</p>
+    <p class="adaptive-close">Systems can adapt to human beings. And I can make it happen.</p>
+    <div class="hero-actions">
+      <button class="button button-primary" type="button" data-open-skin-dock>Choose a visual system</button>
+      <button class="button button-quiet" type="button" data-random-skin>Surprise me</button>
+    </div>
   </div>
 </section>
+
+{{ $notes := first 3 ((where site.RegularPages "Section" "blog").ByDate.Reverse) }}
+{{ if $notes }}
+<section class="post-list notes-list">
+  <div class="section-header">
+    <div>
+      <h2>Learning in public.</h2>
+      <p>Notes from the work as it happens. Corrections included.</p>
+    </div>
+    <p><a href="/blog/">All notes &rarr;</a></p>
+  </div>
+  {{ range $notes }}
+  <article class="post-item">
+    <p class="post-date">{{ .Date.Format "January 2006" }}</p>
+    <h3 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+    {{ with .Description }}<p class="post-excerpt">{{ . }}</p>{{ end }}
+  </article>
+  {{ end }}
+</section>
+{{ end }}
+
+<section class="home-engage" id="contact">
+  <h2 data-doors="contact">Not sure which door? Start with the conversation.</h2>
+  <p class="engage-line">Send me the rough version of what is going on. I will tell you plainly whether I can help, which door it belongs behind, and what I would need to know first.</p>
+  <div class="intent" role="group" aria-label="What is this about?">
+    <button type="button" data-subject="Conversations with AI" aria-pressed="false">Conversations with AI</button>
+    <button type="button" data-subject="A system that keeps breaking" aria-pressed="false">A system that keeps breaking</button>
+    <button type="button" data-subject="Working with you directly" aria-pressed="false">Working with you directly</button>
+    <button type="button" data-subject="Not sure yet" aria-pressed="true">Not sure yet</button>
+  </div>
+  <p class="subject-line">Subject line: <code data-subject-preview>Not sure yet</code></p>
+  <div class="hero-actions">
+    <a class="button button-primary" data-mail-link href="mailto:{{ .Site.Params.email }}?subject=Not%20sure%20yet">Email {{ .Site.Params.email }}</a>
+    <a class="button button-quiet" href="/work-with-me/">See how systems work begins</a>
+  </div>
+  <p class="contact-safety">An initial enquiry should contain as little sensitive personal or client information as possible.</p>
+</section>
+<script src="/js/home.js" defer></script>
 {{ end }}

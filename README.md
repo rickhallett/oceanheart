@@ -1,6 +1,6 @@
 # Oceanheart
 
-Oceanheart is Rick Hallett's Hugo portfolio and working-notes site, deployed to
+Oceanheart is Kai Hallett's Hugo practice and working-notes site, deployed to
 Vercel at [www.oceanheart.ai](https://www.oceanheart.ai).
 
 ## Verify and preview
@@ -117,6 +117,6 @@ To add a skin: append a registry entry, add the theme stylesheet, add an
 effects module if `effects` is true, and optionally one line in
 `static/css/variants/scale.css` for its title sizes.
 
-`/doors/` is a draft landing-page route (`content/doors.md`, `draft = true`)
-that reuses the same vocabulary, so every skin styles it. Build with `-D` to
-preview it; `?from=swanage|ai|systems` changes which door comes first.
+The homepage is the canonical three-door entry. `?from=ai` and `?from=systems`
+may change which door comes first and prime the contact subject, while the hero
+and public claims remain fixed.

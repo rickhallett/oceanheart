@@ -1,32 +1,57 @@
 +++
 title = "About"
-description = "Richard Hallett is an AI automation and product engineer with fifteen years of CBT practice and more than six years of professional software delivery."
+description = "Kai Hallett runs Oceanheart, a practice where experience with people, intelligent machines, and working systems comes together."
 layout = "about"
 +++
 
-I'm Richard Hallett. Most people call me Kai. I build AI automations and customer systems for work where understanding the person is as important as understanding the software.
+I'm Kai Hallett. Richard is my legal name, and the name used on my CV.
 
 I spent fifteen years as a cognitive behavioural therapist across NHS and private practice. Then I moved into software engineering and shipped production work in retail analytics, social intelligence, network security, education, and independent client products.
 
-Those careers use more of the same skills than their titles suggest. Listen closely enough to find the real problem. Turn ambiguity into something testable. Notice when a confident answer does not match the evidence. Keep the person affected by the system involved in the decisions.
+<!-- KAI AUTHORSHIP GATE: add exact dates and current accreditation or registration status before merge if this page is to carry a qualifications claim. -->
+
+Those careers use more of the same skills than their titles suggest. Listen closely enough to find the real problem. Turn ambiguity into something testable. Notice when a confident answer does not match the evidence. Keep the person affected by a system involved in its decisions.
 
 ## What I do now
 
-I work with founders and internal teams to remove repetitive operational work and build the missing systems around it. That can mean a customer portal, a payment and content workflow, an integration between business tools, or an AI-assisted process with clear rules and a human recovery path.
+Oceanheart has three ways in.
 
-I can stay with the work through discovery, architecture, implementation, deployment, monitoring, support, and handoff. I use AI heavily in engineering, but I remain responsible for the problem framing, technical decisions, review, and evidence that the result works.
+- **[Conversations with AI](/projects/conversations-with-ai/)** is an early research project about meeting a frontier model while noticing what happens in you.
+- **[Human systems](/work-with-me/)** is my open systems practice: automation, custom software, and AI inside real work, with a person kept where judgement matters.
+- **Direct relational work** is available by arrangement. Scope, professional basis, and format are agreed in writing before anything begins.
 
-## Why wellbeing is a natural fit
+## Where the work sits
 
-I know the operating reality of a small wellbeing practice from inside it. The work depends on trust, tone, boundaries, and limited attention. A generic automation can save a few clicks while making the client experience worse if it forgets context, sends the wrong message, or hides an error.
+My scarce product is attention: the ability to perceive what is happening in a person and a system, respond across several registers, and design the next move.
 
-I am interested in the administrative and product work around the relationship: enquiries, enrolment, scheduling, payments, course or membership delivery, content operations, knowledge retrieval, and follow-up. Clinical decisions and sensitive records stay with the practitioner and an approved system of record.
+The work sits between therapist, experience designer and engineer. I can stay with the same problem through discovery, framing, implementation, observation, repair, and handover. The exact response depends on what the situation asks for.
+
+Oceanheart is the name for that way of working. It is not a technique yet. It becomes one through use, in public, with the people who come through its doors.
+
+## How I work
+
+1. **Enter the real context.** Start from the situation as it actually runs, not the description of it.
+2. **Find the live constraint.** Name what is holding, what triggers it, what it costs, and who is carrying it.
+3. **Respond with what fits.** Choose the smallest useful response in the register the situation asks for.
+4. **Stay close enough to see.** Follow up, notice what changed, and let evidence shape the next move.
+
+In systems work, my working stack includes TypeScript, Python, React, Next.js, Node.js, REST APIs, PostgreSQL, signed webhooks, Stripe, Docker, Kubernetes, AWS, Terraform, Vercel, evaluation systems, and LLM provider APIs.
+
+The tools change. The useful part is being able to trace what happened across the whole workflow, explain it to the owner, and repair the right boundary.
+
+## Current boundaries
+
+Conversations with AI is at the research and design stage. It is not a course, treatment, or automated substitute for working with me.
+
+Direct relational work is by arrangement. What it is, and is not, is written down before the first session. Please keep an initial enquiry brief and leave out sensitive personal information.
+
+In systems work, I do not automate clinical judgement or move sensitive client information into an unapproved system. I use AI heavily in engineering, but remain responsible for the framing, technical decisions, review, and evidence.
 
 ## Evidence
 
 - **[Becoming Diamond](/projects/becoming-diamond/)** is a paid coaching product with a marketing site, gated course, AI chat, Stripe membership, and a client-editable CMS.
 - **[Sarah Mozer Studio](/projects/sarah-mozer-studio/)** is a production commerce system with payments, signed webhooks, inventory controls, and a protected owner workflow.
-- **[LoanSlam](/projects/fail-closed-llm-engine/)** is a synthetic-data evaluation environment for a fail-closed conversational system in regulated lending.
+- **[LoanSlam](/projects/fail-closed-llm-engine/)** is my prototypal, synthetic-data environment for a fail-closed conversational system in regulated lending.
 - **[The Pit](/projects/the-pit/)** and **[Sortie](/projects/sortie/)** make AI-assisted engineering observable through traces, scoring, review, and failure evidence.
 
 ## Contact

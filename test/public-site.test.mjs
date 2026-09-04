@@ -212,16 +212,49 @@ test("canonical pages expose the required social and favicon metadata", () => {
   }
 });
 
-test("commercial entry points expose the automation offer and primary CV", () => {
+test("founder-led entry points expose three honest doors and the primary CV", () => {
   const home = readFile(path.join(outputDirectory, "index.html"));
-  assert.match(home, /I turn manual work into dependable systems\./);
+  assert.match(home, /<title>Oceanheart · Kai Hallett<\/title>/);
+  assert.match(home, /Stay human\. Work with what is coming\./);
+  assert.match(home, /I’m Kai Hallett\./);
+  assert.match(home, /Meet the machine; master yourself\./);
+  assert.match(home, /Bring me the mess\. We’ll make a system\./);
+  assert.match(home, /Come back into contact\. In-person, virtually or otherwise\./);
+  assert.equal(
+    openingTags(home, "article").filter((tag) => hasAttribute(tag, "data-door"))
+      .length,
+    3,
+    "homepage must expose exactly three doors",
+  );
   assert.match(home, /href="\/work-with-me\/"/);
-  assert.match(home, /Become fully reliable\./);
+  assert.match(home, /href="\/projects\/conversations-with-ai\/"/);
+  assert.match(home, /Systems can adapt to human beings\. And I can make it happen\./);
+  assert.doesNotMatch(home, /data-door="body"/);
+  assert.doesNotMatch(home, /facebook/i);
   assert.doesNotMatch(home, /class="eyebrow"/);
+
+  const llms = readFile(path.join(outputDirectory, "llms.txt"));
+  assert.match(llms, /# Oceanheart · Kai Hallett/);
+  assert.match(llms, /Choose by what the person is meeting/);
+  assert.doesNotMatch(llms, /Richard Hallett builds dependable AI automations/);
+
+  assert.ok(
+    !fs.existsSync(path.join(outputDirectory, "doors", "index.html")),
+    "retired doors draft must not render",
+  );
+
+  const conversationsWithAi = readFile(
+    path.join(outputDirectory, "projects", "conversations-with-ai", "index.html"),
+  );
+  assert.match(conversationsWithAi, /early research and design/i);
+  assert.match(conversationsWithAi, /It is not a course, treatment, or evidence-based intervention/);
+  assert.match(conversationsWithAi, /precise data path, retention, and model provider/);
 
   const workWithMe = readFile(
     path.join(outputDirectory, "work-with-me", "index.html"),
   );
+  assert.match(workWithMe, /There are three ways to begin with Oceanheart/);
+  assert.match(workWithMe, /Human systems/);
   assert.match(workWithMe, /Good first problems/);
   assert.match(workWithMe, /What I take responsibility for/);
 

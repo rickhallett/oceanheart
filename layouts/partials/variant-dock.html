@@ -1,4 +1,4 @@
-{{- $skins := site.Data.variants -}}
+{{- $skins := hugo.Data.variants -}}
 <div class="skin-dock" data-variant-dock data-open="false">
   <button class="skin-dock-toggle" type="button" data-dock-toggle aria-expanded="false" aria-controls="skin-panel" aria-label="Change the visual system for this site">
     <span class="skin-dock-index" data-dock-index>00/{{ printf "%02d" (len $skins) }}</span>
