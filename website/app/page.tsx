@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import Image from 'next/image';
 import Link from '@/app/components/site-link';
 import { Booking, Footer, SiteNav } from './components/editorial';
@@ -30,7 +32,7 @@ export default function Home() {
             </p>
             <a className="text-link" href="#work">
               <span className="invitation-copy">Explore ways to work with me</span>
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true"><ArrowIcon direction="right" /></span>
             </a>
           </div>
         </div>
@@ -49,7 +51,7 @@ export default function Home() {
               <small>Conversations with AI · Free pilot</small>
               <strong>Practical AI guidance</strong>
               <span className="practice-description">Bring a question, a task or an idea. We’ll explore how AI can help, where it falls short, and how to keep your own judgement involved.</span>
-              <span className="practice-read">Explore Conversations with AI <span aria-hidden="true">↗</span></span>
+              <span className="practice-read">Explore Conversations with AI <span aria-hidden="true"><ArrowIcon /></span></span>
             </span>
           </Link>
 
@@ -59,7 +61,7 @@ export default function Home() {
               <small>Design &amp; engineering</small>
               <strong>Websites, software &amp; workflows</strong>
               <span className="practice-description">Turn a difficult workflow or an idea into something you can use. I build websites, bespoke tools and AI integrations around the people using them.</span>
-              <span className="practice-read">See what we could build <span aria-hidden="true">↗</span></span>
+              <span className="practice-read">See what we could build <span aria-hidden="true"><ArrowIcon /></span></span>
             </span>
           </Link>
 
@@ -69,7 +71,7 @@ export default function Home() {
               <small>Therapeutic practice</small>
               <strong>Therapy, bodywork &amp; massage</strong>
               <span className="practice-description">Space to talk, work with the body, or explore what feels difficult. Therapeutic sessions draw on a range of practices; massage can also be booked on its own.</span>
-              <span className="practice-read">Explore therapeutic sessions <span aria-hidden="true">↗</span></span>
+              <span className="practice-read">Explore therapeutic sessions <span aria-hidden="true"><ArrowIcon /></span></span>
             </span>
           </Link>
         </div>
@@ -77,7 +79,7 @@ export default function Home() {
         <div className="connected-practices">
           <h2>One person. Connected practices.</h2>
           <p>Therapy shapes how I listen. Design helps me understand what people need. Engineering gives me the means to build something useful. You can work with me in any one of these areas; each benefits from the others.</p>
-          <Link href="/about" className="text-link">A little about Rick <span aria-hidden="true">↗</span></Link>
+          <Link href="/about" className="text-link">A little about Rick <span aria-hidden="true"><ArrowIcon /></span></Link>
         </div>
       </section>
       <Booking invitation="Not sure where to begin?" />

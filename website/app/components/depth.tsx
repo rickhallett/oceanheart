@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import Link from '@/app/components/site-link';
 import type { ReactNode } from 'react';
 import { SiteNav, Footer } from './editorial';
@@ -10,10 +12,10 @@ export function DepthPage({ title, label, children }: { title: string; label: st
 export function WorkLinks({ slugs }: { slugs: string[] }) {
   return <div className="depth-links">{slugs.map(slug => {
     const work = selectedWork.find(item => item.slug === slug)!;
-    return <Link key={slug} href={'/selected-work/' + slug}><strong>{work.title} <span aria-hidden="true">↗</span></strong><span>{work.summary}</span></Link>;
+    return <Link key={slug} href={'/selected-work/' + slug}><strong>{work.title} <span aria-hidden="true"><ArrowIcon /></span></strong><span>{work.summary}</span></Link>;
   })}</div>;
 }
 
 export function NoteLinks({ limit = selectedNotes.length }: { limit?: number }) {
-  return <div className="depth-links">{selectedNotes.slice(0, limit).map(note => <Link key={note.href} href={note.href}><strong>{note.title} <span aria-hidden="true">↗</span></strong><span>{note.summary}</span><small>Read the full note</small></Link>)}</div>;
+  return <div className="depth-links">{selectedNotes.slice(0, limit).map(note => <Link key={note.href} href={note.href}><strong>{note.title} <span aria-hidden="true"><ArrowIcon /></span></strong><span>{note.summary}</span><small>Read the full note</small></Link>)}</div>;
 }

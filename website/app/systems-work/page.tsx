@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import type { Metadata } from 'next';
 import { EditorialPage, ReadingSection } from '../components/editorial';
 import Link from '@/app/components/site-link';
@@ -15,14 +17,14 @@ export default function SystemsWork() {
     invitation="What are you trying to make work better?"
     bookingKinds={['digital']}
     bookingDescription="Start with a free, short digital consultation to explore your project. Tell me what you do, what’s getting in the way, and what you’d like to change. Include a timescale or budget if you have one."
-    afterBooking={<ReadingSection label="A closer look"><Link className="depth-next" href="/selected-work">More selected work ↗</Link><Link className="depth-next" href="/engineering">Experiments and engineering ↗</Link></ReadingSection>}>
+    afterBooking={<ReadingSection label="A closer look"><Link className="depth-next" href="/selected-work">More selected work <ArrowIcon /></Link><Link className="depth-next" href="/engineering">Experiments and engineering <ArrowIcon /></Link></ReadingSection>}>
     <ReadingSection label="What I can help you build">
       <p>Websites and online shops. Tools for running a practice or business. AI features that work with relevant material. Connected workflows that reduce repeated work.</p>
       <p>You don’t need to know which technology you need. We’ll work out what would be useful, including whether AI has a part to play.</p>
     </ReadingSection>
     <ReadingSection label="Things I’ve built">
       <WorkLinks slugs={['sarah-mozer-studio', 'becoming-diamond']} />
-      <Link className="depth-next" href="/selected-work">Explore selected work ↗</Link>
+      <Link className="depth-next" href="/selected-work">Explore selected work <ArrowIcon /></Link>
     </ReadingSection>
     <ReadingSection label="How a project works">
       <p>First, we look at how things work now and agree a useful first scope. I build something you can try; your experience of using it guides what we refine.</p>

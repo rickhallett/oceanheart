@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import Link from '@/app/components/site-link';
 import { notFound } from 'next/navigation';
 import { DepthPage } from '../../components/depth';
@@ -30,7 +32,7 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
         <p className="technical-stack"><strong>Stack / components</strong><br />{work.stack}</p>
       </div>
     </details>
-    {'url' in work && work.url && <a className="depth-next" href={work.url}>{work.kind === 'Client work' ? 'Visit the project' : 'Read the original technical account'} ↗</a>}
+    {'url' in work && work.url && <a className="depth-next" href={work.url}>{work.kind === 'Client work' ? 'Visit the project' : 'Read the original technical account'} <ArrowIcon /></a>}
     <Link className="depth-next" href="/systems-work">Back to Systems work</Link>
   </DepthPage>;
 }
