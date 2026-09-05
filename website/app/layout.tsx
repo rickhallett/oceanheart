@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './coastal.css';
 import { SectionReveals } from './components/section-reveals';
 
 const siteUrl = new URL('https://www.oceanheart.ai');
@@ -39,7 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html id="top" lang="en">
+    <html id="top" lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: `try { if (localStorage.getItem('oceanheart-theme') === 'monochrome') document.documentElement.dataset.theme = 'monochrome'; } catch {}` }} /></head>
       <body>{children}<SectionReveals /></body>
     </html>
   );

@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from '@/app/components/site-link';
 import Image from 'next/image';
 
+import { ThemeToggle } from './theme-toggle';
+
 import { bookingLink, type BookingKind } from '../../lib/bookings';
 
 export function SiteNav() {
@@ -51,7 +53,7 @@ export function Booking({ invitation, description = 'A free, short conversation 
 }
 
 export function Footer() {
-  return <footer className="editorial-footer"><Link href="/">oceanheart.ai</Link><Link href="/about">about rick</Link><Link href="/selected-work">selected work</Link><Link href="/notes">notes</Link><a href="mailto:rick@oceanheart.ai">email rick</a><span>therapy · ai guidance · digital systems</span></footer>;
+  return <footer className="editorial-footer"><Link href="/">oceanheart.ai</Link><Link href="/about">about rick</Link><Link href="/selected-work">selected work</Link><Link href="/notes">notes</Link><a href="mailto:rick@oceanheart.ai">email rick</a><span>therapy · ai guidance · digital systems</span><ThemeToggle /></footer>;
 }
 
 export function ReadingSection({ label, children }: { label: string; children: ReactNode }) {

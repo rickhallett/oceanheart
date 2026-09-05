@@ -9,13 +9,22 @@ export default function Home() {
     <main className="oceanheart-home">
       <section className="landing-hero" aria-labelledby="landing-title">
         <Image
-          className="landing-hero-photo"
+          className="landing-hero-photo coastal-hero-photo"
+          src="/images/coastal/contact.png"
+          alt=""
+          width={1254}
+          height={1254}
+          sizes="(max-width: 800px) 100vw, 57vw"
+          priority
+          unoptimized
+        />
+        <Image
+          className="landing-hero-photo monochrome-hero-photo"
           src="/images/oceanheart-beach-balance.jpg"
           alt=""
           width={590}
           height={1280}
           sizes="(max-width: 700px) 132vw, 74vw"
-          priority
           unoptimized
         />
         <div className="landing-hero-wash" aria-hidden="true" />
