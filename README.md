@@ -3,7 +3,21 @@
 Oceanheart is Rick Hallett's Hugo portfolio and working-notes site, deployed to
 Vercel at [www.oceanheart.ai](https://www.oceanheart.ai).
 
-## Verify and preview
+## Production website
+
+The responsive silhouette site lives in `website/` (vinext/React), integrated
+from redesign commit `dc77d68`. Vercel builds a static export and overlays it
+on the Hugo archive, preserving historical articles, assets and share redirects.
+The Vercel project remains `oceanheart`, with production from `main`.
+
+```sh
+SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm ci --prefix website
+bash scripts/build-production.sh
+```
+
+For the new site preview: `npm run dev --prefix website`.
+
+## Verify and preview the legacy archive
 
 Run the complete production verifier with one command:
 

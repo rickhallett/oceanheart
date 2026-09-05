@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "hugo",
-  "buildCommand": "chmod a+x build.sh && ./build.sh",
+  "framework": null,
+  "buildCommand": "bash scripts/build-production.sh",
   "outputDirectory": "public",
   "build": {
     "env": {
@@ -190,5 +190,7 @@
       "destination": "/blog/2026-07-24-wispr-thinks-i-am-a-deployment-director/",
       "permanent": true
     }
-  ]
+  ],
+  "installCommand": "npm ci --prefix website",
+  "cleanUrls": true
 }

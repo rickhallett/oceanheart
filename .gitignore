@@ -5,3 +5,14 @@ public/
 resources/
 .hugo_build.lock
 .DS_Store
+
+!website/public/
+!website/public/**
+website/node_modules/
+website/dist/
+website/.vinext/
+website/*.tsbuildinfo
+website/.wrangler/
+
+website/.next/
+website/next-env.d.ts
