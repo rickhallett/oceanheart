@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { Booking, Footer, SiteNav } from './components/editorial';
 
 export default function Home() {

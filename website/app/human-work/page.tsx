@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { EditorialPage, ReadingSection } from '../components/editorial';
 
 export const metadata: Metadata = {

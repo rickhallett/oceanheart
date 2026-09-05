@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { EditorialPage, ReadingSection } from '../components/editorial';
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { WorkLinks } from '../components/depth';
 
 export const metadata: Metadata = {

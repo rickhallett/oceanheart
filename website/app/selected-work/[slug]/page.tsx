@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { notFound } from 'next/navigation';
 import { DepthPage } from '../../components/depth';
 import { selectedWork } from '../../../lib/selected-work';

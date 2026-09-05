@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import Image from 'next/image';
 
 import { bookingLink, type BookingKind } from '../../lib/bookings';

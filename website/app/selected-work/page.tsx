@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { DepthPage, WorkLinks } from '../components/depth';
 export const metadata = { title: 'Selected work | Oceanheart' };
 export default function SelectedWork() {

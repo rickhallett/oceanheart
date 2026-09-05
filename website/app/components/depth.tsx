@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import type { ReactNode } from 'react';
 import { SiteNav, Footer } from './editorial';
 import { selectedWork, selectedNotes } from '../../lib/selected-work';

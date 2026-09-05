@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/app/components/site-link';
 import { EditorialPage, ReadingSection } from '../components/editorial';
 import { NoteLinks } from '../components/depth';
 
