@@ -33,7 +33,7 @@ export function BookingActions({ kinds = ['exploration'] }: { kinds?: BookingKin
   return <div className="booking-actions-wrap">
     <div className="booking-actions">{links.map((link, index) => <a key={link.kind}
       className={'booking-link' + (index > 0 ? ' booking-link-secondary' : '')} href={link.href}>
-      {link.label}<span aria-hidden="true">↗</span>
+      {link.label}<span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" focusable="false"><path d="M4 12 12 4M4 4h8v8" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
     </a>)}</div>
 
   </div>;
