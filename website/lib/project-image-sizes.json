@@ -1,0 +1,38 @@
+{
+  "sarah-home": {
+    "width": 1280,
+    "height": 720
+  },
+  "sarah-landscapes": {
+    "width": 1280,
+    "height": 720
+  },
+  "diamond-home": {
+    "width": 1280,
+    "height": 720
+  },
+  "loanslam-workspace": {
+    "width": 1280,
+    "height": 720
+  },
+  "loanslam-report": {
+    "width": 1280,
+    "height": 720
+  },
+  "human-os-threshold": {
+    "width": 1265,
+    "height": 892
+  },
+  "human-os-ask": {
+    "width": 1265,
+    "height": 892
+  },
+  "human-os-arc": {
+    "width": 1265,
+    "height": 892
+  },
+  "pit-arena": {
+    "width": 1280,
+    "height": 720
+  }
+}
