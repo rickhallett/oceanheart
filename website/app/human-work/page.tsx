@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import type { Metadata } from 'next';
 import Link from '@/app/components/site-link';
 import { EditorialPage, ReadingSection } from '../components/editorial';
@@ -28,7 +30,7 @@ export default function HumanWork() {
     <ReadingSection label="Experience & practice">
       <p>My background includes cognitive behavioural therapy in NHS and private practice. I trained in CBT and am no longer BABCP-accredited. This is my own integrative practice, rather than a standard CBT programme.</p>
       <p>I have maintained a contemplative practice for twenty years, both within and outside the Rinzai and Soto Zen traditions. Within Zenways, led by Daizan Roshi, I am a junior Zen teacher in training.</p>
-      <Link className="depth-next" href="/about">More about my background ↗</Link>
+      <Link className="depth-next" href="/about">More about my background <ArrowIcon /></Link>
     </ReadingSection>
     <ReadingSection label="Time & cost">
       <p>Therapeutic sessions and standalone massage are currently £35 per hour. We’ll agree the session length, location and format when arranging your booking.</p>

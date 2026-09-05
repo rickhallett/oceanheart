@@ -1,3 +1,5 @@
+
+import { ArrowIcon } from '@/app/components/arrow-icon';
 import type { ProjectImage } from '../../lib/project-images';
 import imageSizes from '../../lib/project-image-sizes.json';
 import Image from 'next/image';
@@ -9,7 +11,7 @@ function Screen({ screen, lead = false }: { screen: ProjectImage; lead?: boolean
     <a className="project-screen-image" href={src} target="_blank" rel="noreferrer" aria-label={`Open full-size image: ${screen.title}`}>
       <Image unoptimized src={src} alt={screen.alt} width={size.width} height={size.height} loading={lead ? 'eager' : 'lazy'} decoding="async" />
     </a>
-    <figcaption><span className="screen-kind">{screen.kind}</span><h2>{screen.title}</h2><p>{screen.caption}</p><a href={src} target="_blank" rel="noreferrer">View full size ↗</a></figcaption>
+    <figcaption><span className="screen-kind">{screen.kind}</span><h2>{screen.title}</h2><p>{screen.caption}</p><a href={src} target="_blank" rel="noreferrer">View full size <ArrowIcon /></a></figcaption>
   </figure>;
 }
 
