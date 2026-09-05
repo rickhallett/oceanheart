@@ -850,3 +850,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
 @media (prefers-reduced-motion: reduce) {
   .mobile-menu-toggle, .menu-strokes > span, .editorial-header nav { transition: none; }
 }
+
+/* Theme controls remain available in both visual systems. */
+.monochrome-hero-photo { display: none; }
+html[data-theme="monochrome"] .coastal-hero-photo { display: none; }
+html[data-theme="monochrome"] .monochrome-hero-photo { display: block; }
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; }
+.theme-toggle:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.theme-sun { display: none; }
+html[data-theme="monochrome"] .theme-sun { display: block; }
+html[data-theme="monochrome"] .theme-moon { display: none; }
+@media (max-width: 800px) { .editorial-footer .theme-toggle { grid-column: 2; grid-row: 3; justify-self: end; } }
