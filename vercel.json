@@ -195,6 +195,14 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/index.rsc",
+      "destination": "/flagship.rsc"
+    },
+    {
+      "source": "/index.xml",
+      "destination": "/feed.xml"
+    },
+    {
       "source": "/",
       "has": [
         {

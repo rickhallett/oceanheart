@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import { readFile, access } from 'node:fs/promises';
+import { readFile, access, readdir } from 'node:fs/promises';
 import { practiceHref } from '../website/lib/practice-routing.mjs';
 const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url)));
 assert.equal(config.rewrites.find(r => r.has?.some(h => h.type === 'host' && h.value === 'dev.oceanheart.ai')).destination, '/dev');
 assert.equal(config.rewrites.at(-1).destination, '/flagship');
 // A physical root index silently overrides Vercel's hostname rewrite.
-await assert.rejects(access(new URL('../public/index.html', import.meta.url)), {code: 'ENOENT'});
+assert.ok(!(await readdir(new URL('../public/', import.meta.url))).some(name => /^index\./.test(name)), 'Vercel treats any index.* file as a root document');
 await access(new URL('../public/dev.html', import.meta.url));
 for (const route of ['practice','sessions','act','breathwork','deep-tissue-massage','events']) {
  assert.equal(practiceHref('/'+route,'localhost'),'/'+route);

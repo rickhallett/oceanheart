@@ -21,3 +21,6 @@ await cp(source, destination, { recursive: true, force: true });
 // Vercel checks static files before host rewrites. Keep the root free so each
 // hostname can select its own homepage, then fall back to the flagship.
 await rename(path.join(destination, 'index.html'), path.join(destination, 'flagship.html'));
+
+await rename(path.join(destination, 'index.rsc'), path.join(destination, 'flagship.rsc'));
+await rename(path.join(destination, 'index.xml'), path.join(destination, 'feed.xml'));
