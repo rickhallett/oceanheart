@@ -106,3 +106,25 @@ body { -webkit-font-smoothing: antialiased; }
  .editorial-footer { padding: 2rem 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .booking-actions .booking-link { transition: none; } }
+
+/* Phone refinement: inset the text slightly, leave breathing space, quiet the list. */
+@media (max-width: 600px) {
+ .landing-hero-content, .editorial-opening, .editorial-reading, .depth-page, .practice-index { padding-left: clamp(1.25rem, 7.2vw, 2rem); padding-right: clamp(1.25rem, 7.2vw, 2rem); }
+ .landing-copy h1 { font-size: clamp(4.8rem, 24vw, 8.5rem); }
+ .landing-thought { font-size: 1.8rem; }
+ .landing-hero-content { padding-top: clamp(3.5rem, 8svh, 4.75rem); }
+ .editorial-opening { padding-top: clamp(4rem, 9svh, 5rem); }
+ .depth-opening { padding-top: 5.5rem; }
+ .practice-intro { gap: .75rem; padding-bottom: 1.75rem; }
+ .practice-intro h2 { font-size: 1.9rem; line-height: 1.15; max-width: 18ch; text-wrap: pretty; }
+ .practice-item { position: relative; display: block; padding: 2rem 0; }
+ .practice-number { position: absolute; top: 2rem; left: 0; font-size: .67rem; line-height: 1.65; }
+ .practice-item small { display: block; padding-left: 2rem; margin-bottom: .85rem; font-size: .67rem; line-height: 1.65; letter-spacing: .1em; }
+ .practice-item strong { display: block; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.025em; text-wrap: pretty; }
+ .practice-description { margin-top: .85rem; font-size: 1rem; line-height: 1.65; }
+ .practice-read { margin-top: 1.1rem; font-size: .84rem; line-height: 1.55; text-wrap: pretty; }
+ .practice-read > span { white-space: nowrap; }
+ .connected-practices { padding-top: 3rem; padding-bottom: 3rem; }
+ .connected-practices h2 { font-size: 1.75rem; line-height: 1.2; }
+ .connected-practices p { font-size: 1rem; line-height: 1.65; }
+}

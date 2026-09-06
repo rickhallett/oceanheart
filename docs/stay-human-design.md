@@ -47,3 +47,11 @@ After these refinements, TypeScript and the 22-route build passed again. Nine pa
 Booking CTAs now follow the selected Quiet capsule study: transparent resting surface, subdued 1px border, 100px radius, 50px minimum height, 12px × 24px padding, normal-spaced 15px text at weight 400, and a gentle 200ms hover inversion. The shared booking selector covers the appointment links in page openings and closing booking sections; destinations are unchanged. Keyboard focus remains explicitly visible and reduced-motion preferences disable the color transition. The homepage exploration link retains its underline treatment. The horizon question is set to 0.74 opacity.
 
 TypeScript and the 22-route build passed. Desktop and phone browser checks confirmed 50px touch targets, capsule radius, keyboard focus, hover appearance, no horizontal overflow on the checked booking page, the homepage underline, and computed question opacity. Screenshots are in `output/stay-human-review/capsules/`.
+
+## Phone spacing and practice-list refinement
+
+A `max-width: 600px` refinement increases opening top breathing room and gives text adaptive side gutters (about 28px at 390px, 23px at 320px). The homepage heading now scales down at narrow phone widths to retain its two-line shape and complete punctuation. The supporting heading is slightly smaller. Interior openings gain roughly 25–30px of top space on typical phones, while depth-page openings gain a modest inset.
+
+The three-ways list pairs each number with its service label, reduces practice headings from 28px to 24px and body text from 18px to 16px, and sets deliberate label/title/body/link spacing. The section heading and connected-practices text are also slightly quieter. Content, destinations, left alignment and interactions are retained. These rules do not affect tablet or desktop widths.
+
+TypeScript and the 22-route build passed. Browser checks covered five routes at 320×740, 375×812, 390×844 and 430×932: no horizontal overflow; complete homepage heading glyph bounds; booking targets remain at least 50px high. The homepage exploration CTA remained within each checked first viewport. Updated screenshots are in `output/stay-human-review/mobile-spacing/`.
