@@ -5,3 +5,5 @@ set -euo pipefail
 bash build.sh
 npm run build --prefix website
 node scripts/overlay-website.mjs
+
+node scripts/check-practice-routing.mjs

@@ -203,6 +203,10 @@
         }
       ],
       "destination": "/dev"
+    },
+    {
+      "source": "/",
+      "destination": "/flagship"
     }
   ]
 }
