@@ -24,7 +24,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="horizon-interlude"><CardArt kind="horizon" /><p>Space to see what comes next.</p></div>
+      <div className="horizon-interlude"><CardArt kind="horizon" /><p>do you know what’s coming next?</p></div>
 
       <section className="practice-index" id="work" aria-labelledby="practice-title">
         <div className="practice-intro">

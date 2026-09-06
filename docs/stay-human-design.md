@@ -35,3 +35,9 @@ The coastal theme switch is absent in this trial so the entire navigation presen
 - Review PNGs are local in `output/stay-human-review/` and excluded from Git.
 
 The browser checks used local Chromium, not physical iOS/Android devices. The unchanged Hugo archive and deployment integration were not rebuilt for this local visual trial. Full-resolution approved artwork is retained (about 6.9 MB across four images); further asset optimization can follow selection of this direction.
+
+## Review refinements
+
+The first review increased desktop and portrait-tablet navigation to 16px, with a separate navigation row between 801px and 1100px. Phone navigation retains its prior size. The shared practice/about artwork now starts at 36% of the desktop page width and uses a longer multi-stop overlay into the text. About-page role spans use three light neutral shades, retaining the wording “experience designer”. The horizon question is now “do you know what’s coming next?” in lowercase, with generous tracking.
+
+After these refinements, TypeScript and the 22-route build passed again. Nine pages were captured and checked for horizontal overflow at 1440×1000, 834×1194 and 390×844. The exact question was checked at all three sizes, and the phone menu and Escape interaction passed. Updated local evidence is in `output/stay-human-review/refinements/`.

@@ -61,7 +61,7 @@ export function ReadingSection({ label, children }: { label: string; children: R
 
 export function EditorialPage({ tone, label, title, intro, children, invitation, bookingKinds, bookingDescription, afterBooking }: {
   tone: 'light' | 'night' | 'human' | 'about';
-  label: string; title: string; intro: ReactNode; children: ReactNode; invitation: string;
+  label: string; title: ReactNode; intro: ReactNode; children: ReactNode; invitation: string;
   bookingKinds?: BookingKind[]; bookingDescription?: string; afterBooking?: ReactNode;
 }) {
   return <div className={'editorial-page editorial-' + tone}>

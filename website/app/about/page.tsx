@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'About Rick | Oceanheart', descriptio
 
 export default function About() {
   return <EditorialPage tone="about" label="About Rick"
-    title="I’m Rick - a therapist, experience designer and engineer."
+    title={<>I’m Rick - a <span className="role-therapist">therapist</span>, <span className="role-designer">experience designer</span> and <span className="role-engineer">engineer</span>.</>}
     intro="The thread through my work is attention: noticing what’s happening, understanding how things fit together and finding a useful next move."
     invitation="If this sounds like a useful way to work together, I’d like to hear what’s on your mind.">
         <ReadingSection label="Practices in conversation"><p>Therapy shapes how I listen. Experience design shapes how I think about what people encounter. Engineering gives me the means to build and test what could work better.</p></ReadingSection>
