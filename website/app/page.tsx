@@ -1,6 +1,6 @@
 
 import { ArrowIcon } from '@/app/components/arrow-icon';
-import Image from 'next/image';
+import { CardArt } from './components/card-art';
 import Link from '@/app/components/site-link';
 import { Booking, Footer, SiteNav } from './components/editorial';
 
@@ -8,44 +8,23 @@ export default function Home() {
   return (
     <main className="oceanheart-home">
       <section className="landing-hero" aria-labelledby="landing-title">
-        <Image
-          className="landing-hero-photo coastal-hero-photo"
-          src="/images/coastal/contact.png"
-          alt=""
-          width={1254}
-          height={1254}
-          sizes="(max-width: 800px) 100vw, 57vw"
-          priority
-          unoptimized
-        />
-        <Image
-          className="landing-hero-photo monochrome-hero-photo"
-          src="/images/oceanheart-beach-balance.jpg"
-          alt=""
-          width={590}
-          height={1280}
-          sizes="(max-width: 700px) 132vw, 74vw"
-          unoptimized
-        />
-        <div className="landing-hero-wash" aria-hidden="true" />
-        <div className="landing-grain" aria-hidden="true" />
-
         <SiteNav />
 
         <div className="landing-hero-content">
           <div className="landing-copy">
-            <p className="eyebrow">Therapy · Practical AI guidance · Bespoke digital systems</p>
-            <h1 id="landing-title">Stay human. Work with what is coming.</h1>
-            <p className="founder-line">
-              I’m Rick, a therapist, experience designer and software engineer. I offer therapeutic sessions, help people work thoughtfully with AI, build websites, tools and workflows around their needs.
-            </p>
-            <a className="text-link" href="#work">
-              <span className="invitation-copy">Explore ways to work with me</span>
-              <span aria-hidden="true"><ArrowIcon direction="right" /></span>
-            </a>
+            <p className="eyebrow">Therapy · Design · Engineering</p>
+            <h1 id="landing-title">Stay<br />human.</h1>
+            <span className="human-rule" aria-hidden="true" />
+          </div>
+          <div className="landing-aside">
+            <p className="landing-thought">Work with<br /> what is coming.</p>
+            <p className="founder-line">I’m Rick Hallett, a therapist, experience designer and software engineer. I offer therapeutic sessions, help people work thoughtfully with AI, and build websites, tools and workflows around their needs.</p>
+            <a className="text-link" href="#work">Explore ways to work together <ArrowIcon direction="right" /></a>
           </div>
         </div>
       </section>
+
+      <div className="horizon-interlude"><CardArt kind="horizon" /><p>Space to see what comes next.</p></div>
 
       <section className="practice-index" id="work" aria-labelledby="practice-title">
         <div className="practice-intro">
@@ -85,7 +64,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="connected-practices">
+        <div className="connected-practices"><CardArt kind="currents" />
           <h2>One person. Connected practices.</h2>
           <p>Therapy shapes how I listen. Design helps me understand what people need. Engineering gives me the means to build something useful. You can work with me in any one of these areas; each benefits from the others.</p>
           <Link href="/about" className="text-link">A little about Rick <span aria-hidden="true"><ArrowIcon /></span></Link>

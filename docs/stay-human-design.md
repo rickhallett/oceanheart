@@ -1,0 +1,37 @@
+# Stay human — card-front website direction
+
+Local design branch: `design/stay-human-card-fronts`.
+Base: `4d18f9f` (`feat/coastal-restyle`), the newest integrated website checkout on 6 September 2026. It includes the merged production SVG-arrow fixes. The original checkouts and their unrelated changes were preserved.
+
+## Preview
+
+```sh
+npm ci --prefix website
+npm run dev --prefix website -- --host 0.0.0.0 --port 4317
+```
+
+Open http://localhost:4317. This branch has not been deployed or pushed.
+
+## Six fronts, one site
+
+- **01 Stay human:** oversized live HTML heading, near-black, warm ivory, small sea-grey rule; widely tracked lowercase wordmark in navigation and footer.
+- **02 Tidal horizon:** a full-width transition below the homepage opening and the AI guidance page opening.
+- **03 Confluence:** native SVG currents across the systems page and connected-practices section. The geometry is a new responsive interpretation of the reference.
+- **04 Embodied:** a shadowed movement image on the therapeutic-practice page.
+- **05 Heart of water:** wave imagery on the about page.
+- **06 Touchstone:** warm ivory, dark stone and mineral vein for selected work, notes, engineering, CV and their detail pages.
+
+The artwork copies are unchanged approved PNG originals. CSS windows and masks keep their baked-in lettering outside the visible image treatments. Headings, labels and the brand wordmark are accessible HTML; decorative art is hidden from assistive technology. Functional links retain ordinary spacing. Arial/Helvetica is a repeatable approximation of the generated card typography, not an extracted or identified font.
+
+The coastal theme switch is absent in this trial so the entire navigation presents one coherent direction. Existing service copy, booking destinations, project content, notes, canonical metadata and routes remain available.
+
+## Verification
+
+- `npx tsc --noEmit` from `website`: passed.
+- `npm run build --prefix website`: passed; 22 routes exported, none skipped.
+- Browser screenshots captured at 1440×1000 and 390×844 for home, all three practices, about, selected work, notes, engineering and CV.
+- Additional overflow checks at 320px and 768px across the seven primary pages: passed.
+- Mobile menu open/close, Escape and focus restoration, navigation to therapy, and booking link presence: passed, no browser runtime errors in the interaction check.
+- Review PNGs are local in `output/stay-human-review/` and excluded from Git.
+
+The browser checks used local Chromium, not physical iOS/Android devices. The unchanged Hugo archive and deployment integration were not rebuilt for this local visual trial. Full-resolution approved artwork is retained (about 6.9 MB across four images); further asset optimization can follow selection of this direction.
