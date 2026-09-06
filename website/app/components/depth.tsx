@@ -1,13 +1,14 @@
 
 import { ArrowIcon } from '@/app/components/arrow-icon';
 import Link from '@/app/components/site-link';
+import type { Practice } from './practice';
 import type { ReactNode } from 'react';
 import { CardArt } from './card-art';
 import { SiteNav, Footer } from './editorial';
 import { selectedWork, selectedNotes } from '../../lib/selected-work';
 
-export function DepthPage({ title, label, children }: { title: string; label: string; children: ReactNode }) {
-  return <div className="editorial-page editorial-light"><SiteNav /><main className="depth-page"><header className="depth-opening" data-long-title={title.length > 60}><CardArt kind="stone" /><p className="eyebrow">{label}</p><h1>{title}</h1></header>{children}</main><Footer /></div>;
+export function DepthPage({ title, label, children, practice }: { practice?: Practice; title: string; label: string; children: ReactNode }) {
+  return <div className="editorial-page editorial-light"><SiteNav practice={practice} /><main className="depth-page"><header className="depth-opening" data-long-title={title.length > 60}><CardArt kind="stone" /><p className="eyebrow">{label}</p><h1>{title}</h1></header>{children}</main><Footer practice={practice} /></div>;
 }
 
 export function WorkLinks({ slugs }: { slugs: string[] }) {

@@ -192,5 +192,17 @@
     }
   ],
   "installCommand": "npm ci --prefix website",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "dev.oceanheart.ai"
+        }
+      ],
+      "destination": "/dev.html"
+    }
+  ]
 }

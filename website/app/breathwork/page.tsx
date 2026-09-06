@@ -1,0 +1,8 @@
+import type { Metadata } from 'next';
+import { EditorialPage, ReadingSection } from '../components/editorial';
+export const metadata: Metadata = { title: "Breathwork | Oceanheart", description: "Time to attend to your breath, notice your experience and explore at a pace that feels right for you.", alternates: { canonical: 'https://www.oceanheart.ai/breathwork' } };
+export default function Page() { return <EditorialPage tone="human" image="/images/oceanheart-beach-step.jpg" label="Breathwork" title="A little space to breathe." intro="Time to attend to your breath, notice your experience and explore at a pace that feels right for you." bookingKinds={["breathwork"]} invitation="Begin with a conversation." bookingDescription="Ask about a breathwork session or upcoming classes. We’ll discuss the approach, format and cost before arranging anything.">
+<ReadingSection label="Working with the breath"><p>Breathwork is part of my wider practice with attention and the body. We’ll begin by talking about what brings you here and what you’re looking for.</p><p>The approach and pace are agreed together, with room to pause, ask questions and give feedback.</p></ReadingSection>
+<ReadingSection label="Sessions & classes"><p>You can enquire about individual work or group practice. Meditation, breathwork and somatic movement classes are being planned for Swanage, Poole and Bournemouth.</p><p><a href="/events">Explore local events and classes.</a></p></ReadingSection>
+<ReadingSection label="Before we begin"><p>We’ll discuss which approach is appropriate for you and anything relevant to taking part before agreeing a session. Format, location and cost will be confirmed when arranging it.</p></ReadingSection>
+</EditorialPage>; }

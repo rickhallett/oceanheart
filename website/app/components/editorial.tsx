@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from '@/app/components/site-link';
-
 import { CardArt, type CardKind } from './card-art';
+import { practiceNavigation, flagshipNavigation, type Practice } from './practice';
 
 import { bookingLink, type BookingKind } from '../../lib/bookings';
 
-export function SiteNav() {
+export function SiteNav({ practice }: { practice?: Practice }) {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -18,13 +18,10 @@ export function SiteNav() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [open]);
   return <header className="editorial-header">
-    <Link href="/" className="wordmark" aria-label="oceanheart.ai home">oceanheart.ai</Link>
+    <Link href={practice ? `/${practice}` : "/"} className="wordmark" aria-label={practice ? `${practice} home` : "Oceanheart home"}>{practice ? `${practice}.` : ''}oceanheart.ai</Link>
     <button ref={menuButton} className="mobile-menu-toggle" aria-label={open ? 'close menu' : 'open menu'} aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen(!open)}><span className="menu-strokes" aria-hidden="true"><span /><span /></span></button>
     <nav id="primary-navigation" data-open={open} aria-label="primary navigation">
-      <Link onClick={() => setOpen(false)} href="/conversations-with-ai">ai guidance</Link>
-      <Link onClick={() => setOpen(false)} href="/systems-work">websites &amp; systems</Link>
-      <Link onClick={() => setOpen(false)} href="/human-work">therapy &amp; bodywork</Link>
-      <Link onClick={() => setOpen(false)} href="/about">about rick</Link>
+      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} onClick={() => setOpen(false)} href={href}>{label}</Link>)}
     </nav>
   </header>;
 }
@@ -51,23 +48,25 @@ export function Booking({ invitation, description = 'A free, short conversation 
   </section>;
 }
 
-export function Footer() {
-  return <footer className="editorial-footer"><Link className="wordmark" href="/">oceanheart.ai</Link><Link href="/about">about rick</Link><Link href="/selected-work">selected work</Link><Link href="/notes">notes</Link><a href="mailto:rick@oceanheart.ai">email rick</a><span>therapy · ai guidance · digital systems</span></footer>;
+export function Footer({ practice }: { practice?: Practice }) {
+  return <footer className="editorial-footer"><Link href={practice ? '/dev' : '/'}>{practice ? 'dev.oceanheart.ai' : 'oceanheart.ai'}</Link>{(practice ? practiceNavigation.dev : flagshipNavigation).map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<a href="mailto:rick@oceanheart.ai">Email Rick</a><span>{practice ? 'Design & engineering · Rick Hallett' : 'Stay human. · Rick Hallett'}</span></footer>;
 }
 
 export function ReadingSection({ label, children }: { label: string; children: ReactNode }) {
   return <section className="reading-section"><h2 className="eyebrow">{label}</h2><div>{children}</div></section>;
 }
 
-export function EditorialPage({ tone, label, title, intro, children, invitation, bookingKinds, bookingDescription, afterBooking }: {
+export function EditorialPage({ practice, tone, image, portrait, label, title, intro, children, invitation, bookingKinds, bookingDescription, afterBooking }: {
+  practice?: Practice;
   tone: 'light' | 'night' | 'human' | 'about';
-  label: string; title: ReactNode; intro: ReactNode; children: ReactNode; invitation: string;
+  portrait?: string; image?: string; label: string; title: string; intro: ReactNode; children: ReactNode; invitation: string;
   bookingKinds?: BookingKind[]; bookingDescription?: string; afterBooking?: ReactNode;
 }) {
-  return <div className={'editorial-page editorial-' + tone}>
-    <div className="card-opening-art" aria-hidden="true"><CardArt kind={({ light: 'horizon', night: 'currents', human: 'embodied', about: 'heart' } as Record<string, CardKind>)[tone]} /></div>
+  const art: CardKind = practice === 'dev' ? 'currents' : tone === 'about' ? 'heart' : label.toLowerCase().includes('breath') ? 'horizon' : label.toLowerCase().includes('massage') ? 'embodied' : 'currents';
+  return <div className={'editorial-page editorial-' + tone + (portrait ? ' editorial-portrait' : '')}>
+    {portrait ? <div className="portrait-opening-art"><img src={portrait} alt="Rick Hallett" width="1128" height="1938" /></div> : <div className="card-opening-art"><CardArt kind={art} /></div>}
     <div className="editorial-foreground">
-      <SiteNav />
+      <SiteNav practice={practice} />
       <main>
         <section className="editorial-opening">
           <p className="eyebrow">{label}</p>
@@ -80,7 +79,7 @@ export function EditorialPage({ tone, label, title, intro, children, invitation,
         <Booking invitation={invitation} kinds={bookingKinds} description={bookingDescription} />
         {afterBooking && <div className="editorial-reading">{afterBooking}</div>}
       </main>
-      <Footer />
+      <Footer practice={practice} />
     </div>
   </div>;
 }

@@ -1,19 +1,10 @@
-
-import { ArrowIcon } from '@/app/components/arrow-icon';
-import type { Metadata } from 'next';
-import Link from '@/app/components/site-link';
 import { EditorialPage, ReadingSection } from '../components/editorial';
-
-export const metadata: Metadata = { title: 'About Rick | Oceanheart', description: 'I’m Rick - a therapist, experience designer and engineer.' };
-
-export default function About() {
-  return <EditorialPage tone="about" label="About Rick"
-    title={<>I’m Rick - a <span className="role-therapist">therapist</span>, <span className="role-designer">experience designer</span> and <span className="role-engineer">engineer</span>.</>}
-    intro="The thread through my work is attention: noticing what’s happening, understanding how things fit together and finding a useful next move."
-    invitation="If this sounds like a useful way to work together, I’d like to hear what’s on your mind.">
-        <ReadingSection label="Practices in conversation"><p>Therapy shapes how I listen. Experience design shapes how I think about what people encounter. Engineering gives me the means to build and test what could work better.</p></ReadingSection>
-        <ReadingSection label="Working with me"><p>I’ll listen carefully, ask questions and tell you what I see. We can question each other, change our minds and work out the next move together.</p></ReadingSection>
-        <ReadingSection label="Contemplative practice"><p>I have maintained a contemplative practice for twenty years, both within and outside the Rinzai and Soto Zen traditions. Within Zenways, led by Daizan Roshi, I am a junior Zen teacher in training.</p><p>This practice informs the attention I bring to my work with people and technology.</p></ReadingSection>
-        <ReadingSection label="Background"><p>My background includes cognitive behavioural therapy in NHS and private practice, followed by professional software engineering at Brandwatch, EDITED, School Business Services and Telesoft.</p><p>I hold a postgraduate diploma in Cognitive Behavioural Therapy from Royal Holloway, a postgraduate certificate in Primary Mental Healthcare from the University of Central Lancashire, and a BSc in Psychology from UWE Bristol.</p><Link className="depth-next" href="/cv/">Professional background <ArrowIcon /></Link></ReadingSection>
-  </EditorialPage>;
-}
+import Link from '../components/site-link';
+export const metadata = { title: 'About Rick | Oceanheart', description: 'Therapeutic work grounded in psychological training, lived inquiry and contemplative practice.', alternates: { canonical: 'https://www.oceanheart.ai/about' } };
+export default function Page() { return <EditorialPage portrait="/images/rick-portrait-looking-left-v2.png" tone="human" label="About Rick" title="A life spent asking." intro="Therapeutic work grounded in psychological training, lived inquiry and contemplative practice." invitation="Bring your questions." bookingKinds={['exploration']}>
+<ReadingSection label="What brings me to this work"><p>In my own life, freedom has been connected with seeing the nature of things clearly and letting go of ideas about who I imagine myself to be.</p><p>I am interested in how we meet what is happening: whether there is room to feel and respond, or a sense of being tightly contained within an experience.</p></ReadingSection>
+<ReadingSection label="Training & experience"><p>My background includes cognitive behavioural therapy in NHS and private practice. I hold a postgraduate diploma in Cognitive Behavioural Therapy from Royal Holloway, a postgraduate certificate in Primary Mental Healthcare from the University of Central Lancashire, and a BSc in Psychology from UWE Bristol.</p><p>I travel deep with CBT, but I’m no longer BABCP-accredited. This is a conscious choice to make room for what I feel is a less conventional but more effective edge.</p></ReadingSection>
+<ReadingSection label="Contemplative practice"><p>I have maintained a contemplative practice for twenty years, within and outside the Rinzai and Soto Zen traditions. Within Zenways, led by Daizan Roshi, I am a junior Zen teacher in training.</p><p>Scientific thinking and spiritual inquiry both matter to me. I bring curiosity about meaning, identity and lived experience, while leaving room for your own language and worldview.</p></ReadingSection>
+<ReadingSection label="A researcher-practitioner orientation"><p>I learn through study, personal practice and working with people. I am drawn to the meeting points between psychology, the body, contemplative traditions and storytelling.</p><p>My interests for further study include anatomy, breathwork, neuroscience and mythology. These are directions for ongoing learning, rather than additional qualifications or claims of specialist expertise.</p></ReadingSection>
+<ReadingSection label="Technology in the background"><p>My engineering experience and work with AI inform how I learn, explore ideas and organise my work. My aim is to keep more attention available for the person in front of me and to support an affordable, sustainable practice.</p><p>Technology is part of that wider working life. It is not a requirement for taking part in a session.</p></ReadingSection>
+</EditorialPage>; }

@@ -3,13 +3,17 @@ export const calendarUrls = {
   therapy: 'https://calendar.app.google/ngvknrqTVXAzCdNTA',
   massage: 'https://calendar.app.google/mPD7C1uLA3xTxyoy5',
   ai: '',
+  breathwork: '',
+  events: '',
   digital: 'https://calendar.app.google/7uNx5L7V89sq7haW9',
   exploration: 'https://calendar.app.google/ZBefmABrzWXnqkMYA',
 } satisfies Record<string, string>;
 
-export type BookingKind = 'therapy' | 'massage' | 'ai' | 'digital' | 'exploration';
+export type BookingKind = 'therapy' | 'massage' | 'ai' | 'digital' | 'exploration' | 'breathwork' | 'events';
 
 const options = {
+  breathwork: { calendar: 'breathwork', label: 'Enquire about breathwork', emailLabel: 'Enquire about breathwork', subject: 'Breathwork enquiry' },
+  events: { calendar: 'events', label: 'Ask about local classes', emailLabel: 'Ask about local classes', subject: 'Local classes — meditation, breathwork and movement' },
   therapy: { calendar: 'therapy', label: 'Book therapy', emailLabel: 'Request a therapy session', subject: 'Therapy session enquiry' },
   massage: { calendar: 'massage', label: 'Book massage / bodywork', emailLabel: 'Request a massage session', subject: 'Massage session enquiry' },
   ai: { calendar: 'ai', label: 'Join the free AI pilot', emailLabel: 'Join the free AI pilot', subject: 'Conversations with AI — free pilot session' },

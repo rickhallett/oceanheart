@@ -1,7 +1,8 @@
-import type { ComponentProps } from 'react';
-
-// The production site is static: navigate to exported documents without
-// depending on a live RSC server for client-side route transitions.
-export default function SiteLink(props: ComponentProps<'a'>) {
-  return <a {...props} />;
+ 'use client';
+import { useEffect, useState, type ComponentProps } from 'react';
+import { practiceHref } from '../../lib/practice-routing.mjs';
+export default function SiteLink({ href, ...props }: ComponentProps<'a'>) {
+  const [hostname, setHostname] = useState('');
+  useEffect(() => setHostname(window.location.hostname), []);
+  return <a {...props} href={practiceHref(href, hostname)} />;
 }

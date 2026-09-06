@@ -4,7 +4,7 @@
 body { -webkit-font-smoothing: antialiased; }
 .wordmark { font-size: 1.05rem; font-weight: 400; letter-spacing: .36em; white-space: nowrap; }
 .editorial-header { min-height: 100px; padding: 2rem 5vw; gap: 2rem; }
-.editorial-header nav a { color: inherit; opacity: .88; font-size: 1rem; }
+.editorial-header nav a { color: inherit; opacity: .88; font-size: 1.0625rem; }
 .eyebrow { font-weight: 400; font-size: .66rem; letter-spacing: .17em; color: var(--secondary, #a1b7ba); }
 .landing-hero { background: #070a0d; }
 .landing-hero-content { min-height: calc(100svh - 100px); display: grid; grid-template-columns: 1.35fr 1fr; align-items: end; gap: 8vw; padding: 4vh 7vw 8vh 8vw; }
@@ -65,10 +65,10 @@ body { -webkit-font-smoothing: antialiased; }
 @media (min-width: 801px) and (max-width: 1100px) {
  .editorial-header { flex-wrap: wrap; gap: 1.5rem; padding-top: 1.5rem; padding-bottom: 1.5rem; }
  .editorial-header nav { width: 100%; justify-content: space-between; gap: 1rem; }
- .editorial-header nav a { font-size: 1rem; }
+ .editorial-header nav a { font-size: 1.0625rem; }
 }
 @media (min-width: 601px) and (max-width: 800px) {
- .editorial-header nav a { font-size: 1rem; }
+ .editorial-header nav a { font-size: 1.0625rem; }
 }
 @media (max-width: 600px) {
  .editorial-header nav a { font-size: .8rem; opacity: .76; }
@@ -164,4 +164,90 @@ body { -webkit-font-smoothing: antialiased; }
  .editorial-page .booking-section > p:not(.eyebrow) { font-size: 1rem; line-height: 1.65; margin-top: 1.2rem; }
  .editorial-page .booking-actions { margin-top: 1.5rem; gap: .6rem; }
  .editorial-page .depth-next { font-size: .9rem; line-height: 1.55; margin-top: 1.4rem; }
+}
+
+.oceanheart-home { --surface: #070a0d; --text: #eee9df; --accent: #a1b7ba; }
+.landing-thought { text-wrap: pretty; }
+.editorial-foreground { position: relative; z-index: 1; }
+@media (max-width: 600px) { .landing-hero-content { gap: 2.5rem; } }
+
+/* Integrated-practice exploration: preserve the card typography and palette. */
+.integrated-home .landing-copy h1 { font-size: clamp(4.5rem, 8.2vw, 8.5rem); line-height: .98; max-width: 12ch; }
+.integrated-home .landing-hero-content { grid-template-columns: 1.35fr 1fr; gap: 5vw; }
+.integrated-home .founder-line + .founder-line { margin-top: 1rem; }
+.integrated-intro { max-width: 44rem; margin: 0 0 4rem auto; font-size: 1.15rem; line-height: 1.75; color: #a1b7ba; }
+.integrated-intro p + p { margin-top: 1.4rem; }
+@media(max-width:800px) { .integrated-home .landing-hero-content { grid-template-columns: 1fr; } .integrated-home .landing-copy h1 { font-size: clamp(3.4rem, 13vw, 6rem); } .integrated-intro { font-size: 1rem; margin-bottom: 2.5rem; } }
+
+.inquiry-interlude { height: clamp(280px, 43vw, 640px); overflow: hidden; }
+.inquiry-interlude img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+
+/* Events interest form: the visitor reviews and sends their own email. */
+.interest-dialog { width: min(580px, calc(100vw - 2rem)); max-height: calc(100svh - 2rem); margin: auto; padding: clamp(1.5rem, 4vw, 2.5rem); background: #0c1115; color: #eee9df; border: 1px solid #a1b7ba66; border-radius: 12px; overflow-y: auto; }
+.interest-dialog::backdrop { background: #000b; }
+.interest-dialog h2 { margin: 2rem 0 1rem; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 400; letter-spacing: -.035em; }
+.interest-dialog p { font-size: 1rem; line-height: 1.6; }
+.interest-close { float: right; padding: .4rem .2rem; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; min-height: 44px; }
+.interest-dialog label { display: block; margin: 1.4rem 0 .5rem; font-size: .95rem; }
+.interest-dialog label span { color: #a1b7ba; }
+.interest-dialog input, .interest-dialog textarea { width: 100%; display: block; padding: .8rem; background: #070a0d; color: #eee9df; border: 1px solid #a1b7ba88; border-radius: 5px; font: inherit; font-size: 16px; }
+.interest-dialog textarea { resize: vertical; }
+.interest-dialog .interest-hint { font-size: .875rem; color: #a1b7ba; margin: .6rem 0; }
+.interest-dialog .booking-actions { margin-top: 1.2rem; }
+.interest-dialog :focus-visible { outline: 2px solid #a1b7ba; outline-offset: 3px; }
+.interest-status { padding-top: 1rem; border-top: 1px solid #a1b7ba44; }
+button.booking-link { cursor: pointer; font-family: inherit; }
+
+/* Distinct approved imagery for the flagship, events and practitioner. */
+.home-heart-art { position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: .42; }
+.home-heart-art .card-heart .card-art-image { background-size: auto 140%; background-position: 72% 42%; }
+.home-heart-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#070a0de6, #070a0d66 55%, #070a0d33),linear-gradient(0deg,#070a0d,transparent 35%); }
+.heart-home-hero .landing-hero-content { position: relative; z-index: 1; }
+.events-touchstone { --surface: #eee9df; --text: #151817; --secondary: #4f514d; --rule: #15181730; --accent: #637c83; }
+.events-touchstone .card-opening-art::after { background: linear-gradient(90deg,#eee9df,#eee9dfee 15%,#eee9df55 50%,transparent 75%),linear-gradient(0deg,#eee9df,transparent 20%); }
+.events-touchstone .card-stone .card-art-image { background-size: auto 150%; background-position: right center; }
+.events-touchstone .interest-dialog { --surface: #0c1115; --text: #eee9df; --accent: #a1b7ba; }
+.portrait-opening-art { position: absolute; top: 100px; right: 0; width: 46%; height: calc(100svh - 100px); min-height: 650px; max-height: 1100px; overflow: hidden; }
+.portrait-opening-art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.portrait-opening-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#070a0d,transparent 35%),linear-gradient(0deg,#070a0d,transparent 25%); }
+.editorial-portrait .editorial-opening h1, .editorial-portrait .editorial-intro { max-width: 43%; }
+@media(max-width:800px) {
+ .home-heart-art .card-heart .card-art-image { background-size: auto 120%; background-position: 55% center; }
+ .home-heart-art { opacity: .3; }
+ .events-touchstone .card-opening-art { opacity: .65; }
+ .portrait-opening-art { position: relative; top: auto; width: 100%; height: 68svh; min-height: 420px; max-height: 700px; order: 2; }
+ .editorial-portrait { display: flex; flex-direction: column; }
+ .editorial-portrait .editorial-foreground { display: contents; }
+ .editorial-portrait .editorial-header { order: 0; }
+ .editorial-portrait main { display: contents; }
+ .editorial-portrait .editorial-opening { order: 1; }
+ .editorial-portrait .editorial-reading { order: 3; }
+ .editorial-portrait .booking-section { order: 4; }
+ .editorial-portrait .editorial-footer { order: 5; }
+ .editorial-portrait .editorial-opening h1, .editorial-portrait .editorial-intro { max-width: 100%; }
+ .portrait-opening-art img { object-position: 50% 40%; }
+ .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d,transparent 15%),linear-gradient(180deg,#070a0d,transparent 10%); }
+}
+
+/* About portrait: the same heavy, atmospheric fade as the card artwork. */
+.portrait-opening-art { opacity: .58; }
+.portrait-opening-art::after { background: linear-gradient(90deg,#070a0d 0%,#070a0de6 15%,#070a0d80 40%,#070a0d33 75%),linear-gradient(0deg,#070a0d 0%,#070a0db3 12%,transparent 45%),linear-gradient(180deg,#070a0d99,transparent 28%); }
+@media(max-width:800px) { .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d 0%,#070a0dcc 12%,transparent 45%),linear-gradient(180deg,#070a0d 0%,#070a0d80 18%,transparent 40%),linear-gradient(90deg,#070a0d66,transparent 55%); } }
+
+/* Second portrait: extend left and soften from the centre toward the page. */
+@media(min-width:801px) {
+ .portrait-opening-art { width: 56%; }
+ .portrait-opening-art img { height: 112%; transform: translateY(-6%); object-position: 55% 45%; }
+ .portrait-opening-art::after { background: linear-gradient(90deg,#070a0d 0%,#070a0df2 18%,#070a0db3 38%,#070a0d66 58%,#070a0d26 82%),linear-gradient(0deg,#070a0d 0%,#070a0db3 15%,transparent 50%),linear-gradient(180deg,#070a0db3,transparent 35%); }
+}
+@media(max-width:800px) {
+ .portrait-opening-art img { height: 112%; transform: translateY(-6%); object-position: 55% 40%; }
+ .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d 0%,#070a0dcc 18%,transparent 52%),linear-gradient(180deg,#070a0d 0%,#070a0d99 23%,transparent 48%),linear-gradient(90deg,#070a0d80,transparent 65%); }
+}
+
+/* Keep event copy legible where the artwork sits behind it on smaller screens. */
+@media (max-width: 800px) {
+ .events-touchstone .card-opening-art { opacity: .35; }
+ .events-touchstone .card-opening-art::after { background: linear-gradient(90deg,#eee9df 0%,#eee9dfcc 35%,#eee9df55 75%),linear-gradient(0deg,#eee9df,transparent 40%); }
+ .landing-aside .text-link { min-height: 44px; align-items: center; }
 }
