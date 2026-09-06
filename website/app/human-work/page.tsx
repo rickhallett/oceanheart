@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function HumanWork() {
-  return <EditorialPage tone="human" image="/images/kai-looking-left.png" label="Therapy, bodywork & massage"
+  return <EditorialPage tone="human" label="Therapy, bodywork & massage"
     title="Space to talk. Space to feel."
     intro="Individual therapeutic sessions shaped around what you need, with space for talking, contemplative practice and work with the body."
     invitation="Find a place to begin."

@@ -1,0 +1,81 @@
+/* Coastal identity: chalk land, Atlantic water, sea-glass light.
+   Arial stays the reading face; the image carries the reflected wordmark. */
+:root:not([data-theme="monochrome"]) {
+  --night: #042c35; --night-soft: #073d46; --paper: #f1e6cd;
+  --paper-muted: #bdd0cb; --sea: #96c9c0; --night-rule: #a0c7bf40;
+  --salt: #eaddbf; --salt-bright: #f4ebd6; --ink: #103b40;
+  --ink-soft: #45605b; --ink-rule: #163e4038;
+}
+:where(html:not([data-theme="monochrome"])) ::selection { background: #98c8bd; color: #082f38; }
+:where(html:not([data-theme="monochrome"])) .oceanheart-home { --surface: var(--night); --text: var(--paper); --secondary: #bdd0cb; --accent: #9ccdc3; }
+:where(html:not([data-theme="monochrome"])) .landing-hero { background: var(--salt-bright); color: var(--ink); min-height: 850px; min-height: max(780px, 100svh); }
+:where(html:not([data-theme="monochrome"])) .landing-hero-photo { inset: 0 0 0 auto; width: 57%; height: 100%; object-fit: cover; object-position: 62% center; opacity: 1; filter: none; mix-blend-mode: normal; mask-image: none; -webkit-mask-image: none; }
+:where(html:not([data-theme="monochrome"])) .landing-hero-wash { background: linear-gradient(90deg, var(--salt-bright) 0%, var(--salt-bright) 36%, #f4ebd6e8 43%, #f4ebd600 57%); }
+:where(html:not([data-theme="monochrome"])) .landing-grain { opacity: .2; }
+:where(html:not([data-theme="monochrome"])) .landing-hero .editorial-header { color: var(--ink); --text: var(--ink); --secondary: var(--ink); --rule: var(--ink-rule); background: #f4ebd6f5; border-bottom: 1px solid var(--ink-rule); }
+:where(html:not([data-theme="monochrome"])) .wordmark { font-weight: 400; letter-spacing: -.06em; font-size: 1.5rem; }
+:where(html:not([data-theme="monochrome"])) .editorial-header { border-bottom: 1px solid var(--rule, var(--night-rule)); background: color-mix(in srgb, var(--surface) 94%, transparent); }
+:where(html:not([data-theme="monochrome"])) .landing-hero-content { min-height: 690px; min-height: calc(max(780px, 100svh) - 85px); padding: 6rem clamp(1.5rem, 5vw, 5rem); align-items: center; }
+:where(html:not([data-theme="monochrome"])) .landing-copy { width: 43%; }
+:where(html:not([data-theme="monochrome"])) .landing-copy h1 { max-width: 12ch; font-size: clamp(3.2rem, 5.15vw, 6rem); line-height: .99; letter-spacing: -.065em; }
+:where(html:not([data-theme="monochrome"])) .landing-copy .eyebrow { color: #47655d; font-size: .69rem; line-height: 1.8; letter-spacing: .11em; max-width: 29rem; }
+:where(html:not([data-theme="monochrome"])) .founder-line { color: #36534e; max-width: 30rem; font-size: 1.02rem; line-height: 1.7; }
+:where(html:not([data-theme="monochrome"])) .landing-copy .text-link { border-color: var(--ink-rule); color: var(--ink); }
+:where(html:not([data-theme="monochrome"])) .landing-copy .text-link span { color: inherit; }
+:where(html:not([data-theme="monochrome"])) .practice-index { position: relative; background: var(--night); padding-top: 7rem; padding-bottom: 7rem; }
+:where(html:not([data-theme="monochrome"])) .practice-intro { grid-template-columns: .6fr 1.4fr; border-bottom: 1px solid var(--night-rule); margin-bottom: 0; }
+:where(html:not([data-theme="monochrome"])) .practice-intro h2 { max-width: 15ch; font-size: clamp(2.6rem, 5vw, 5rem); }
+:where(html:not([data-theme="monochrome"])) .practice-list { border: 0; }
+:where(html:not([data-theme="monochrome"])) .practice-item { grid-template-columns: .6fr 1.4fr; gap: clamp(2rem,7vw,8rem); padding: 3rem 0; transition: background-color .2s; }
+:where(html:not([data-theme="monochrome"])) .practice-item:hover { background: #9ccdc309; }
+:where(html:not([data-theme="monochrome"])) .practice-number { font-size: 2.5rem; letter-spacing: -.05em; color: #88b6ae; }
+:where(html:not([data-theme="monochrome"])) .practice-item small { color: #9ccdc3; letter-spacing: .08em; font-size: .72rem; }
+:where(html:not([data-theme="monochrome"])) .practice-item strong { color: var(--paper); }
+:where(html:not([data-theme="monochrome"])) .practice-description, :where(html:not([data-theme="monochrome"])) .connected-practices p { color: var(--paper-muted); }
+:where(html:not([data-theme="monochrome"])) .connected-practices { max-width: none; margin-top: 5rem; padding: 3rem; background: #0b3a42; border-left: 2px solid #9ccdc3; }
+:where(html:not([data-theme="monochrome"])) .connected-practices p { max-width: 45rem; }
+:where(html:not([data-theme="monochrome"])) .editorial-page { --surface: #f1e6cd; --text: #103b40; --secondary: #45605b; --rule: #163e4038; --accent: #356c69; }
+:where(html:not([data-theme="monochrome"])) .editorial-night { --surface: #042c35; --text: #f1e6cd; --secondary: #bdd0cb; --rule: #a0c7bf40; --accent: #9ccdc3; }
+:where(html:not([data-theme="monochrome"])) .editorial-human { --surface: #eaddbf; }
+:where(html:not([data-theme="monochrome"])) .editorial-backdrop { position: absolute; height: 100svh; max-height: 1100px; background: var(--surface); mask-image: linear-gradient(black 65%, transparent); }
+:where(html:not([data-theme="monochrome"])) .editorial-backdrop::before { content: ''; position: absolute; inset: 0; background: url('/images/coastal/contact.png') right bottom / auto 220% no-repeat; opacity: .16; mask-image: linear-gradient(90deg, transparent 30%, black); }
+:where(html:not([data-theme="monochrome"])) .editorial-photo { opacity: .09; mix-blend-mode: multiply; }
+:where(html:not([data-theme="monochrome"])) .editorial-night .editorial-photo { opacity: .08; }
+:where(html:not([data-theme="monochrome"])) .editorial-human .editorial-photo, :where(html:not([data-theme="monochrome"])) .editorial-about .editorial-photo { opacity: .3; }
+:where(html:not([data-theme="monochrome"])) .editorial-about .editorial-backdrop::before, :where(html:not([data-theme="monochrome"])) .editorial-human .editorial-backdrop::before { opacity: .08; }
+:where(html:not([data-theme="monochrome"])) .editorial-opening { min-height: 80svh; padding-top: 6rem; padding-bottom: 5rem; }
+:where(html:not([data-theme="monochrome"])) .editorial-opening h1 { max-width: 15ch; letter-spacing: -.06em; }
+/* Let the backdrop fade through the opening/reading boundary. */
+:where(html:not([data-theme="monochrome"])) .editorial-reading { background: transparent; padding-right: clamp(1.4rem,5vw,4rem); }
+:where(html:not([data-theme="monochrome"])) .reading-section { border-top: 1px solid var(--rule); }
+:where(html:not([data-theme="monochrome"])) .editorial-reading > .reading-section:first-child { border-top-color: transparent; }
+:where(html:not([data-theme="monochrome"])) .reading-section p { max-width: 48rem; }
+:where(html:not([data-theme="monochrome"])) .booking-section { border-top: 1px solid var(--rule, var(--night-rule)); padding-top: 5rem; padding-bottom: 5rem; }
+:where(html:not([data-theme="monochrome"])) .booking-actions .booking-link { border-radius: 0; background: var(--text); color: var(--surface); border-color: var(--text); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+:where(html:not([data-theme="monochrome"])) .booking-actions .booking-link span { color: inherit; }
+:where(html:not([data-theme="monochrome"])) .booking-actions .booking-link:hover { background: var(--accent); color: var(--surface); }
+:where(html:not([data-theme="monochrome"])) .editorial-footer { border-top: 1px solid var(--rule, var(--night-rule)); }
+:where(html:not([data-theme="monochrome"])) .depth-links a { padding: 1.5rem 0; border-top: 1px solid var(--rule); }
+@media (max-width: 800px) {
+  :where(html:not([data-theme="monochrome"])) .landing-hero { min-height: auto; display: flex; flex-direction: column; }
+  :where(html:not([data-theme="monochrome"])) .landing-hero .editorial-header { order: 0; }
+  :where(html:not([data-theme="monochrome"])) .landing-hero-photo { position: relative; order: 1; inset: auto; width: 100%; height: 66vw; max-height: 480px; object-position: center 35%; mask-image: none; -webkit-mask-image: none; }
+  :where(html:not([data-theme="monochrome"])) .landing-hero-content { order: 2; min-height: auto; padding: 2.5rem 1.25rem 3.5rem; }
+  :where(html:not([data-theme="monochrome"])) .landing-copy { width: 100%; }
+  :where(html:not([data-theme="monochrome"])) .landing-copy h1 { font-size: clamp(2.9rem,10vw,4.5rem); max-width: 15ch; }
+  :where(html:not([data-theme="monochrome"])) .landing-copy .eyebrow { max-width: 100%; font-size: .69rem; }
+  :where(html:not([data-theme="monochrome"])) .landing-hero-wash { display: none; }
+  :where(html:not([data-theme="monochrome"])) .founder-line { max-width: 38rem; }
+  :where(html:not([data-theme="monochrome"])) .practice-index { padding: 3.5rem 1.25rem; }
+  :where(html:not([data-theme="monochrome"])) .practice-intro { grid-template-columns: 1fr; padding-bottom: 2rem; }
+  :where(html:not([data-theme="monochrome"])) .practice-item { grid-template-columns: 2rem 1fr; gap: 1rem; padding: 2rem 0; }
+  :where(html:not([data-theme="monochrome"])) .practice-number { font-size: 1.2rem; }
+  :where(html:not([data-theme="monochrome"])) .practice-item strong { font-size: 1.75rem; }
+  :where(html:not([data-theme="monochrome"])) .practice-description { font-size: 1.05rem; }
+  :where(html:not([data-theme="monochrome"])) .connected-practices { padding: 1.5rem; margin-top: 3rem; }
+  :where(html:not([data-theme="monochrome"])) .editorial-opening { min-height: auto; padding: 3.5rem 1.25rem; }
+  :where(html:not([data-theme="monochrome"])) .editorial-backdrop { height: var(--opening-height, 45rem); }
+  :where(html:not([data-theme="monochrome"])) .booking-section { padding: 3rem 0; }
+  :where(html:not([data-theme="monochrome"])) .booking-actions .booking-link { padding: .9rem 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { :where(html:not([data-theme="monochrome"])) .practice-item { transition: none; } }

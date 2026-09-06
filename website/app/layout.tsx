@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html id="top" lang="en">
+    <html id="top" lang="en" suppressHydrationWarning>
       <body>{children}<SectionReveals /></body>
     </html>
   );
