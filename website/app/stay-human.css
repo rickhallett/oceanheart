@@ -244,3 +244,10 @@ button.booking-link { cursor: pointer; font-family: inherit; }
  .portrait-opening-art img { height: 112%; transform: translateY(-6%); object-position: 55% 40%; }
  .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d 0%,#070a0dcc 18%,transparent 52%),linear-gradient(180deg,#070a0d 0%,#070a0d99 23%,transparent 48%),linear-gradient(90deg,#070a0d80,transparent 65%); }
 }
+
+/* Keep event copy legible where the artwork sits behind it on smaller screens. */
+@media (max-width: 800px) {
+ .events-touchstone .card-opening-art { opacity: .35; }
+ .events-touchstone .card-opening-art::after { background: linear-gradient(90deg,#eee9df 0%,#eee9dfcc 35%,#eee9df55 75%),linear-gradient(0deg,#eee9df,transparent 40%); }
+ .landing-aside .text-link { min-height: 44px; align-items: center; }
+}
