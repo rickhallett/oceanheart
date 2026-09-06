@@ -1,4 +1,4 @@
-import { cp, readdir, rm, stat } from 'node:fs/promises';
+import { cp, readdir, rename, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const source = path.resolve('website/dist/client');
@@ -17,3 +17,7 @@ async function removeReplacedIndexes(directory, relative = '') {
 }
 await removeReplacedIndexes(source);
 await cp(source, destination, { recursive: true, force: true });
+
+// Vercel checks static files before host rewrites. Keep the root free so each
+// hostname can select its own homepage, then fall back to the flagship.
+await rename(path.join(destination, 'index.html'), path.join(destination, 'flagship.html'));
