@@ -41,3 +41,9 @@ The browser checks used local Chromium, not physical iOS/Android devices. The un
 The first review increased desktop and portrait-tablet navigation to 16px, with a separate navigation row between 801px and 1100px. Phone navigation retains its prior size. The shared practice/about artwork now starts at 36% of the desktop page width and uses a longer multi-stop overlay into the text. About-page role spans use three light neutral shades, retaining the wording “experience designer”. The horizon question is now “do you know what’s coming next?” in lowercase, with generous tracking.
 
 After these refinements, TypeScript and the 22-route build passed again. Nine pages were captured and checked for horizontal overflow at 1440×1000, 834×1194 and 390×844. The exact question was checked at all three sizes, and the phone menu and Escape interaction passed. Updated local evidence is in `output/stay-human-review/refinements/`.
+
+## Quiet capsule selection
+
+Booking CTAs now follow the selected Quiet capsule study: transparent resting surface, subdued 1px border, 100px radius, 50px minimum height, 12px × 24px padding, normal-spaced 15px text at weight 400, and a gentle 200ms hover inversion. The shared booking selector covers the appointment links in page openings and closing booking sections; destinations are unchanged. Keyboard focus remains explicitly visible and reduced-motion preferences disable the color transition. The homepage exploration link retains its underline treatment. The horizon question is set to 0.74 opacity.
+
+TypeScript and the 22-route build passed. Desktop and phone browser checks confirmed 50px touch targets, capsule radius, keyboard focus, hover appearance, no horizontal overflow on the checked booking page, the homepage underline, and computed question opacity. Screenshots are in `output/stay-human-review/capsules/`.

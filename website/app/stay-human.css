@@ -17,7 +17,7 @@ body { -webkit-font-smoothing: antialiased; }
 .founder-line { font-size: 1rem; line-height: 1.75; color: #a1b7ba; margin: 0; }
 .text-link { font-size: .85rem; font-weight: 400; }
 .horizon-interlude { position: relative; height: 48vw; max-height: 600px; min-height: 280px; overflow: hidden; }
-.horizon-interlude p { position: absolute; bottom: 3rem; left: 8vw; right: 8vw; font-size: clamp(1rem, 1.8vw, 1.6rem); line-height: 1.8; letter-spacing: .3em; font-weight: 400; }
+.horizon-interlude p { position: absolute; bottom: 3rem; left: 8vw; right: 8vw; font-size: clamp(1rem, 1.8vw, 1.6rem); line-height: 1.8; letter-spacing: .3em; font-weight: 400; opacity: .74; }
 .card-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .card-art-image { position: absolute; inset: 0; background-repeat: no-repeat; }
 .card-horizon .card-art-image { background-image: url('/images/card-fronts/02-tidal-horizon.png'); background-size: 100% auto; background-position: center 49%; }
@@ -50,8 +50,10 @@ body { -webkit-font-smoothing: antialiased; }
 .role-designer { color: #cbc9c4; }
 .role-engineer { color: #aaaead; }
 .editorial-reading { position: relative; padding-left: 8vw; padding-right: 8vw; }
-.booking-actions .booking-link { padding: 1rem 1.2rem; border-radius: 0; background: transparent; color: var(--text); border: 1px solid var(--rule); box-shadow: none; backdrop-filter: none; font-size: .85rem; }
-.booking-actions .booking-link:hover { background: var(--text); color: var(--surface); }
+.booking-actions .booking-link { min-height: 50px; padding: 12px 24px; border-radius: 100px; background: transparent; color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 38%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: normal; transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
+.booking-actions .booking-link:hover { background: var(--text); color: var(--surface); border-color: var(--text); }
+.booking-actions .booking-link:focus-visible { outline: 2px solid var(--text); outline-offset: 5px; }
+.booking-actions .booking-link:active { background: var(--accent); color: var(--surface); }
 .booking-actions .booking-link span { color: inherit; }
 .editorial-footer { padding: 2rem 5vw; }
 .editorial-footer .wordmark { font-size: .85rem; }
@@ -103,4 +105,4 @@ body { -webkit-font-smoothing: antialiased; }
  .depth-opening h1 { font-size: clamp(3rem,12vw,5rem); max-width: 10ch; }
  .editorial-footer { padding: 2rem 1.5rem; }
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .booking-actions .booking-link { transition: none; } }
