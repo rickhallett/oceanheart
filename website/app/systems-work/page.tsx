@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function SystemsWork() {
-  return <EditorialPage tone="night" image="/images/kai-systems-desk.jpeg" label="Websites, software & AI tools"
+  return <EditorialPage tone="night" label="Websites, software & AI tools"
     title="Bring me the mess. We’ll make a system."
     intro="I design and build websites, bespoke software and workflows for individuals and small organisations. We’ll start with what you need to do, understand what’s getting in the way, and build something you can use."
     invitation="What are you trying to make work better?"

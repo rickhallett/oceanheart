@@ -3,7 +3,7 @@ import { EditorialPage, ReadingSection } from '../components/editorial';
 import { NoteLinks } from '../components/depth';
 
 export default function ConversationsWithAI() {
-  return <EditorialPage tone="light" image="/images/oceanheart-beach-step.jpg"
+  return <EditorialPage tone="light"
     label="Conversations with AI · Practical guidance"
     title="Work with AI. Stay in the conversation."
     intro={<>Be a part of research that matters.<br /><br />Guided sessions using something that matters to you: a task, a decision, a piece of work or an idea. We’ll explore what AI can contribute, question its answers and keep your own judgement involved.</>}
