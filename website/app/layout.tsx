@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './stay-human.css';
 import { SectionReveals } from './components/section-reveals';
 
 const siteUrl = new URL('https://www.oceanheart.ai');
-const title = 'Oceanheart — Therapy, practical AI guidance and bespoke digital systems';
+const title = 'Integrative therapeutic practice | Oceanheart';
 const description =
-  'Therapy, standalone massage, practical AI guidance and bespoke websites, software and workflows with Rick Hallett. Explore sessions and free initial conversations.';
+  'Conversation, breath and body-based inquiry with Rick Hallett. An integrative therapeutic practice shaped around your lived experience.';
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'Oceanheart — therapy, AI guidance and digital systems',
+        alt: 'Oceanheart — Stay human.',
       },
     ],
   },

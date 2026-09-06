@@ -1,7 +1,7 @@
 import { DepthPage } from '../components/depth';
 export const metadata = { title: 'Professional background | Oceanheart' };
 export default function Background() {
-  return <DepthPage title="Professional background" label="Rick Hallett">
+  return <DepthPage practice="dev" title="Professional background" label="Rick Hallett">
     <div className="article-prose">
       <p>My work spans cognitive behavioural therapy in NHS and private practice, professional software engineering, and independent client delivery.</p>
       <h2>Engineering</h2>

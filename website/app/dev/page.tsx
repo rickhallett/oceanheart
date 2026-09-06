@@ -6,13 +6,16 @@ import Link from '@/app/components/site-link';
 import { WorkLinks } from '../components/depth';
 
 export const metadata: Metadata = {
+  alternates: { canonical: 'https://dev.oceanheart.ai/' },
+  openGraph: { title: 'Oceanheart Dev', url: 'https://dev.oceanheart.ai/', images: ['https://www.oceanheart.ai/og.png'] },
+  twitter: { card: 'summary_large_image', title: 'Oceanheart Dev', images: ['https://www.oceanheart.ai/og.png'] },
   title: 'Bespoke websites, software and AI tools — Oceanheart',
   description: 'Websites, bespoke software, AI tools and workflows for individuals and small organisations. Explore completed projects and arrange a free initial digital consultation.',
 };
 
 export default function SystemsWork() {
-  return <EditorialPage practice="dev" tone="night" image="/images/kai-systems-desk.jpeg" label="Websites, software & AI tools"
-    title="Bring me the mess. We’ll make a system."
+  return <EditorialPage practice="dev" tone="night" image="/images/kai-systems-desk.jpeg" label="dev.oceanheart.ai · Design, engineering & AI"
+    title="Let’s make something useful."
     intro="I design and build websites, bespoke software and workflows for individuals and small organisations. We’ll start with what you need to do, understand what’s getting in the way, and build something you can use."
     invitation="What are you trying to make work better?"
     bookingKinds={['digital']}
@@ -22,6 +25,7 @@ export default function SystemsWork() {
       <p>Websites and online shops. Tools for running a practice or business. AI features that work with relevant material. Connected workflows that reduce repeated work.</p>
       <p>You don’t need to know which technology you need. We’ll work out what would be useful, including whether AI has a part to play.</p>
     </ReadingSection>
+    <ReadingSection label="Practical AI guidance"><p>If you’d like help using AI in your own work, bring a task, a question or an idea. We’ll explore the tools together and keep your own judgement involved.</p><Link className="depth-next" href="/conversations-with-ai">Explore the free AI pilot <ArrowIcon /></Link></ReadingSection>
     <ReadingSection label="Things I’ve built">
       <WorkLinks slugs={['sarah-mozer-studio', 'becoming-diamond']} />
       <Link className="depth-next" href="/selected-work">Explore selected work <ArrowIcon /></Link>

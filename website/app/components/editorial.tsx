@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from '@/app/components/site-link';
-import Image from 'next/image';
+import { CardArt, type CardKind } from './card-art';
+import { practiceNavigation, flagshipNavigation, type Practice } from './practice';
 
 import { bookingLink, type BookingKind } from '../../lib/bookings';
 
-export function SiteNav() {
+export function SiteNav({ practice }: { practice?: Practice }) {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -17,13 +18,10 @@ export function SiteNav() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [open]);
   return <header className="editorial-header">
-    <Link href="/" className="wordmark" aria-label="oceanheart.ai home">oceanheart.ai</Link>
+    <Link href={practice ? `/${practice}` : "/"} className="wordmark" aria-label={practice ? `${practice} home` : "Oceanheart home"}>{practice ? `${practice}.` : ''}oceanheart.ai</Link>
     <button ref={menuButton} className="mobile-menu-toggle" aria-label={open ? 'close menu' : 'open menu'} aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen(!open)}><span className="menu-strokes" aria-hidden="true"><span /><span /></span></button>
     <nav id="primary-navigation" data-open={open} aria-label="primary navigation">
-      <Link onClick={() => setOpen(false)} href="/conversations-with-ai">ai guidance</Link>
-      <Link onClick={() => setOpen(false)} href="/systems-work">websites &amp; systems</Link>
-      <Link onClick={() => setOpen(false)} href="/human-work">therapy &amp; bodywork</Link>
-      <Link onClick={() => setOpen(false)} href="/about">about rick</Link>
+      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} onClick={() => setOpen(false)} href={href}>{label}</Link>)}
     </nav>
   </header>;
 }
@@ -50,54 +48,25 @@ export function Booking({ invitation, description = 'A free, short conversation 
   </section>;
 }
 
-export function Footer() {
-  return <footer className="editorial-footer"><Link href="/">oceanheart.ai</Link><Link href="/about">about rick</Link><Link href="/selected-work">selected work</Link><Link href="/notes">notes</Link><a href="mailto:rick@oceanheart.ai">email rick</a><span>therapy · ai guidance · digital systems</span></footer>;
+export function Footer({ practice }: { practice?: Practice }) {
+  return <footer className="editorial-footer"><Link href={practice ? '/dev' : '/'}>{practice ? 'dev.oceanheart.ai' : 'oceanheart.ai'}</Link>{(practice ? practiceNavigation.dev : flagshipNavigation).map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<a href="mailto:rick@oceanheart.ai">Email Rick</a><span>{practice ? 'Design & engineering · Rick Hallett' : 'Stay human. · Rick Hallett'}</span></footer>;
 }
 
 export function ReadingSection({ label, children }: { label: string; children: ReactNode }) {
   return <section className="reading-section"><h2 className="eyebrow">{label}</h2><div>{children}</div></section>;
 }
 
-export function EditorialPage({ tone, image, label, title, intro, children, invitation, bookingKinds, bookingDescription, afterBooking }: {
+export function EditorialPage({ practice, tone, image, portrait, label, title, intro, children, invitation, bookingKinds, bookingDescription, afterBooking }: {
+  practice?: Practice;
   tone: 'light' | 'night' | 'human' | 'about';
-  image?: string; label: string; title: string; intro: ReactNode; children: ReactNode; invitation: string;
+  portrait?: string; image?: string; label: string; title: string; intro: ReactNode; children: ReactNode; invitation: string;
   bookingKinds?: BookingKind[]; bookingDescription?: string; afterBooking?: ReactNode;
 }) {
-  const pageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const page = pageRef.current;
-    if (!page || !image) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const opening = page.querySelector<HTMLElement>('.editorial-opening');
-      if (opening) page.style.setProperty('--opening-height', `${opening.offsetTop + opening.offsetHeight}px`);
-      const progress = Math.min(1, Math.max(0, -page.getBoundingClientRect().top / (window.innerHeight * 1.8)));
-      page.style.setProperty('--portrait-veil', reduced.matches ? '0.35' : String(progress * 0.93));
-    };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    update();
-    const resizeObserver = new ResizeObserver(schedule);
-    resizeObserver.observe(page.querySelector('.editorial-opening') ?? page);
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    reduced.addEventListener('change', schedule);
-    return () => {
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
-      reduced.removeEventListener('change', schedule);
-      resizeObserver.disconnect();
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, [image]);
-  return <div className={'editorial-page editorial-' + tone} ref={pageRef}>
-    {image && <div className="editorial-backdrop" aria-hidden="true">
-      <Image src={image} alt="" width={1128} height={1938} unoptimized priority className="editorial-photo" />
-      <div className="editorial-veil" />
-    </div>}
+  const art: CardKind = practice === 'dev' ? 'currents' : tone === 'about' ? 'heart' : label.toLowerCase().includes('breath') ? 'horizon' : label.toLowerCase().includes('massage') ? 'embodied' : 'currents';
+  return <div className={'editorial-page editorial-' + tone + (portrait ? ' editorial-portrait' : '')}>
+    {portrait ? <div className="portrait-opening-art"><img src={portrait} alt="Rick Hallett" width="1128" height="1938" /></div> : <div className="card-opening-art"><CardArt kind={art} /></div>}
     <div className="editorial-foreground">
-      <SiteNav />
+      <SiteNav practice={practice} />
       <main>
         <section className="editorial-opening">
           <p className="eyebrow">{label}</p>
@@ -110,7 +79,7 @@ export function EditorialPage({ tone, image, label, title, intro, children, invi
         <Booking invitation={invitation} kinds={bookingKinds} description={bookingDescription} />
         {afterBooking && <div className="editorial-reading">{afterBooking}</div>}
       </main>
-      <Footer />
+      <Footer practice={practice} />
     </div>
   </div>;
 }

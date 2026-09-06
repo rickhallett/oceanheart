@@ -20,7 +20,7 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
   if (!work) notFound();
   const technical = projectTechnical[slug];
   const images = projectImages[slug] ?? [];
-  return <DepthPage title={work.title} label={work.kind}>
+  return <DepthPage practice="dev" title={work.title} label={work.kind}>
     <p className="depth-intro">{work.summary}</p>
     <ProjectLead images={images} />
     <div className="depth-prose">{work.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}<p className="depth-status">{work.status}</p></div>

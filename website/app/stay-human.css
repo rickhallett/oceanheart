@@ -1,0 +1,246 @@
+/* Stay human. — a responsive translation of the six approved card fronts.
+   Arial/Helvetica is an intentional repeatable approximation, not a font extraction. */
+:root { --paper: #eee9df; --paper-muted: #a1b7ba; --sea: #a1b7ba; --salt: #eee9df; --salt-bright: #eee9df; }
+body { -webkit-font-smoothing: antialiased; }
+.wordmark { font-size: 1.05rem; font-weight: 400; letter-spacing: .36em; white-space: nowrap; }
+.editorial-header { min-height: 100px; padding: 2rem 5vw; gap: 2rem; }
+.editorial-header nav a { color: inherit; opacity: .88; font-size: 1.0625rem; }
+.eyebrow { font-weight: 400; font-size: .66rem; letter-spacing: .17em; color: var(--secondary, #a1b7ba); }
+.landing-hero { background: #070a0d; }
+.landing-hero-content { min-height: calc(100svh - 100px); display: grid; grid-template-columns: 1.35fr 1fr; align-items: end; gap: 8vw; padding: 4vh 7vw 8vh 8vw; }
+.landing-copy { width: auto; }
+.landing-copy .eyebrow { margin-bottom: 3rem; }
+.landing-copy h1 { font-size: clamp(7rem, 15.5vw, 17rem); font-weight: 400; letter-spacing: -.055em; line-height: .88; max-width: none; }
+.human-rule { display: block; width: clamp(64px, 9vw, 135px); height: 4px; background: #a1b7ba; margin-top: 4rem; }
+.landing-aside { padding-bottom: .3rem; max-width: 27rem; }
+.landing-thought { font-size: clamp(2rem, 3.2vw, 3.4rem); line-height: 1.12; letter-spacing: -.035em; margin: 0 0 1.6rem; }
+.founder-line { font-size: 1rem; line-height: 1.75; color: #a1b7ba; margin: 0; }
+.text-link { font-size: .85rem; font-weight: 400; }
+.horizon-interlude { position: relative; height: 48vw; max-height: 600px; min-height: 280px; overflow: hidden; }
+.horizon-interlude p { position: absolute; bottom: 3rem; left: 8vw; right: 8vw; font-size: clamp(1rem, 1.8vw, 1.6rem); line-height: 1.8; letter-spacing: .3em; font-weight: 400; opacity: 0.1; }
+.card-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.card-art-image { position: absolute; inset: 0; background-repeat: no-repeat; }
+.card-horizon .card-art-image { background-image: url('/images/card-fronts/02-tidal-horizon.png'); background-size: 100% auto; background-position: center 49%; }
+/* Only the middle 50% of the horizon front enters these wide windows. */
+.horizon-interlude .card-horizon .card-art-image { inset: -35% 0; background-size: cover; }
+.card-currents { color: #a1b7ba; }
+.card-currents svg { width: 100%; height: 100%; }
+.card-embodied .card-art-image { mask-image: linear-gradient(90deg, transparent 0%, transparent 37%, black 49%); background-image: url('/images/card-fronts/04-embodied.png'); background-size: auto 100%; background-position: right center; }
+.card-heart .card-art-image { background-image: url('/images/card-fronts/05-heart-of-water.png'); background-size: auto 125%; background-position: right top; }
+.card-stone .card-art-image { mask-image: linear-gradient(90deg, transparent, black 35%); background-image: url('/images/card-fronts/06-touchstone.png'); background-size: auto 160%; background-position: right center; }
+.practice-index { padding: 7rem 8vw; }
+.practice-intro h2, .connected-practices h2, .booking-section h2 { font-weight: 400; letter-spacing: -.035em; }
+.practice-item strong { font-weight: 400; }
+.connected-practices { position: relative; isolation: isolate; overflow: hidden; padding: 4rem 0; max-width: none; }
+.connected-practices .card-art { left: 55%; opacity: .4; z-index: -1; }
+.connected-practices p { max-width: 42rem; }
+.editorial-page { --surface: #070a0d; --text: #eee9df; --secondary: #a1b7ba; --rule: #a1b7ba40; --accent: #a1b7ba; position: relative; overflow: clip; }
+.editorial-light:has(.depth-page) { --surface: #eee9df; --text: #151817; --secondary: #4f514d; --rule: #15181730; --accent: #637c83; }
+.editorial-opening { min-height: calc(100svh - 100px); padding: 4rem 8vw 5rem; justify-content: center; }
+.editorial-opening h1, .editorial-about .editorial-opening h1 { font-size: clamp(3.5rem, 6.5vw, 7rem); font-weight: 400; max-width: 12ch; line-height: 1.02; letter-spacing: -.045em; text-wrap: pretty; }
+.editorial-about .editorial-opening h1 { max-width: 17ch; font-size: clamp(3rem, 5vw, 5.8rem); }
+.editorial-intro, .editorial-human .editorial-intro { max-width: 33rem; font-size: 1.05rem; line-height: 1.7; }
+.editorial-about .editorial-intro { max-width: 35rem; }
+.card-opening-art { position: absolute; top: 100px; right: 0; width: 64%; height: calc(100svh - 100px); min-height: 670px; max-height: 1100px; pointer-events: none; }
+.card-opening-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #070a0d 0%, #070a0df2 12%, #070a0da6 30%, #070a0d40 55%, transparent 80%), linear-gradient(0deg,#070a0d,transparent 22%); }
+.card-opening-art .card-horizon .card-art-image { background-size: auto 150%; background-position: 75% 48%; opacity: .72; }
+.editorial-human .card-opening-art { width: 64%; }
+.editorial-about .card-opening-art { width: 64%; opacity: .66; }
+.role-therapist { color: #eee9df; }
+.role-designer { color: #cbc9c4; }
+.role-engineer { color: #aaaead; }
+.editorial-reading { position: relative; padding-left: 8vw; padding-right: 8vw; }
+.booking-actions .booking-link { min-height: 50px; padding: 12px 24px; border-radius: 100px; background: transparent; color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 38%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; font-size: 15px; font-weight: 400; line-height: 1.3; letter-spacing: normal; transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
+.booking-actions .booking-link:hover { background: var(--text); color: var(--surface); border-color: var(--text); }
+.booking-actions .booking-link:focus-visible { outline: 2px solid var(--text); outline-offset: 5px; }
+.booking-actions .booking-link:active { background: var(--accent); color: var(--surface); }
+.booking-actions .booking-link span { color: inherit; }
+.editorial-footer { padding: 2rem 5vw; }
+.editorial-footer .wordmark { font-size: .85rem; }
+.depth-page { padding: 0 8vw 5rem; }
+.depth-opening { position: relative; isolation: isolate; min-height: 52svh; display: flex; flex-direction: column; justify-content: center; padding: 4rem 0; margin-bottom: 3rem; }
+.depth-opening .card-art { left: 64%; right: -10vw; z-index: -1; }
+.depth-opening h1 { font-size: clamp(3.3rem, 6.5vw, 7rem); font-weight: 400; max-width: 13ch; line-height: 1.02; letter-spacing: -.045em; margin: 0; }
+.depth-links a { padding: 1.5rem 0; border-top: 1px solid var(--rule); }
+@media (min-width: 801px) and (max-width: 1100px) {
+ .editorial-header { flex-wrap: wrap; gap: 1.5rem; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+ .editorial-header nav { width: 100%; justify-content: space-between; gap: 1rem; }
+ .editorial-header nav a { font-size: 1.0625rem; }
+}
+@media (min-width: 601px) and (max-width: 800px) {
+ .editorial-header nav a { font-size: 1.0625rem; }
+}
+@media (max-width: 600px) {
+ .editorial-header nav a { font-size: .8rem; opacity: .76; }
+}
+@media (max-width: 800px) {
+ .editorial-header { padding: 1.1rem 1.4rem; min-height: 78px; gap: 0; }
+ .wordmark { font-size: .91rem; letter-spacing: .29em; }
+ .landing-hero-content { min-height: calc(100svh - 78px); grid-template-columns: 1fr; gap: 3.5rem; padding: 2.2rem 1.5rem 3rem; }
+ .landing-copy .eyebrow { margin-bottom: 2.2rem; font-size: .58rem; }
+ .landing-copy h1 { font-size: clamp(6.2rem, 24vw, 11rem); line-height: .89; }
+ .human-rule { margin-top: 2rem; height: 3px; width: 66px; }
+ .landing-aside { max-width: 34rem; }
+ .landing-thought { font-size: 1.9rem; margin-bottom: 1rem; }
+ .landing-thought br { display: none; }
+ .founder-line { font-size: .96rem; line-height: 1.7; }
+ .landing-aside .text-link { margin-top: 1.5rem; }
+ .horizon-interlude { height: 65vw; min-height: 240px; }
+ .horizon-interlude p { left: 1.5rem; right: 1.5rem; bottom: 1.5rem; max-width: none; font-size: 1rem; letter-spacing: .24em; }
+ .practice-index { padding: 4rem 1.5rem; }
+ .connected-practices .card-art { left: 35%; opacity: .16; }
+ .editorial-opening { min-height: auto; padding: 3rem 1.5rem 4rem; }
+ .editorial-opening h1, .editorial-about .editorial-opening h1 { font-size: clamp(3rem, 12vw, 5rem); max-width: 13ch; line-height: 1.03; }
+ .editorial-about .editorial-opening h1 { font-size: clamp(2.75rem,10vw,4rem); max-width: 16ch; }
+ .editorial-intro, .editorial-human .editorial-intro { max-width: 100%; font-size: 1rem; }
+ .card-opening-art { position: relative; top: auto; width: 100%; height: 240px; min-height: 0; max-height: none; }
+ .editorial-page:has(.card-opening-art) { display: flex; flex-direction: column; }
+ .card-opening-art { position: absolute; top: 105px; right: -22%; width: 90%; height: 430px; opacity: .28; }
+ .editorial-human .card-opening-art, .editorial-about .card-opening-art { width: 70%; opacity: .32; right: -10%; }
+ .card-opening-art::after { background: linear-gradient(90deg,#070a0d,transparent 65%),linear-gradient(0deg,#070a0d,transparent 40%); }
+ .editorial-reading { padding-left: 1.5rem; padding-right: 1.5rem; }
+ .depth-page { padding: 0 1.5rem 3rem; }
+ .depth-opening { min-height: 350px; margin-bottom: 1rem; }
+ .depth-opening .card-art { left: 58%; right: -1.5rem; opacity: .25; }
+ .depth-opening h1 { font-size: clamp(3rem,12vw,5rem); max-width: 10ch; }
+ .editorial-footer { padding: 2rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .booking-actions .booking-link { transition: none; } }
+
+/* Phone refinement: inset the text slightly, leave breathing space, quiet the list. */
+@media (max-width: 600px) {
+ .landing-hero-content, .editorial-opening, .editorial-reading, .depth-page, .practice-index { padding-left: clamp(1.25rem, 7.2vw, 2rem); padding-right: clamp(1.25rem, 7.2vw, 2rem); }
+ .landing-copy h1 { font-size: clamp(4.8rem, 24vw, 8.5rem); }
+ .landing-thought { font-size: 1.8rem; }
+ .landing-hero-content { padding-top: clamp(3.5rem, 8svh, 4.75rem); }
+ .editorial-opening { padding-top: clamp(4rem, 9svh, 5rem); }
+ .depth-opening { padding-top: 5.5rem; }
+ .practice-intro { gap: .75rem; padding-bottom: 1.75rem; }
+ .practice-intro h2 { font-size: 1.9rem; line-height: 1.15; max-width: 18ch; text-wrap: pretty; }
+ .practice-item { position: relative; display: block; padding: 2rem 0; }
+ .practice-number { position: absolute; top: 2rem; left: 0; font-size: .67rem; line-height: 1.65; }
+ .practice-item small { display: block; padding-left: 2rem; margin-bottom: .85rem; font-size: .67rem; line-height: 1.65; letter-spacing: .1em; }
+ .practice-item strong { display: block; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.025em; text-wrap: pretty; }
+ .practice-description { margin-top: .85rem; font-size: 1rem; line-height: 1.65; }
+ .practice-read { margin-top: 1.1rem; font-size: .84rem; line-height: 1.55; text-wrap: pretty; }
+ .practice-read > span { white-space: nowrap; }
+ .connected-practices { padding-top: 3rem; padding-bottom: 3rem; }
+ .connected-practices h2 { font-size: 1.75rem; line-height: 1.2; }
+ .connected-practices p { font-size: 1rem; line-height: 1.65; }
+}
+
+/* The approved phone hierarchy continues through services, work and reading pages. */
+@media (max-width: 600px) {
+ .editorial-page .eyebrow { font-size: .7rem; line-height: 1.65; letter-spacing: .14em; margin-bottom: 1.5rem; }
+ .editorial-page .editorial-opening h1, .editorial-about .editorial-opening h1, .depth-opening h1 { font-size: clamp(2.35rem, 10vw, 2.8rem); line-height: 1.12; letter-spacing: -.035em; font-weight: 400; max-width: 17ch; text-wrap: pretty; }
+ .depth-opening { min-height: 310px; padding-top: clamp(4rem, 9svh, 5rem); padding-bottom: 3rem; margin-bottom: 1rem; }
+ .depth-opening[data-long-title="true"] { min-height: 0; }
+ .depth-opening[data-long-title="true"] h1 { font-size: clamp(2rem, 8.6vw, 2.4rem); max-width: none; line-height: 1.16; }
+ .editorial-intro, .editorial-human .editorial-intro { margin-top: 1.4rem; font-size: 1rem; line-height: 1.65; }
+ .editorial-page .reading-section { padding: 2rem 0; gap: .9rem; }
+ .editorial-page .reading-section .eyebrow { margin: 0; }
+ .editorial-page .reading-section p, .depth-intro, .depth-prose, .article-prose { font-size: 1rem; line-height: 1.65; letter-spacing: 0; }
+ .editorial-page .reading-section p + p { margin-top: 1.2rem; }
+ .depth-intro { margin-top: 0; margin-bottom: 1.5rem; }
+ .depth-prose { margin: 2rem 0; }
+ .depth-links { gap: .5rem; margin: 1rem 0 2rem; }
+ .depth-links a { gap: .65rem; padding: 1.5rem 0; }
+ .depth-links strong { font-size: 1.4rem; line-height: 1.3; letter-spacing: -.02em; font-weight: 400; text-wrap: pretty; }
+ .depth-links a > span { font-size: 1rem; line-height: 1.65; }
+ .depth-links small, .article-date, .depth-status { font-size: .84rem; line-height: 1.55; }
+ .article-date { margin-bottom: 1.75rem; }
+ .article-prose h2 { margin: 2.25rem 0 1rem; font-size: 1.5rem; line-height: 1.25; font-weight: 400; letter-spacing: -.02em; }
+ .article-prose h3, .technical-content h3 { font-size: 1.15rem; line-height: 1.4; font-weight: 400; }
+ .article-prose p, .article-prose ul, .article-prose ol { margin-bottom: 1.2rem; }
+ .article-prose blockquote { padding-left: 1rem; margin: 1.75rem 0; }
+ .technical-detail { font-size: 1rem; line-height: 1.65; }
+ .technical-content section p { line-height: 1.65; }
+ .technical-detail summary, .project-more summary { min-height: 44px; padding: .75rem 0; }
+ .project-screen figcaption { gap: .6rem; margin-top: 1.25rem; }
+ .project-screen h2 { font-size: 1.15rem; line-height: 1.35; }
+ .project-screen figcaption p, .technical-basis, .technical-stack { font-size: .9rem; line-height: 1.65; }
+ .editorial-page .booking-section { margin-left: clamp(1.25rem, 7.2vw, 2rem); margin-right: clamp(1.25rem, 7.2vw, 2rem); }
+ .editorial-page .booking-section h2 { font-size: 1.75rem; line-height: 1.2; }
+ .editorial-page .booking-section > p:not(.eyebrow) { font-size: 1rem; line-height: 1.65; margin-top: 1.2rem; }
+ .editorial-page .booking-actions { margin-top: 1.5rem; gap: .6rem; }
+ .editorial-page .depth-next { font-size: .9rem; line-height: 1.55; margin-top: 1.4rem; }
+}
+
+.oceanheart-home { --surface: #070a0d; --text: #eee9df; --accent: #a1b7ba; }
+.landing-thought { text-wrap: pretty; }
+.editorial-foreground { position: relative; z-index: 1; }
+@media (max-width: 600px) { .landing-hero-content { gap: 2.5rem; } }
+
+/* Integrated-practice exploration: preserve the card typography and palette. */
+.integrated-home .landing-copy h1 { font-size: clamp(4.5rem, 8.2vw, 8.5rem); line-height: .98; max-width: 12ch; }
+.integrated-home .landing-hero-content { grid-template-columns: 1.35fr 1fr; gap: 5vw; }
+.integrated-home .founder-line + .founder-line { margin-top: 1rem; }
+.integrated-intro { max-width: 44rem; margin: 0 0 4rem auto; font-size: 1.15rem; line-height: 1.75; color: #a1b7ba; }
+.integrated-intro p + p { margin-top: 1.4rem; }
+@media(max-width:800px) { .integrated-home .landing-hero-content { grid-template-columns: 1fr; } .integrated-home .landing-copy h1 { font-size: clamp(3.4rem, 13vw, 6rem); } .integrated-intro { font-size: 1rem; margin-bottom: 2.5rem; } }
+
+.inquiry-interlude { height: clamp(280px, 43vw, 640px); overflow: hidden; }
+.inquiry-interlude img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+
+/* Events interest form: the visitor reviews and sends their own email. */
+.interest-dialog { width: min(580px, calc(100vw - 2rem)); max-height: calc(100svh - 2rem); margin: auto; padding: clamp(1.5rem, 4vw, 2.5rem); background: #0c1115; color: #eee9df; border: 1px solid #a1b7ba66; border-radius: 12px; overflow-y: auto; }
+.interest-dialog::backdrop { background: #000b; }
+.interest-dialog h2 { margin: 2rem 0 1rem; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 400; letter-spacing: -.035em; }
+.interest-dialog p { font-size: 1rem; line-height: 1.6; }
+.interest-close { float: right; padding: .4rem .2rem; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; min-height: 44px; }
+.interest-dialog label { display: block; margin: 1.4rem 0 .5rem; font-size: .95rem; }
+.interest-dialog label span { color: #a1b7ba; }
+.interest-dialog input, .interest-dialog textarea { width: 100%; display: block; padding: .8rem; background: #070a0d; color: #eee9df; border: 1px solid #a1b7ba88; border-radius: 5px; font: inherit; font-size: 16px; }
+.interest-dialog textarea { resize: vertical; }
+.interest-dialog .interest-hint { font-size: .875rem; color: #a1b7ba; margin: .6rem 0; }
+.interest-dialog .booking-actions { margin-top: 1.2rem; }
+.interest-dialog :focus-visible { outline: 2px solid #a1b7ba; outline-offset: 3px; }
+.interest-status { padding-top: 1rem; border-top: 1px solid #a1b7ba44; }
+button.booking-link { cursor: pointer; font-family: inherit; }
+
+/* Distinct approved imagery for the flagship, events and practitioner. */
+.home-heart-art { position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: .42; }
+.home-heart-art .card-heart .card-art-image { background-size: auto 140%; background-position: 72% 42%; }
+.home-heart-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#070a0de6, #070a0d66 55%, #070a0d33),linear-gradient(0deg,#070a0d,transparent 35%); }
+.heart-home-hero .landing-hero-content { position: relative; z-index: 1; }
+.events-touchstone { --surface: #eee9df; --text: #151817; --secondary: #4f514d; --rule: #15181730; --accent: #637c83; }
+.events-touchstone .card-opening-art::after { background: linear-gradient(90deg,#eee9df,#eee9dfee 15%,#eee9df55 50%,transparent 75%),linear-gradient(0deg,#eee9df,transparent 20%); }
+.events-touchstone .card-stone .card-art-image { background-size: auto 150%; background-position: right center; }
+.events-touchstone .interest-dialog { --surface: #0c1115; --text: #eee9df; --accent: #a1b7ba; }
+.portrait-opening-art { position: absolute; top: 100px; right: 0; width: 46%; height: calc(100svh - 100px); min-height: 650px; max-height: 1100px; overflow: hidden; }
+.portrait-opening-art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.portrait-opening-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#070a0d,transparent 35%),linear-gradient(0deg,#070a0d,transparent 25%); }
+.editorial-portrait .editorial-opening h1, .editorial-portrait .editorial-intro { max-width: 43%; }
+@media(max-width:800px) {
+ .home-heart-art .card-heart .card-art-image { background-size: auto 120%; background-position: 55% center; }
+ .home-heart-art { opacity: .3; }
+ .events-touchstone .card-opening-art { opacity: .65; }
+ .portrait-opening-art { position: relative; top: auto; width: 100%; height: 68svh; min-height: 420px; max-height: 700px; order: 2; }
+ .editorial-portrait { display: flex; flex-direction: column; }
+ .editorial-portrait .editorial-foreground { display: contents; }
+ .editorial-portrait .editorial-header { order: 0; }
+ .editorial-portrait main { display: contents; }
+ .editorial-portrait .editorial-opening { order: 1; }
+ .editorial-portrait .editorial-reading { order: 3; }
+ .editorial-portrait .booking-section { order: 4; }
+ .editorial-portrait .editorial-footer { order: 5; }
+ .editorial-portrait .editorial-opening h1, .editorial-portrait .editorial-intro { max-width: 100%; }
+ .portrait-opening-art img { object-position: 50% 40%; }
+ .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d,transparent 15%),linear-gradient(180deg,#070a0d,transparent 10%); }
+}
+
+/* About portrait: the same heavy, atmospheric fade as the card artwork. */
+.portrait-opening-art { opacity: .58; }
+.portrait-opening-art::after { background: linear-gradient(90deg,#070a0d 0%,#070a0de6 15%,#070a0d80 40%,#070a0d33 75%),linear-gradient(0deg,#070a0d 0%,#070a0db3 12%,transparent 45%),linear-gradient(180deg,#070a0d99,transparent 28%); }
+@media(max-width:800px) { .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d 0%,#070a0dcc 12%,transparent 45%),linear-gradient(180deg,#070a0d 0%,#070a0d80 18%,transparent 40%),linear-gradient(90deg,#070a0d66,transparent 55%); } }
+
+/* Second portrait: extend left and soften from the centre toward the page. */
+@media(min-width:801px) {
+ .portrait-opening-art { width: 56%; }
+ .portrait-opening-art img { height: 112%; transform: translateY(-6%); object-position: 55% 45%; }
+ .portrait-opening-art::after { background: linear-gradient(90deg,#070a0d 0%,#070a0df2 18%,#070a0db3 38%,#070a0d66 58%,#070a0d26 82%),linear-gradient(0deg,#070a0d 0%,#070a0db3 15%,transparent 50%),linear-gradient(180deg,#070a0db3,transparent 35%); }
+}
+@media(max-width:800px) {
+ .portrait-opening-art img { height: 112%; transform: translateY(-6%); object-position: 55% 40%; }
+ .portrait-opening-art::after { background: linear-gradient(0deg,#070a0d 0%,#070a0dcc 18%,transparent 52%),linear-gradient(180deg,#070a0d 0%,#070a0d99 23%,transparent 48%),linear-gradient(90deg,#070a0d80,transparent 65%); }
+}
