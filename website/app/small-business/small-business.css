@@ -286,3 +286,5 @@
 }
 @media(prefers-reduced-motion:reduce){.sb-root *, .sb-root *::before,.sb-root *::after {scroll-behavior:auto!important;transition:none!important;}}
 @media print{.sb-review,.sb-bottom-review,.sb-show-review {display:none;}.sb-root {print-color-adjust:exact;}.sb-faq details p {display:block!important;}}
+
+.sb-swanage-link {border-top:1px solid var(--sb-rule);padding:1.5rem 0 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}.sb-swanage-link>span {font-size:.8rem;color:var(--sb-muted);}.sb-swanage-link>a {font-size:1.1rem;text-underline-offset:5px;}
