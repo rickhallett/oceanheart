@@ -27,6 +27,11 @@ title = 'oceanheart.ai'
     url = '/cv/'
     weight = 40
 
+  [[menus.main]]
+    name = 'Consulting'
+    url = '/consulting'
+    weight = 35
+
   # Demoted from the primary nav, surfaced in the footer.
   [[menus.footer]]
     name = 'observatory'
