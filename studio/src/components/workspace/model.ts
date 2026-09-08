@@ -425,6 +425,5 @@ export const money = (n: number) =>
   new Intl.NumberFormat("en-GB", {
     style: "currency",
     currency: "GBP",
-    maximumFractionDigits: 0,
   }).format(n);
 export const uid = () => Math.random().toString(36).slice(2, 10);

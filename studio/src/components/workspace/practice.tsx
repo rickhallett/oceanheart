@@ -40,6 +40,11 @@ export function BookingForm({
 }) {
   const { state, update, close } = useStudio();
   const [error, setError] = useState("");
+  const available = state.services.filter(
+    (s) => s.active || s.id === booking?.serviceId,
+  );
+  const terminal =
+    booking?.status === "Completed" || booking?.status === "Cancelled";
   return (
     <form
       className="ws-form"
@@ -48,13 +53,26 @@ export function BookingForm({
         const f = new FormData(e.currentTarget);
         const next: Booking = {
           id: booking?.id || uid(),
-          clientId: String(f.get("client")),
-          serviceId: String(f.get("service")),
+          clientId: booking?.clientId || clientId || String(f.get("client")),
+          serviceId: booking?.serviceId || String(f.get("service")),
           day: String(f.get("day")),
           time: String(f.get("time")),
-          status: "Confirmed",
+          status: booking?.status || "Confirmed",
         };
-        const service = state.services.find((s) => s.id === next.serviceId)!;
+        const service = state.services.find((s) => s.id === next.serviceId);
+        if (
+          terminal ||
+          !service ||
+          (!booking && !service.active) ||
+          !state.clients.some((c) => c.id === next.clientId)
+        ) {
+          setError(
+            terminal
+              ? "Completed or cancelled sessions cannot be rescheduled."
+              : "Choose an available service and client before booking.",
+          );
+          return;
+        }
         const minutes = (t: string) =>
           Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
         const start = minutes(next.time);
@@ -93,7 +111,8 @@ export function BookingForm({
                   status: "Pending",
                 });
             }
-            d.clients.find((c) => c.id === next.clientId)!.status = "Active";
+            if (!booking)
+              d.clients.find((c) => c.id === next.clientId)!.status = "Active";
             d.activity.unshift(
               `${booking ? "Rescheduled" : "Booked"} · ${service.name} · ${next.day} ${next.time}`,
             );
@@ -108,7 +127,8 @@ export function BookingForm({
       <Field label="Client">
         <select
           name="client"
-          defaultValue={booking?.clientId || clientId || state.clients[0].id}
+          disabled={!!booking || !!clientId}
+          defaultValue={booking?.clientId || clientId || state.clients[0]?.id}
         >
           {state.clients.map((c) => (
             <option key={c.id} value={c.id}>
@@ -120,6 +140,7 @@ export function BookingForm({
       <Field label="Service">
         <select
           name="service"
+          disabled={!!booking || available.length === 0}
           defaultValue={
             booking?.serviceId ||
             (clientId &&
@@ -129,13 +150,11 @@ export function BookingForm({
               : undefined)
           }
         >
-          {state.services
-            .filter((s) => s.active)
-            .map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} · {s.duration} min · {money(s.price)}
-              </option>
-            ))}
+          {available.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name} · {s.duration} min · {money(s.price)}
+            </option>
+          ))}
         </select>
       </Field>
       <div className="ws-form-grid">
@@ -156,6 +175,14 @@ export function BookingForm({
           />
         </Field>
       </div>
+      {available.length === 0 && (
+        <p role="alert">Add or show a service before booking a session.</p>
+      )}
+      {terminal && (
+        <p role="alert">
+          Completed or cancelled sessions cannot be rescheduled.
+        </p>
+      )}
       {error && (
         <p role="alert" className="ws-error">
           {error}
@@ -165,7 +192,12 @@ export function BookingForm({
         Creates a sample booking only. No calendar invitation or payment request
         is sent.
       </p>
-      <Action type="submit">
+      <Action
+        type="submit"
+        disabled={
+          terminal || available.length === 0 || state.clients.length === 0
+        }
+      >
         {booking ? "Save new time" : "Confirm booking"} <ArrowRight size={16} />
       </Action>
     </form>
@@ -206,6 +238,7 @@ function BookingDetail({ id }: { id: string }) {
       <Pill>{b.status}</Pill>
       <div className="ws-actions">
         <Action
+          disabled={b.status === "Completed" || b.status === "Cancelled"}
           onClick={() =>
             open("Reschedule session", <BookingForm booking={b} />)
           }
@@ -790,6 +823,15 @@ function Conversation({ id }: { id: string }) {
           e.preventDefault();
           if (!draft.trim()) return;
           update((d) => {
+            if (
+              d.approvals.some(
+                (a) =>
+                  a.type === "reply" &&
+                  a.messageId === id &&
+                  a.status !== "Declined",
+              )
+            )
+              return;
             d.inbox.find((x) => x.id === id)!.reply = draft;
             d.approvals.push({
               id: uid(),
@@ -821,7 +863,15 @@ function Conversation({ id }: { id: string }) {
           {m.id === "m3" ? "Your first visit" : "Booking & cancellation policy"}{" "}
           · review before approving
         </p>
-        <Action type="submit">
+        <Action
+          type="submit"
+          disabled={state.approvals.some(
+            (a) =>
+              a.type === "reply" &&
+              a.messageId === id &&
+              a.status !== "Declined",
+          )}
+        >
           Send to approval queue <ArrowRight size={16} />
         </Action>
       </form>
@@ -888,7 +938,7 @@ function ServiceForm({ service }: { service?: Service }) {
           duration: Number(f.get("duration")),
           price: Number(f.get("price")),
           description: String(f.get("description")),
-          active: true,
+          active: service?.active ?? true,
         };
         update((d) => {
           if (service)

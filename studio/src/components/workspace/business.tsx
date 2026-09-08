@@ -25,6 +25,7 @@ import {
   features,
   modules,
   money,
+  demoDay,
   uid,
   type Priority,
   type View,
@@ -225,8 +226,23 @@ export function Payments() {
               ) : p.status === "Paid" ? (
                 <button
                   className="ws-link"
+                  disabled={state.approvals.some(
+                    (a) =>
+                      a.type === "refund" &&
+                      a.paymentId === p.id &&
+                      a.status !== "Declined",
+                  )}
                   onClick={() =>
                     update((d) => {
+                      if (
+                        d.approvals.some(
+                          (a) =>
+                            a.type === "refund" &&
+                            a.paymentId === p.id &&
+                            a.status !== "Declined",
+                        )
+                      )
+                        return;
                       d.approvals.push({
                         id: uid(),
                         title: `Refund ${p.description}`,
@@ -618,10 +634,12 @@ export function Setup() {
 }
 export function Settings() {
   const { state, update, open, close, reset } = useStudio();
+  const [resetRevision, setResetRevision] = useState(0);
   return (
     <div className="ws-two-column">
       <Panel title="Practice details">
         <form
+          key={`${resetRevision}:${JSON.stringify(state.practice)}`}
           className="ws-form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -714,6 +732,7 @@ export function Settings() {
                     <Action
                       onClick={() => {
                         reset();
+                        setResetRevision((v) => v + 1);
                         close();
                       }}
                     >
@@ -1020,7 +1039,11 @@ export function Portal() {
           <Panel title="Your next sessions">
             {state.bookings
               .filter(
-                (b) => b.clientId === clientId && b.status !== "Cancelled",
+                (b) =>
+                  b.clientId === clientId &&
+                  b.status !== "Cancelled" &&
+                  b.status !== "Completed" &&
+                  b.day >= demoDay,
               )
               .map((b) => (
                 <div className="ws-simple-row" key={b.id}>
