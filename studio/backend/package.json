@@ -1,0 +1,19 @@
+{
+  "name": "@oceanheart/studio-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "convex dev",
+    "typecheck": "tsc --noEmit",
+    "test:integration": "node scripts/integration.mjs"
+  },
+  "dependencies": {
+    "convex": "1.45.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "jose": "^6.1.0"
+  }
+}
