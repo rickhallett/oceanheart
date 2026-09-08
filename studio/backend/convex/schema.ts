@@ -6,7 +6,9 @@ export default defineSchema({
     tenantId: v.id("tenants"),
     identity: v.string(),
     role: v.union(v.literal("owner"), v.literal("viewer")),
-  }).index("by_tenant_identity", ["tenantId", "identity"]),
+  })
+    .index("by_tenant_identity", ["tenantId", "identity"])
+    .index("by_identity", ["identity"]),
   bookings: defineTable({
     tenantId: v.id("tenants"),
     practitionerId: v.string(),

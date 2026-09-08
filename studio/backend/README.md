@@ -20,6 +20,7 @@ The runner waits for both backend health and its deployment configuration before
 
 ## Contract
 
+- `tenants:list({})`: lists only the authenticated identity's practices as `{_id,name,role}[]`; no client identity argument.
 - `tenants:create({name})`: authenticated user creates a practice and receives owner membership in the same transaction.
 - `tenants:addViewer/removeViewer({tenantId, identity})`: owner-only membership changes. `identity` is the verified provider's stable issuer/subject token identifier, not a client-supplied role claim. No invitation delivery is implemented.
 - `bookings:create({tenantId, practitionerId, startsAt, endsAt, clientLabel, requestKey})`: owner-only write. Timestamps are safe-integer UTC epoch milliseconds, with a positive duration of at most 24 hours. `practitionerId` is a tenant-local resource key, not yet a validated practitioner record. No clinical content belongs in the label.
@@ -33,6 +34,6 @@ Permission errors are `UNAUTHENTICATED` or `FORBIDDEN`; input errors are `INVALI
 
 This verifies backend transaction and permission behaviour, not a production-ready booking system. There are no practitioner availability rules, service catalogue, client identity/access, cancellations, recurrence, external calendar sync, audit log, rate limits or payment side effects. `viewer` means a staff-like tenant reader, **not** a patient/client account. The owner can create arbitrary tenant-local resource keys. Direct database/admin writes can violate the duration/index assumptions, so production migrations and new mutations must preserve the same invariants.
 
-Before any hosted implementation, Rick must select/own the Convex project and authentication provider. Configure `STUDIO_AUTH_ISSUER`, `STUDIO_AUTH_AUDIENCE` and `STUDIO_AUTH_JWKS` on that deployment using the approved provider. Missing config prevents successful authenticated deployment; there is no permissive test-provider default. Test keys must never be copied into a hosted environment. Production provider login/refresh/logout, data region, deployment secrets and Next.js session wiring remain unverified and require that decision/access. The local runner needs no such login.
+Managed authentication is prepared with explicit `clerk`, `local-jwt` and `disabled` modes. See [managed auth setup](docs/managed-auth.md) for the five deployment variables, mutual-exclusion rules and Clerk's fixed `convex` audience. This change does not configure hosted environments. Real provider login/refresh/logout, Next.js session wiring and hosted permission verification remain separate from the local JWT test evidence. The local runner needs no account login.
 
 See [architecture decision](docs/ADR-001-backend-choice.md) and [verification record](docs/verification.md).

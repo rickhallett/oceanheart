@@ -98,7 +98,7 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
-  for (const file of ["package.json", "tsconfig.json"])
+  for (const file of ["package.json", "tsconfig.json", "auth-policy.ts"])
     await cp(resolve(root, file), resolve(runDir, file));
   await symlink(
     resolve(root, "node_modules"),
@@ -113,7 +113,6 @@ try {
     [
       cli,
       "dev",
-      "--skip-push",
       "--local-cloud-port",
       String(cloudPort),
       "--local-site-port",
@@ -172,7 +171,7 @@ try {
     Buffer.from(JSON.stringify({ keys: [jwk] })).toString("base64");
   await writeFile(
     resolve(runDir, ".auth.env"),
-    `STUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
+    `STUDIO_AUTH_MODE=local-jwt\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
   );
   await command(["env", "set", "--from-file", ".auth.env"]);
   const localConfig = JSON.parse(
@@ -223,6 +222,15 @@ try {
       name: "Practice A",
     }),
     tenantB = await bob.mutation("tenants:create", { name: "Practice B" });
+  await assert.rejects(anonymous.query("tenants:list", {}), /UNAUTHENTICATED/);
+  assert.deepEqual(await alice.query("tenants:list", {}), [
+    { _id: tenantA, name: "Practice A", role: "owner" },
+  ]);
+  assert.deepEqual(await bob.query("tenants:list", {}), [
+    { _id: tenantB, name: "Practice B", role: "owner" },
+  ]);
+  assert.deepEqual(await viewer.query("tenants:list", {}), []);
+  check("practice discovery derives only the authenticated user's memberships");
   const start = Date.UTC(2030, 0, 10, 9);
   const hour = 3600000;
   const booking = {
@@ -364,6 +372,9 @@ try {
     tenantId: tenantA,
     identity: `${issuer}|viewer`,
   });
+  assert.deepEqual(await viewer.query("tenants:list", {}), [
+    { _id: tenantA, name: "Practice A", role: "viewer" },
+  ]);
   assert.equal((await viewer.query("bookings:list", window)).items.length, 3);
   await denied(
     viewer.mutation("bookings:create", { ...booking, requestKey: "viewer" }),
@@ -382,6 +393,7 @@ try {
     identity: `${issuer}|viewer`,
   });
   await denied(viewer.query("bookings:list", window), "FORBIDDEN");
+  assert.deepEqual(await viewer.query("tenants:list", {}), []);
   check("membership revocation applies with the same still-valid JWT");
   const wrongKeys = await generateKeyPair("RS256");
   for (const [name, opts] of [

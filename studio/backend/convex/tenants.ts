@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 function validateIdentity(identity: string) {
@@ -54,5 +54,26 @@ export const removeViewer = mutation({
       )
       .unique();
     if (existing?.role === "viewer") await ctx.db.delete(existing._id);
+  },
+});
+
+export const list = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) throw new ConvexError("UNAUTHENTICATED");
+    const memberships = await ctx.db
+      .query("memberships")
+      .withIndex("by_identity", (q) => q.eq("identity", user.tokenIdentifier))
+      .collect();
+    const practices = await Promise.all(
+      memberships.map(async (membership) => {
+        const tenant = await ctx.db.get(membership.tenantId);
+        return tenant
+          ? { _id: tenant._id, name: tenant.name, role: membership.role }
+          : null;
+      }),
+    );
+    return practices.filter((practice) => practice !== null);
   },
 });
