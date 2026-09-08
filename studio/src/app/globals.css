@@ -79,6 +79,7 @@ button {
   margin: auto;
 }
 .hero-scene {
+  padding-top: 104px;
   background:
     linear-gradient(90deg, rgba(3, 11, 17, 0.36), rgba(3, 11, 17, 0.03)),
     linear-gradient(0deg, rgba(4, 12, 18, 0.25), transparent 70%),
@@ -86,6 +87,9 @@ button {
   min-height: 770px;
 }
 .site-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 22px;
@@ -1007,6 +1011,7 @@ button {
   }
 }
 @media (max-width: 600px) {
+  .hero-scene { padding-top: 87px; }
   .container {
     width: 88%;
   }

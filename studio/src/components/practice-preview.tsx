@@ -112,15 +112,15 @@ export function PracticePreview() {
         <div className="preview-main">
           <header className="preview-heading">
             <h2>{active}</h2>
-            <div className="preview-date">
+            {(active === "Today" || active === "Bookings") && <div className="preview-date">
               <span>{formattedDate}</span>
-              <button aria-label="Previous day" onClick={() => setDay(day - 1)}>
+              <button aria-label="Previous day" onClick={() => { setDay(day - 1); setDetail(null); }}>
                 <ChevronLeft size={16} />
               </button>
-              <button aria-label="Next day" onClick={() => setDay(day + 1)}>
+              <button aria-label="Next day" onClick={() => { setDay(day + 1); setDetail(null); }}>
                 <ChevronRight size={16} />
               </button>
-            </div>
+            </div>}
           </header>
           {detail ? (
             <div className="preview-detail">
@@ -149,7 +149,8 @@ export function PracticePreview() {
             <>
               {(active === "Today" || active === "Bookings") && (
                 <div className="appointments">
-                  {appointments.map(([time, title, subtitle, colour]) => (
+                  {day !== 0 && <p className="preview-description">No appointments on this day.</p>}
+                  {(day === 0 ? appointments : []).map(([time, title, subtitle, colour]) => (
                     <button
                       className="appointment"
                       key={time}

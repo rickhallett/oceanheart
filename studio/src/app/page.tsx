@@ -10,9 +10,8 @@ export default function Home() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <div className="hero-scene">
         <header className="site-header">
-          <a className="brand" href="#" aria-label="Oceanheart Studio home">
+          <a className="brand" href="/" aria-label="Oceanheart Studio home">
             <Mark />
             <span>Oceanheart Studio</span>
           </a>
@@ -25,7 +24,8 @@ export default function Home() {
             <a href="#contact">Get in touch</a>
           </nav>
         </header>
-        <main id="main">
+      <main id="main" tabIndex={-1}>
+        <div className="hero-scene">
           <section className="hero container" aria-labelledby="hero-title">
             <div className="hero-copy">
               <h1 id="hero-title">
@@ -49,8 +49,7 @@ export default function Home() {
             </div>
             <PracticePreview />
           </section>
-        </main>
-      </div>
+        </div>
       <section id="studio" className="studio-section section-border">
         <div className="container studio-grid">
           <div className="studio-intro">
@@ -170,8 +169,9 @@ export default function Home() {
           </a>
         </div>
       </section>
+      </main>
       <footer className="site-footer container">
-        <a className="brand" href="#">
+        <a className="brand" href="/">
           <Mark />
           <span>Oceanheart Studio</span>
         </a>
