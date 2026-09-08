@@ -20,3 +20,13 @@ Schema and functions were pushed successfully through the authenticated Convex C
 The isolated local suite separately verifies signed JWT validation, membership isolation/revocation, reader roles, and concurrent booking/idempotency behaviour. Complete the browser-issued Clerk session → Convex authentication → practice creation → booking → reload journey before claiming hosted signed-in acceptance.
 
 `/app` remains a browser-local interactive mock. The independent `/practice` foundation surface is the migration path for authenticated development data. Do not import sample browser data or clinical information into hosted development.
+
+## Hosted signed-in acceptance, 8 September 2026
+
+Verified through the real Chrome Google sign-in flow, Clerk session issuance, and Convex authentication on the Vercel preview:
+
+https://oceanheart-studio-iep4ev3dp-rick-halletts-projects.vercel.app/practice
+
+Created `Oceanheart verification practice` with the signed-in owner. Saved `Sample verification appointment` for 09:00–10:00 on 8 September; an overlapping request was rejected with the expected conflict message. The independently signed-in Vercel preview found the same practice and appointment, then saved an adjacent 10:00 appointment using the hosted UI. Only sample names were used. These records remain in the isolated development deployment for owner inspection.
+
+This is a development identity and data acceptance result. Production Clerk/Convex environments, permanent hostname/DNS, and production provider credentials are not yet configured. Local tests independently cover cross-tenant actors and revoked access; that full matrix was not repeated with multiple real hosted accounts.
