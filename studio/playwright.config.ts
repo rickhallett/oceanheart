@@ -1,4 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadEnvConfig } from "@next/env";
+
+// Match the Next server environment when selecting secretless/provider checks.
+loadEnvConfig(process.cwd());
 
 // Each worktree can select its own port. Never reuse an unknown server or point
 // this state-changing suite at production.
