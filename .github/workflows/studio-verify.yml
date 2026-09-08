@@ -6,7 +6,7 @@ on:
       - "studio/**"
       - ".github/workflows/studio-verify.yml"
   push:
-    branches: [main, feat/oceanheart-studio]
+    branches: [main]
     paths:
       - "studio/**"
       - ".github/workflows/studio-verify.yml"
