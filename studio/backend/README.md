@@ -16,7 +16,7 @@ The integration command creates an isolated directory under `.local/`, selects f
 
 The runner waits for both backend health and its deployment configuration before setting the auth environment. It then explicitly pushes the configured functions to the existing local instance and waits for command completion. It forces `CONVEX_AGENT_MODE=anonymous` and strips inherited Convex deployment credentials. Port flags are internal CLI flags verified against the pinned 1.45.0 source; upgrading Convex requires rerunning this harness. If legacy `~/.convex/anonymous-convex-backend-state/anonymous-agent` data exists, it fails safely before starting the CLI, avoiding the pinned version's legacy-state fallback. Use a clean CI worker rather than moving or deleting unrelated local data.
 
-`convex/_generated` is committed so a fresh checkout typechecks before starting a backend. The test deploy regenerates types in its isolated copy.
+`convex/_generated` is committed so a fresh checkout typechecks before starting a backend. The test deploy regenerates types in its isolated copy and checks the committed API declarations for drift. Generated artifacts are available under `.local/generated` for review; tests never rewrite source. After intentional API changes, inspect that output and update `convex/_generated/api.d.ts`.
 
 ## Contract
 

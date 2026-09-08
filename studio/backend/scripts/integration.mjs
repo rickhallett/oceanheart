@@ -170,6 +170,16 @@ try {
   // Explicit completed push against the existing local instance; no stale log
   // readiness heuristic and no privileged identity is used by the API tests.
   await command(["dev", "--once", "--env-file", ".push.env"]);
+  await cp(
+    resolve(runDir, "convex/_generated"),
+    resolve(root, ".local/generated"),
+    { recursive: true },
+  );
+  assert.equal(
+    await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8"),
+    await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
+    "Generated API drift: inspect .local/generated and update the committed types",
+  );
   const token = async (sub, opts = {}) =>
     new SignJWT({})
       .setProtectedHeader({ alg: "RS256", kid: "integration", typ: "JWT" })
