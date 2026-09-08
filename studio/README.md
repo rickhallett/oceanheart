@@ -28,3 +28,7 @@ The ocean background is an original generated asset derived from the approved de
 ## Validation
 
 Production build and TypeScript checks; browser verification at desktop (1536px) and mobile (390px), workspace navigation, detail open/close, task completion, date controls, section navigation, email destination, JavaScript errors and horizontal overflow.
+
+## Interactive practice app
+
+The `/app` workspace expands the homepage preview into a connected, browser-persistent mock. See [PROTOTYPE.md](PROTOTYPE.md) for journeys, coverage and simulation boundaries. Its roadmap view exports feature priorities and notes for MVP planning. The app requires no API keys or paid model usage.

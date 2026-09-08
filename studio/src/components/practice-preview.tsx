@@ -319,9 +319,9 @@ export function PracticePreview() {
       </div>
       <p className="preview-caption">
         <span /> A glimpse of your practice, organised.{" "}
-        <span className="try-preview">
-          Try the preview <ArrowRight size={12} />
-        </span>
+        <a className="try-preview" href="/app">
+          Explore the app <ArrowRight size={12} />
+        </a>
       </p>
     </div>
   );
