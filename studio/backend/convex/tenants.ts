@@ -1,6 +1,12 @@
 import { mutation } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
+function validateIdentity(identity: string) {
+  // Token identifiers are opaque. Reject empty/padded values rather than
+  // silently rewriting an issuer's subject before membership lookup.
+  if (!identity || identity.trim() !== identity || identity.length > 500)
+    throw new ConvexError("INVALID_IDENTITY");
+}
 export const create = mutation({
   args: { name: v.string() },
   handler: async (ctx, args) => {
@@ -21,8 +27,7 @@ export const addViewer = mutation({
   args: { tenantId: v.id("tenants"), identity: v.string() },
   handler: async (ctx, args) => {
     await requireMember(ctx, args.tenantId, true);
-    if (!args.identity || args.identity.length > 500)
-      throw new ConvexError("INVALID_IDENTITY");
+    validateIdentity(args.identity);
     const existing = await ctx.db
       .query("memberships")
       .withIndex("by_tenant_identity", (q) =>
@@ -41,6 +46,7 @@ export const removeViewer = mutation({
   args: { tenantId: v.id("tenants"), identity: v.string() },
   handler: async (ctx, args) => {
     await requireMember(ctx, args.tenantId, true);
+    validateIdentity(args.identity);
     const existing = await ctx.db
       .query("memberships")
       .withIndex("by_tenant_identity", (q) =>

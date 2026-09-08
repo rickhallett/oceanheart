@@ -1,3 +1,4 @@
+import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import {
@@ -67,6 +68,8 @@ async function command(args) {
 async function until(test, label) {
   const end = Date.now() + 180000;
   while (Date.now() < end) {
+    if (backend && backend.exitCode !== null)
+      throw new Error(`Local backend exited unexpectedly: ${backend.exitCode}`);
     if (await test()) return;
     await new Promise((r) => setTimeout(r, 300));
   }
@@ -139,6 +142,22 @@ try {
       return false;
     }
   }, "local deployment configuration");
+  const boundConfig = JSON.parse(
+    await readFile(
+      resolve(runDir, ".convex/local/default/config.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(
+    boundConfig.ports.cloud,
+    cloudPort,
+    "Backend selected an unexpected port; refusing to use it",
+  );
+  assert.equal(
+    boundConfig.ports.site,
+    sitePort,
+    "HTTP backend selected an unexpected port; refusing to use it",
+  );
   // Only an ephemeral public verification key is installed. The signing key stays
   // in this process and is never written or exposed to the backend/CLI.
   const { privateKey, publicKey } = await generateKeyPair("RS256");
@@ -324,6 +343,23 @@ try {
     "INVALID_INTERVAL",
   );
   check("zero and excessive duration rejected");
+  for (const identity of [
+    "",
+    " ",
+    "\t\n",
+    `${issuer}|viewer `,
+    ` ${issuer}|viewer`,
+  ]) {
+    for (const operation of ["tenants:addViewer", "tenants:removeViewer"]) {
+      await denied(
+        alice.mutation(operation, { tenantId: tenantA, identity }),
+        "INVALID_IDENTITY",
+      );
+    }
+  }
+  check(
+    "membership add and remove reject empty, whitespace and padded opaque identities",
+  );
   await alice.mutation("tenants:addViewer", {
     tenantId: tenantA,
     identity: `${issuer}|viewer`,
@@ -408,16 +444,6 @@ try {
   console.error(logs.slice(-5000));
   process.exitCode = 1;
 } finally {
-  if (backend && backend.exitCode === null) {
-    backend.kill("SIGINT");
-    await Promise.race([
-      once(backend, "exit"),
-      new Promise((r) => setTimeout(r, 5000)),
-    ]);
-    if (backend.exitCode === null)
-      try {
-        process.kill(-backend.pid, "SIGKILL");
-      } catch {}
-  }
+  await stopProcessGroup(backend);
   await rm(runDir, { recursive: true, force: true });
 }

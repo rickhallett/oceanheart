@@ -161,6 +161,7 @@ export type State = {
     q: string;
     answer: string;
     sourceId?: string;
+    citation?: Pick<Source, "id" | "title" | "version" | "content" | "audience">;
     trace: string[];
   }[];
   setupStep: number;

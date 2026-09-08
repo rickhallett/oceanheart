@@ -232,38 +232,66 @@ export function Assistant() {
   const pending = state.approvals.filter((a) => a.status === "Pending");
   function ask(value: string) {
     if (!value.trim()) return;
-    const words = value.toLowerCase().match(/[a-z]{4,}/g) || [];
+    // This is a deliberately closed demonstration, not a clinical classifier or
+    // general retrieval system. Unknown and mixed-intent questions abstain.
+    const examples: Record<string, { sourceId: string; passage: string }> = {
+      "what is the cancellation policy": {
+        sourceId: "k1",
+        passage:
+          "Clients can reschedule or cancel without charge with at least 24 hours’ notice. Changes within 24 hours are reviewed personally by Amelia.",
+      },
+      "how much is a reflexology session": {
+        sourceId: "k2",
+        passage: "A reflexology session lasts 60 minutes and costs £65.",
+      },
+      "where is the practice": {
+        sourceId: "k2",
+        passage: "The practice is in Bristol.",
+      },
+      "where is the online session link": {
+        sourceId: "k2",
+        passage:
+          "Online session links are included in the booking confirmation.",
+      },
+    };
+    const example =
+      examples[
+        value
+          .trim()
+          .toLowerCase()
+          .replace(/[?!.]+$/, "")
+      ];
     const allowed = state.sources.filter(
       (s) =>
         s.status === "Ready" &&
         (scope === "Team knowledge" || s.audience === "Public"),
     );
-    const ranked = allowed
-      .map((s) => ({
-        s,
-        score: words.filter((w) =>
-          (s.title + " " + s.content).toLowerCase().includes(w),
-        ).length,
-      }))
-      .sort((a, b) => b.score - a.score);
-    const found = ranked[0]?.score ? ranked[0].s : undefined;
-    const clinical = /diagnos|cure|symptom|medicat|pregnan|pain|treat my/i.test(
-      value,
-    );
+    const found =
+      example &&
+      allowed.find(
+        (s) => s.id === example.sourceId && s.content.includes(example.passage),
+      );
     update((d) => {
       d.chatHistory.push({
         q: value,
-        answer: clinical
-          ? "This needs Amelia’s judgement. I won’t suggest clinical advice. You can hand this question to your studio partner with the conversation attached."
-          : found
-            ? `Here is the relevant passage from your practice knowledge:\n\n${found.content}`
-            : "I don’t know from the available practice information. Add an approved source or ask your studio partner to help.",
-        sourceId: clinical ? undefined : found?.id,
+        answer: found
+          ? `Here is the supported administrative passage from your practice knowledge:\n\n${example.passage}`
+          : "I can’t answer this from the supported administrative examples. This scripted demo only covers cancellation policy, session price, practice location and online joining links. For clinical questions or anything else, ask a person to help.",
+        sourceId: found ? found.id : undefined,
+        citation: found
+          ? {
+              id: found.id,
+              title: found.title,
+              version: found.version,
+              content: found.content,
+              audience: found.audience,
+            }
+          : undefined,
         trace: [
           `Audience filter: ${scope}`,
           `${allowed.length} ready sources considered`,
-          "Local keyword match (prototype, not live RAG)",
-          found && !clinical
+          "Exact administrative example and approved passage match (scripted demo)",
+          found
             ? `Source: ${found.title} · v${found.version}`
             : "No supported answer returned",
         ],
@@ -272,29 +300,60 @@ export function Assistant() {
     setQ("");
   }
   function decision(id: string, approved: boolean) {
-    update(
-      (d) => {
-        const a = d.approvals.find((a) => a.id === id)!;
-        a.status = approved ? "Approved" : "Declined";
-        if (approved && a.type === "reply" && a.messageId) {
-          const m = d.inbox.find((m) => m.id === a.messageId)!;
-          m.messages.push(a.detail);
-          m.status = "Replied";
-        }
-        if (approved && a.type === "refund") {
-          const p = d.payments.find(
-            (p) => p.id === a.paymentId && p.status === "Paid",
-          );
-          if (p) p.status = "Refunded";
-        }
+    update((d) => {
+      const a = d.approvals.find((a) => a.id === id);
+      if (!a || a.status !== "Pending") return;
+      if (!approved) {
+        a.status = "Declined";
+        d.activity.unshift(`Declined · ${a.title} · no action applied`);
+        return;
+      }
+      const alreadyApplied = d.approvals.some(
+        (other) =>
+          other.id !== id &&
+          other.status === "Approved" &&
+          other.type === a.type &&
+          (a.type === "refund"
+            ? other.paymentId === a.paymentId
+            : other.messageId === a.messageId),
+      );
+      const message =
+        a.type === "reply"
+          ? d.inbox.find((m) => m.id === a.messageId)
+          : undefined;
+      const payment =
+        a.type === "refund"
+          ? d.payments.find((p) => p.id === a.paymentId)
+          : undefined;
+      const valid =
+        !alreadyApplied &&
+        (a.type === "reply"
+          ? !!message &&
+            message.status !== "Replied" &&
+            message.reply === a.detail &&
+            !!a.detail.trim()
+          : !!payment &&
+            payment.status === "Paid" &&
+            Number.isFinite(a.amount) &&
+            (a.amount ?? 0) > 0 &&
+            a.amount === payment.amount);
+      if (!valid) {
+        a.status = "Declined";
+        a.detail +=
+          "\n\nNot applied: this request is stale, already completed, or no longer matches the sample record. Prepare a new request after reviewing it.";
         d.activity.unshift(
-          `${approved ? "Approved" : "Declined"} · ${a.title} · simulated action`,
+          `Not applied · ${a.title} · current record validation failed`,
         );
-      },
-      approved
-        ? "Approved and applied to the sample practice."
-        : "Action declined. No change applied.",
-    );
+        return;
+      }
+      if (message) {
+        message.messages.push(a.detail);
+        message.status = "Replied";
+      }
+      if (payment) payment.status = "Refunded";
+      a.status = "Approved";
+      d.activity.unshift(`Approved · ${a.title} · simulated action applied`);
+    }, "Decision checked against the latest sample records. See History for the outcome.");
   }
   return (
     <>
@@ -326,8 +385,8 @@ export function Assistant() {
                 Your judgement, always.
               </h2>
               <p>
-                Explore sourced answers, missing information and a human
-                handoff.
+                Explore four supported administrative questions and a human
+                handoff. All other questions abstain.
               </p>
             </div>
             {conversation.map((c, i) => (
@@ -338,20 +397,32 @@ export function Assistant() {
                 <div className="ws-bubble">
                   <small>Studio assistant · example response</small>
                   <p>{c.answer}</p>
-                  {c.sourceId && (
+                  {c.citation ? (
                     <button
                       className="ws-citation"
                       onClick={() =>
                         open(
                           "Source evidence",
-                          <SourceDetail id={c.sourceId!} />,
+                          <div className="ws-form">
+                            <Pill>Version {c.citation!.version}</Pill>
+                            <h3>{c.citation!.title}</h3>
+                            <p>{c.citation!.content}</p>
+                            <p className="ws-help">
+                              Saved source snapshot from this answer. Later
+                              edits and syncs do not change this evidence.
+                            </p>
+                          </div>,
                         )
                       }
                     >
                       <LinkIcon size={13} />
-                      {state.sources.find((s) => s.id === c.sourceId)?.title}
+                      {c.citation.title} · v{c.citation.version}
                     </button>
-                  )}
+                  ) : c.sourceId ? (
+                    <p className="ws-help">
+                      Source snapshot unavailable for this older demo answer.
+                    </p>
+                  ) : null}
                   <details>
                     <summary>How this answer was selected</summary>
                     {c.trace.map((t) => (
