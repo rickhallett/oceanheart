@@ -62,3 +62,16 @@ ephemeral local backend and test JWT keys, including shutdown. The first run nee
 network access to download the backend binary. It must not use a hosted Convex
 project or production authentication keys. Frontend TypeScript excludes this
 package because the backend has its own runtime types and verification command.
+
+## Failure-gate evidence (2026-09-08)
+
+A temporary desktop Chromium negative-control spec opened `/app/tasks`, waited
+for the hydrated task-entry textbox, then asserted that a checkbox named
+`This task was never created` was checked. The application was unchanged. Running
+`STUDIO_TEST_PORT=4312 npx playwright test tests/gate-negative.spec.ts --project=desktop-chromium`
+returned exit code **1**, reporting `expect(locator).toBeChecked() failed` and
+`element(s) not found`. Playwright retained a failure screenshot, error context
+and trace. This demonstrates that a failed user-behaviour assertion fails the
+browser command, which propagates through the `verify` command's `&&` chain.
+The temporary spec was removed immediately; no deliberately failing test is
+committed. The preceding normal desktop/mobile suite passed all four tests.
