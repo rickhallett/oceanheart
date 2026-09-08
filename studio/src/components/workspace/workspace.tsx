@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -102,6 +102,51 @@ export function Workspace() {
 function Shell({ view }: { view: View }) {
   const { state, go, open } = useStudio();
   const [menu, setMenu] = useState(false);
+  const [mobile, setMobile] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 700px)").matches,
+  );
+  const drawer = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 700px)");
+    const sync = () => {
+      setMobile(media.matches);
+      setMenu(false);
+    };
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    if (!mobile || !menu) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const root = drawer.current;
+    const controls = () =>
+      Array.from(
+        root?.querySelectorAll<HTMLElement>(
+          'button:not(:disabled),a[href],input:not(:disabled),[tabindex="0"]',
+        ) ?? [],
+      ).filter((node) => node.getClientRects().length > 0);
+    controls()[0]?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const nodes = controls();
+      const first = nodes[0],
+        last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      document.removeEventListener("keydown", trap);
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [mobile, menu]);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState("");
   const Screen = screens[view];
@@ -129,14 +174,34 @@ function Shell({ view }: { view: View }) {
       <a className="ws-skip" href="#workspace-main">
         Skip to workspace
       </a>
-      {menu && (
+      {mobile && menu && (
         <button
           className="ws-mobile-backdrop"
-          aria-label="Close navigation"
+          aria-hidden="true"
+          tabIndex={-1}
           onClick={() => setMenu(false)}
         />
       )}
-      <aside className={`ws-sidebar ${menu ? "open" : ""}`}>
+      <aside
+        ref={drawer}
+        id="practice-navigation"
+        className={`ws-sidebar ${menu ? "open" : ""}`}
+        inert={mobile && !menu}
+        aria-hidden={mobile && !menu ? true : undefined}
+        role={mobile && menu ? "dialog" : undefined}
+        aria-modal={mobile && menu ? true : undefined}
+        aria-label="Practice navigation"
+      >
+        {mobile && menu && (
+          <button
+            className="ws-icon-button"
+            aria-label="Close navigation"
+            style={{ alignSelf: "flex-end", margin: "12px 12px 0" }}
+            onClick={() => setMenu(false)}
+          >
+            <X size={20} />
+          </button>
+        )}
         <Link className="ws-brand" href="/">
           <Mark />
           <span>
@@ -181,6 +246,7 @@ function Shell({ view }: { view: View }) {
                 return (
                   <Link
                     key={id}
+                    onClick={() => setMenu(false)}
                     href={id === "today" ? "/app" : `/app/${id}`}
                     aria-current={view === id ? "page" : undefined}
                   >
@@ -209,12 +275,14 @@ function Shell({ view }: { view: View }) {
           </div>
         </button>
       </aside>
-      <div className="ws-body">
+      <div className="ws-body" inert={mobile && menu}>
         <header className="ws-topbar">
           <button
             className="ws-menu-toggle"
             onClick={() => setMenu(!menu)}
-            aria-label="Open navigation"
+            aria-label={menu ? "Close navigation" : "Open navigation"}
+            aria-expanded={menu}
+            aria-controls="practice-navigation"
           >
             <Menu size={21} />
           </button>
@@ -224,6 +292,8 @@ function Shell({ view }: { view: View }) {
           <div className="ws-topbar-right">
             <button
               className="ws-search-trigger"
+              aria-label="Find anything"
+              aria-expanded={search}
               onClick={() => setSearch(!search)}
             >
               <Search size={16} />
@@ -270,7 +340,7 @@ function Shell({ view }: { view: View }) {
               ))}
           </div>
         )}
-        <main id="workspace-main" className="ws-main">
+        <main id="workspace-main" className="ws-main" tabIndex={-1}>
           <div className="ws-demo-note">
             A sample practice to explore. Changes stay in this browser. No
             messages, bookings or payments are sent.

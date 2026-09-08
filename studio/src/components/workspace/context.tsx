@@ -1,6 +1,7 @@
 "use client";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -9,6 +10,7 @@ import {
 } from "react";
 import { X, Check, ArrowUpRight } from "lucide-react";
 import { initialState, type State, type View, type Priority } from "./model";
+import { restoreState } from "./persisted-state";
 const key = "oceanheart-studio-workspace-v1";
 type Context = {
   state: State;
@@ -31,21 +33,27 @@ export function Provider({
   const [ready, setReady] = useState(false);
   const [toast, setToast] = useState("");
   const [storageError, setStorageError] = useState(false);
+  const [recovered, setRecovered] = useState(false);
   const [modal, setModal] = useState<{ title: string; body: ReactNode } | null>(
     null,
   );
+  const close = useCallback(() => setModal(null), []);
   useEffect(() => {
     try {
       const saved = localStorage.getItem(key);
       if (saved) {
-        const data = JSON.parse(saved);
-        if (
-          data.practice &&
-          Array.isArray(data.clients) &&
-          Array.isArray(data.bookings) &&
-          data.priorities
-        )
-          setState({ ...structuredClone(initialState), ...data });
+        let restored: State | null = null;
+        try {
+          restored = restoreState(JSON.parse(saved));
+        } catch {
+          /* Invalid JSON. */
+        }
+        if (restored) setState(restored);
+        else {
+          // Preserve the rejected snapshot for recovery before replacing demo state.
+          localStorage.setItem(`${key}-recovery`, saved);
+          setRecovered(true);
+        }
       }
     } catch {
       setStorageError(true);
@@ -80,7 +88,7 @@ export function Provider({
         update,
         go,
         open: (title, body) => setModal({ title, body }),
-        close: () => setModal(null),
+        close,
         reset: () => {
           setState(structuredClone(initialState));
           setToast("Sample practice restored.");
@@ -91,6 +99,13 @@ export function Provider({
         children
       ) : (
         <div className="ws-loading">Opening your practice…</div>
+      )}
+      {recovered && (
+        <div role="status" className="ws-storage">
+          Saved practice data could not be restored. The sample practice has
+          been loaded; the previous data is preserved in this browser for
+          recovery.
+        </div>
       )}
       {storageError && (
         <div className="ws-storage">
@@ -105,7 +120,7 @@ export function Provider({
         </div>
       )}
       {modal && (
-        <Modal title={modal.title} onClose={() => setModal(null)}>
+        <Modal title={modal.title} onClose={close}>
           {modal.body}
         </Modal>
       )}
