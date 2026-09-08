@@ -1,13 +1,13 @@
 .live-practice {
   --lp-accent: #e1ab83;
-  --lp-muted: #9daeb7;
-  --lp-border: #d7c3af1c;
+  --lp-muted: #b3c0c7;
+  --lp-border: var(--app-border);
   min-height: 100vh;
   background:
     radial-gradient(ellipse at 88% 12%, #20303955, transparent 50%), #0a151c;
   color: #eee5db;
   font:
-    14px/1.65 var(--font-sans),
+    var(--app-weight-body) var(--app-reading)/1.65 var(--font-sans),
     sans-serif;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@
 .live-practice h2,
 .live-practice h3 {
   font-family: inherit;
-  font-weight: 500;
+  font-weight: var(--app-weight-heading);
   line-height: 1.25;
 }
 .live-practice h1 {
@@ -30,7 +30,7 @@
   letter-spacing: -0.4px;
 }
 .live-practice h3 {
-  font-size: 15px;
+  font-size: var(--app-label);
   margin: 0;
 }
 .live-practice p {
@@ -72,7 +72,7 @@
 }
 .lp-brand small {
   display: block;
-  font-size: 8px;
+  font-size: var(--app-caption);
   letter-spacing: 4px;
   margin-top: 8px;
   color: var(--lp-accent);
@@ -86,14 +86,14 @@
 }
 .lp-header-end {
   gap: 28px;
-  font-size: 12px;
+  font-size: var(--app-body);
   color: #adbbc2;
 }
 .live-practice main {
-  width: min(1260px, 90%);
+  width: min(1320px, 90%);
   margin: 0 auto;
   flex: 1;
-  padding: 54px 0 72px;
+  padding: 44px 0 64px;
 }
 .lp-footer {
   padding: 25px max(5vw, 22px);
@@ -102,11 +102,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #82949f;
 }
 .lp-kicker {
-  font-size: 10px;
+  font-size: var(--app-meta);
   letter-spacing: 2.2px;
   color: var(--lp-accent);
 }
@@ -122,7 +122,7 @@
   justify-content: center;
   gap: 15px;
   font-weight: 600 !important;
-  font-size: 13px !important;
+  font-size: var(--app-reading) !important;
 }
 .lp-button:hover:not(:disabled) {
   background: #ebbb94;
@@ -135,7 +135,7 @@
   align-items: center;
   color: #d8bda6;
   padding: 10px 0;
-  font-size: 12px !important;
+  font-size: var(--app-body) !important;
 }
 .lp-welcome {
   display: grid;
@@ -181,7 +181,7 @@
   gap: 9px;
   align-items: center;
   color: #9aafa9;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .lp-auth-actions {
   display: flex;
@@ -191,7 +191,7 @@
   margin: 32px 0 25px;
 }
 .live-practice .lp-caption {
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #7f959f;
   display: flex;
   align-items: center;
@@ -237,7 +237,7 @@
 .live-practice label {
   color: #bfcad0;
   display: block;
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .live-practice input,
 .live-practice select {
@@ -264,7 +264,7 @@
   border-left: 2px solid #d59a7b;
   padding: 10px 14px;
   background: #d59a7b0a;
-  font-size: 13px;
+  font-size: var(--app-reading);
 }
 .lp-workspace-heading {
   display: flex;
@@ -299,24 +299,25 @@
   color: #a5c1b4;
 }
 .lp-pilot p {
-  font-size: 12px;
+  font-size: var(--app-body);
   margin: 0;
 }
 .lp-pilot strong {
   color: #becdc7;
-  font-weight: 500;
+  font-weight: var(--app-weight-heading);
 }
 .lp-calendar-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 24px;
   align-items: start;
 }
 .lp-agenda {
-  background: #0f1e27;
+  background: #14252f;
+  box-shadow: var(--app-shadow-panel);
   border: 1px solid var(--lp-border);
-  border-radius: 15px;
-  padding: 28px;
+  border-radius: var(--app-radius-panel);
+  padding: var(--app-space-8);
 }
 .lp-agenda > header {
   display: flex;
@@ -353,7 +354,7 @@
 .lp-day-switch input {
   margin: 0;
   width: 160px;
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .lp-resource {
   display: flex !important;
@@ -363,7 +364,7 @@
 .lp-resource select {
   width: 150px;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .lp-day-label {
   display: flex;
@@ -374,7 +375,7 @@
 }
 .lp-day-label span {
   color: #8197a3;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .lp-empty {
   display: flex;
@@ -391,7 +392,7 @@
   margin-bottom: 5px;
 }
 .lp-empty p {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .lp-bookings {
   list-style: none;
@@ -408,7 +409,7 @@
 .lp-bookings time {
   font-variant-numeric: tabular-nums;
   color: #b3c0c4;
-  font-size: 13px;
+  font-size: var(--app-reading);
 }
 .lp-bookings li > div {
   flex: 1;
@@ -416,7 +417,7 @@
   overflow-wrap: anywhere;
 }
 .lp-bookings p {
-  font-size: 11px;
+  font-size: var(--app-small);
   margin: 7px 0 0;
 }
 .lp-booking-dot {
@@ -432,27 +433,27 @@
   border: 1px solid #b4c2b522;
   background: #b4c2b507;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: var(--app-meta);
   padding: 4px 7px;
 }
 .lp-side-panel {
   border: 1px solid #c9b2971e;
-  border-radius: 15px;
-  padding: 28px;
+  border-radius: var(--app-radius-panel);
+  padding: var(--app-space-8);
   background: linear-gradient(135deg, #1e2d2d, #15212a);
 }
 .lp-side-panel > h2 {
   margin-top: 20px;
 }
 .lp-side-panel > p {
-  font-size: 13px;
+  font-size: var(--app-reading);
 }
 .lp-side-note {
   border-top: 1px solid var(--lp-border);
   padding-top: 20px;
   display: flex;
   gap: 12px;
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #9dafac;
 }
 .lp-side-note > svg {
@@ -462,7 +463,7 @@
   margin: 12px 0 16px;
 }
 .lp-booking-form p {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .lp-form-row {
   display: grid;
@@ -484,7 +485,7 @@
   padding: 12px;
   background: #a2c3af09;
   color: #b6cfbb;
-  font-size: 12px;
+  font-size: var(--app-body);
   margin-top: 20px;
 }
 .lp-visually-hidden,
@@ -630,4 +631,21 @@
   .lp-state {
     min-height: 380px;
   }
+}
+
+.live-practice :is(label, .lp-text-button, .lp-header-end, .lp-bookings time) {
+  font-weight: var(--app-weight-label);
+}
+.live-practice :is(input, select) { border-radius: var(--app-radius-control); }
+.lp-button { box-shadow: inset 0 1px 0 #ffffff25, 0 3px 8px #03090d30; }
+.lp-side-panel { box-shadow: var(--app-shadow-panel); }
+.lp-bookings h3 { font-weight: var(--app-weight-heading); }
+.lp-bookings li { padding-block: 24px; }
+.lp-confirmed, .lp-viewer { font-weight: var(--app-weight-label); }
+@media (min-width: 1051px) {
+  .lp-welcome > div:last-child > p:not(.lp-caption) { font-size: 17px; max-width: 43ch; }
+  .lp-workspace-heading > div > p { font-size: 16px; }
+  .lp-agenda h2 { font-size: 26px; }
+  .lp-calendar-controls { gap: 12px; }
+  .lp-resource select { width: 168px; }
 }

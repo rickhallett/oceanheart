@@ -1,27 +1,28 @@
 .ws-root {
   /* App typography is independent of the marketing site’s editorial serif. */
   --ws-bg: #0b151b;
-  --ws-panel: #101d25;
-  --ws-raised: #15232c;
-  --ws-border: #ffffff12;
+  --ws-panel: #14232d;
+  --ws-raised: #1c2e39;
+  --ws-border: var(--app-border);
   --ws-text: #eee4d9;
-  --ws-muted: #a4afb4;
+  --ws-muted: #b3bfc5;
   --ws-accent: #e5ae87;
   --ws-green: #a5c5b0;
   font-family: var(--font-sans), sans-serif;
+  font-weight: var(--app-weight-body);
   color: var(--ws-text);
-  font-size: 13px;
+  font-size: var(--app-reading);
   line-height: 1.6;
   background: var(--ws-bg);
   min-height: 100vh;
   display: flex;
-  --radius: 14px;
+  --radius: var(--app-radius-panel);
 }
 .ws-root h1,
 .ws-root h2,
 .ws-root h3 {
   font-family: var(--font-sans), sans-serif;
-  font-weight: 500;
+  font-weight: var(--app-weight-heading);
   line-height: 1.25;
 }
 .ws-root h1 {
@@ -39,7 +40,7 @@
 }
 .ws-root small {
   color: var(--ws-muted);
-  font-size: 11px;
+  font-size: var(--app-small);
   display: block;
 }
 .ws-root button,
@@ -58,7 +59,7 @@
   border-radius: 8px;
   padding: 11px 13px;
   min-width: 0;
-  font-size: 13px;
+  font-size: var(--app-reading);
   line-height: 1.5;
 }
 .ws-root input[type="checkbox"] {
@@ -83,7 +84,7 @@
   outline-offset: 3px;
 }
 .ws-sidebar {
-  width: 238px;
+  width: 256px;
   position: fixed;
   inset: 0 auto 0 0;
   background: #081218;
@@ -110,7 +111,7 @@
 }
 .ws-brand small {
   font-family: var(--font-sans);
-  font-size: 8px;
+  font-size: var(--app-caption);
   letter-spacing: 4px;
   margin: 8px 0 0 3px;
   color: var(--ws-accent);
@@ -125,10 +126,10 @@
   align-items: center;
 }
 .ws-practice-identity strong {
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-practice-identity small {
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-practice-monogram {
   display: grid;
@@ -149,7 +150,7 @@
   scrollbar-width: thin;
 }
 .ws-nav-group > p {
-  font-size: 8px;
+  font-size: var(--app-caption);
   letter-spacing: 1.8px;
   color: #687b86;
   margin: 19px 13px 7px;
@@ -158,12 +159,12 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  padding: 9px 12px;
+  padding: 11px 12px;
   margin: 2px 0;
-  font-size: 12px;
+  font-size: var(--app-body);
   color: #b7c0c4;
   border-radius: 7px;
-  min-height: 36px;
+  min-height: var(--app-control-height);
 }
 .ws-nav-group a:hover {
   background: #ffffff07;
@@ -172,14 +173,14 @@
   background: linear-gradient(90deg, #e5ae871e, #e5ae8710);
   color: #edc3a4;
   border: 1px solid #e5ae8717;
-  padding: 8px 11px;
+  padding: 10px 11px;
 }
 .ws-nav-group a small {
   margin-left: auto;
   background: #ffffff0c;
   border-radius: 4px;
   padding: 0 5px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-nav-group a i {
   width: 5px;
@@ -198,10 +199,10 @@
   background: #0b171e;
 }
 .ws-user strong {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-user small {
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-avatar {
   display: grid;
@@ -213,12 +214,12 @@
   border-radius: 50%;
   background: #27302f;
   color: #d1c6b5;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-body {
-  margin-left: 238px;
+  margin-left: 256px;
   min-width: 0;
-  width: calc(100% - 238px);
+  width: calc(100% - 256px);
 }
 .ws-topbar {
   height: 72px;
@@ -235,7 +236,7 @@
   backdrop-filter: blur(15px);
 }
 .ws-breadcrumb {
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #85959f;
   white-space: nowrap;
 }
@@ -245,13 +246,13 @@
 }
 .ws-breadcrumb strong {
   color: #d1d4d3;
-  font-weight: 400;
+  font-weight: var(--app-weight-label);
 }
 .ws-topbar-right {
   display: flex;
   align-items: center;
   gap: 24px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-topbar-right > a {
   display: flex;
@@ -264,10 +265,10 @@
   gap: 9px;
   align-items: center;
   color: #8797a1;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-search-trigger kbd {
-  font-size: 9px;
+  font-size: var(--app-caption);
   border: 1px solid var(--ws-border);
   padding: 1px 5px;
   border-radius: 4px;
@@ -277,7 +278,7 @@
   gap: 7px;
   align-items: center;
   color: #bcad9e;
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-demo-label i {
   width: 5px;
@@ -286,13 +287,13 @@
   border-radius: 50%;
 }
 .ws-main {
-  max-width: 1470px;
+  max-width: 1440px;
   margin: auto;
-  padding: 22px 42px 35px;
+  padding: 24px 40px 40px;
   min-height: calc(100vh - 128px);
 }
 .ws-demo-note {
-  font-size: 9px;
+  font-size: var(--app-caption);
   color: #81929c;
   letter-spacing: 0.1px;
   margin-bottom: 30px;
@@ -305,7 +306,7 @@
   margin: 13px 0 32px;
 }
 .ws-date-label {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #beaa97 !important;
   margin-bottom: 12px;
 }
@@ -314,21 +315,21 @@
   margin-bottom: 12px;
 }
 .ws-welcome p:not(.ws-date-label) {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-button {
   background: var(--ws-accent);
   border: 1px solid transparent;
   color: #271c14;
-  border-radius: 7px;
-  padding: 10px 15px;
-  font-size: 11px;
+  border-radius: var(--app-radius-control);
+  padding: 11px 18px;
+  font-size: var(--app-small);
   font-weight: 600;
   display: inline-flex;
   gap: 9px;
   align-items: center;
   justify-content: center;
-  min-height: 39px;
+  min-height: var(--app-control-height);
   white-space: nowrap;
 }
 .ws-button.secondary {
@@ -341,7 +342,7 @@
   gap: 8px;
   align-items: center;
   padding: 0;
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #d5b79e;
 }
 .ws-stat-strip {
@@ -365,20 +366,20 @@
 }
 .ws-stat-strip span {
   display: block;
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #a1afb6;
   margin-bottom: 7px;
 }
 .ws-stat-strip strong {
   font-family: var(--font-sans), sans-serif;
   font-size: 29px;
-  font-weight: 500;
+  font-weight: var(--app-weight-heading);
   line-height: 1.2;
 }
 .ws-stat-strip small {
   display: inline;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin-left: 9px;
 }
 .ws-stat-strip strong.ws-stat-text {
@@ -387,14 +388,15 @@
 .ws-dashboard-grid {
   display: grid;
   grid-template-columns: 1.65fr 1fr;
-  gap: 23px;
+  gap: var(--app-space-6);
 }
 .ws-panel {
-  background: linear-gradient(135deg, #111e26, #0e1a22);
+  background: linear-gradient(135deg, #162630, #11202a);
+  box-shadow: var(--app-shadow-panel);
   border: 1px solid var(--ws-border);
   border-radius: var(--radius);
-  padding: 25px;
-  margin-bottom: 22px;
+  padding: 28px;
+  margin-bottom: var(--app-space-6);
   min-width: 0;
 }
 .ws-dashboard-grid .ws-panel {
@@ -405,14 +407,14 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: var(--app-space-6);
 }
 .ws-panel-heading h2 {
   font-size: 22px;
 }
 .ws-panel p {
-  font-size: 12px;
-  line-height: 1.85;
+  font-size: var(--app-body);
+  line-height: 1.65;
 }
 .ws-agenda-row {
   display: flex;
@@ -424,7 +426,7 @@
   border-top: 1px solid var(--ws-border);
 }
 .ws-agenda-row time {
-  font-size: 12px;
+  font-size: var(--app-body);
   width: 40px;
   flex-shrink: 0;
   color: #b7c0c2;
@@ -445,13 +447,13 @@
   min-width: 0;
 }
 .ws-agenda-row strong {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--app-reading);
+  font-weight: var(--app-weight-heading);
   display: block;
   margin-bottom: 3px;
 }
 .ws-agenda-row small {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-agenda-row > svg:last-child {
   color: #6a7e88;
@@ -465,7 +467,7 @@
   color: #acb9bf;
   padding: 3px 8px;
   border-radius: 5px;
-  font-size: 9px;
+  font-size: var(--app-caption);
   line-height: 1.7;
   white-space: nowrap;
   width: fit-content;
@@ -481,7 +483,7 @@
   border-color: #ddaf751a;
 }
 .ws-agenda-footer {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #7e919e;
   display: flex;
   gap: 9px;
@@ -500,7 +502,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 12px;
+  font-size: var(--app-body);
   cursor: pointer;
 }
 .ws-tasks input {
@@ -537,7 +539,7 @@
 }
 .ws-conversation-preview small {
   margin-top: 16px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-conversation-preview > svg {
   color: var(--ws-accent);
@@ -582,7 +584,7 @@
   padding: 15px 19px;
   text-align: left;
   margin-top: 23px;
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #d7b99f;
 }
 .ws-approval-banner > svg {
@@ -601,7 +603,7 @@
   margin-bottom: 7px;
 }
 .ws-journey p {
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-feature-vote {
   display: flex;
@@ -611,18 +613,18 @@
   border-top: 1px solid var(--ws-border);
   padding-top: 22px;
   color: #8f9fa8;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-feature-vote select {
   padding: 6px 10px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-feature-vote button {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #cab19d;
 }
 .ws-footer {
@@ -630,12 +632,12 @@
   padding: 20px 42px;
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
+  font-size: var(--app-caption);
   color: #748792;
 }
 .ws-footer button {
   color: #9caaaf;
-  font-size: 9px;
+  font-size: var(--app-caption);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -648,7 +650,7 @@
   margin-bottom: 7px;
 }
 .ws-page-heading p {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-toolbar {
   display: flex;
@@ -658,7 +660,7 @@
   margin: 0 0 24px;
 }
 .ws-toolbar > p {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-segment {
   display: flex;
@@ -671,7 +673,7 @@
   overflow-x: auto;
 }
 .ws-segment button {
-  font-size: 11px;
+  font-size: var(--app-small);
   white-space: nowrap;
   padding: 7px 12px;
   color: #8e9fa9;
@@ -690,7 +692,7 @@
   gap: 5px;
 }
 .ws-date-control input {
-  font-size: 11px;
+  font-size: var(--app-small);
   border: 0;
   background: transparent;
 }
@@ -711,12 +713,12 @@
   gap: 15px;
 }
 .ws-week button > span:first-child {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #a5b2b8;
 }
 .ws-week button strong {
   font-family: var(--font-sans), sans-serif;
-  font-weight: 400;
+  font-weight: var(--app-weight-label);
   font-size: 23px;
 }
 .ws-week button.selected {
@@ -724,7 +726,7 @@
   color: var(--ws-accent);
 }
 .ws-footnote {
-  font-size: 10px !important;
+  font-size: var(--app-meta) !important;
   margin: 19px 0;
   color: #8195a1 !important;
   line-height: 1.7;
@@ -765,7 +767,7 @@
   display: grid;
   grid-template-columns: 1fr 90px 150px;
   padding: 0 30px 15px 0;
-  font-size: 9px;
+  font-size: var(--app-caption);
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #718692;
@@ -787,21 +789,21 @@
   min-width: 0;
 }
 .ws-person strong {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--app-reading);
+  font-weight: var(--app-weight-heading);
 }
 .ws-person small {
   margin-top: 3px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-person h3 {
   margin-bottom: 6px;
 }
 .ws-person p {
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-client-row > span {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-inbox {
   display: grid;
@@ -832,24 +834,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-inbox-item > span strong {
-  font-weight: 500;
+  font-weight: var(--app-weight-heading);
 }
 .ws-inbox-item h3 {
   font-size: 19px;
   margin: 10px 0;
 }
 .ws-inbox-item p {
-  font-size: 11px;
+  font-size: var(--app-small);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .ws-inbox-item small {
-  font-size: 9px;
+  font-size: var(--app-caption);
   margin-top: 13px;
   color: #c3aa95;
 }
@@ -876,12 +878,12 @@
   white-space: pre-line;
 }
 .ws-bubble small {
-  font-size: 9px;
+  font-size: var(--app-caption);
   margin-bottom: 10px;
 }
 .ws-bubble p {
-  font-size: 12px;
-  line-height: 1.9;
+  font-size: var(--app-body);
+  line-height: 1.7;
   color: #c2ccd0;
 }
 .ws-bubble.outgoing {
@@ -896,10 +898,10 @@
   margin: 25px 0;
 }
 .ws-thread-actions .ws-link {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-source-hint {
-  font-size: 9px !important;
+  font-size: var(--app-caption) !important;
   margin: 8px 0 18px;
   color: #aa9987 !important;
 }
@@ -908,11 +910,11 @@
   flex-direction: column;
   gap: 8px;
   margin-bottom: 18px;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-field > span {
   color: #b3c0c8;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-form {
   display: flex;
@@ -928,7 +930,7 @@
   gap: 15px;
 }
 .ws-help {
-  font-size: 10px !important;
+  font-size: var(--app-meta) !important;
   color: #8799a4 !important;
   line-height: 1.7 !important;
   margin: 12px 0;
@@ -944,7 +946,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin: 13px 0 25px;
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-detail-grid small {
   margin-bottom: 7px;
@@ -957,17 +959,17 @@
   align-items: center;
   padding: 18px 0;
   border-bottom: 1px solid var(--ws-border);
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-simple-row small {
   margin-top: 4px;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-note {
   border-left: 2px solid #b79271;
   padding: 12px 16px;
   background: #ffffff03;
-  font-size: 12px;
+  font-size: var(--app-body);
   color: #b6c0c6;
   line-height: 1.8;
 }
@@ -1012,7 +1014,7 @@
 .ws-price small {
   font-family: var(--font-sans);
   display: inline;
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-info-strip {
   display: flex;
@@ -1031,11 +1033,11 @@
   flex: 1;
 }
 .ws-info-strip strong {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--app-body);
+  font-weight: var(--app-weight-heading);
 }
 .ws-info-strip p {
-  font-size: 11px;
+  font-size: var(--app-small);
   margin-top: 4px;
 }
 .ws-source-row {
@@ -1059,7 +1061,7 @@
   margin-bottom: 5px;
 }
 .ws-source-row p {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-source-icon {
   color: #adc1c6;
@@ -1079,7 +1081,7 @@
 .ws-assistant-grid {
   display: grid;
   grid-template-columns: 1.65fr 1fr;
-  gap: 23px;
+  gap: var(--app-space-6);
 }
 .ws-assistant-intro {
   text-align: center;
@@ -1100,7 +1102,7 @@
   margin-bottom: 15px;
 }
 .ws-assistant-intro p {
-  font-size: 11px;
+  font-size: var(--app-small);
   max-width: 300px;
   margin: auto;
 }
@@ -1142,7 +1144,7 @@
   border: 1px solid var(--ws-border);
   border-radius: 8px;
   padding: 13px;
-  font-size: 11px;
+  font-size: var(--app-small);
   color: #c7d1d5;
 }
 .ws-explainer {
@@ -1153,12 +1155,12 @@
   margin-bottom: 12px;
 }
 .ws-explainer p {
-  font-size: 11px;
-  line-height: 1.9;
+  font-size: var(--app-small);
+  line-height: 1.7;
   margin-bottom: 18px;
 }
 .ws-citation {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #d4b698;
   display: flex;
   align-items: center;
@@ -1169,12 +1171,12 @@
   margin-top: 15px;
 }
 .ws-bubble details {
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin: 15px 0;
   color: #8da2ae;
 }
 .ws-bubble details p {
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin-top: 7px;
 }
 .ws-bubble summary {
@@ -1190,7 +1192,7 @@
   margin: 17px 0 12px;
 }
 .ws-approval > small {
-  font-size: 9px;
+  font-size: var(--app-caption);
   margin: 17px 0 20px;
 }
 .ws-editor-grid {
@@ -1200,7 +1202,7 @@
   align-items: start;
 }
 .ws-website-check {
-  font-size: 11px;
+  font-size: var(--app-small);
   line-height: 3;
   color: #97b7a1;
 }
@@ -1239,7 +1241,7 @@
 }
 .ws-browser-bar small {
   margin-left: 10px;
-  font-size: 8px;
+  font-size: var(--app-caption);
   color: #6a726d;
 }
 .ws-client-site {
@@ -1256,7 +1258,7 @@
 }
 .ws-client-site nav span {
   font-family: var(--font-sans);
-  font-size: 8px;
+  font-size: var(--app-caption);
   color: #727b70;
   align-self: center;
 }
@@ -1275,7 +1277,7 @@
 }
 .ws-client-site p {
   color: #718071;
-  font-size: 11px;
+  font-size: var(--app-small);
   margin-top: 15px;
 }
 .ws-client-site > button {
@@ -1287,7 +1289,7 @@
   gap: 14px;
   align-items: center;
   padding: 12px 18px;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-client-site > h3 {
   color: #344539;
@@ -1300,25 +1302,25 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-site-service > span {
-  font-size: 9px;
+  font-size: var(--app-caption);
   white-space: nowrap;
   align-self: start;
 }
 .ws-site-service p {
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin-top: 7px;
 }
 .ws-client-site footer {
-  font-size: 9px;
+  font-size: var(--app-caption);
   padding-top: 24px;
   color: #687365;
 }
 .ws-payment-row {
   display: flex;
-  gap: 23px;
+  gap: var(--app-space-6);
   align-items: center;
   border-bottom: 1px solid var(--ws-border);
   padding: 23px 0;
@@ -1331,12 +1333,12 @@
   margin-bottom: 7px;
 }
 .ws-payment-row p {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-payment-row strong {
   font-family: var(--font-sans), sans-serif;
   font-size: 22px;
-  font-weight: 400;
+  font-weight: var(--app-weight-label);
 }
 .ws-product-art {
   height: 155px;
@@ -1372,7 +1374,7 @@
   margin-bottom: 13px;
 }
 .ws-support-intro p {
-  font-size: 12px;
+  font-size: var(--app-body);
   max-width: 600px;
 }
 .ws-support-intro > div {
@@ -1392,7 +1394,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: var(--app-meta);
   text-align: left;
   color: #82959f;
 }
@@ -1441,10 +1443,10 @@
   cursor: pointer;
 }
 .ws-setup-options strong {
-  font-size: 12px;
+  font-size: var(--app-body);
 }
 .ws-setup-options small {
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin-top: 4px;
 }
 .ws-schema {
@@ -1459,11 +1461,11 @@
   border-radius: 8px;
 }
 .ws-schema strong {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--app-body);
+  font-weight: var(--app-weight-heading);
 }
 .ws-schema p {
-  font-size: 11px;
+  font-size: var(--app-small);
   margin-top: 7px;
 }
 .ws-two-column {
@@ -1493,11 +1495,11 @@
 }
 .ws-connection h3 {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: var(--app-body);
   margin-bottom: 5px;
 }
 .ws-connection small {
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-switch {
   width: 33px;
@@ -1533,7 +1535,7 @@
   margin-bottom: 13px;
 }
 .ws-roadmap-intro p {
-  font-size: 12px;
+  font-size: var(--app-body);
   max-width: 620px;
 }
 .ws-priority-summary {
@@ -1552,11 +1554,11 @@
 .ws-priority-summary strong {
   font-size: 27px;
   font-family: var(--font-sans), sans-serif;
-  font-weight: 400;
+  font-weight: var(--app-weight-label);
   display: block;
 }
 .ws-priority-summary span {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #9faeb7;
 }
 .ws-priority-summary button.selected {
@@ -1582,21 +1584,21 @@
   margin-bottom: 8px;
 }
 .ws-roadmap-top p {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-roadmap-top select {
-  font-size: 10px;
+  font-size: var(--app-meta);
   padding: 6px 8px;
   max-width: 110px;
 }
 .ws-roadmap-journey {
   color: #c8b49f;
-  font-size: 10px;
+  font-size: var(--app-meta);
   padding: 15px 0;
   line-height: 1.8;
 }
 .ws-dependencies {
-  font-size: 9px !important;
+  font-size: var(--app-caption) !important;
   margin-bottom: 15px;
 }
 .ws-roadmap-bottom {
@@ -1605,7 +1607,7 @@
   gap: 15px;
 }
 .ws-roadmap-bottom input {
-  font-size: 10px;
+  font-size: var(--app-meta);
 }
 .ws-log-row {
   padding: 15px 0;
@@ -1613,7 +1615,7 @@
   display: flex;
   gap: 13px;
   align-items: center;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-log-row > span:nth-child(2) {
   flex: 1;
@@ -1629,7 +1631,7 @@
   border-radius: 8px;
 }
 .ws-pipeline span {
-  font-size: 10px;
+  font-size: var(--app-meta);
   color: #bd9e84;
 }
 .ws-pipeline h3 {
@@ -1637,7 +1639,7 @@
   margin: 14px 0;
 }
 .ws-pipeline p {
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-environments {
   display: grid;
@@ -1660,7 +1662,7 @@
   margin: 12px 0;
 }
 .ws-environments small {
-  font-size: 9px;
+  font-size: var(--app-caption);
 }
 .ws-empty {
   padding: 40px 15px;
@@ -1675,7 +1677,7 @@
   margin-bottom: 12px;
 }
 .ws-empty p {
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-modal-backdrop {
   position: fixed;
@@ -1686,7 +1688,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 25px;
+  padding: 28px;
 }
 .ws-modal {
   width: 570px;
@@ -1719,7 +1721,7 @@
 }
 .ws-error {
   color: #eca18c !important;
-  font-size: 11px;
+  font-size: var(--app-small);
 }
 .ws-toast {
   position: fixed;
@@ -1736,7 +1738,7 @@
   padding: 13px 22px;
   border-radius: 9px;
   box-shadow: 0 10px 35px #0005;
-  font-size: 12px;
+  font-size: var(--app-body);
   max-width: 90vw;
 }
 .ws-storage {
@@ -1745,7 +1747,7 @@
   background: #593d2b;
   padding: 10px;
   z-index: 151;
-  font-size: 11px;
+  font-size: var(--app-small);
   left: 0;
   right: 0;
   text-align: center;
@@ -1786,11 +1788,11 @@
   width: 100%;
 }
 .ws-command strong {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--app-body);
+  font-weight: var(--app-weight-heading);
 }
 .ws-command small {
-  font-size: 10px;
+  font-size: var(--app-meta);
   margin-top: 3px;
   grid-row: 2;
 }
@@ -2496,3 +2498,29 @@
 .ws-priority-summary strong {
   font-variant-numeric: tabular-nums;
 }
+
+/* Consistent semantic emphasis, from navigation through forms and data rows. */
+.ws-root :is(h1, h2, h3) { letter-spacing: -0.025em; }
+.ws-root :is(.ws-button, .ws-link, .ws-nav-group a, .ws-segment button, .ws-field > span) {
+  font-weight: var(--app-weight-label);
+}
+.ws-root :is(.ws-nav-group a, .ws-button, .ws-link) > svg { stroke-width: 1.8; }
+.ws-root :is(input:not([type="checkbox"]), select) { min-height: var(--app-control-height); }
+.ws-nav-group a[aria-current] { box-shadow: inset 3px 0 0 var(--ws-accent); }
+.ws-root :is(.ws-panel-heading, .ws-page-heading) { margin-bottom: var(--app-space-6); }
+.ws-panel-heading > :last-child { flex-shrink: 0; }
+.ws-root :is(.ws-table-heading, .ws-nav-group > p) { font-weight: var(--app-weight-label); color: #9baeb8; }
+@media (min-width: 961px) {
+  .ws-page-heading h1 { font-size: 36px; }
+  .ws-page-heading p, .ws-welcome p:not(.ws-date-label) { font-size: var(--app-reading); }
+  .ws-nav-group a { font-size: var(--app-body); }
+  .ws-panel { padding: 28px; }
+  .ws-agenda-row { padding-block: 22px; }
+  .ws-agenda-row strong { font-size: var(--app-label); }
+  .ws-agenda-row time { width: 46px; font-weight: var(--app-weight-label); }
+  .ws-stat-strip strong { font-size: 34px; }
+  .ws-stat-strip { padding-block: 24px; margin-bottom: 32px; }
+  .ws-thread { padding: 32px; }
+  .ws-form { gap: 20px; }
+}
+.ws-root :is(.ws-price, .ws-payment-row strong) { font-weight: var(--app-weight-label); }

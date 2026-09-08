@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
+import "@/styles/application-tokens.css";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -9,7 +10,7 @@ const serif = Cormorant_Garamond({
 });
 const sans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 export const metadata: Metadata = {
-  metadataBase: new URL("https://oceanheart-studio.vercel.app"),
+  metadataBase: new URL("https://studio.oceanheart.ai"),
   title: "Oceanheart Studio — Your practice, beautifully put together",
   description:
     "A website, organised enquiries and bookings, and personal ongoing support from a clinician and engineer. Built around your independent practice.",
