@@ -32,3 +32,9 @@ Production build and TypeScript checks; browser verification at desktop (1536px)
 ## Interactive practice app
 
 The `/app` workspace expands the homepage preview into a connected, browser-persistent mock. See [PROTOTYPE.md](PROTOTYPE.md) for journeys, coverage and simulation boundaries. Its roadmap view exports feature priorities and notes for MVP planning. The app requires no API keys or paid model usage.
+
+## Production foundation
+
+The independent [backend package](backend/README.md) contains the first Convex tenant, membership and atomic booking slice. Its integration suite uses a real local backend and signed test tokens. The public mock is not yet connected to this backend; hosted identity and persistence are separate delivery steps.
+
+See [verification commands](VERIFICATION.md), [worktree and migration boundaries](docs/DELIVERY.md), and the [backend decision](backend/docs/ADR-001-backend-choice.md). Track implementation and human gates in [Linear](https://linear.app/tinyrick/project/oceanheart-studio-8ed48b4b1722).
