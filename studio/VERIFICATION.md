@@ -75,3 +75,7 @@ and trace. This demonstrates that a failed user-behaviour assertion fails the
 browser command, which propagates through the `verify` command's `&&` chain.
 The temporary spec was removed immediately; no deliberately failing test is
 committed. The preceding normal desktop/mobile suite passed all four tests.
+
+## CI navigation timing regression
+
+The initial GitHub run exposed a mobile test race: a second navigation started before the previous route's menu-closing effect committed. The navigation helper now waits for the destination URL, heading and closed menu before returning. No forced clicks, sleeps or retries were added. The corrected suite passed three consecutive repetitions in CI mode locally (12 checks); GitHub remains the final environment check.

@@ -3,8 +3,15 @@ import { expect, test, type Page } from "@playwright/test";
 async function navigate(page: Page, name: string) {
   const toggle = page.getByRole("button", { name: "Open navigation", exact: true });
   if (await toggle.isVisible()) await toggle.click();
-  await page.getByRole("navigation", { name: "Practice navigation" })
-    .getByRole("link", { name, exact: true }).click();
+  const link = page.getByRole("navigation", { name: "Practice navigation" })
+    .getByRole("link", { name, exact: true });
+  const destination = await link.getAttribute("href");
+  await link.click();
+  // A click resolves before the route and its menu-closing effect necessarily
+  // commit. Wait for the destination before attempting another navigation.
+  await expect(page).toHaveURL(new URL(destination!, page.url()).href);
+  await expect(page.getByRole("heading", { name, exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close navigation", exact: true })).toHaveCount(0);
 }
 
 test("workspace navigation hydrates and fits the viewport", async ({ page }) => {
