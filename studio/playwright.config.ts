@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Each worktree can select its own port. Never reuse an unknown server or point
 // this state-changing suite at production.
-const port = Number(process.env.STUDIO_TEST_PORT ?? 3210);
+const port = Number(process.env.STUDIO_TEST_PORT ?? 4310);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) {
   throw new Error("STUDIO_TEST_PORT must be an integer between 1024 and 65535");
 }

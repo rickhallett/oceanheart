@@ -22,7 +22,7 @@ seven days. Only synthetic sample data belongs in this suite or its artifacts.
 
 Every worktree has its own `node_modules`, `.next`, report and test output.
 Use a distinct `STUDIO_TEST_PORT` for concurrently running worktrees, for example
-`STUDIO_TEST_PORT=3211 npm run verify`. The harness starts its own loopback server
+`STUDIO_TEST_PORT=4311 npm run verify`. The harness starts its own loopback server
 and refuses to reuse an occupied port. It cannot be configured to target the
 production website. Tests do not send messages or make provider payments.
 
@@ -55,3 +55,10 @@ needs independent authorisation, concurrent-update and retry checks; provider
 adapters need sandbox contract tests. Add those commands to `verify` when the
 corresponding modules exist. Never make production credentials a prerequisite
 for untrusted pull-request verification.
+
+The separate backend CI job installs the lockfile in `studio/backend`, then runs
+`npm run typecheck` and `npm run test:integration`. Its integration runner owns an
+ephemeral local backend and test JWT keys, including shutdown. The first run needs
+network access to download the backend binary. It must not use a hosted Convex
+project or production authentication keys. Frontend TypeScript excludes this
+package because the backend has its own runtime types and verification command.
