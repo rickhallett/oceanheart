@@ -88,7 +88,6 @@ export default function Home() {
         <div className="container">
           <div className="section-heading">
             <div>
-              <Eyebrow>A little order. A little breathing room.</Eyebrow>
               <h2>
                 We put it together.
                 <br />
@@ -136,7 +135,6 @@ export default function Home() {
             </span>
           </div>
           <div>
-            <Eyebrow>A person behind your practice</Eyebrow>
             <h2>
               Hello, I’m Rick.
               <br />A clinician who builds things.
@@ -156,7 +154,6 @@ export default function Home() {
       </section>
       <section id="contact" className="contact-section section-border">
         <div className="container contact-inner">
-          <Eyebrow>Let’s start where you are</Eyebrow>
           <h2>
             A little more space
             <br />
