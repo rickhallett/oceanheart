@@ -348,12 +348,22 @@ try {
       activePage = stale;
       await stale.getByLabel("Price (£)", { exact: true }).fill("2.29");
       await stale.getByRole("button", { name: "Save", exact: true }).click();
-      await expect(stale.getByRole("alert")).toContainText(
-        "changed since you opened",
-      );
+      phase = "stale service edit shows its conflict alert";
+      await expect(
+        stale.locator(".lp-record-form").getByRole("alert"),
+      ).toContainText("changed since you opened");
+      report.conflict = {
+        pageAlertCount: await stale.getByRole("alert").count(),
+        formAlertCount: await stale
+          .locator(".lp-record-form")
+          .getByRole("alert")
+          .count(),
+      };
+      phase = "stale service edit blocks resubmission";
       await expect(
         stale.getByRole("button", { name: "Save", exact: true }),
       ).toBeDisabled();
+      phase = "stale service edit retains entered price";
       await expect(stale.getByLabel("Price (£)", { exact: true })).toHaveValue(
         "2.29",
       );
@@ -368,6 +378,7 @@ try {
       });
       await stale.close();
       activePage = first.page;
+      phase = "service archive and restore";
       const row = first.page.locator(`[data-service-id="${serviceId}"]`);
       await row.getByRole("button", { name: "Archive", exact: true }).click();
       await expect(row).toHaveCount(0);
