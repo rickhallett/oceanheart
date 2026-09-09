@@ -1,3 +1,4 @@
+import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
@@ -501,6 +502,7 @@ try {
   assert.ok((await alice.query("bookings:list",{tenantId:tenantA,from:midnight,to:midnight+86400000})).items.some(r=>r._id===overnight));
   assert.ok(!(await alice.query("bookings:list",{tenantId:tenantA,from:midnight+3600000,to:midnight+86400000})).items.some(r=>r._id===overnight));
   check("overnight bookings remain visible the next day until their exclusive end instant");
+  await enquiryChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"enquiry-local"});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

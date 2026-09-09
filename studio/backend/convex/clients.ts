@@ -1,3 +1,4 @@
+import { createClient } from "./lib/createClient";
 import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { v, ConvexError } from "convex/values";
@@ -7,11 +8,7 @@ const fields={name:v.string(),email:v.optional(v.string()),phone:v.optional(v.st
 export const create=mutation({
   args:{tenantId:v.id("tenants"),...fields,requestKey:v.string()},
   handler:async(ctx,args)=>{
-    const user=await requireMember(ctx,args.tenantId,true);
-    const data=validate.clientFields(args),requestKey=validate.requestKey(args.requestKey),creationPayload=JSON.stringify(data);
-    const existing=await ctx.db.query("clients").withIndex("by_tenant_request",q=>q.eq("tenantId",args.tenantId).eq("requestKey",requestKey)).unique();
-    if(existing){if((existing.creationPayload??JSON.stringify(validate.clientFields(existing)))!==creationPayload||existing.createdBy!==user.tokenIdentifier)throw new ConvexError("IDEMPOTENCY_MISMATCH");return existing._id;}
-    return ctx.db.insert("clients",{tenantId:args.tenantId,...data,creationPayload,archived:false,searchText:validate.searchText(data.name,data.email),revision:0,createdAt:Date.now(),createdBy:user.tokenIdentifier,requestKey});
+    return createClient(ctx,args);
   },
 });
 export const update=mutation({
