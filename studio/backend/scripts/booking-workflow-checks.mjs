@@ -1,0 +1,61 @@
+import assert from "node:assert/strict";
+export async function bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity,clientForOwner,check,prefix,record=async()=>{},startsAt=Date.UTC(2040,0,10,9)}){
+  const start=startsAt,hour=3600000;
+  const clientId=await alice.mutation("clients:create",{tenantId:tenantA,name:"Booking fixture",requestKey:`${prefix}-client`});await record("clients",clientId,tenantA);
+  const serviceId=await alice.mutation("services:create",{tenantId:tenantA,name:"Booked terms",durationMinutes:60,priceMinor:5000,currency:"GBP",requestKey:`${prefix}-service`});await record("services",serviceId,tenantA);
+  const args={tenantId:tenantA,clientId,serviceId,startsAt:start,requestKey:`${prefix}-booking`};
+  const prior=(await alice.query("tenants:list",{})).find(t=>t._id===tenantA).timeZone??null;
+  if(!prior)await assert.rejects(alice.mutation("bookings:createLinked",args),/TIME_ZONE_REQUIRED/);
+  await assert.rejects(alice.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"Not/AZone",expectedTimeZone:prior}),/INVALID_TIME_ZONE/);
+  await alice.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"Europe/London",expectedTimeZone:prior});
+  const callers=await Promise.all(Array.from({length:6},()=>clientForOwner()));
+  const ids=await Promise.all(callers.map(c=>c.mutation("bookings:createLinked",args)));assert.equal(new Set(ids).size,1);const id=ids[0];await record("bookings",id,tenantA);
+  const window={tenantId:tenantA,from:start-hour,to:start+24*hour};
+  const read=async()=> (await (await clientForOwner()).query("bookings:list",window)).items.find(r=>r._id===id);
+  let saved=await read();assert.equal(saved.endsAt,start+hour);assert.deepEqual(saved.serviceSnapshot,{name:"Booked terms",durationMinutes:60,priceMinor:5000,currency:"GBP"});
+  for(const field of ["requestKey","createdBy","creationPayload"])assert.ok(!(field in saved));
+  await alice.mutation("services:update",{tenantId:tenantA,serviceId,name:"Changed terms",durationMinutes:90,priceMinor:9000,currency:"GBP",expectedRevision:0});
+  await alice.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+hour,expectedRevision:0});
+  await alice.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+hour,expectedRevision:0});
+  assert.equal(await alice.mutation("bookings:createLinked",args),id);
+  saved=await read();assert.equal(saved.endsAt,start+2*hour);assert.equal(saved.serviceSnapshot.priceMinor,5000);assert.equal(saved.revision,1);
+  await assert.rejects(alice.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+3*hour,expectedRevision:0}),/REVISION_CONFLICT/);
+  await assert.rejects(alice.mutation("bookings:create",{tenantId:tenantA,practitionerId:"other_lane",startsAt:start+hour,endsAt:start+2*hour,clientLabel:"Cannot bypass lane",requestKey:`${prefix}-legacy-conflict`}),/BOOKING_CONFLICT/);
+  const legacy=await alice.mutation("bookings:create",{tenantId:tenantA,practitionerId:"legacy_lane",startsAt:start+4*hour,endsAt:start+5*hour,clientLabel:"Legacy fixture",requestKey:`${prefix}-legacy`});await record("bookings",legacy,tenantA);
+  await assert.rejects(alice.mutation("bookings:createLinked",{...args,startsAt:start+4*hour,requestKey:`${prefix}-blocked-by-legacy`}),/BOOKING_CONFLICT/);
+  await alice.mutation("clients:setArchived",{tenantId:tenantA,clientId,archived:true,expectedRevision:0});
+  await assert.rejects(alice.mutation("bookings:createLinked",{...args,startsAt:start+6*hour,requestKey:`${prefix}-archived-client`}),/ARCHIVED_RECORD/);
+  assert.equal(await alice.mutation("bookings:createLinked",args),id);
+  await alice.mutation("clients:setArchived",{tenantId:tenantA,clientId,archived:false,expectedRevision:1});
+  await alice.mutation("services:setArchived",{tenantId:tenantA,serviceId,archived:true,expectedRevision:1});
+  await assert.rejects(alice.mutation("bookings:createLinked",{...args,startsAt:start+6*hour,requestKey:`${prefix}-archived-service`}),/ARCHIVED_RECORD/);
+  await alice.mutation("services:setArchived",{tenantId:tenantA,serviceId,archived:false,expectedRevision:2});
+  for(const caller of [anonymous,bob,viewer]){
+    await assert.rejects(caller.query("bookings:list",window));
+    await assert.rejects(caller.query("bookings:history",{tenantId:tenantA,bookingId:id}));
+    await assert.rejects(caller.mutation("bookings:createLinked",args));
+    await assert.rejects(caller.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+6*hour,expectedRevision:1}));
+    await assert.rejects(caller.mutation("bookings:cancel",{tenantId:tenantA,bookingId:id,expectedRevision:1}));
+  }
+  const bobZone=(await bob.query("tenants:list",{})).find(t=>t._id===tenantB).timeZone??null;
+  await bob.mutation("tenants:setTimeZone",{tenantId:tenantB,timeZone:"Europe/London",expectedTimeZone:bobZone});
+  await assert.rejects(bob.mutation("bookings:createLinked",{...args,tenantId:tenantB}),/FORBIDDEN/);
+  await alice.mutation("tenants:addViewer",{tenantId:tenantA,identity:viewerIdentity});
+  try{await assert.rejects(viewer.query("bookings:list",window),/FORBIDDEN/);await assert.rejects(viewer.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"UTC",expectedTimeZone:"Europe/London"}),/FORBIDDEN/);}finally{await alice.mutation("tenants:removeViewer",{tenantId:tenantA,identity:viewerIdentity});}
+  const race=await Promise.allSettled(callers.map((c,i)=>c.mutation("bookings:createLinked",{...args,startsAt:start+8*hour,requestKey:`${prefix}-race-${i}`})));
+  assert.equal(race.filter(r=>r.status==="fulfilled").length,1);assert.equal(race.filter(r=>r.status==="rejected"&&String(r.reason).includes("BOOKING_CONFLICT")).length,5);
+  for(const r of race)if(r.status==="fulfilled")await record("bookings",r.value,tenantA);
+  const racedId=race.find(r=>r.status==="fulfilled").value;
+  const moved=await Promise.allSettled(callers.slice(0,2).map((c,i)=>c.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:racedId,startsAt:start+(12+i*2)*hour,expectedRevision:0})));
+  assert.equal(moved.filter(r=>r.status==="fulfilled").length,1);assert.ok(moved.some(r=>r.status==="rejected"&&String(r.reason).includes("REVISION_CONFLICT")));
+  await assert.rejects(alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:id,expectedRevision:0}),/REVISION_CONFLICT/);
+  await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:id,expectedRevision:1});await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:id,expectedRevision:1});
+  assert.equal(await alice.mutation("bookings:createLinked",args),id);
+  const replacement=await alice.mutation("bookings:createLinked",{...args,startsAt:start+hour,requestKey:`${prefix}-replacement`});await record("bookings",replacement,tenantA);
+  const history=await alice.query("bookings:history",{tenantId:tenantA,bookingId:id});assert.deepEqual(history.items.map(e=>e.action),["cancelled","rescheduled","created"]);assert.equal(history.items[1].previousStartsAt,start);assert.equal(history.items[1].startsAt,start+hour);
+  assert.equal((await read()).status,"cancelled");
+  await assert.rejects(alice.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+10*hour,expectedRevision:2}),/BOOKING_CANCELLED/);
+  await alice.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"UTC",expectedTimeZone:"Europe/London"});assert.equal((await read()).timeZone,"Europe/London");
+  check("manual bookings enforce a tenant-wide lane, snapshot service terms, preserve retry IDs/history and cancellation frees time");
+  return {clientId,serviceId};
+}

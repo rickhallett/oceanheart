@@ -1,3 +1,4 @@
+import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
@@ -379,12 +380,8 @@ try {
   });
   check("half-open adjacent bookings accepted");
   await bob.mutation("bookings:create", { ...booking, tenantId: tenantB });
-  await alice.mutation("bookings:create", {
-    ...booking,
-    practitionerId: "other",
-    requestKey: "other",
-  });
-  check("same interval isolated by tenant and practitioner");
+  await denied(alice.mutation("bookings:create", {...booking,practitionerId:"other",requestKey:"other"}),"BOOKING_CONFLICT");
+  check("same interval isolated by tenant; alternate practitioner keys cannot bypass single lane");
   await denied(
     alice.mutation("bookings:create", {
       ...booking,
@@ -426,7 +423,7 @@ try {
   assert.deepEqual(await viewer.query("tenants:list", {}), [
     { _id: tenantA, name: "Practice A", role: "viewer" },
   ]);
-  assert.equal((await viewer.query("bookings:list", window)).items.length, 3);
+  await denied(viewer.query("bookings:list", window),"FORBIDDEN");
   await denied(
     viewer.mutation("bookings:create", { ...booking, requestKey: "viewer" }),
     "FORBIDDEN",
@@ -442,7 +439,7 @@ try {
   await denied(viewer.mutation("tasks:create",{...taskArgs,requestKey:"viewer"}),"FORBIDDEN");
   await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
   check("viewer can read tasks, cannot create or complete them");
-  check("viewer can read, cannot book or grant membership");
+  check("viewer cannot read booking contacts, book or grant membership");
   await alice.mutation("tenants:removeViewer", {
     tenantId: tenantA,
     identity: `${issuer}|viewer`,
@@ -468,15 +465,15 @@ try {
     from: start + 1,
     to: start + hour,
   });
-  assert.equal(boundaryWindow.items.length, 0);
+  assert.equal(boundaryWindow.items.length, 1);
   assert.equal(boundaryWindow.hasMore, false);
-  check("list uses starts-within half-open window semantics");
+  check("list includes overlapping intervals using half-open window semantics");
   for (let i = 0; i < 201; i++)
     await alice.mutation("bookings:create", {
       ...booking,
       practitionerId: "pagination",
-      startsAt: start + i * 60000,
-      endsAt: start + (i + 1) * 60000,
+      startsAt: start + 10 * hour + i * 60000,
+      endsAt: start + 10 * hour + (i + 1) * 60000,
       requestKey: `page-${i}`,
     });
   const limited = await alice.query("bookings:list", {
@@ -487,6 +484,23 @@ try {
   assert.equal(limited.hasMore, true);
   assert.equal(limited.limit, 200);
   check("list truncation explicitly reported with hasMore and limit");
+  const bookingFixtures=await bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"booking-local"});
+  const oldStart=Date.UTC(2041,0,10,9),oldArgs={tenantId:tenantA,practitionerId:"pre-upgrade",startsAt:oldStart,endsAt:oldStart+3600000,clientLabel:"Pre-upgrade booking",requestKey:"pre-upgrade"};
+  await writeFile(resolve(runDir,"legacy-bookings.json"),JSON.stringify([{...oldArgs,createdBy:`${issuer}|alice`}]));
+  await command(["import","--env-file",".push.env","--table","bookings","--append","legacy-bookings.json"]);
+  const oldRow=(await alice.query("bookings:list",{tenantId:tenantA,from:oldStart,to:oldStart+86400000})).items[0];
+  assert.equal(oldRow.status,"scheduled");assert.equal(oldRow.revision,0);assert.equal(oldRow.legacy,true);
+  await denied(alice.mutation("bookings:createLinked",{tenantId:tenantA,...bookingFixtures,startsAt:oldStart,requestKey:"against-pre-upgrade"}),"BOOKING_CONFLICT");
+  await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:oldRow._id,expectedRevision:0});
+  await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:oldRow._id,expectedRevision:0});
+  assert.equal(await alice.mutation("bookings:create",oldArgs),oldRow._id);
+  assert.deepEqual((await alice.query("bookings:history",{tenantId:tenantA,bookingId:oldRow._id})).items.map(e=>e.action),["cancelled"]);
+  check("pre-upgrade booking without optional fields blocks overlap, lists safely and cancels/retries with its original ID");
+  const overnight=await alice.mutation("bookings:createLinked",{tenantId:tenantA,...bookingFixtures,startsAt:oldStart+14.5*3600000,requestKey:"overnight"});
+  const midnight=Date.UTC(2041,0,11);
+  assert.ok((await alice.query("bookings:list",{tenantId:tenantA,from:midnight,to:midnight+86400000})).items.some(r=>r._id===overnight));
+  assert.ok(!(await alice.query("bookings:list",{tenantId:tenantA,from:midnight+3600000,to:midnight+86400000})).items.some(r=>r._id===overnight));
+  check("overnight bookings remain visible the next day until their exclusive end instant");
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

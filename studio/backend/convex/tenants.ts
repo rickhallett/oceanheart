@@ -80,10 +80,23 @@ export const list = query({
       memberships.map(async (membership) => {
         const tenant = await ctx.db.get(membership.tenantId);
         return tenant
-          ? { _id: tenant._id, name: tenant.name, role: membership.role }
+          ? { _id: tenant._id, name: tenant.name, role: membership.role, ...(tenant.timeZone ? {timeZone:tenant.timeZone} : {}) }
           : null;
       }),
     );
     return practices.filter((practice) => practice !== null);
+  },
+});
+
+export const setTimeZone=mutation({
+  args:{tenantId:v.id("tenants"),timeZone:v.string(),expectedTimeZone:v.union(v.string(),v.null())},
+  handler:async(ctx,{tenantId,timeZone,expectedTimeZone})=>{
+    await requireMember(ctx,tenantId,true);
+    if(timeZone.trim()!==timeZone||timeZone.length>100||!timeZone||/^[+-]/.test(timeZone))throw new ConvexError("INVALID_TIME_ZONE");
+    try {new Intl.DateTimeFormat("en",{timeZone}).format(0);}catch{throw new ConvexError("INVALID_TIME_ZONE");}
+    const tenant=await ctx.db.get(tenantId);if(!tenant)throw new ConvexError("FORBIDDEN");
+    if(tenant.timeZone===timeZone)return tenantId;
+    if((tenant.timeZone??null)!==expectedTimeZone)throw new ConvexError("REVISION_CONFLICT");
+    await ctx.db.patch(tenantId,{timeZone});return tenantId;
   },
 });
