@@ -163,6 +163,19 @@ export function readableError(error: unknown): string {
       ? error.data
       : undefined;
   const message = typeof data === "string" ? data : String(error);
+  if (
+    message.includes("RECONNECT_REQUIRED") ||
+    message.includes("GMAIL_NOT_CONNECTED")
+  )
+    return "Gmail access needs to be reconnected. Connect Gmail again, then retry.";
+  if (message.includes("CONNECTION_CHANGED"))
+    return "The Gmail connection changed. Reload before browsing or importing again.";
+  if (message.includes("NO_PLAIN_TEXT"))
+    return "This message has no plain-text body and cannot be imported.";
+  if (message.includes("GMAIL_NOT_CONFIGURED"))
+    return "Gmail connection is not configured for this environment.";
+  if (message.includes("GMAIL_"))
+    return "Gmail could not complete this request. Retry, or reconnect if access has expired.";
   if (message.includes("LINK_CONFLICT"))
     return "This enquiry is already linked to different records. Reload the practice to review its links.";
   if (message.includes("TIME_ZONE_REQUIRED"))

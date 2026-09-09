@@ -23,6 +23,7 @@ import { practiceApi, type TenantId } from "./api";
 import { CreatePractice, PracticeShell } from "./practice-ui";
 import { PracticeViews } from "./practice-views";
 
+type GmailReturn = { status: string; tenantId?: string };
 function useWorkOSAuth() {
   const { user, loading } = useAuth();
   const { getAccessToken, refresh } = useAccessToken();
@@ -44,8 +45,10 @@ function useWorkOSAuth() {
 export function PracticeApp({
   convexUrl,
   initialAuth,
+  gmailReturn,
 }: {
   convexUrl: string;
+  gmailReturn?: GmailReturn;
   initialAuth: ComponentProps<typeof AuthKitProvider>["initialAuth"];
 }) {
   const [client] = useState(() => new ConvexReactClient(convexUrl));
@@ -60,7 +63,7 @@ export function PracticeApp({
           }
         >
           <DataBoundary>
-            <AuthenticatedPractice />
+            <AuthenticatedPractice gmailReturn={gmailReturn} />
           </DataBoundary>
         </PracticeShell>
       </ConvexProviderWithAuth>
@@ -93,7 +96,7 @@ class DataBoundary extends Component<
     );
   }
 }
-function AuthenticatedPractice() {
+function AuthenticatedPractice({ gmailReturn }: { gmailReturn?: GmailReturn }) {
   const { isLoading, isAuthenticated } = useConvexAuth();
   if (isLoading) return <p role="status">Connecting to your practice…</p>;
   if (!isAuthenticated)
@@ -106,12 +109,14 @@ function AuthenticatedPractice() {
         </a>
       </section>
     );
-  return <PracticeWorkspace />;
+  return <PracticeWorkspace gmailReturn={gmailReturn} />;
 }
-function PracticeWorkspace() {
+function PracticeWorkspace({ gmailReturn }: { gmailReturn?: GmailReturn }) {
   const tenants = useQuery(practiceApi.tenants, {});
   const createTenant = useMutation(practiceApi.createTenant);
-  const [selected, setSelected] = useState<TenantId | null>(null);
+  const [selected, setSelected] = useState<TenantId | null>(
+    (gmailReturn?.tenantId as TenantId) ?? null,
+  );
   const [creating, setCreating] = useState(false);
   if (!tenants) return <p role="status">Loading practices…</p>;
   const tenant = tenants.find((t) => t._id === selected) ?? tenants[0];
@@ -153,6 +158,11 @@ function PracticeWorkspace() {
         tenantId={tenant._id}
         canWrite={tenant.role === "owner"}
         timeZone={tenant.timeZone}
+        gmailStatus={
+          !gmailReturn?.tenantId || gmailReturn.tenantId === tenant._id
+            ? gmailReturn?.status
+            : undefined
+        }
       />
     </>
   );

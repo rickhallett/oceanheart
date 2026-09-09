@@ -53,3 +53,7 @@ tests passed 14:33:31; full verification ran 14:37:07–14:37:42; actual hosted
 browser acceptance ran 14:37:54–14:38:38. Implementation and focused tests were
 interleaved. These are wall-clock phase markers. Staging frontend acceptance is
 still a separate root delivery gate; no production release was performed.
+
+Selected Gmail import is described in [GMAIL.md](GMAIL.md). Imported enquiries
+retain a protected Gmail source marker; manual capture remains available. A saved
+reply draft is still unsent regardless of how the enquiry was captured.

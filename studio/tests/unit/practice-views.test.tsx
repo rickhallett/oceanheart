@@ -8,6 +8,7 @@ import { PracticeViews } from "../../src/components/practice/practice-views";
 import type { TenantId } from "../../src/components/practice/api";
 vi.mock("convex/react", () => ({
   useMutation: vi.fn(),
+  useAction: vi.fn(() => vi.fn()),
   useQuery: vi.fn(),
   usePaginatedQuery: vi.fn(),
 }));
@@ -138,5 +139,33 @@ it("enquiry data and navigation are removed on role downgrade", async () => {
     vi
       .mocked(usePaginatedQuery)
       .mock.calls.some((call) => getFunctionName(call[0]) === "enquiries:list"),
+  ).toBe(false);
+});
+
+it("Gmail navigation and connection data unmount on permission downgrade", async () => {
+  const user = userEvent.setup();
+  const tenantId = "first" as TenantId;
+  vi.mocked(useQuery).mockImplementation((...args) =>
+    getFunctionName(args[0]) === "gmailConnections:status"
+      ? { connected: false, generation: 0 }
+      : { items: [], hasMore: false, limit: 200 },
+  );
+  const view = render(<PracticeViews tenantId={tenantId} canWrite />);
+  await user.click(screen.getByRole("button", { name: "Gmail" }));
+  expect(screen.getByRole("button", { name: "Connect Gmail" })).toBeVisible();
+  vi.mocked(useQuery).mockClear();
+  view.rerender(<PracticeViews tenantId={tenantId} canWrite={false} />);
+  expect(
+    screen.queryByRole("button", { name: "Gmail" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Connect Gmail" }),
+  ).not.toBeInTheDocument();
+  expect(
+    vi
+      .mocked(useQuery)
+      .mock.calls.some(
+        (call) => getFunctionName(call[0]) === "gmailConnections:status",
+      ),
   ).toBe(false);
 });

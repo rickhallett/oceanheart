@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import { practiceApi, type TenantId } from "./api";
+import { PracticeGmail } from "./gmail";
+import type { EnquiryId } from "./enquiry-api";
 import { PracticeEnquiries } from "./enquiries";
 import { PracticeBookings } from "./bookings";
 import { TaskPanel } from "./practice-ui";
@@ -17,6 +19,7 @@ export function PracticeViews(props: {
   tenantId: TenantId;
   canWrite: boolean;
   timeZone?: string;
+  gmailStatus?: string;
 }) {
   return (
     <PracticeContent key={`${props.tenantId}:${props.canWrite}`} {...props} />
@@ -48,25 +51,46 @@ function PracticeContent({
   tenantId,
   canWrite,
   timeZone,
+  gmailStatus,
 }: {
   tenantId: TenantId;
   canWrite: boolean;
   timeZone?: string;
+  gmailStatus?: string;
 }) {
-  const [section, setSection] = useState<PracticeSection>("tasks");
+  const [section, setSection] = useState<PracticeSection>(
+    canWrite && gmailStatus ? "gmail" : "tasks",
+  );
+  const [enquiryId, setEnquiryId] = useState<EnquiryId>();
   return (
     <>
       <PracticeNavigation
         section={section}
         canWrite={canWrite}
-        select={setSection}
+        select={(next) => {
+          setEnquiryId(undefined);
+          setSection(next);
+        }}
       />
       {section === "tasks" ? (
         <PracticeTasks tenantId={tenantId} canWrite={canWrite} />
       ) : section === "services" ? (
         <PracticeServices tenantId={tenantId} canWrite={canWrite} />
+      ) : canWrite && section === "gmail" ? (
+        <PracticeGmail
+          tenantId={tenantId}
+          returnStatus={gmailStatus}
+          openEnquiry={(id) => {
+            setEnquiryId(id);
+            setSection("enquiries");
+          }}
+        />
       ) : canWrite && section === "enquiries" ? (
-        <PracticeEnquiries tenantId={tenantId} timeZone={timeZone} />
+        <PracticeEnquiries
+          tenantId={tenantId}
+          timeZone={timeZone}
+          initialId={enquiryId}
+        />
       ) : canWrite && section === "bookings" ? (
         <PracticeBookings tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite ? (
