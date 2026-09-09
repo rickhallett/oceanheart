@@ -24,6 +24,49 @@ const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 function minutes(value: string) {
   return Number(value.slice(0, 2)) * 60 + Number(value.slice(3, 5));
 }
+type Draft = {
+  name: string;
+  tagline: string;
+  email: string;
+  phone: string;
+  address: string;
+  availability: WeeklyAvailability;
+};
+type Baseline = {
+  revision: number;
+  timeZone: string | null;
+  draft: Draft;
+};
+function draftFromSettings(settings: PracticeSettings): Draft {
+  return {
+    name: settings.name,
+    tagline: settings.tagline ?? "",
+    email: settings.contactEmail ?? "",
+    phone: settings.contactPhone ?? "",
+    address: settings.address ?? "",
+    availability: structuredClone(settings.availability),
+  };
+}
+function baselineFromSettings(settings: PracticeSettings): Baseline {
+  return {
+    revision: settings.revision,
+    timeZone: settings.timeZone ?? null,
+    draft: draftFromSettings(settings),
+  };
+}
+// Key order is not significant: the backend may persist objects in storage
+// order, so draft equality must compare structurally.
+function canonical(value: unknown): string {
+  return JSON.stringify(value, (_key, val) =>
+    val && typeof val === "object" && !Array.isArray(val)
+      ? Object.fromEntries(
+          Object.keys(val)
+            .sort()
+            .map((k) => [k, (val as Record<string, unknown>)[k]]),
+        )
+      : val,
+  );
+}
 export function PracticeSettings({
   tenantId,
   canWrite,
@@ -47,12 +90,12 @@ export function PracticeSettings({
       ) : (
         <>
           <SettingsForm
-            key={`${canWrite}:${settings.revision}`}
-            initial={settings}
+            key={`${tenantId}:${canWrite}`}
+            live={settings}
             canWrite={canWrite}
             timeZone={timeZone}
-            save={async (input, expectedRevision) =>
-              update({ ...input, tenantId, expectedRevision })
+            save={async (input, expectedRevision, expectedTimeZone) =>
+              update({ ...input, tenantId, expectedRevision, expectedTimeZone })
             }
             changed={() => {
               setNotice("Settings saved.");
@@ -67,51 +110,78 @@ export function PracticeSettings({
   );
 }
 function SettingsForm({
-  initial,
+  live,
   canWrite,
   timeZone,
   save,
   changed,
 }: {
-  initial: PracticeSettings;
+  live: PracticeSettings;
   canWrite: boolean;
   timeZone?: string;
-  save: (input: SettingsInput, expectedRevision: number) => Promise<unknown>;
+  save: (
+    input: SettingsInput,
+    expectedRevision: number,
+    expectedTimeZone: string | null,
+  ) => Promise<number>;
   changed: () => void;
 }) {
-  const [name, setName] = useState(initial.name);
-  const [tagline, setTagline] = useState(initial.tagline ?? "");
-  const [email, setEmail] = useState(initial.contactEmail ?? "");
-  const [phone, setPhone] = useState(initial.contactPhone ?? "");
-  const [address, setAddress] = useState(initial.address ?? "");
-  const [availability, setAvailability] = useState<WeeklyAvailability>(() =>
-    structuredClone(initial.availability),
-  );
+  const [baseline, setBaseline] = useState(() => baselineFromSettings(live));
+  const [draft, setDraft] = useState<Draft>(() => draftFromSettings(live));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [conflict, setConflict] = useState(false);
   const busy = useRef(false);
-  function reset() {
-    setName(initial.name);
-    setTagline(initial.tagline ?? "");
-    setEmail(initial.contactEmail ?? "");
-    setPhone(initial.contactPhone ?? "");
-    setAddress(initial.address ?? "");
-    setAvailability(structuredClone(initial.availability));
+  // Reconcile reactive server updates without ever overwriting an unsaved
+  // draft: a clean form adopts the latest snapshot, a dirty form keeps its
+  // edits and surfaces an explicit conflict.
+  const [prevLive, setPrevLive] = useState(live);
+  if (prevLive !== live) {
+    setPrevLive(live);
+    const next = baselineFromSettings(live);
+    const zoneSame = next.timeZone === baseline.timeZone;
+    const clean = canonical(draft) === canonical(baseline.draft);
+    const matchesLive = canonical(draft) === canonical(next.draft);
+    if (!conflict && ((zoneSame && (clean || matchesLive)) || (!zoneSame && clean))) {
+      setBaseline(next);
+      setDraft(next.draft);
+    } else if (!conflict && !zoneSame) {
+      setConflict(true);
+      setError(
+        "The practice time zone changed since you opened these settings. Your edits are kept. Load the latest settings before saving.",
+      );
+    } else if (!conflict) {
+      setConflict(true);
+      setError(
+        "These settings changed elsewhere since you opened them. Your edits are kept. Load the latest settings to review them before saving.",
+      );
+    }
+  }
+  function loadLatest() {
+    const next = baselineFromSettings(live);
+    setBaseline(next);
+    setDraft(next.draft);
     setError("");
     setConflict(false);
+  }
+  function reset() {
+    setDraft({
+      ...baseline.draft,
+      availability: structuredClone(baseline.draft.availability),
+    });
+    setError("");
   }
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (busy.current || conflict || !canWrite) return;
-    const cleaned = name.trim();
+    const cleaned = draft.name.trim();
     if (!cleaned) {
       setError("Enter a practice name.");
       return;
     }
-    const week: WeeklyAvailability = { ...availability };
+    const week: WeeklyAvailability = { ...draft.availability };
     for (const [day, label] of DAYS) {
-      const entry = availability[day];
+      const entry = draft.availability[day];
       if (!entry) {
         week[day] = null;
         continue;
@@ -128,28 +198,59 @@ function SettingsForm({
       }
       week[day] = { open: entry.open, close: entry.close };
     }
-    const input: SettingsInput = {
+    const saved: Draft = {
       name: cleaned,
+      tagline: draft.tagline.trim(),
+      email: draft.email.trim(),
+      phone: draft.phone.trim(),
+      address: draft.address.trim(),
       availability: week,
-      ...(tagline.trim() ? { tagline: tagline.trim() } : {}),
-      ...(email.trim() ? { contactEmail: email.trim() } : {}),
-      ...(phone.trim() ? { contactPhone: phone.trim() } : {}),
-      ...(address.trim() ? { address: address.trim() } : {}),
+    };
+    const input: SettingsInput = {
+      name: saved.name,
+      availability: saved.availability,
+      ...(saved.tagline ? { tagline: saved.tagline } : {}),
+      ...(saved.email ? { contactEmail: saved.email } : {}),
+      ...(saved.phone ? { contactPhone: saved.phone } : {}),
+      ...(saved.address ? { address: saved.address } : {}),
     };
     busy.current = true;
     setPending(true);
     setError("");
     try {
-      await save(input, initial.revision);
+      const revision = await save(input, baseline.revision, baseline.timeZone);
+      // A successful save establishes the new baseline immediately, so the
+      // reactive echo of our own write never reads as a remote conflict.
+      setBaseline({ revision, timeZone: baseline.timeZone, draft: saved });
+      setDraft(saved);
+      setConflict(false);
       changed();
     } catch (cause) {
-      setError(readableError(cause));
-      setConflict(hasErrorCode(cause, "REVISION_CONFLICT"));
+      if (hasErrorCode(cause, "TIME_ZONE_CHANGED")) {
+        setConflict(true);
+        setError(
+          "The practice time zone changed since you opened these settings. Your edits are kept. Load the latest settings before saving.",
+        );
+      } else {
+        setConflict(hasErrorCode(cause, "REVISION_CONFLICT"));
+        setError(
+          hasErrorCode(cause, "REVISION_CONFLICT")
+            ? "These settings changed elsewhere since you opened them. Your edits are kept. Load the latest settings to review them before saving."
+            : readableError(cause),
+        );
+      }
     } finally {
       busy.current = false;
       setPending(false);
     }
   }
+  function setDay(
+    day: keyof WeeklyAvailability,
+    entry: WeeklyAvailability[keyof WeeklyAvailability],
+  ) {
+    setDraft((previous) => ({ ...previous, availability: { ...previous.availability, [day]: entry } }));
+  }
+  const zone = live.timeZone ?? timeZone;
   return (
     <form className="lp-record-form lp-settings-form" onSubmit={submit}>
       <h3>Practice details</h3>
@@ -157,8 +258,10 @@ function SettingsForm({
         <label htmlFor="settings-name">Practice name</label>
         <input
           id="settings-name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          value={draft.name}
+          onChange={(event) =>
+            setDraft((previous) => ({ ...previous, name: event.target.value }))
+          }
           maxLength={100}
           autoComplete="organization"
           required
@@ -166,8 +269,13 @@ function SettingsForm({
         <label htmlFor="settings-tagline">Tagline (optional)</label>
         <input
           id="settings-tagline"
-          value={tagline}
-          onChange={(event) => setTagline(event.target.value)}
+          value={draft.tagline}
+          onChange={(event) =>
+            setDraft((previous) => ({
+              ...previous,
+              tagline: event.target.value,
+            }))
+          }
           maxLength={200}
           placeholder="A short line about your practice"
         />
@@ -176,8 +284,13 @@ function SettingsForm({
             <label htmlFor="settings-email">Contact email (optional)</label>
             <input
               id="settings-email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              value={draft.email}
+              onChange={(event) =>
+                setDraft((previous) => ({
+                  ...previous,
+                  email: event.target.value,
+                }))
+              }
               type="email"
               maxLength={254}
               autoComplete="email"
@@ -187,8 +300,13 @@ function SettingsForm({
             <label htmlFor="settings-phone">Contact phone (optional)</label>
             <input
               id="settings-phone"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
+              value={draft.phone}
+              onChange={(event) =>
+                setDraft((previous) => ({
+                  ...previous,
+                  phone: event.target.value,
+                }))
+              }
               type="tel"
               maxLength={40}
               autoComplete="tel"
@@ -198,8 +316,13 @@ function SettingsForm({
         <label htmlFor="settings-address">Address (optional)</label>
         <input
           id="settings-address"
-          value={address}
-          onChange={(event) => setAddress(event.target.value)}
+          value={draft.address}
+          onChange={(event) =>
+            setDraft((previous) => ({
+              ...previous,
+              address: event.target.value,
+            }))
+          }
           maxLength={500}
           placeholder="Practice address"
         />
@@ -207,21 +330,21 @@ function SettingsForm({
         <p className="lp-muted lp-availability-note">
           Defaults for future public scheduling — existing bookings are
           unchanged. Times are in the practice time zone
-          {timeZone ? ` (${timeZone})` : ""}.
+          {zone ? ` (${zone})` : ""}.
         </p>
         {DAYS.map(([day, label]) => (
           <div className="lp-day-row" key={day}>
             <input
               type="checkbox"
               id={`day-${day}`}
-              checked={availability[day] !== null}
+              checked={draft.availability[day] !== null}
               onChange={() =>
-                setAvailability((previous) => ({
-                  ...previous,
-                  [day]: previous[day]
+                setDay(
+                  day,
+                  draft.availability[day]
                     ? null
                     : { open: "09:00", close: "17:00" },
-                }))
+                )
               }
               disabled={pending || !canWrite}
             />
@@ -229,36 +352,36 @@ function SettingsForm({
             <input
               type="time"
               aria-label={`${label} opening time`}
-              value={availability[day]?.open ?? ""}
+              value={draft.availability[day]?.open ?? ""}
               onChange={(event) =>
-                setAvailability((previous) => ({
-                  ...previous,
-                  [day]: { open: event.target.value, close: previous[day]?.close ?? "" },
-                }))
+                setDay(day, {
+                  open: event.target.value,
+                  close: draft.availability[day]?.close ?? "",
+                })
               }
-              disabled={pending || !canWrite || !availability[day]}
+              disabled={pending || !canWrite || !draft.availability[day]}
             />
             <span className="lp-muted">to</span>
             <input
               type="time"
               aria-label={`${label} closing time`}
-              value={availability[day]?.close ?? ""}
+              value={draft.availability[day]?.close ?? ""}
               onChange={(event) =>
-                setAvailability((previous) => ({
-                  ...previous,
-                  [day]: { open: previous[day]?.open ?? "", close: event.target.value },
-                }))
+                setDay(day, {
+                  open: draft.availability[day]?.open ?? "",
+                  close: event.target.value,
+                })
               }
-              disabled={pending || !canWrite || !availability[day]}
+              disabled={pending || !canWrite || !draft.availability[day]}
             />
           </div>
         ))}
-        {canWrite && (
+        {canWrite && !conflict && (
           <div className="lp-actions">
             <button
               className="lp-button"
               type="submit"
-              disabled={conflict || pending}
+              disabled={pending}
             >
               {pending ? "Saving…" : "Save settings"}
             </button>
@@ -270,8 +393,8 @@ function SettingsForm({
       </fieldset>
       {error && <p role="alert">{error}</p>}
       {conflict && (
-        <button type="button" onClick={() => window.location.reload()}>
-          Reload practice
+        <button type="button" onClick={loadLatest}>
+          Load latest settings
         </button>
       )}
     </form>

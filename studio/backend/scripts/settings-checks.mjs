@@ -48,6 +48,7 @@ export async function settingsChecks({
     tagline: "",
     availability: week(),
     expectedRevision: 0,
+    expectedTimeZone: null,
   };
   for (const caller of [anonymous, bob]) {
     const denied = caller === anonymous ? /UNAUTHENTICATED/ : /FORBIDDEN/;
@@ -213,6 +214,7 @@ export async function settingsChecks({
     name: `Updated ${prefix}`,
     availability: week(),
     expectedRevision: 3,
+    expectedTimeZone: null,
   });
   assert.equal(clearedUpdate, 4);
   const afterClear = await fresh.query("settings:get", { tenantId });
@@ -221,5 +223,46 @@ export async function settingsChecks({
   assert.equal(afterClear.revision, 4);
   check(
     "sequential settings saves progress revisions; concurrent divergent saves admit one winner; clearing optional fields persists removal",
+  );
+  // Availability intervals are wall-clock times in the practice time zone. A
+  // settings save never moves the zone, and a stale zone snapshot conflicts
+  // before any save so a zone change cannot silently reinterpret the week.
+  await alice.mutation("tenants:setTimeZone", {
+    tenantId,
+    timeZone: "Europe/London",
+    expectedTimeZone: null,
+  });
+  const zoned = {
+    tenantId,
+    name: `Updated ${prefix}`,
+    tagline: "Zoned tagline",
+    availability: week(),
+    expectedRevision: 4,
+    expectedTimeZone: "Europe/London",
+  };
+  assert.equal(await alice.mutation("settings:update", zoned), 5);
+  const zonedSaved = await fresh.query("settings:get", { tenantId });
+  assert.equal(zonedSaved.timeZone, "Europe/London");
+  assert.equal(zonedSaved.tagline, "Zoned tagline");
+  assert.equal(zonedSaved.revision, 5);
+  assert.deepEqual(zonedSaved.availability.monday, {
+    open: "09:00",
+    close: "17:30",
+  });
+  for (const expectedTimeZone of [null, "America/New_York"])
+    await assert.rejects(
+      alice.mutation("settings:update", {
+        ...zoned,
+        expectedRevision: 5,
+        expectedTimeZone,
+      }),
+      /TIME_ZONE_CHANGED/,
+    );
+  assert.equal(
+    (await fresh.query("settings:get", { tenantId })).availability.monday.open,
+    "09:00",
+  );
+  check(
+    "settings saves preserve the practice time zone and reject stale zone snapshots",
   );
 }

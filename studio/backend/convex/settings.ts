@@ -34,6 +34,7 @@ export const update = mutation({
     address: v.optional(v.string()),
     availability: availabilityObject,
     expectedRevision: v.number(),
+    expectedTimeZone: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
     await requireMember(ctx, args.tenantId, true);
@@ -41,6 +42,11 @@ export const update = mutation({
     const data = settingsFields(args);
     const tenant = await ctx.db.get(args.tenantId);
     if (!tenant) throw new ConvexError("FORBIDDEN");
+    // Availability intervals are wall-clock times in the practice time zone.
+    // A zone change reinterprets them, so a stale zone snapshot conflicts
+    // before any save, even for an otherwise identical retry.
+    if ((tenant.timeZone ?? null) !== args.expectedTimeZone)
+      throw new ConvexError("TIME_ZONE_CHANGED");
     const current = currentSettings(tenant);
     // Accept a retried already-applied desired state without bumping the
     // revision; a divergent stale edit is rejected below.

@@ -15,22 +15,33 @@ enforced bookable slot: the manual booking flow neither reads nor writes it,
 and existing bookings are unchanged.
 
 Details and the whole week save atomically with one owner command. Edits send
-the revision from the form's opening snapshot. The backend accepts an
-already-applied identical desired state as a retry without bumping the
-revision, but rejects a stale divergent update with `REVISION_CONFLICT`. The
-form preserves entered values, disables another save and offers an explicit
-reload; it never silently overwrites a concurrent edit. Blank optional values
-are omitted and cleared fields are removed from persistence, matching record
-conventions. Tenants created before this feature read safe defaults with
-revision 0, so the first save never conflicts.
+the revision and the practice time zone from the form's opening snapshot.
+The backend accepts an already-applied identical desired state as a retry
+without bumping the revision, but rejects a stale divergent update with
+`REVISION_CONFLICT` and a stale zone snapshot with `TIME_ZONE_CHANGED`.
+A remote save arriving under an open form never overwrites the draft: a
+clean form adopts the latest snapshot silently, while a dirty form keeps its
+edits, blocks another save and offers an explicit load of the latest
+settings. A successful save establishes the new baseline at once, so the
+echo of the owner's own write never reads as a conflict. Blank optional
+values are omitted and cleared fields are removed from persistence, matching
+record conventions. Tenants created before this feature read safe defaults
+with revision 0, so the first save never conflicts.
+
+Availability intervals are wall-clock times in the practice time zone at the
+moment they are saved. A later deliberate time zone change reinterprets the
+stored week without rewriting it; the settings form treats a zone change
+under dirty edits as a conflict and requires an explicit reload before the
+next save.
 
 `npm run verify` includes the generated API contract checks, settings form
 failure/pending/conflict tests, owner/viewer mounting and tenant/role view
 resets. `npm run test:integration` in `backend/` runs the settings checks
 against a real local backend: absent-legacy defaults, membership/owner/revoked
 boundaries, field and interval validation, normalized persistence, no-op
-retries, stale conflicts, single-winner concurrent writes and optional-field
-clearing. The authenticated `/practice` browser journey stays an opt-in
+retries, stale conflicts, single-winner concurrent writes, optional-field
+clearing, time zone preservation and stale zone snapshot rejection. The
+authenticated `/practice` browser journey stays an opt-in
 credentialled run; the secretless browser suite guards the surrounding pages.
 
 Database impact: five optional detail fields, one optional seven-day

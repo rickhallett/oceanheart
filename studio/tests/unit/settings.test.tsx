@@ -31,6 +31,21 @@ const settings: Settings = {
     sunday: null,
   },
 };
+const remote: Settings = {
+  name: "Seaside Studio",
+  tagline: "Remote edit",
+  contactEmail: "remote@example.com",
+  revision: 3,
+  availability: {
+    monday: { open: "08:00", close: "16:00" },
+    tuesday: null,
+    wednesday: null,
+    thursday: null,
+    friday: null,
+    saturday: null,
+    sunday: null,
+  },
+};
 const legacy: Settings = {
   name: "Legacy practice",
   revision: 0,
@@ -51,6 +66,9 @@ beforeEach(() => {
 });
 function dayToggle(day: string) {
   return screen.getByRole("checkbox", { name: day });
+}
+function saveButton() {
+  return screen.getByRole("button", { name: "Save settings" });
 }
 it("loads and shows saved details with the enabled weekdays and time zone note", () => {
   render(
@@ -105,7 +123,7 @@ it("validates time order and never sends an inverted interval", async () => {
   fireEvent.change(screen.getByLabelText("Monday opening time"), {
     target: { value: "17:30" },
   });
-  await user.click(screen.getByRole("button", { name: "Save settings" }));
+  await user.click(saveButton());
   expect(screen.getByRole("alert")).toHaveTextContent(
     "opening time before its closing time",
   );
@@ -120,10 +138,11 @@ it("sends a trimmed payload with one interval per open day and omits blanks", as
   await user.type(screen.getByLabelText("Tagline (optional)"), "  New line  ");
   await user.clear(screen.getByLabelText("Contact email (optional)"));
   await user.click(dayToggle("Tuesday"));
-  await user.click(screen.getByRole("button", { name: "Save settings" }));
+  await user.click(saveButton());
   expect(update.mock.calls[0][0]).toEqual({
     tenantId,
     expectedRevision: 2,
+    expectedTimeZone: null,
     name: "Seaside Studio",
     tagline: "New line",
     contactPhone: "01234 567890",
@@ -140,7 +159,7 @@ it("sends a trimmed payload with one interval per open day and omits blanks", as
   });
   expect(screen.getByRole("status")).toHaveTextContent("Settings saved.");
 });
-it("keeps entered values after a failed save and retries with the same revision", async () => {
+it("keeps entered values after a failed save and retries with the same snapshot", async () => {
   const user = userEvent.setup();
   const update = vi
     .fn()
@@ -149,31 +168,151 @@ it("keeps entered values after a failed save and retries with the same revision"
   vi.mocked(useMutation).mockReturnValue(update as never);
   render(<PracticeSettings tenantId={tenantId} canWrite />);
   await user.type(screen.getByLabelText("Tagline (optional)"), " edited");
-  await user.click(screen.getByRole("button", { name: "Save settings" }));
+  await user.click(saveButton());
   expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
     "Quiet rooms edited",
   );
   expect(screen.getByRole("alert")).not.toHaveTextContent("transient detail");
   expect(update).toHaveBeenCalledTimes(1);
-  await user.click(screen.getByRole("button", { name: "Save settings" }));
+  await user.click(saveButton());
   expect(update).toHaveBeenCalledTimes(2);
   expect(update.mock.calls[0]).toEqual(update.mock.calls[1]);
 });
-it("a stale update shows a conflict, blocks another save and offers a reload", async () => {
+it("a remote revision keeps the draft, conflicts the stale save and reloads explicitly", async () => {
   const user = userEvent.setup();
-  const update = vi.fn().mockRejectedValue(new Error("REVISION_CONFLICT"));
+  let reject!: (reason?: unknown) => void;
+  const gate = new Promise<number>((_resolve, rej) => {
+    reject = rej;
+  });
+  const update = vi.fn().mockReturnValue(gate);
   vi.mocked(useMutation).mockReturnValue(update as never);
-  render(<PracticeSettings tenantId={tenantId} canWrite />);
-  await user.type(screen.getByLabelText("Practice name"), "2");
-  await user.click(screen.getByRole("button", { name: "Save settings" }));
-  expect(screen.getByRole("alert")).toHaveTextContent("changed since you opened");
-  expect(
-    screen.getByRole("button", { name: "Reload practice" }),
-  ).toBeVisible();
-  const save = screen.getByRole("button", { name: "Save settings" });
-  expect(save).toBeDisabled();
-  await user.click(save).catch(() => {});
+  const view = render(<PracticeSettings tenantId={tenantId} canWrite />);
+  await user.type(screen.getByLabelText("Tagline (optional)"), " edited");
+  await user.click(saveButton());
   expect(update).toHaveBeenCalledTimes(1);
+  vi.mocked(useQuery).mockReturnValue(remote);
+  view.rerender(<PracticeSettings tenantId={tenantId} canWrite />);
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Quiet rooms edited",
+  );
+  expect(screen.getByRole("alert")).toHaveTextContent("changed elsewhere");
+  expect(
+    screen.queryByRole("button", { name: "Save settings" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Load latest settings" }),
+  ).toBeVisible();
+  reject(new Error("REVISION_CONFLICT"));
+  expect(update).toHaveBeenCalledTimes(1);
+  expect(update.mock.calls[0][0]).toMatchObject({
+    tenantId,
+    expectedRevision: 2,
+    expectedTimeZone: null,
+  });
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Quiet rooms edited",
+  );
+  await user.click(
+    screen.getByRole("button", { name: "Load latest settings" }),
+  );
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Remote edit",
+  );
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(saveButton()).toBeEnabled();
+});
+it("a successful save establishes the baseline so its echo never conflicts", async () => {
+  const user = userEvent.setup();
+  const update = vi.fn().mockResolvedValue(3);
+  vi.mocked(useMutation).mockReturnValue(update as never);
+  const saved: Settings = {
+    ...settings,
+    tagline: "Quiet rooms edited",
+    revision: 3,
+  };
+  const view = render(<PracticeSettings tenantId={tenantId} canWrite />);
+  await user.type(screen.getByLabelText("Tagline (optional)"), " edited");
+  await user.click(saveButton());
+  expect(update.mock.calls[0][0]).toMatchObject({
+    expectedRevision: 2,
+    expectedTimeZone: null,
+  });
+  expect(screen.getByRole("status")).toHaveTextContent("Settings saved.");
+  vi.mocked(useQuery).mockReturnValue(saved);
+  view.rerender(<PracticeSettings tenantId={tenantId} canWrite />);
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Load latest settings" }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Quiet rooms edited",
+  );
+  expect(saveButton()).toBeEnabled();
+});
+it("a tenant switch at the same revision never leaks the prior draft", async () => {
+  const user = userEvent.setup();
+  vi.mocked(useQuery).mockReturnValue(legacy);
+  const other: Settings = {
+    name: "Other practice",
+    revision: 0,
+    availability: {
+      monday: null,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    },
+  };
+  const view = render(
+    <PracticeSettings tenantId={tenantId} canWrite />,
+  );
+  await user.type(screen.getByLabelText("Tagline (optional)"), "A draft");
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue("A draft");
+  vi.mocked(useQuery).mockReturnValue(other);
+  view.rerender(
+    <PracticeSettings tenantId={"other" as TenantId} canWrite />,
+  );
+  expect(screen.getByLabelText("Practice name")).toHaveValue("Other practice");
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue("");
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+it("a time zone change under a dirty form conflicts until explicitly reloaded", async () => {
+  const user = userEvent.setup();
+  const update = vi.fn().mockResolvedValue(3);
+  vi.mocked(useMutation).mockReturnValue(update as never);
+  const view = render(<PracticeSettings tenantId={tenantId} canWrite />);
+  await user.type(screen.getByLabelText("Tagline (optional)"), " edited");
+  vi.mocked(useQuery).mockReturnValue({ ...settings, timeZone: "Europe/London" });
+  view.rerender(<PracticeSettings tenantId={tenantId} canWrite />);
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Quiet rooms edited",
+  );
+  expect(screen.getByRole("alert")).toHaveTextContent("time zone changed");
+  expect(
+    screen.queryByRole("button", { name: "Save settings" }),
+  ).not.toBeInTheDocument();
+  expect(update).not.toHaveBeenCalled();
+  await user.click(
+    screen.getByRole("button", { name: "Load latest settings" }),
+  );
+  expect(screen.getByLabelText("Tagline (optional)")).toHaveValue(
+    "Quiet rooms",
+  );
+  expect(screen.getByText(/Europe\/London/)).toBeVisible();
+  expect(saveButton()).toBeEnabled();
+});
+it("a clean form adopts a time zone change without a conflict", async () => {
+  const user = userEvent.setup();
+  vi.mocked(useMutation).mockReturnValue(vi.fn() as never);
+  const view = render(<PracticeSettings tenantId={tenantId} canWrite />);
+  vi.mocked(useQuery).mockReturnValue({ ...settings, timeZone: "Europe/London" });
+  view.rerender(<PracticeSettings tenantId={tenantId} canWrite />);
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.getByText(/Europe\/London/)).toBeVisible();
+  expect(saveButton()).toBeEnabled();
+  await user.click(saveButton());
 });
 it("viewers see the saved values read-only without owner actions", () => {
   render(<PracticeSettings tenantId={tenantId} canWrite={false} />);

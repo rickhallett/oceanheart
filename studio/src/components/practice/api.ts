@@ -138,7 +138,11 @@ export const practiceApi = {
   >("settings:get"),
   updateSettings: makeFunctionReference<
     "mutation",
-    SettingsInput & { tenantId: TenantId; expectedRevision: number },
+    SettingsInput & {
+      tenantId: TenantId;
+      expectedRevision: number;
+      expectedTimeZone: string | null;
+    },
     number
   >("settings:update"),
   createTenant: makeFunctionReference<
@@ -196,6 +200,8 @@ export function readableError(error: unknown): string {
     return "Keep the tagline to 200 characters without line breaks.";
   if (message.includes("INVALID_ADDRESS"))
     return "Keep the address to 500 characters without control characters.";
+  if (message.includes("TIME_ZONE_CHANGED"))
+    return "The practice time zone changed since you opened these settings. Load the latest settings before saving.";
   if (message.includes("BOOKING_CONFLICT"))
     return "That time overlaps an existing booking. Choose another time.";
   if (message.includes("LEGACY_BOOKING"))
