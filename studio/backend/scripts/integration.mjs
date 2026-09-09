@@ -171,7 +171,7 @@ try {
     Buffer.from(JSON.stringify({ keys: [jwk] })).toString("base64");
   await writeFile(
     resolve(runDir, ".auth.env"),
-    `STUDIO_AUTH_MODE=local-jwt\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
+    `STUDIO_AUTH_MODE=local-jwt\nWORKOS_CLIENT_ID=\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
   );
   await command(["env", "set", "--from-file", ".auth.env"]);
   const localConfig = JSON.parse(
@@ -231,6 +231,38 @@ try {
   ]);
   assert.deepEqual(await viewer.query("tenants:list", {}), []);
   check("practice discovery derives only the authenticated user's memberships");
+  await assert.rejects(anonymous.mutation("tenants:create", {name:"Denied"}), /UNAUTHENTICATED/);
+  await assert.rejects(alice.mutation("tenants:create", {name:" "}), /INVALID_NAME/);
+  const practiceRequest = {name:"Explicit retry practice", requestKey:"practice-retry"};
+  const practiceRetries = await Promise.all([alice.mutation("tenants:create", practiceRequest), alice.mutation("tenants:create", practiceRequest)]);
+  assert.equal(practiceRetries[0], practiceRetries[1]);
+  await assert.rejects(alice.mutation("tenants:create", {...practiceRequest,name:"Different"}), /IDEMPOTENCY_MISMATCH/);
+  check("practice creation validates input and repeated requests create one practice");
+  const taskArgs = {tenantId:tenantA,title:"First live task",requestKey:"task-one"};
+  const taskClients = await Promise.all(Array.from({length:8},()=>client("alice")));
+  const taskIds = await Promise.all(taskClients.map(c=>c.mutation("tasks:create",taskArgs)));
+  assert.equal(new Set(taskIds).size,1);
+  const taskId = taskIds[0];
+  assert.equal(await alice.mutation("tasks:create",taskArgs),taskId);
+  await assert.rejects(alice.mutation("tasks:create",{...taskArgs,title:"Different"}),/IDEMPOTENCY_MISMATCH/);
+  for (const caller of [anonymous,bob]) {
+    const error = caller === anonymous ? /UNAUTHENTICATED/ : /FORBIDDEN/;
+    await assert.rejects(caller.query("tasks:list",{tenantId:tenantA}),error);
+    await assert.rejects(caller.mutation("tasks:create",taskArgs),error);
+    await assert.rejects(caller.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true}),error);
+  }
+  await assert.rejects(bob.mutation("tasks:setCompleted",{tenantId:tenantB,taskId,completed:true}),/FORBIDDEN/);
+  for (const title of [" ","x".repeat(201),"line\nbreak"]) await assert.rejects(alice.mutation("tasks:create",{...taskArgs,title,requestKey:"invalid"}),/INVALID_TITLE/);
+  for (const requestKey of [""," padded","x".repeat(129)]) await assert.rejects(alice.mutation("tasks:create",{...taskArgs,requestKey}),/INVALID_REQUEST_KEY/);
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true});
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true});
+  const freshAlice = await client("alice");
+  assert.equal((await freshAlice.query("tasks:list",{tenantId:tenantA})).items[0].completed,true);
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false});
+  assert.equal((await freshAlice.query("tasks:list",{tenantId:tenantA})).items[0].completed,false);
+  const secondTask = await alice.mutation("tasks:create",{...taskArgs,title:"Second task",requestKey:"task-two"});
+  assert.equal((await alice.query("tasks:list",{tenantId:tenantA})).items[0]._id,secondTask);
+  check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
   const start = Date.UTC(2030, 0, 10, 9);
   const hour = 3600000;
   const booking = {
@@ -387,6 +419,10 @@ try {
     }),
     "FORBIDDEN",
   );
+  assert.equal((await viewer.query("tasks:list",{tenantId:tenantA})).items.length,2);
+  await denied(viewer.mutation("tasks:create",{...taskArgs,requestKey:"viewer"}),"FORBIDDEN");
+  await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
+  check("viewer can read tasks, cannot create or complete them");
   check("viewer can read, cannot book or grant membership");
   await alice.mutation("tenants:removeViewer", {
     tenantId: tenantA,
@@ -394,7 +430,9 @@ try {
   });
   await denied(viewer.query("bookings:list", window), "FORBIDDEN");
   assert.deepEqual(await viewer.query("tenants:list", {}), []);
-  check("membership revocation applies with the same still-valid JWT");
+  await denied(viewer.query("tasks:list",{tenantId:tenantA}),"FORBIDDEN");
+  await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
+  check("membership revocation applies with the same still-valid JWT to tasks and bookings");
   const wrongKeys = await generateKeyPair("RS256");
   for (const [name, opts] of [
     ["wrong signature", { key: wrongKeys.privateKey }],

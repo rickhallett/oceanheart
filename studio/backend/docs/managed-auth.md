@@ -1,8 +1,10 @@
-# Managed Clerk authentication
+# Managed authentication
+
+WorkOS is the live RAD provider: see [WorkOS setup and task contract](workos-rad.md). The Clerk setup below remains supported for existing deployments. Set `WORKOS_CLIENT_ID` to empty for every non-WorkOS mode.
 
 The backend has exactly one explicitly selected authentication mode. Invalid or incomplete configuration rejects deployment; it does not fall back to another provider. `disabled` deliberately deploys no providers and must be selected explicitly.
 
-Set all five variables in the target Convex deployment. Convex rejects references to unset environment variables during auth-config evaluation; set unused values to an empty string.
+Set all six variables (the five below plus `WORKOS_CLIENT_ID`) in the target Convex deployment. Convex rejects references to unset environment variables during auth-config evaluation; set unused values to an empty string.
 
 | Variable | Clerk mode | Isolated integration runner | Disabled mode |
 | --- | --- | --- | --- |

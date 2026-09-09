@@ -2,6 +2,7 @@ import type { AuthConfig } from "convex/server";
 
 type Settings = {
   mode?: string;
+  workosClientId?: string;
   clerkDomain?: string;
   issuer?: string;
   jwks?: string;
@@ -35,6 +36,19 @@ export function buildAuthConfig(settings: Settings): AuthConfig {
     settings.jwks ||
     settings.audience
   );
+  if (mode !== "workos" && settings.workosClientId)
+    throw new Error("WorkOS and other provider configuration are mutually exclusive");
+  if (mode === "workos") {
+    if (settings.clerkDomain || customConfigured)
+      throw new Error("WorkOS and other provider configuration are mutually exclusive");
+    const clientId = required(settings.workosClientId, "WORKOS_CLIENT_ID");
+    if (!/^client_[A-Za-z0-9]+$/.test(clientId)) throw new Error("Invalid WORKOS_CLIENT_ID");
+    const jwks = `https://api.workos.com/sso/jwks/${clientId}`;
+    return { providers: [
+      { type: "customJwt", issuer: "https://api.workos.com/", algorithm: "RS256", jwks, applicationID: clientId },
+      { type: "customJwt", issuer: `https://api.workos.com/user_management/${clientId}`, algorithm: "RS256", jwks },
+    ] };
+  }
   if (mode === "disabled") {
     if (settings.clerkDomain || customConfigured)
       throw new Error("Disabled auth must not retain provider configuration");
@@ -77,5 +91,5 @@ export function buildAuthConfig(settings: Settings): AuthConfig {
       ],
     };
   }
-  throw new Error("STUDIO_AUTH_MODE must be disabled, clerk or local-jwt");
+  throw new Error("STUDIO_AUTH_MODE must be disabled, workos, clerk or local-jwt");
 }

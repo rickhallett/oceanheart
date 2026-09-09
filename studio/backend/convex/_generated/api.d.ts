@@ -10,6 +10,7 @@
 
 import type * as bookings from "../bookings.js";
 import type * as lib_access from "../lib/access.js";
+import type * as tasks from "../tasks.js";
 import type * as tenants from "../tenants.js";
 
 import type {
@@ -21,6 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
   "lib/access": typeof lib_access;
+  tasks: typeof tasks;
   tenants: typeof tenants;
 }>;
 

@@ -8,13 +8,23 @@ function validateIdentity(identity: string) {
     throw new ConvexError("INVALID_IDENTITY");
 }
 export const create = mutation({
-  args: { name: v.string() },
+  args: { name: v.string(), requestKey: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user) throw new ConvexError("UNAUTHENTICATED");
     const name = args.name.trim();
     if (!name || name.length > 100) throw new ConvexError("INVALID_NAME");
-    const tenantId = await ctx.db.insert("tenants", { name });
+    if (args.requestKey !== undefined && (!args.requestKey || args.requestKey.trim() !== args.requestKey || args.requestKey.length > 128))
+      throw new ConvexError("INVALID_REQUEST_KEY");
+    if (args.requestKey !== undefined) {
+      const existing = await ctx.db.query("tenants").withIndex("by_creator_request", q => q.eq("createdBy", user.tokenIdentifier).eq("requestKey", args.requestKey)).unique();
+      if (existing) {
+        if (existing.name !== name) throw new ConvexError("IDEMPOTENCY_MISMATCH");
+        await requireMember(ctx, existing._id, true);
+        return existing._id;
+      }
+    }
+    const tenantId = await ctx.db.insert("tenants", { name, createdBy: user.tokenIdentifier, ...(args.requestKey !== undefined ? {requestKey: args.requestKey} : {}) });
     await ctx.db.insert("memberships", {
       tenantId,
       identity: user.tokenIdentifier,
