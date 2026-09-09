@@ -41,12 +41,26 @@ type CompleteArgs = Assert<
     FunctionArgs<typeof practiceApi.setCompleted>
   >
 >;
+type TaskUpdateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.tasks.update>,
+    FunctionArgs<typeof practiceApi.updateTask>
+  >
+>;
+type TaskRemoveArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.tasks.remove>,
+    FunctionArgs<typeof practiceApi.removeTask>
+  >
+>;
 it("uses deployed command names", () => {
   expect(getFunctionName(practiceApi.tenants)).toBe("tenants:list");
   expect(getFunctionName(practiceApi.createTenant)).toBe("tenants:create");
   expect(getFunctionName(practiceApi.tasks)).toBe("tasks:list");
   expect(getFunctionName(practiceApi.createTask)).toBe("tasks:create");
   expect(getFunctionName(practiceApi.setCompleted)).toBe("tasks:setCompleted");
+  expect(getFunctionName(practiceApi.updateTask)).toBe("tasks:update");
+  expect(getFunctionName(practiceApi.removeTask)).toBe("tasks:remove");
 });
 type ServiceCreateArgs = Assert<
   Equal<

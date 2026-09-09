@@ -7,6 +7,7 @@ import {
 } from "@/components/practice/practice-ui";
 import { practiceConfigured } from "@/lib/practice-config";
 import "@/components/practice/practice.css";
+import "@/components/practice/task-maintenance.css";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {

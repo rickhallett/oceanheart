@@ -5,6 +5,7 @@ import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
+import { taskMaintenanceChecks } from "./task-maintenance-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -277,6 +278,24 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   const secondTask = await alice.mutation("tasks:create",{...taskArgs,title:"Second task",requestKey:"task-two"});
   assert.equal((await alice.query("tasks:list",{tenantId:tenantA})).items[0]._id,secondTask);
   check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
+  await taskMaintenanceChecks({
+    alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,
+    seedBoundaryTasks:async()=>{
+      const legacy={tenantId:tenantA,title:"Legacy task",completed:false,createdAt:1,createdBy:`${issuer}|alice`,requestKey:"legacy-task"};
+      await writeFile(resolve(runDir,"legacy-task.json"),JSON.stringify([legacy]));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","legacy-task.json"]);
+      const legacyTask=(await alice.query("tasks:list",{tenantId:tenantA,filter:"open"})).items.find(task=>task.title==="Legacy task");
+      assert.ok(legacyTask,"legacy task import was not visible to native task query");
+      const rows=[
+        ...Array.from({length:201},(_,index)=>({tenantId:tenantA,title:`Open boundary task ${index}`,completed:false,createdAt:index+2,createdBy:`${issuer}|alice`,requestKey:`open-boundary-${index}`})),
+        ...Array.from({length:201},(_,index)=>({tenantId:tenantA,title:`Completed boundary task ${index}`,completed:true,createdAt:index+203,createdBy:`${issuer}|alice`,requestKey:`completed-boundary-${index}`})),
+        ...Array.from({length:250},(_,index)=>({tenantId:tenantA,title:`Removed boundary task ${index}`,completed:false,removedAt:index+1,createdAt:index+404,createdBy:`${issuer}|alice`,requestKey:`removed-boundary-${index}`})),
+      ];
+      await writeFile(resolve(runDir,"task-boundary.json"),JSON.stringify(rows));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","task-boundary.json"]);
+      return legacyTask._id;
+    },
+  });
   await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
   await recordManagementChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"managementlocal"});
   await settingsChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"settings-local"});
@@ -447,7 +466,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     }),
     "FORBIDDEN",
   );
-  assert.equal((await viewer.query("tasks:list",{tenantId:tenantA})).items.length,2);
+  assert.equal((await viewer.query("tasks:list",{tenantId:tenantA})).items.length,200);
   await denied(viewer.mutation("tasks:create",{...taskArgs,requestKey:"viewer"}),"FORBIDDEN");
   await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
   check("viewer can read tasks, cannot create or complete them");
