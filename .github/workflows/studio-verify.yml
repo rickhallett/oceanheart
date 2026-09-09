@@ -2,14 +2,14 @@ name: Studio verification
 
 on:
   pull_request:
-    paths:
-      - "studio/**"
-      - ".github/workflows/studio-verify.yml"
+    # Always report the required checks, including documentation-only PRs.
+    # Path-filtered PR workflows can leave branch protection waiting forever.
   push:
     branches: [main, studio/dev]
     paths:
       - "studio/**"
       - ".github/workflows/studio-verify.yml"
+      - ".github/workflows/studio-release-policy.yml"
   workflow_dispatch:
 
 permissions:
