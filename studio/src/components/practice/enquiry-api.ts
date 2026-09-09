@@ -18,6 +18,12 @@ export type EnquirySummary = {
   bookingId?: GenericId<"bookings">;
 };
 export type Enquiry = EnquirySummary & {
+  source?: {
+    kind: "gmail";
+    mailbox: string;
+    messageId: string;
+    truncated: boolean;
+  };
   linkedClient?: { _id: GenericId<"clients">; name: string; archived: boolean };
   linkedBooking?: {
     _id: GenericId<"bookings">;

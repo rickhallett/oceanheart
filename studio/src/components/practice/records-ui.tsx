@@ -11,7 +11,7 @@ import { formatPrice, poundsToMinor } from "./money";
 export type PageStatus =
   "LoadingFirstPage" | "CanLoadMore" | "LoadingMore" | "Exhausted";
 export type PracticeSection =
-  "tasks" | "services" | "clients" | "bookings" | "enquiries";
+  "tasks" | "services" | "clients" | "bookings" | "enquiries" | "gmail";
 export function PracticeNavigation({
   section,
   canWrite,
@@ -27,7 +27,7 @@ export function PracticeNavigation({
         [
           "tasks",
           "services",
-          ...(canWrite ? ["clients", "bookings", "enquiries"] : []),
+          ...(canWrite ? ["clients", "bookings", "enquiries", "gmail"] : []),
         ] as PracticeSection[]
       ).map((item) => (
         <button

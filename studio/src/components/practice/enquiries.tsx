@@ -28,12 +28,14 @@ import { formatPrice } from "./money";
 export function PracticeEnquiries({
   tenantId,
   timeZone,
+  initialId,
 }: {
   tenantId: TenantId;
   timeZone?: string;
+  initialId?: EnquiryId;
 }) {
   const [resolved, setResolved] = useState(false),
-    [selected, setSelected] = useState<EnquiryId>(),
+    [selected, setSelected] = useState<EnquiryId | undefined>(initialId),
     [adding, setAdding] = useState(false);
   const page = usePaginatedQuery(
     enquiryApi.list,
@@ -285,8 +287,17 @@ function EnquiryDetail({
       </p>
       <p className="lp-enquiry-message">{record.message}</p>
       <p className="lp-muted">
-        {record.resolved ? "Resolved" : "Open"} · Manually recorded
+        {record.resolved ? "Resolved" : "Open"} ·{" "}
+        {record.source?.kind === "gmail"
+          ? `Imported from Gmail (${record.source.mailbox})`
+          : "Manually recorded"}
       </p>
+      {record.source?.truncated && (
+        <p className="lp-muted">
+          Imported message text was truncated. Check Gmail for the full
+          original.
+        </p>
+      )}
       <h3>Reply draft — not sent</h3>
       {draft ? (
         <ReplyDraft

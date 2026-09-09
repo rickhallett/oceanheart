@@ -1,3 +1,5 @@
+import {gmailChecks} from "./gmail-checks.mjs";
+import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
@@ -30,7 +32,7 @@ const audience = "studio-local-verification";
 const report = {
   runtime: "real local Convex backend over HTTP",
   authentication:
-    "RS256 bearer JWT verified by backend; no admin identity injection",
+    "RS256 bearer JWT verified by backend; Gmail transitions use an allowlisted local-only test adapter, never hosted source.",
   checks: [],
 };
 const check = (name) => {
@@ -102,6 +104,12 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
+  // This allowlisted adapter exists ONLY in the isolated local copy, never hosted source.
+  await writeFile(resolve(runDir,"convex/gmailTest.ts"), `import {action} from "./_generated/server";
+import {internal} from "./_generated/api";
+import {v} from "convex/values";
+export const transition=action({args:{name:v.union(v.literal("consume"),v.literal("finish"),v.literal("importMessage"),v.literal("disconnect"),v.literal("expireState")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>ctx.runMutation(internal.gmailInternal[name],args)});
+`);
   for (const file of ["package.json", "tsconfig.json", "auth-policy.ts"])
     await cp(resolve(root, file), resolve(runDir, file));
   await symlink(
@@ -170,12 +178,13 @@ try {
     alg: "RS256",
     use: "sig",
   };
+  const gmailSigning=randomBytes(32).toString("base64"),gmailEncryption=randomBytes(32).toString("base64");
   const jwks =
     "data:text/plain;charset=utf-8;base64," +
     Buffer.from(JSON.stringify({ keys: [jwk] })).toString("base64");
   await writeFile(
     resolve(runDir, ".auth.env"),
-    `STUDIO_AUTH_MODE=local-jwt\nWORKOS_CLIENT_ID=\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
+    `STUDIO_AUTH_MODE=local-jwt\nWORKOS_CLIENT_ID=\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\nGOOGLE_CLIENT_ID=synthetic-client\nGOOGLE_CLIENT_SECRET=synthetic-secret\nGOOGLE_REDIRECT_URI=https://studio.invalid/practice/integrations/gmail/callback\nGMAIL_TOKEN_ENCRYPTION_KEY=${gmailEncryption}\nGMAIL_ROUTE_SIGNING_KEY=${gmailSigning}\n`,
   );
   await command(["env", "set", "--from-file", ".auth.env"]);
   const localConfig = JSON.parse(
@@ -198,7 +207,7 @@ try {
     { recursive: true },
   );
   assert.equal(
-    await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -502,6 +511,7 @@ try {
   assert.ok((await alice.query("bookings:list",{tenantId:tenantA,from:midnight,to:midnight+86400000})).items.some(r=>r._id===overnight));
   assert.ok(!(await alice.query("bookings:list",{tenantId:tenantA,from:midnight+3600000,to:midnight+86400000})).items.some(r=>r._id===overnight));
   check("overnight bookings remain visible the next day until their exclusive end instant");
+  await gmailChecks({alice,bob,viewer,anonymous,tenantA,tenantB,issuer,command,runDir,check,signing:gmailSigning});
   await enquiryChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"enquiry-local"});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });

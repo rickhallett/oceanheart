@@ -107,3 +107,7 @@ Next.js can normalize an internal request hostname to `localhost`; trusting that
 hostname would redirect a `127.0.0.1` session to a different cookie origin after
 successful authentication. A route-level SDK contract test covers both local and
 HTTPS staging origins while the request exposes an internal hostname.
+
+Gmail uses the existing verified WorkOS actor and session, with a separate
+Google consent flow. See [GMAIL.md](GMAIL.md) for the route proof, state binding,
+staging-only configuration and human acceptance gate.

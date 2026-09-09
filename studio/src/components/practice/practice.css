@@ -446,3 +446,23 @@
   text-align: left;
   overflow-wrap: anywhere;
 }
+.lp-gmail {
+  max-width: 680px;
+}
+.lp-gmail > p {
+  margin: 12px 0;
+}
+.lp-gmail > button {
+  margin-top: 20px;
+}
+.lp-gmail-preview {
+  margin-top: 28px;
+}
+.lp-root .lp-gmail-message {
+  white-space: normal;
+  height: auto;
+  min-height: 34px;
+  max-width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}

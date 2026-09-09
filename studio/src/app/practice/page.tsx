@@ -16,7 +16,11 @@ export const metadata: Metadata = {
 export default async function PracticePage({
   searchParams,
 }: {
-  searchParams: Promise<{ authError?: string }>;
+  searchParams: Promise<{
+    authError?: string;
+    gmailStatus?: string;
+    gmailTenant?: string;
+  }>;
 }) {
   if (!practiceConfigured()) return <PracticeUnavailable />;
   const { accessToken: _accessToken, ...auth } = await withAuth();
@@ -37,10 +41,17 @@ export default async function PracticePage({
         </section>
       </PracticeShell>
     );
+  const params = await searchParams;
+  const gmailReturn = ["connected", "denied", "failed"].includes(
+    params.gmailStatus ?? "",
+  )
+    ? { status: params.gmailStatus!, tenantId: params.gmailTenant }
+    : undefined;
   return (
     <PracticeApp
       convexUrl={process.env.NEXT_PUBLIC_CONVEX_URL!}
       initialAuth={auth}
+      gmailReturn={gmailReturn}
     />
   );
 }
