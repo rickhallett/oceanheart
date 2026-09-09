@@ -1,5 +1,11 @@
 # Oceanheart repository instructions
 
+## Oceanheart Studio deployments
+
+For significant Studio updates on development/staging or production, follow the
+[database readiness checks in `studio/AGENTS.md`](studio/AGENTS.md#database-readiness)
+and the [staging and release policy](studio/docs/STAGING-AND-RELEASE.md).
+
 ## Blog creation and revision
 
 - Preserve the article's intended `draft` state and the hidden blog-archive behaviour in `content/blog/_index.md`.
