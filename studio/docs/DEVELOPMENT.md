@@ -18,14 +18,17 @@ The unrelated historic local branch `dev` is preserved. Do not confuse it with `
 | Environment | Role | Status |
 | --- | --- | --- |
 | Development | `studio/dev`, local server, fictional fixtures | Canonical accepted UI |
-| Preview / staging | Feature PR build against development; isolated provider data when added | No dedicated hosted staging environment verified/configured in this promotion |
+| Preview | Feature PR build targeting `studio/dev`; fictional fixtures or isolated provider data | Vercel Git previews available; candidates until CI and acceptance pass |
+| Staging | `studio/dev`; custom Vercel staging environment with isolated provider data | Branch mapping configured; next deployment needs environment/SHA acceptance |
 | Production | `main`, existing Studio Vercel project | Unchanged by this promotion |
 
-Production project is documented as `oceanheart-studio`, root directory `studio`. Do not infer live deployment state from local folder names. Before a production release, verify Vercel's Git branch, root directory, environment variables and deployed SHA. No production deployment is part of this development promotion.
+Production project is verified as `oceanheart-studio`, root directory `studio`, Node.js 24, production branch `main`. Automatic custom-domain assignment is disabled for manual promotion. See the staging policy for the dated provider checkpoint. Do not infer live deployment state from local folder names. Before a production release, verify Vercel's Git branch, root directory, environment variables and deployed SHA. No production deployment is part of this development promotion.
 
 ## Daily workflow
 
 Start feature branches from updated `studio/dev`. Deliver one complete user journey per PR, targeting `studio/dev`. Use the style guide and keep demo fixtures separate from live records. Review browser evidence and CI before merging. Release from `studio/dev` to `main` through a reviewed PR; never treat pushing development as production approval.
+
+Follow [STAGING-AND-RELEASE.md](STAGING-AND-RELEASE.md) for CI, staging acceptance, CodeRabbit review cadence and the explicit production approval boundary.
 
 ```sh
 npm ci

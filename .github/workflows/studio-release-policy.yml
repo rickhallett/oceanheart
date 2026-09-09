@@ -1,0 +1,49 @@
+name: Studio release policy
+
+on:
+  # Resolve this workflow from the trusted base branch, never the PR revision.
+  pull_request_target:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  release-source:
+    name: Studio release source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require Studio releases through development
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EXPECTED_FILES: ${{ github.event.pull_request.changed_files }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Read metadata only. Never check out, source, or execute PR content.
+          # GitHub's files endpoint caps results at 3,000; fail closed above it.
+          if [[ ! "$EXPECTED_FILES" =~ ^[0-9]+$ ]] || (( EXPECTED_FILES > 3000 )); then
+            echo "::error::Cannot verify the complete PR file list. Split the release into a smaller batch."
+            exit 1
+          fi
+          files=$(gh api --paginate "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" | jq -s 'add')
+          if [[ $(jq 'length' <<<"$files") != "$EXPECTED_FILES" ]]; then
+            echo "::error::PR file list is incomplete or changed during verification. Re-run on the current revision."
+            exit 1
+          fi
+          studio_changes=$(jq 'any(.[]; [.filename, (.previous_filename // "")] | any(.[]; startswith("studio/") or . == ".github/workflows/studio-verify.yml" or . == ".github/workflows/studio-release-policy.yml" or . == ".coderabbit.yaml"))' <<<"$files")
+          if [[ "$studio_changes" == "false" ]]; then
+            echo "No Studio release changes in this PR."
+            exit 0
+          fi
+          if [[ "$HEAD_BRANCH" != "studio/dev" || "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
+            echo "::error::Studio changes must first merge into studio/dev. Open the production release PR from this repository's studio/dev branch."
+            exit 1
+          fi
+          echo "Release source accepted. Staging acceptance and explicit user approval are still required before merging."
