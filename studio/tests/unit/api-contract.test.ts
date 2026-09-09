@@ -137,6 +137,30 @@ type setTimeZoneResult = Assert<
     FunctionReturnType<typeof practiceApi.setTimeZone>
   >
 >;
+type settingsGetArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.settings.get>,
+    FunctionArgs<typeof practiceApi.settings>
+  >
+>;
+type settingsGetResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.settings.get>,
+    FunctionReturnType<typeof practiceApi.settings>
+  >
+>;
+type settingsUpdateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.settings.update>,
+    FunctionArgs<typeof practiceApi.updateSettings>
+  >
+>;
+type settingsUpdateResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.settings.update>,
+    FunctionReturnType<typeof practiceApi.updateSettings>
+  >
+>;
 type bookingsArgs = Assert<
   Equal<
     FunctionArgs<typeof api.bookings.list>,
@@ -195,6 +219,8 @@ it("uses deployed booking and timezone command names", () => {
     "bookings:reschedule",
   );
   expect(getFunctionName(practiceApi.cancelBooking)).toBe("bookings:cancel");
+  expect(getFunctionName(practiceApi.settings)).toBe("settings:get");
+  expect(getFunctionName(practiceApi.updateSettings)).toBe("settings:update");
 });
 
 import { enquiryApi } from "../../src/components/practice/enquiry-api";

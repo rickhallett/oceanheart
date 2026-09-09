@@ -131,6 +131,16 @@ export const practiceApi = {
   tenants: makeFunctionReference<"query", Record<string, never>, Tenant[]>(
     "tenants:list",
   ),
+  settings: makeFunctionReference<
+    "query",
+    { tenantId: TenantId },
+    PracticeSettings
+  >("settings:get"),
+  updateSettings: makeFunctionReference<
+    "mutation",
+    SettingsInput & { tenantId: TenantId; expectedRevision: number },
+    number
+  >("settings:update"),
   createTenant: makeFunctionReference<
     "mutation",
     { name: string; requestKey?: string },
@@ -180,6 +190,12 @@ export function readableError(error: unknown): string {
     return "This enquiry is already linked to different records. Reload the practice to review its links.";
   if (message.includes("TIME_ZONE_REQUIRED"))
     return "Save the practice time zone before scheduling.";
+  if (message.includes("INVALID_AVAILABILITY"))
+    return "Give each open day a valid opening time before its closing time.";
+  if (message.includes("INVALID_TAGLINE"))
+    return "Keep the tagline to 200 characters without line breaks.";
+  if (message.includes("INVALID_ADDRESS"))
+    return "Keep the address to 500 characters without control characters.";
   if (message.includes("BOOKING_CONFLICT"))
     return "That time overlaps an existing booking. Choose another time.";
   if (message.includes("LEGACY_BOOKING"))
@@ -212,6 +228,34 @@ export type Service = {
   active: boolean;
   revision: number;
   createdAt: number;
+};
+export type DayAvailability = { open: string; close: string } | null;
+export type WeeklyAvailability = {
+  monday: DayAvailability;
+  tuesday: DayAvailability;
+  wednesday: DayAvailability;
+  thursday: DayAvailability;
+  friday: DayAvailability;
+  saturday: DayAvailability;
+  sunday: DayAvailability;
+};
+export type PracticeSettings = {
+  name: string;
+  revision: number;
+  timeZone?: string;
+  tagline?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  availability: WeeklyAvailability;
+};
+export type SettingsInput = {
+  name: string;
+  tagline?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  availability: WeeklyAvailability;
 };
 export type Client = {
   archived: boolean;

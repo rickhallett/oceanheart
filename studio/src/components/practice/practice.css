@@ -466,3 +466,53 @@
   text-align: left;
   overflow-wrap: anywhere;
 }
+.lp-settings {
+  max-width: 680px;
+}
+.lp-settings .lp-record-form {
+  max-width: 560px;
+}
+.lp-settings-sub {
+  margin: 24px 0 8px !important;
+}
+.lp-availability-note {
+  margin: 0 0 4px !important;
+}
+.lp-day-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+}
+.lp-day-row > label {
+  width: 76px;
+  margin: 0;
+  color: #17212f;
+  font-size: 14px;
+}
+.lp-day-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #255bd7;
+  flex-shrink: 0;
+}
+.lp-day-row input[type="time"] {
+  width: 108px;
+  flex-shrink: 0;
+}
+.lp-day-row .lp-muted {
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .lp-day-row {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .lp-day-row > label {
+    width: auto;
+    margin-right: auto;
+  }
+  .lp-day-row input[type="time"] {
+    width: 96px;
+  }
+}

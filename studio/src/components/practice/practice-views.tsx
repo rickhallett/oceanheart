@@ -7,6 +7,7 @@ import type { EnquiryId } from "./enquiry-api";
 import { PracticeEnquiries } from "./enquiries";
 import { PracticeBookings } from "./bookings";
 import { TaskPanel } from "./practice-ui";
+import { PracticeSettings } from "./settings";
 import {
   ServicesPanel,
   ClientsPanel,
@@ -76,6 +77,12 @@ function PracticeContent({
         <PracticeTasks tenantId={tenantId} canWrite={canWrite} />
       ) : section === "services" ? (
         <PracticeServices tenantId={tenantId} canWrite={canWrite} />
+      ) : section === "settings" ? (
+        <PracticeSettings
+          tenantId={tenantId}
+          canWrite={canWrite}
+          timeZone={timeZone}
+        />
       ) : canWrite && section === "gmail" ? (
         <PracticeGmail
           tenantId={tenantId}
