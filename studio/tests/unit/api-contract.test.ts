@@ -124,3 +124,75 @@ it("uses deployed edit and archive command names", () => {
     "clients:setArchived",
   );
 });
+
+type setTimeZoneArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.tenants.setTimeZone>,
+    FunctionArgs<typeof practiceApi.setTimeZone>
+  >
+>;
+type setTimeZoneResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.tenants.setTimeZone>,
+    FunctionReturnType<typeof practiceApi.setTimeZone>
+  >
+>;
+type bookingsArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.bookings.list>,
+    FunctionArgs<typeof practiceApi.bookings>
+  >
+>;
+type bookingsResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.bookings.list>,
+    FunctionReturnType<typeof practiceApi.bookings>
+  >
+>;
+type createBookingArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.bookings.createLinked>,
+    FunctionArgs<typeof practiceApi.createBooking>
+  >
+>;
+type createBookingResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.bookings.createLinked>,
+    FunctionReturnType<typeof practiceApi.createBooking>
+  >
+>;
+type rescheduleBookingArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.bookings.reschedule>,
+    FunctionArgs<typeof practiceApi.rescheduleBooking>
+  >
+>;
+type rescheduleBookingResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.bookings.reschedule>,
+    FunctionReturnType<typeof practiceApi.rescheduleBooking>
+  >
+>;
+type cancelBookingArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.bookings.cancel>,
+    FunctionArgs<typeof practiceApi.cancelBooking>
+  >
+>;
+type cancelBookingResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.bookings.cancel>,
+    FunctionReturnType<typeof practiceApi.cancelBooking>
+  >
+>;
+it("uses deployed booking and timezone command names", () => {
+  expect(getFunctionName(practiceApi.setTimeZone)).toBe("tenants:setTimeZone");
+  expect(getFunctionName(practiceApi.bookings)).toBe("bookings:list");
+  expect(getFunctionName(practiceApi.createBooking)).toBe(
+    "bookings:createLinked",
+  );
+  expect(getFunctionName(practiceApi.rescheduleBooking)).toBe(
+    "bookings:reschedule",
+  );
+  expect(getFunctionName(practiceApi.cancelBooking)).toBe("bookings:cancel");
+});

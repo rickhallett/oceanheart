@@ -1,6 +1,6 @@
 import React from "react";
 import { beforeEach, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import { getFunctionName } from "convex/server";
@@ -71,4 +71,54 @@ it("removes owner-only client data immediately when the practice role changes", 
     screen.queryByRole("heading", { name: "Clients" }),
   ).not.toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Tasks" })).toBeVisible();
+});
+
+it("role downgrade unmounts the private booking agenda and prevents further booking reads", async () => {
+  const user = userEvent.setup();
+  const tenantId = "first" as TenantId;
+  const view = render(
+    <PracticeViews tenantId={tenantId} canWrite timeZone="Europe/London" />,
+  );
+  await user.click(screen.getByRole("button", { name: "Bookings" }));
+  expect(screen.getByLabelText("Booking date")).toBeVisible();
+  vi.mocked(useQuery).mockClear();
+  view.rerender(
+    <PracticeViews
+      tenantId={tenantId}
+      canWrite={false}
+      timeZone="Europe/London"
+    />,
+  );
+  expect(
+    screen.queryByRole("button", { name: "Bookings" }),
+  ).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("Booking date")).not.toBeInTheDocument();
+  expect(
+    vi
+      .mocked(useQuery)
+      .mock.calls.some((call) => getFunctionName(call[0]) === "bookings:list"),
+  ).toBe(false);
+});
+
+it("an unrepresentable agenda date skips the backend query and keeps the practice usable", async () => {
+  const user = userEvent.setup();
+  render(
+    <PracticeViews
+      tenantId={"first" as TenantId}
+      canWrite
+      timeZone="Pacific/Apia"
+    />,
+  );
+  await user.click(screen.getByRole("button", { name: "Bookings" }));
+  fireEvent.change(screen.getByLabelText("Booking date"), {
+    target: { value: "2011-12-30" },
+  });
+  expect(screen.getByRole("alert")).toHaveTextContent("does not exist");
+  expect(vi.mocked(useQuery).mock.calls.at(-1)?.[1]).toBe("skip");
+  expect(screen.getByRole("button", { name: "New booking" })).toBeDisabled();
+  fireEvent.change(screen.getByLabelText("Booking date"), {
+    target: { value: "2027-01-15" },
+  });
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "New booking" })).toBeEnabled();
 });
