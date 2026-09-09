@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import { practiceApi, type TenantId } from "./api";
+import { PracticeEnquiries } from "./enquiries";
 import { PracticeBookings } from "./bookings";
 import { TaskPanel } from "./practice-ui";
 import {
@@ -64,6 +65,8 @@ function PracticeContent({
         <PracticeTasks tenantId={tenantId} canWrite={canWrite} />
       ) : section === "services" ? (
         <PracticeServices tenantId={tenantId} canWrite={canWrite} />
+      ) : canWrite && section === "enquiries" ? (
+        <PracticeEnquiries tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite && section === "bookings" ? (
         <PracticeBookings tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite ? (

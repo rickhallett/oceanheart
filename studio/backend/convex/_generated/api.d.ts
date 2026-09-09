@@ -10,8 +10,11 @@
 
 import type * as bookings from "../bookings.js";
 import type * as clients from "../clients.js";
+import type * as enquiries from "../enquiries.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_bookingCommands from "../lib/bookingCommands.js";
 import type * as lib_catalog from "../lib/catalog.js";
+import type * as lib_createClient from "../lib/createClient.js";
 import type * as migrations from "../migrations.js";
 import type * as services from "../services.js";
 import type * as tasks from "../tasks.js";
@@ -26,8 +29,11 @@ import type {
 declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
   clients: typeof clients;
+  enquiries: typeof enquiries;
   "lib/access": typeof lib_access;
+  "lib/bookingCommands": typeof lib_bookingCommands;
   "lib/catalog": typeof lib_catalog;
+  "lib/createClient": typeof lib_createClient;
   migrations: typeof migrations;
   services: typeof services;
   tasks: typeof tasks;

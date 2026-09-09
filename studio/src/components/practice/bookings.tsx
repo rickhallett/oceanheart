@@ -516,7 +516,13 @@ export function BookingForm({
     </form>
   );
 }
-function PickerMore({ page, noun }: { page: PickPage<unknown>; noun: string }) {
+export function PickerMore({
+  page,
+  noun,
+}: {
+  page: PickPage<unknown>;
+  noun: string;
+}) {
   if (page.status === "LoadingFirstPage")
     return <p role="status">Loading {noun}…</p>;
   if (page.status === "Exhausted")

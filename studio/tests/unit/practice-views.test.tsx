@@ -122,3 +122,21 @@ it("an unrepresentable agenda date skips the backend query and keeps the practic
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "New booking" })).toBeEnabled();
 });
+
+it("enquiry data and navigation are removed on role downgrade", async () => {
+  const user = userEvent.setup();
+  const tenantId = "first" as TenantId;
+  const view = render(<PracticeViews tenantId={tenantId} canWrite />);
+  await user.click(screen.getByRole("button", { name: "Enquiries" }));
+  expect(screen.getByRole("heading", { name: "Enquiries" })).toBeVisible();
+  vi.mocked(usePaginatedQuery).mockClear();
+  view.rerender(<PracticeViews tenantId={tenantId} canWrite={false} />);
+  expect(
+    screen.queryByRole("button", { name: "Enquiries" }),
+  ).not.toBeInTheDocument();
+  expect(
+    vi
+      .mocked(usePaginatedQuery)
+      .mock.calls.some((call) => getFunctionName(call[0]) === "enquiries:list"),
+  ).toBe(false);
+});

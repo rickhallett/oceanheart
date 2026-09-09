@@ -12,7 +12,7 @@ const fixturePath =
     : undefined);
 const allowed = new Set([
   "http://127.0.0.1:4331",
-  "http://127.0.0.1:4342",
+  "http://127.0.0.1:4343",
   "https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app",
 ]);
 if (!allowed.has(baseURL) || !fixturePath)
@@ -46,6 +46,7 @@ const report = {
   services: [],
   clients: [],
   bookings: [],
+  enquiries: [],
   status: "running",
 };
 const browser = await chromium.launch();
@@ -121,12 +122,12 @@ async function screenshot(page, width, label) {
   await page.screenshot({ path: path.join(output, filename), fullPage: true });
   report.screenshots.push({ filename, width, ...metrics });
 }
-async function recordsScreenshots(page, section, state = "") {
+async function recordsScreenshots(page, section, state = "", heading) {
   for (const width of [1440, 400, 320]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(
       page.getByRole("heading", {
-        name: section[0].toUpperCase() + section.slice(1),
+        name: heading ?? section[0].toUpperCase() + section.slice(1),
         exact: true,
       }),
     ).toBeVisible();
@@ -553,6 +554,185 @@ try {
       ).toContainText("Cancelled");
     },
   );
+  await check(
+    "manual enquiry draft and atomic client/booking conversion remain unsent",
+    async () => {
+      const page = first.page;
+      phase = "create booking to verify enquiry conversion conflict";
+      await page.getByLabel("Booking date", { exact: true }).fill("2030-01-17");
+      await page
+        .getByRole("button", { name: "New booking", exact: true })
+        .click();
+      await page
+        .getByLabel("Client", { exact: true })
+        .selectOption(report.clients[0].clientId);
+      await page
+        .getByLabel("Service", { exact: true })
+        .selectOption(report.services[0].serviceId);
+      await page
+        .getByLabel("Start (Europe/London)", { exact: true })
+        .fill("2030-01-17T09:00");
+      await page
+        .getByRole("button", { name: "Save booking", exact: true })
+        .click();
+      const blocker = page.locator("[data-booking-id]");
+      await expect(blocker).toHaveCount(1);
+      report.bookings.push({
+        bookingId: await blocker.getAttribute("data-booking-id"),
+        tenantId: report.practices[0].tenantId,
+      });
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2),
+      );
+      phase = "record manual enquiry";
+      await page
+        .getByRole("button", { name: "Enquiries", exact: true })
+        .click();
+      await page
+        .getByRole("button", { name: "Record enquiry", exact: true })
+        .click();
+      const subject = `Manual enquiry ${run}`;
+      await page
+        .getByLabel("Contact name", { exact: true })
+        .fill(`Enquirer ${run}`);
+      await page
+        .getByLabel("Email (optional)", { exact: true })
+        .fill("record@example.invalid");
+      await page.getByLabel("Subject", { exact: true }).fill(subject);
+      await page
+        .getByLabel("Message", { exact: true })
+        .fill(
+          "Please arrange a consultation. This is a manually entered test enquiry.",
+        );
+      await page
+        .getByRole("button", { name: "Save enquiry", exact: true })
+        .click();
+      const detail = page.locator("[data-enquiry-detail-id]");
+      await expect(detail).toBeVisible();
+      const enquiryId = await detail.getAttribute("data-enquiry-detail-id");
+      expect(enquiryId).toBeTruthy();
+      const receipt = {
+        enquiryId,
+        tenantId: report.practices[0].tenantId,
+        subject,
+      };
+      report.enquiries.push(receipt);
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2),
+      );
+      phase = "save unsent reply draft";
+      await page
+        .getByRole("button", { name: "Edit reply draft", exact: true })
+        .click();
+      await page
+        .getByLabel("Reply draft (not sent)", { exact: true })
+        .fill("Thank you. This reply is a saved draft only.");
+      await page
+        .getByRole("button", { name: "Save draft", exact: true })
+        .click();
+      await expect(
+        page.getByText("Reply draft saved. Nothing was sent.", { exact: true }),
+      ).toBeVisible();
+      phase = "atomic conversion rejects overlap and preserves inputs";
+      await page
+        .getByRole("button", {
+          name: "Convert to client / booking",
+          exact: true,
+        })
+        .click();
+      await page
+        .getByLabel("Client choice", { exact: true })
+        .selectOption("new");
+      await page
+        .getByLabel("Booking choice", { exact: true })
+        .selectOption("new");
+      await page
+        .getByLabel("Booking service", { exact: true })
+        .selectOption(report.services[0].serviceId);
+      await page
+        .getByLabel("Start (Europe/London)", { exact: true })
+        .fill("2030-01-17T09:30");
+      await page
+        .getByRole("button", { name: "Save links", exact: true })
+        .click();
+      await expect(
+        page.locator(".lp-record-form").getByRole("alert"),
+      ).toContainText("overlaps");
+      await expect(
+        page.getByLabel("New client email (optional)", { exact: true }),
+      ).toHaveValue("record@example.invalid");
+      await expect(page.locator("[data-linked-client-id]")).toHaveCount(0);
+      phase = "atomic conversion creates distinct client and booking";
+      await page
+        .getByLabel("Start (Europe/London)", { exact: true })
+        .fill("2030-01-17T11:00");
+      await page
+        .getByRole("button", { name: "Save links", exact: true })
+        .click();
+      await expect(
+        page.getByText("Records linked. The enquiry status is unchanged.", {
+          exact: true,
+        }),
+      ).toBeVisible();
+      receipt.clientId = await page
+        .locator("[data-linked-client-id]")
+        .getAttribute("data-linked-client-id");
+      receipt.bookingId = await page
+        .locator("[data-linked-booking-id]")
+        .getAttribute("data-linked-booking-id");
+      await expect(page.locator("[data-linked-client-id]")).toContainText(
+        `Enquirer ${run}`,
+      );
+      await expect(page.locator("[data-linked-booking-id]")).toContainText(
+        "17 Jan, 11:00",
+      );
+      await expect(page.locator("[data-linked-booking-id]")).toContainText(
+        "Scheduled",
+      );
+      expect(receipt.clientId).toBeTruthy();
+      expect(receipt.clientId).not.toBe(report.clients[0].clientId);
+      expect(receipt.bookingId).toBeTruthy();
+      report.clients.push({
+        clientId: receipt.clientId,
+        tenantId: receipt.tenantId,
+      });
+      report.bookings.push({
+        bookingId: receipt.bookingId,
+        tenantId: receipt.tenantId,
+      });
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2),
+      );
+      phase = "resolve and reopen enquiry explicitly";
+      await page
+        .getByRole("button", { name: "Resolve enquiry", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", { name: "Reopen enquiry", exact: true }),
+      ).toBeVisible();
+      await page
+        .getByRole("button", { name: "Back to enquiries", exact: true })
+        .click();
+      await page
+        .getByRole("group", { name: "Enquiry status" })
+        .getByRole("button", { name: "Resolved", exact: true })
+        .click();
+      await page
+        .locator(`[data-enquiry-id="${enquiryId}"]`)
+        .getByRole("button", { name: subject, exact: true })
+        .click();
+      await page
+        .getByRole("button", { name: "Reopen enquiry", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", { name: "Resolve enquiry", exact: true }),
+      ).toBeVisible();
+      await recordsScreenshots(page, "enquiries", "detail", subject);
+    },
+  );
   await check("sign-out ends the application session", async () => {
     await first.page
       .getByRole("button", { name: "Sign out", exact: true })
@@ -596,6 +776,25 @@ try {
     await expect(
       fresh.page.locator(`[data-booking-id="${report.bookings[0].bookingId}"]`),
     ).toContainText("90 minutes · £1.29");
+    await fresh.page
+      .getByRole("button", { name: "Enquiries", exact: true })
+      .click();
+    await fresh.page
+      .locator(`[data-enquiry-id="${report.enquiries[0].enquiryId}"]`)
+      .getByRole("button", { name: report.enquiries[0].subject, exact: true })
+      .click();
+    await expect(
+      fresh.page.getByText("Thank you. This reply is a saved draft only.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(fresh.page.locator("[data-linked-client-id]")).toHaveAttribute(
+      "data-linked-client-id",
+      report.enquiries[0].clientId,
+    );
+    await expect(
+      fresh.page.locator("[data-linked-booking-id]"),
+    ).toHaveAttribute("data-linked-booking-id", report.enquiries[0].bookingId);
     await fresh.context.close();
   });
   await check(

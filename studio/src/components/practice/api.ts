@@ -163,6 +163,8 @@ export function readableError(error: unknown): string {
       ? error.data
       : undefined;
   const message = typeof data === "string" ? data : String(error);
+  if (message.includes("LINK_CONFLICT"))
+    return "This enquiry is already linked to different records. Reload the practice to review its links.";
   if (message.includes("TIME_ZONE_REQUIRED"))
     return "Save the practice time zone before scheduling.";
   if (message.includes("BOOKING_CONFLICT"))
