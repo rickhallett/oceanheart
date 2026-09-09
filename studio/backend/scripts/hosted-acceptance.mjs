@@ -1,5 +1,6 @@
 /** Explicitly invoked staging fixture creation; never used by normal CI. */
 import assert from "node:assert/strict";
+import { browserCredentials } from "./browser-credentials.mjs";
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdtemp, writeFile, chmod } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -27,7 +28,7 @@ const report = {runId, target, clientId, environment: process.env.STUDIO_ACCEPTA
   cleanup:"After browser acceptance, delete only these recorded synthetic WorkOS users and tenant/task/membership records through a reviewed staging cleanup. No broad reset. This runner deliberately preserves fixtures for browser verification."};
 const secrets = {runId, target, clientId, accounts:[]};
 const save = async () => {
-  await writeFile(join(directory,"credentials.json"), JSON.stringify(secrets,null,2), {mode:0o600});
+  await writeFile(join(directory,"credentials.json"), JSON.stringify(browserCredentials(secrets),null,2), {mode:0o600});
   await writeFile(join(directory,"report.json"), JSON.stringify(report,null,2), {mode:0o600});
 };
 const check = name => {report.checks.push(name); console.log(`PASS ${name}`);};
@@ -123,9 +124,7 @@ try {
   await denied(v.mutation("tasks:setCompleted",{tenantId,taskId,completed:false}),"FORBIDDEN");
   assert.deepEqual(await v.query("tenants:list",{}),[]);
   check("viewer reads allowed, writes denied, revocation enforced with unchanged real WorkOS token");
-  await a.mutation("tasks:setCompleted",{tenantId,taskId,completed:false});
   report.status="passed";
-  report.browserFixture={ownerId:owner.userId,tenantId,taskId,expectedCompleted:false};
 } catch(error) {
   report.status="failed";
   report.failure=error.safe ? error.message : "Acceptance assertion or request failed; raw exception suppressed to protect session material.";
