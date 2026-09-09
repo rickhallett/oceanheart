@@ -18,7 +18,8 @@ The unrelated historic local branch `dev` is preserved. Do not confuse it with `
 | Environment | Role | Status |
 | --- | --- | --- |
 | Development | `studio/dev`, local server, fictional fixtures | Canonical accepted UI |
-| Preview / staging | Feature PR build against development; isolated provider data when added | No dedicated hosted staging environment verified/configured in this promotion |
+| Preview | Feature PR build targeting `studio/dev`; fictional fixtures or isolated provider data | Hosted wiring must be verified before relying on a preview |
+| Staging | Latest verified `studio/dev` revision; stable acceptance URL and isolated provider data | Dedicated hosted integration remains a provider configuration step |
 | Production | `main`, existing Studio Vercel project | Unchanged by this promotion |
 
 Production project is documented as `oceanheart-studio`, root directory `studio`. Do not infer live deployment state from local folder names. Before a production release, verify Vercel's Git branch, root directory, environment variables and deployed SHA. No production deployment is part of this development promotion.
@@ -26,6 +27,8 @@ Production project is documented as `oceanheart-studio`, root directory `studio`
 ## Daily workflow
 
 Start feature branches from updated `studio/dev`. Deliver one complete user journey per PR, targeting `studio/dev`. Use the style guide and keep demo fixtures separate from live records. Review browser evidence and CI before merging. Release from `studio/dev` to `main` through a reviewed PR; never treat pushing development as production approval.
+
+Follow [STAGING-AND-RELEASE.md](STAGING-AND-RELEASE.md) for CI, staging acceptance, CodeRabbit review cadence and the explicit production approval boundary.
 
 ```sh
 npm ci

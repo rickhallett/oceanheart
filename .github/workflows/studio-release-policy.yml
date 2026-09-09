@@ -1,0 +1,39 @@
+name: Studio release policy
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release-source:
+    name: Studio release source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require Studio releases through development
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          studio_changes=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- studio/ .github/workflows/studio-verify.yml .github/workflows/studio-release-policy.yml)
+          if [[ -z "$studio_changes" ]]; then
+            echo "No Studio release changes in this PR."
+            exit 0
+          fi
+          if [[ "$HEAD_BRANCH" != "studio/dev" || "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
+            echo "::error::Studio changes must first merge into studio/dev. Open the production release PR from this repository's studio/dev branch."
+            exit 1
+          fi
+          echo "Release source accepted. Staging acceptance and explicit user approval are still required before merging."
