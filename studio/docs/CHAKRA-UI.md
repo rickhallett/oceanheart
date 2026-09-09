@@ -90,3 +90,11 @@ Assistant review uses a centred conversation canvas with unframed responses, com
 Knowledge separates source identity from its explicit View source action in both table and phone layouts. Its toolbar actions use a compact 36px height; desktop search inputs use 14px type, while phone inputs retain 16px.
 
 Latest browser review: compact Shop product rows replace decorative product cards; Support uses a compact request list without the introductory slogan. Setup uses Practice details. Inputs use regular weight and Sample data text uses secondary sizing. Payments filters use flat underlines, Stripe label is reduced, and toast widths are bounded to the viewport. The 54-test suite passed after these changes; subsequent visual inspection corrected Support grid columns and Knowledge identity alignment. Use the development server on 4321 for ongoing review, keeping production builds separate from the active preview.
+
+## Authenticated task slice update
+
+The current `/practice` route replaces the historical Clerk and booking UI with
+WorkOS AuthKit, practice selection and persisted tasks. Its compact white controls
+use scoped semantic HTML and CSS under the shared `StudioProvider`. See
+[the current integration contract](WORKOS-PRACTICE.md); the acceptance notes above
+describe the earlier component migration.

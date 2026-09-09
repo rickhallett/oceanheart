@@ -44,3 +44,7 @@ The `/app` workspace expands the homepage preview into a connected, browser-pers
 The independent [backend package](backend/README.md) contains the first Convex tenant, membership and atomic booking slice. Its integration suite uses a real local backend and signed test tokens. The public mock is not yet connected to this backend; hosted identity and persistence are separate delivery steps.
 
 See [verification commands](VERIFICATION.md), [worktree and migration boundaries](docs/DELIVERY.md), and the [backend decision](backend/docs/ADR-001-backend-choice.md). Track implementation and human gates in [Linear](https://linear.app/tinyrick/project/oceanheart-studio-8ed48b4b1722).
+
+The authenticated `/practice` uses WorkOS AuthKit and Convex for practice creation,
+selection and persisted tasks. See [configuration and acceptance](docs/WORKOS-PRACTICE.md).
+The public `/app` remains an independent browser-local prototype.

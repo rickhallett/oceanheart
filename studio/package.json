@@ -9,14 +9,15 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:report": "playwright show-report",
-    "verify": "npm run build && npm run typecheck && npm run test:e2e",
+    "verify": "npm run build && npm run typecheck && npm run test:unit && npm run test:e2e",
     "theme:types": "chakra typegen ./src/theme.ts",
-    "prebuild": "npm run theme:types"
+    "prebuild": "npm run theme:types",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.37.0",
-    "@clerk/nextjs": "^7.9.1",
     "@emotion/react": "^11.14.0",
+    "@workos-inc/authkit-nextjs": "^4.3.1",
     "convex": "^1.45.0",
     "lucide-react": "^0.577.0",
     "next": "16.3.4",
@@ -26,9 +27,14 @@
   "devDependencies": {
     "@chakra-ui/cli": "^3.37.0",
     "@playwright/test": "^1.63.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.9.3"
+    "jsdom": "^30.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.0"
   }
 }

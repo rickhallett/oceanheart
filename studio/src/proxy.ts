@@ -1,19 +1,16 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { authkitProxy } from "@workos-inc/authkit-nextjs";
 import {
   NextResponse,
   type NextRequest,
   type NextFetchEvent,
 } from "next/server";
+import { practiceConfigured } from "./lib/practice-config";
 
-const clerk = clerkMiddleware();
+const authkit = authkitProxy();
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
-  // The public prototype and marketing pages never depend on auth configuration.
-  if (
-    !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
-    !process.env.CLERK_SECRET_KEY ||
-    !process.env.NEXT_PUBLIC_CONVEX_URL
-  )
-    return NextResponse.next();
-  return clerk(request, event);
+  if (!practiceConfigured()) return NextResponse.next();
+  return authkit(request, event);
 }
-export const config = { matcher: ["/practice/:path*", "/__clerk/:path*"] };
+export const config = {
+  matcher: ["/practice/:path*", "/callback", "/sign-in"],
+};

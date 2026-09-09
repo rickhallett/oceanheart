@@ -1,18 +1,16 @@
 import { expect, test } from "@playwright/test";
-import {
-  dayWindow,
-  localDate,
-  readableError,
-} from "../src/components/practice/api";
+import { readableError } from "../src/components/practice/api";
 
 test("private practice is unavailable without configuration while the public mock stays usable", async ({
   page,
 }) => {
   test.skip(
     Boolean(
-      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-        process.env.NEXT_PUBLIC_CONVEX_URL &&
-        process.env.CLERK_SECRET_KEY,
+      process.env.WORKOS_CLIENT_ID &&
+      process.env.NEXT_PUBLIC_CONVEX_URL &&
+      process.env.WORKOS_API_KEY &&
+      process.env.WORKOS_COOKIE_PASSWORD &&
+      process.env.NEXT_PUBLIC_WORKOS_REDIRECT_URI,
     ),
     "Configured provider needs a real test account; do not exercise hosted accounts in the secretless suite.",
   );
@@ -20,7 +18,7 @@ test("private practice is unavailable without configuration while the public moc
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/practice");
   await expect(
-    page.getByRole("heading", { name: "Your workspace is taking shape." }),
+    page.getByRole("heading", { name: "Your practice is not available yet." }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /Sign in|Create my practice/ }),
@@ -41,17 +39,25 @@ test("private practice is unavailable without configuration while the public moc
   expect(errors).toEqual([]);
 });
 
-test("booking date windows and errors have stable user-facing semantics", () => {
-  const selected = new Date(2030, 0, 15, 12);
-  expect(localDate(selected)).toBe("2030-01-15");
-  const range = dayWindow("2030-01-15");
-  expect(new Date(range.from).getHours()).toBe(0);
-  expect(localDate(new Date(range.to))).toBe("2030-01-16");
-  expect(readableError(new Error("BOOKING_CONFLICT"))).toContain(
-    "already booked",
-  );
+test("provider errors are safe and readable", () => {
   expect(readableError(new Error("FORBIDDEN"))).toContain("access");
   expect(readableError(new Error("sensitive provider detail"))).not.toContain(
     "sensitive provider detail",
   );
+});
+
+test("unconfigured auth entry points return to practice without a provider redirect", async ({
+  request,
+}) => {
+  test.skip(
+    Boolean(process.env.WORKOS_API_KEY),
+    "Secretless configuration check",
+  );
+  for (const path of ["/sign-in", "/callback?code=invalid&state=invalid"]) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect([302, 307]).toContain(response.status());
+    expect(
+      new URL(response.headers().location, "http://localhost").pathname,
+    ).toBe("/practice");
+  }
 });
