@@ -1,7 +1,7 @@
 "use client";
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
-import type { Task, TaskList } from "./api";
-import { readableError } from "./api";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import type { Task, TaskFilter, TaskList, TaskUpdateResult } from "./api";
+import { hasErrorCode, readableError } from "./api";
 
 export function PracticeShell({
   children,
@@ -105,18 +105,27 @@ export function CreatePractice({
 export function TaskPanel({
   result,
   canWrite,
+  filter,
+  changeFilter,
   addTask,
   setCompleted,
+  updateTask,
+  removeTask,
 }: {
   result: TaskList | undefined;
   canWrite: boolean;
+  filter: TaskFilter;
+  changeFilter: (filter: TaskFilter) => void;
   addTask: (title: string, requestKey: string) => Promise<unknown>;
   setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
+  updateTask: (task: Task, title: string, expectedRevision: number) => Promise<TaskUpdateResult>;
+  removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
 }) {
   const [title, setTitle] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [busyTasks, setBusyTasks] = useState<Set<string>>(new Set());
   const request = useRef<{ value: string; key: string } | null>(null);
   const busy = useRef(false);
   async function submit(event: FormEvent) {
@@ -147,6 +156,25 @@ export function TaskPanel({
         <h2>Tasks</h2>
         {!canWrite && <span className="lp-muted">View-only access</span>}
       </div>
+      <div className="lp-task-filters" aria-label="Task status">
+        {(
+          [
+            ["all", "All"],
+            ["open", "Open"],
+            ["completed", "Completed"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            type="button"
+            key={value}
+            aria-pressed={filter === value}
+            disabled={busyTasks.size > 0}
+            onClick={() => changeFilter(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       {canWrite && (
         <form className="lp-task-form" onSubmit={submit}>
           <label htmlFor="task-title">New task</label>
@@ -174,9 +202,19 @@ export function TaskPanel({
         <p role="status">Loading tasks…</p>
       ) : result.items.length === 0 ? (
         <div className="lp-empty">
-          <h3>No tasks yet</h3>
+          <h3>
+            {filter === "all"
+              ? "No tasks yet"
+              : filter === "open"
+                ? "No open tasks"
+                : "No completed tasks"}
+          </h3>
           <p>
-            {canWrite
+            {filter === "open"
+              ? "Open tasks will appear here."
+              : filter === "completed"
+                ? "Completed tasks will appear here."
+                : canWrite
               ? "Add a task to get started."
               : "Tasks added by your practice owner will appear here."}
           </p>
@@ -188,7 +226,21 @@ export function TaskPanel({
               key={task._id}
               task={task}
               canWrite={canWrite}
-              save={setCompleted}
+              setCompleted={setCompleted}
+              updateTask={updateTask}
+              removeTask={removeTask}
+              setBusy={(id, busy) =>
+                setBusyTasks((current) => {
+                  const next = new Set(current);
+                  if (busy) next.add(id);
+                  else next.delete(id);
+                  return next;
+                })
+              }
+              reportOutcome={(message, isError = false) => {
+                if (isError) setError(message);
+                else setNotice(message);
+              }}
             />
           ))}
         </ul>
@@ -205,34 +257,128 @@ export function TaskPanel({
 function TaskRow({
   task,
   canWrite,
-  save,
+  setCompleted,
+  updateTask,
+  removeTask,
+  setBusy,
+  reportOutcome,
 }: {
   task: Task;
   canWrite: boolean;
-  save: (task: Task, completed: boolean) => Promise<unknown>;
+  setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
+  updateTask: (task: Task, title: string, expectedRevision: number) => Promise<TaskUpdateResult>;
+  removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
+  setBusy: (id: string, busy: boolean) => void;
+  reportOutcome: (message: string, isError?: boolean) => void;
 }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [restoreFocus, setRestoreFocus] = useState<"edit" | "remove" | null>(null);
+  const [draft, setDraft] = useState(task.title);
+  const [remoteChange, setRemoteChange] = useState(false);
+  const saved = useRef({ title: task.title, revision: task.revision });
+  const editBaseline = useRef({ title: task.title, revision: task.revision });
+  const removeBaseline = useRef({ revision: task.revision });
+  const editorRef = useRef<HTMLInputElement>(null);
+  const confirmationRef = useRef<HTMLDivElement>(null);
+  const editButtonRef = useRef<HTMLButtonElement>(null);
+  const removeButtonRef = useRef<HTMLButtonElement>(null);
   const busy = useRef(false);
-  async function change(completed: boolean) {
-    if (busy.current || !canWrite) return;
+  useEffect(() => {
+    const previous = saved.current;
+    if (previous.title === task.title && previous.revision === task.revision)
+      return;
+    if (draft === previous.title) {
+      setDraft(task.title);
+      setRemoteChange(false);
+      editBaseline.current = { title: task.title, revision: task.revision };
+    } else {
+      setRemoteChange(true);
+    }
+    saved.current = { title: task.title, revision: task.revision };
+  }, [draft, task.revision, task.title]);
+  useEffect(() => {
+    if (editing) editorRef.current?.focus();
+  }, [editing]);
+  useEffect(() => {
+    if (removing) confirmationRef.current?.focus();
+  }, [removing]);
+  useEffect(() => {
+    if (editing || removing || !restoreFocus) return;
+    (restoreFocus === "edit" ? editButtonRef : removeButtonRef).current?.focus();
+    setRestoreFocus(null);
+  }, [editing, removing, restoreFocus]);
+  function startBusy() {
     busy.current = true;
     setPending(true);
+    setBusy(String(task._id), true);
+  }
+  function finishBusy() {
+    busy.current = false;
+    setPending(false);
+    setBusy(String(task._id), false);
+  }
+  async function change(completed: boolean) {
+    if (busy.current || !canWrite) return;
+    startBusy();
     setError("");
     try {
-      await save(task, completed);
+      await setCompleted(task, completed);
+      reportOutcome(completed ? "Task completed." : "Task reopened.");
+    } catch (cause) {
+      if (hasErrorCode(cause, "TASK_REMOVED")) {
+        const message = "This task was removed by another change. Reload the practice to review the latest list.";
+        reportOutcome(message, true);
+      } else setError(readableError(cause));
+    } finally {
+      finishBusy();
+    }
+  }
+  async function saveTitle(event: FormEvent) {
+    event.preventDefault();
+    const value = draft.trim();
+    if (busy.current || !value || !canWrite) return;
+    const baseline = editBaseline.current;
+    startBusy();
+    setError("");
+    try {
+      const acknowledgement = await updateTask(task, value, baseline.revision);
+      // The backend returns the actual revision, including no-op title saves.
+      // This prevents its later query echo being mistaken for a remote edit.
+      saved.current = { title: value, revision: acknowledgement.revision };
+      editBaseline.current = { title: value, revision: acknowledgement.revision };
+      setEditing(false);
+      setRemoteChange(false);
+      reportOutcome("Task title saved.");
+    } catch (cause) {
+      if (hasErrorCode(cause, "REVISION_CONFLICT")) {
+        setRemoteChange(true);
+        setError("This task changed elsewhere. Your draft is kept; use the latest title or save again after reviewing it.");
+      } else if (hasErrorCode(cause, "TASK_REMOVED")) {
+        setError("This task was removed by another change. Reload the practice to review the latest list.");
+      } else setError(readableError(cause));
+    } finally { finishBusy(); }
+  }
+  async function confirmRemoval() {
+    if (busy.current || !canWrite) return;
+    startBusy();
+    setError("");
+    try {
+      await removeTask(task, removeBaseline.current.revision);
+      setRemoving(false);
+      reportOutcome("Task removed.");
     } catch (cause) {
       setError(readableError(cause));
-    } finally {
-      busy.current = false;
-      setPending(false);
-    }
+    } finally { finishBusy(); }
   }
   return (
     <li data-task-id={task._id}>
-      <label className="lp-task-row">
+      <div className="lp-task-row">
         <input
           type="checkbox"
+          aria-label={task.title}
           checked={task.completed}
           disabled={pending || !canWrite}
           onChange={(e) => void change(e.target.checked)}
@@ -243,7 +389,98 @@ function TaskRow({
         <span className="lp-task-state">
           {pending ? "Saving…" : task.completed ? "Completed" : "Open"}
         </span>
-      </label>
+        {canWrite && !editing && !removing && (
+          <span className="lp-task-actions">
+            <button
+              ref={editButtonRef}
+              type="button"
+              aria-label={`Edit ${task.title}`}
+              onClick={() => {
+                editBaseline.current = { title: task.title, revision: task.revision };
+                setDraft(task.title);
+                setRemoteChange(false);
+                setError("");
+                setEditing(true);
+              }}
+              disabled={pending}
+            >
+              Edit
+            </button>
+            <button
+              ref={removeButtonRef}
+              type="button"
+              aria-label={`Remove ${task.title}`}
+              onClick={() => {
+                removeBaseline.current = { revision: task.revision };
+                setRemoving(true);
+              }}
+              disabled={pending}
+            >
+              Remove
+            </button>
+          </span>
+        )}
+      </div>
+      {editing && (
+        <form className="lp-task-editor" onSubmit={saveTitle}>
+          <label>
+            Task title
+            <input
+              ref={editorRef}
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              maxLength={200}
+              disabled={pending}
+            />
+          </label>
+          {remoteChange && (
+            <p className="lp-task-conflict" role="status">
+              This task changed elsewhere. Your draft is kept until you choose what to save.
+            </p>
+          )}
+          <span className="lp-task-actions">
+            <button disabled={pending || !draft.trim()}>Save title</button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                setDraft(task.title);
+                setRemoteChange(false);
+                editBaseline.current = { title: task.title, revision: task.revision };
+                setError("");
+              }}
+            >
+              Use latest title
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                setDraft(task.title);
+                setEditing(false);
+                setRemoteChange(false);
+                setError("");
+                setRestoreFocus("edit");
+              }}
+            >
+              Cancel
+            </button>
+          </span>
+        </form>
+      )}
+      {removing && (
+        <div ref={confirmationRef} className="lp-task-remove" role="group" aria-label={`Remove ${task.title}`} tabIndex={-1}>
+          <p>Remove this task from your list?</p>
+          <span className="lp-task-actions">
+            <button type="button" onClick={() => void confirmRemoval()} disabled={pending}>
+              Remove task
+            </button>
+            <button type="button" onClick={() => { setRemoving(false); setRestoreFocus("remove"); }} disabled={pending}>
+              Keep task
+            </button>
+          </span>
+        </div>
+      )}
       {error && <p role="alert">{error}</p>}
     </li>
   );

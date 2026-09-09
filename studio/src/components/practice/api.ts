@@ -18,7 +18,10 @@ export type Task = {
   title: string;
   completed: boolean;
   createdAt: number;
+  revision: number;
 };
+export type TaskFilter = "all" | "open" | "completed";
+export type TaskUpdateResult = { taskId: GenericId<"tasks">; revision: number };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
 export const practiceApi = {
   setTimeZone: makeFunctionReference<
@@ -150,7 +153,11 @@ export const practiceApi = {
     { name: string; requestKey?: string },
     TenantId
   >("tenants:create"),
-  tasks: makeFunctionReference<"query", { tenantId: TenantId }, TaskList>(
+  tasks: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; filter?: TaskFilter },
+    TaskList
+  >(
     "tasks:list",
   ),
   createTask: makeFunctionReference<
@@ -160,9 +167,29 @@ export const practiceApi = {
   >("tasks:create"),
   setCompleted: makeFunctionReference<
     "mutation",
-    { tenantId: TenantId; taskId: GenericId<"tasks">; completed: boolean },
+    {
+      tenantId: TenantId;
+      taskId: GenericId<"tasks">;
+      completed: boolean;
+      expectedRevision?: number;
+    },
     GenericId<"tasks">
   >("tasks:setCompleted"),
+  updateTask: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      taskId: GenericId<"tasks">;
+      title: string;
+      expectedRevision: number;
+    },
+    TaskUpdateResult
+  >("tasks:update"),
+  removeTask: makeFunctionReference<
+    "mutation",
+    { tenantId: TenantId; taskId: GenericId<"tasks">; expectedRevision: number },
+    GenericId<"tasks">
+  >("tasks:remove"),
 };
 export function hasErrorCode(error: unknown, code: string): boolean {
   const data =

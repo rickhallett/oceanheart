@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
-import { practiceApi, type TenantId } from "./api";
+import { practiceApi, type TaskFilter, type TenantId } from "./api";
 import { PracticeGmail } from "./gmail";
 import type { EnquiryId } from "./enquiry-api";
 import { PracticeEnquiries } from "./enquiries";
@@ -33,16 +33,27 @@ function PracticeTasks({
   tenantId: TenantId;
   canWrite: boolean;
 }) {
-  const result = useQuery(practiceApi.tasks, { tenantId });
+  const [filter, setFilter] = useState<TaskFilter>("all");
+  const result = useQuery(practiceApi.tasks, { tenantId, filter });
   const create = useMutation(practiceApi.createTask);
   const complete = useMutation(practiceApi.setCompleted);
+  const update = useMutation(practiceApi.updateTask);
+  const remove = useMutation(practiceApi.removeTask);
   return (
     <TaskPanel
       result={result}
       canWrite={canWrite}
+      filter={filter}
+      changeFilter={setFilter}
       addTask={(title, requestKey) => create({ tenantId, title, requestKey })}
       setCompleted={(task, completed) =>
-        complete({ tenantId, taskId: task._id, completed })
+        complete({ tenantId, taskId: task._id, completed, expectedRevision: task.revision })
+      }
+      updateTask={(task, title, expectedRevision) =>
+        update({ tenantId, taskId: task._id, title, expectedRevision })
+      }
+      removeTask={(task, expectedRevision) =>
+        remove({ tenantId, taskId: task._id, expectedRevision })
       }
     />
   );

@@ -15,8 +15,10 @@ export default defineSchema({
     .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]).index("by_tenant_active",["tenantId","active"]),
   clients: defineTable({tenantId:v.id("tenants"),name:v.string(),email:v.optional(v.string()),phone:v.optional(v.string()),revision:v.optional(v.number()),creationPayload:v.optional(v.string()),archived:v.optional(v.boolean()),searchText:v.optional(v.string()),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
     .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]).index("by_tenant_archived",["tenantId","archived"]).searchIndex("search_clients",{searchField:"searchText",filterFields:["tenantId","archived"]}),
-  tasks: defineTable({ tenantId: v.id("tenants"), title: v.string(), completed: v.boolean(), createdAt: v.number(), createdBy: v.string(), requestKey: v.string() })
+  tasks: defineTable({ tenantId: v.id("tenants"), title: v.string(), completed: v.boolean(), createdAt: v.number(), createdBy: v.string(), requestKey: v.string(), revision: v.optional(v.number()), removedAt: v.optional(v.number()), creationTitle: v.optional(v.string()) })
     .index("by_tenant", ["tenantId"])
+    .index("by_tenant_removed", ["tenantId", "removedAt"])
+    .index("by_tenant_removed_completed", ["tenantId", "removedAt", "completed"])
     .index("by_tenant_request", ["tenantId", "requestKey"]),
   memberships: defineTable({
     tenantId: v.id("tenants"),
