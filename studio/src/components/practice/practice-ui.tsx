@@ -102,6 +102,21 @@ export function CreatePractice({
     </section>
   );
 }
+export function dueDateProblem(value: string): string {
+  if (!value) return "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value))
+    return "Enter a real calendar date as YYYY-MM-DD.";
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(5, 7));
+  const day = Number(value.slice(8, 10));
+  if (year < 1 || year > 9999 || month < 1 || month > 12 || day < 1)
+    return "Enter a real calendar date as YYYY-MM-DD.";
+  const leap = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const lengths = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day > lengths[month - 1])
+    return "Enter a real calendar date as YYYY-MM-DD.";
+  return "";
+}
 export function TaskPanel({
   result,
   canWrite,
@@ -116,12 +131,18 @@ export function TaskPanel({
   canWrite: boolean;
   filter: TaskFilter;
   changeFilter: (filter: TaskFilter) => void;
-  addTask: (title: string, requestKey: string) => Promise<unknown>;
+  addTask: (title: string, requestKey: string, dueDate?: string) => Promise<unknown>;
   setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
-  updateTask: (task: Task, title: string, expectedRevision: number) => Promise<TaskUpdateResult>;
+  updateTask: (
+    task: Task,
+    title: string,
+    expectedRevision: number,
+    dueDate?: string | null,
+  ) => Promise<TaskUpdateResult>;
   removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
 }) {
   const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -132,16 +153,27 @@ export function TaskPanel({
     event.preventDefault();
     const value = title.trim();
     if (busy.current || !value || !canWrite) return;
-    if (request.current?.value !== value)
-      request.current = { value, key: crypto.randomUUID() };
+    const dateProblem = dueDateProblem(dueDate);
+    if (dateProblem) {
+      setError(dateProblem);
+      return;
+    }
+    const identity = `${value}||${dueDate}`;
+    if (request.current?.value !== identity)
+      request.current = { value: identity, key: crypto.randomUUID() };
     busy.current = true;
     setPending(true);
     setError("");
     setNotice("");
     try {
-      await addTask(value, request.current.key);
+      await addTask(
+        value,
+        request.current.key,
+        dueDate ? dueDate : undefined,
+      );
       request.current = null;
       setTitle("");
+      setDueDate("");
       setNotice("Task saved.");
     } catch (cause) {
       setError(readableError(cause));
@@ -191,6 +223,16 @@ export function TaskPanel({
             <button className="lp-button" disabled={pending || !title.trim()}>
               {pending ? "Saving…" : "Add task"}
             </button>
+          </div>
+          <label htmlFor="task-due-date">Due date</label>
+          <div className="lp-inline">
+            <input
+              id="task-due-date"
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              disabled={pending}
+            />
           </div>
         </form>
       )}
@@ -266,7 +308,12 @@ function TaskRow({
   task: Task;
   canWrite: boolean;
   setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
-  updateTask: (task: Task, title: string, expectedRevision: number) => Promise<TaskUpdateResult>;
+  updateTask: (
+    task: Task,
+    title: string,
+    expectedRevision: number,
+    dueDate?: string | null,
+  ) => Promise<TaskUpdateResult>;
   removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
   setBusy: (id: string, busy: boolean) => void;
   reportOutcome: (message: string, isError?: boolean) => void;
@@ -277,9 +324,18 @@ function TaskRow({
   const [removing, setRemoving] = useState(false);
   const [restoreFocus, setRestoreFocus] = useState<"edit" | "remove" | null>(null);
   const [draft, setDraft] = useState(task.title);
+  const [draftDueDate, setDraftDueDate] = useState(task.dueDate ?? "");
   const [remoteChange, setRemoteChange] = useState(false);
-  const saved = useRef({ title: task.title, revision: task.revision });
-  const editBaseline = useRef({ title: task.title, revision: task.revision });
+  const saved = useRef({
+    title: task.title,
+    dueDate: task.dueDate ?? undefined,
+    revision: task.revision,
+  });
+  const editBaseline = useRef({
+    title: task.title,
+    dueDate: task.dueDate ?? undefined,
+    revision: task.revision,
+  });
   const removeBaseline = useRef({ revision: task.revision });
   const editorRef = useRef<HTMLInputElement>(null);
   const confirmationRef = useRef<HTMLDivElement>(null);
@@ -288,17 +344,31 @@ function TaskRow({
   const busy = useRef(false);
   useEffect(() => {
     const previous = saved.current;
-    if (previous.title === task.title && previous.revision === task.revision)
+    const currentDueDate = task.dueDate ?? undefined;
+    if (
+      previous.title === task.title &&
+      previous.dueDate === currentDueDate &&
+      previous.revision === task.revision
+    )
       return;
-    if (draft === previous.title) {
+    if (draft === previous.title && (draftDueDate || undefined) === previous.dueDate) {
       setDraft(task.title);
+      setDraftDueDate(currentDueDate ?? "");
       setRemoteChange(false);
-      editBaseline.current = { title: task.title, revision: task.revision };
+      editBaseline.current = {
+        title: task.title,
+        dueDate: currentDueDate,
+        revision: task.revision,
+      };
     } else {
       setRemoteChange(true);
     }
-    saved.current = { title: task.title, revision: task.revision };
-  }, [draft, task.revision, task.title]);
+    saved.current = {
+      title: task.title,
+      dueDate: currentDueDate,
+      revision: task.revision,
+    };
+  }, [draft, draftDueDate, task.dueDate, task.revision, task.title]);
   useEffect(() => {
     if (editing) editorRef.current?.focus();
   }, [editing]);
@@ -336,26 +406,33 @@ function TaskRow({
       finishBusy();
     }
   }
-  async function saveTitle(event: FormEvent) {
+  async function saveTask(event: FormEvent) {
     event.preventDefault();
     const value = draft.trim();
     if (busy.current || !value || !canWrite) return;
+    const dateProblem = dueDateProblem(draftDueDate);
+    if (dateProblem) {
+      setError(dateProblem);
+      return;
+    }
     const baseline = editBaseline.current;
+    const nextDueDate = draftDueDate ? draftDueDate : null;
     startBusy();
     setError("");
     try {
-      const acknowledgement = await updateTask(task, value, baseline.revision);
-      // The backend returns the actual revision, including no-op title saves.
+      const acknowledgement = await updateTask(task, value, baseline.revision, nextDueDate);
+      // The backend returns the actual revision, including no-op saves.
       // This prevents its later query echo being mistaken for a remote edit.
-      saved.current = { title: value, revision: acknowledgement.revision };
-      editBaseline.current = { title: value, revision: acknowledgement.revision };
+      const savedDueDate = nextDueDate ?? undefined;
+      saved.current = { title: value, dueDate: savedDueDate, revision: acknowledgement.revision };
+      editBaseline.current = { title: value, dueDate: savedDueDate, revision: acknowledgement.revision };
       setEditing(false);
       setRemoteChange(false);
-      reportOutcome("Task title saved.");
+      reportOutcome("Task saved.");
     } catch (cause) {
       if (hasErrorCode(cause, "REVISION_CONFLICT")) {
         setRemoteChange(true);
-        setError("This task changed elsewhere. Your draft is kept; use the latest title or save again after reviewing it.");
+        setError("This task changed elsewhere. Your draft is kept; use the latest or save again after reviewing it.");
       } else if (hasErrorCode(cause, "TASK_REMOVED")) {
         setError("This task was removed by another change. Reload the practice to review the latest list.");
       } else setError(readableError(cause));
@@ -386,6 +463,9 @@ function TaskRow({
         <span className={task.completed ? "lp-completed" : undefined}>
           {task.title}
         </span>
+        {task.dueDate !== undefined && (
+          <span className="lp-muted">Due {task.dueDate}</span>
+        )}
         <span className="lp-task-state">
           {pending ? "Saving…" : task.completed ? "Completed" : "Open"}
         </span>
@@ -396,8 +476,13 @@ function TaskRow({
               type="button"
               aria-label={`Edit ${task.title}`}
               onClick={() => {
-                editBaseline.current = { title: task.title, revision: task.revision };
+                editBaseline.current = {
+                  title: task.title,
+                  dueDate: task.dueDate ?? undefined,
+                  revision: task.revision,
+                };
                 setDraft(task.title);
+                setDraftDueDate(task.dueDate ?? "");
                 setRemoteChange(false);
                 setError("");
                 setEditing(true);
@@ -422,7 +507,7 @@ function TaskRow({
         )}
       </div>
       {editing && (
-        <form className="lp-task-editor" onSubmit={saveTitle}>
+        <form className="lp-task-editor" onSubmit={saveTask}>
           <label>
             Task title
             <input
@@ -433,30 +518,45 @@ function TaskRow({
               disabled={pending}
             />
           </label>
+          <label>
+            Due date
+            <input
+              type="date"
+              value={draftDueDate}
+              onChange={(event) => setDraftDueDate(event.target.value)}
+              disabled={pending}
+            />
+          </label>
           {remoteChange && (
             <p className="lp-task-conflict" role="status">
               This task changed elsewhere. Your draft is kept until you choose what to save.
             </p>
           )}
           <span className="lp-task-actions">
-            <button disabled={pending || !draft.trim()}>Save title</button>
+            <button disabled={pending || !draft.trim()}>Save</button>
             <button
               type="button"
               disabled={pending}
               onClick={() => {
                 setDraft(task.title);
+                setDraftDueDate(task.dueDate ?? "");
                 setRemoteChange(false);
-                editBaseline.current = { title: task.title, revision: task.revision };
+                editBaseline.current = {
+                  title: task.title,
+                  dueDate: task.dueDate ?? undefined,
+                  revision: task.revision,
+                };
                 setError("");
               }}
             >
-              Use latest title
+              Use latest
             </button>
             <button
               type="button"
               disabled={pending}
               onClick={() => {
                 setDraft(task.title);
+                setDraftDueDate(task.dueDate ?? "");
                 setEditing(false);
                 setRemoteChange(false);
                 setError("");

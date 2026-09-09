@@ -1,10 +1,11 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   CreatePractice,
   TaskPanel,
+  dueDateProblem,
 } from "../../src/components/practice/practice-ui";
 import { practiceConfigured } from "../../src/lib/practice-config";
 import type { Task } from "../../src/components/practice/api";
@@ -209,7 +210,7 @@ it("task filters, editing and conflict recovery preserve a dirty draft", async (
   );
   expect(screen.getByLabelText("Task title")).toHaveValue("My local draft");
   expect(screen.getByText(/Your draft is kept/)).toBeVisible();
-  await user.click(screen.getByRole("button", { name: "Use latest title" }));
+  await user.click(screen.getByRole("button", { name: "Use latest" }));
   expect(screen.getByLabelText("Task title")).toHaveValue("Remote title");
 });
 it("removing a task requires a deliberate second confirmation", async () => {
@@ -330,11 +331,12 @@ it("a two-tab edit keeps its original revision instead of adopting a newer remot
       result={{ items: [{ ...task, title: "Other tab save", revision: 1 }], hasMore: false, limit: 200 }}
     />,
   );
-  await user.click(screen.getByRole("button", { name: "Save title" }));
+  await user.click(screen.getByRole("button", { name: "Save" }));
   expect(updateTask).toHaveBeenCalledWith(
     expect.objectContaining({ revision: 1 }),
     "My two-tab draft",
     0,
+    null,
   );
 });
 it("an acknowledged edit does not flag its delayed query echo as a remote conflict", async () => {
@@ -357,7 +359,7 @@ it("an acknowledged edit does not flag its delayed query echo as a remote confli
   await user.click(screen.getByRole("button", { name: /Edit Original/ }));
   await user.clear(screen.getByLabelText("Task title"));
   await user.type(screen.getByLabelText("Task title"), "  Acknowledged title  ");
-  await user.click(screen.getByRole("button", { name: "Save title" }));
+  await user.click(screen.getByRole("button", { name: "Save" }));
   view.rerender(
     <TaskPanel
       {...props}
@@ -365,4 +367,223 @@ it("an acknowledged edit does not flag its delayed query echo as a remote confli
     />,
   );
   expect(screen.queryByText(/This task changed elsewhere/)).not.toBeInTheDocument();
+});
+it("due dates accept real calendar days including leap years and reject impossible dates", () => {
+  expect(dueDateProblem("")).toBe("");
+  for (const valid of ["2026-09-15", "2024-02-29", "2000-02-29", "2026-01-31", "2026-04-30"]) {
+    expect(dueDateProblem(valid)).toBe("");
+  }
+  for (const invalid of [
+    "2025-02-29",
+    "1900-02-29",
+    "2026-02-30",
+    "2026-04-31",
+    "2026-13-01",
+    "2026-00-10",
+    "2026-01-00",
+    "0000-01-01",
+    "2026-9-5",
+    "15/09/2026",
+    "2026-09-15T00:00",
+    "not-a-date",
+  ]) {
+    expect(dueDateProblem(invalid)).toMatch(/YYYY-MM-DD/);
+  }
+});
+it("task creation sends the due date, displays it and clears both fields on success", async () => {
+  const user = userEvent.setup();
+  const addTask = vi.fn().mockResolvedValue("task");
+  render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={addTask}
+      setCompleted={vi.fn()}
+    />,
+  );
+  await user.type(screen.getByLabelText("New task"), "File returns");
+  fireEvent.change(screen.getByLabelText("Due date"), { target: { value: "2026-09-15" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask).toHaveBeenCalledWith("File returns", expect.any(String), "2026-09-15");
+  expect(screen.getByLabelText("New task")).toHaveValue("");
+  expect(screen.getByLabelText("Due date")).toHaveValue("");
+});
+it("a backend due-date rejection surfaces safely and keeps the draft", async () => {
+  const user = userEvent.setup();
+  const addTask = vi.fn().mockRejectedValue(new Error("INVALID_DUE_DATE"));
+  render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={addTask}
+      setCompleted={vi.fn()}
+    />,
+  );
+  await user.type(screen.getByLabelText("New task"), "File returns");
+  fireEvent.change(screen.getByLabelText("Due date"), { target: { value: "2026-09-15" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask).toHaveBeenCalled();
+  expect(screen.getByRole("alert")).toHaveTextContent("YYYY-MM-DD");
+  expect(screen.getByLabelText("New task")).toHaveValue("File returns");
+  expect(screen.getByLabelText("Due date")).toHaveValue("2026-09-15");
+});
+it("the shared editor saves title and date together and clearing sends explicit null", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    dueDate: "2026-09-15",
+  };
+  const updateTask = vi.fn().mockResolvedValue({ taskId: "task", revision: 1 });
+  render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      updateTask={updateTask}
+    />,
+  );
+  expect(screen.getByText("Due 2026-09-15")).toBeVisible();
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const editorDate = () => screen.getAllByLabelText("Due date")[1];
+  expect(editorDate()).toHaveValue("2026-09-15");
+  await user.clear(screen.getByLabelText("Task title"));
+  await user.type(screen.getByLabelText("Task title"), "Updated");
+  fireEvent.change(editorDate(), { target: { value: "2024-02-29" } });
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, "2024-02-29");
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const editorDateAgain = () => screen.getAllByLabelText("Due date")[1];
+  await user.clear(screen.getByLabelText("Task title"));
+  await user.type(screen.getByLabelText("Task title"), "Updated");
+  fireEvent.change(editorDateAgain(), { target: { value: "" } });
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, null);
+});
+it("a dirty date draft survives a remote change and stale saves keep their baseline revision", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+  };
+  const updateTask = vi.fn().mockResolvedValue({ taskId: "task", revision: 2 });
+  const props = {
+    result: { items: [task], hasMore: false, limit: 200 },
+    canWrite: true,
+    ...taskPanelCallbacks(),
+    addTask: vi.fn(),
+    setCompleted: vi.fn(),
+    updateTask,
+  };
+  const view = render(<TaskPanel {...props} />);
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const dirtyDate = () => screen.getAllByLabelText("Due date")[1];
+  fireEvent.change(dirtyDate(), { target: { value: "2026-09-15" } });
+  view.rerender(
+    <TaskPanel
+      {...props}
+      result={{ items: [{ ...task, title: "Remote title", revision: 1 }], hasMore: false, limit: 200 }}
+    />,
+  );
+  expect(dirtyDate()).toHaveValue("2026-09-15");
+  expect(screen.getByText(/Your draft is kept/)).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ revision: 1 }), "Original", 0, "2026-09-15");
+});
+it("a stale date save keeps its draft and reports the conflict safely", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    dueDate: "2026-09-15",
+  };
+  const updateTask = vi.fn().mockRejectedValue(new Error("REVISION_CONFLICT private detail"));
+  render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      updateTask={updateTask}
+    />,
+  );
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const staleDate = () => screen.getAllByLabelText("Due date")[1];
+  fireEvent.change(staleDate(), { target: { value: "2026-10-01" } });
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("changed elsewhere");
+  expect(screen.getByRole("alert")).not.toHaveTextContent("private detail");
+  expect(staleDate()).toHaveValue("2026-10-01");
+});
+it("task creation retries reuse the key for identical title and date, then rotates after a date edit", async () => {
+  const user = userEvent.setup();
+  const addTask = vi.fn().mockRejectedValueOnce(new Error("lost response")).mockResolvedValue("task");
+  render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={addTask}
+      setCompleted={vi.fn()}
+    />,
+  );
+  await user.type(screen.getByLabelText("New task"), "Review schedule");
+  fireEvent.change(screen.getByLabelText("Due date"), { target: { value: "2026-09-15" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(screen.getByLabelText("Due date")).toHaveValue("2026-09-15");
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask.mock.calls[0]).toEqual(addTask.mock.calls[1]);
+  expect(screen.getByLabelText("New task")).toHaveValue("");
+  await user.type(screen.getByLabelText("New task"), "Review schedule");
+  fireEvent.change(screen.getByLabelText("Due date"), { target: { value: "2026-10-01" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask).toHaveBeenCalledTimes(3);
+  expect(addTask.mock.calls[2][2]).toBe("2026-10-01");
+  expect(addTask.mock.calls[2][1]).not.toBe(addTask.mock.calls[0][1]);
+});
+it("viewers see due dates but are offered no date input or edit controls", async () => {
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Review schedule",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    dueDate: "2026-09-15",
+  };
+  const view = render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite={false}
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+    />,
+  );
+  expect(screen.getByText("Due 2026-09-15")).toBeVisible();
+  expect(screen.queryByLabelText("Due date")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /Edit Review schedule/ })).not.toBeInTheDocument();
+  view.rerender(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite={false}
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+    />,
+  );
+  expect(screen.queryByLabelText("Due date")).not.toBeInTheDocument();
 });
