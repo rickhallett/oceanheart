@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "convex dev",
     "typecheck": "tsc --noEmit",
-    "test:integration": "node --test scripts/browser-credentials.test.mjs scripts/auth-policy.test.mjs scripts/process-lifecycle.test.mjs && node scripts/integration.mjs"
+    "test:integration": "node --test scripts/fixture-membership.test.mjs scripts/browser-credentials.test.mjs scripts/auth-policy.test.mjs scripts/process-lifecycle.test.mjs && node scripts/integration.mjs"
   },
   "dependencies": {
     "convex": "1.45.0"

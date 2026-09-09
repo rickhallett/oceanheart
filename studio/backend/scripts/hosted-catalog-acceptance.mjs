@@ -1,5 +1,6 @@
 /** Explicit staging acceptance using existing synthetic users only. */
 import assert from "node:assert/strict";
+import { checkpointViewerMembership } from "./fixture-membership.mjs";
 import { randomUUID } from "node:crypto";
 import { readFile, stat, mkdtemp, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -31,7 +32,7 @@ try {
     const {payload}=await jwtVerify(session.access_token,jwks,{algorithms:["RS256"],issuer:["https://api.workos.com/",`https://api.workos.com/user_management/${clientId}`]});
     assert.equal(payload.sub,account.userId);
     if(payload.iss==="https://api.workos.com/") assert.ok((Array.isArray(payload.aud)?payload.aud:[payload.aud]).includes(clientId));
-    accounts[role]={token:session.access_token,identity:`${payload.iss}|${payload.sub}`};
+    accounts[role]={userId:account.userId,token:session.access_token,identity:`${payload.iss}|${payload.sub}`};
   }
   const client=role=>{const c=new ConvexHttpClient(target,{logger:false});if(role)c.setAuth(accounts[role].token);return c;};
   const alice=client("owner"),bob=client("outsider");
@@ -39,6 +40,7 @@ try {
   const tenantB=(await bob.query("tenants:list",{})).find(t=>t.role==="owner")?._id;
   assert.ok(tenantA && tenantB && tenantA!==tenantB,"Existing isolated practices required");
   report.tenants=[tenantA,tenantB];
+  await checkpointViewerMembership({viewer:client("viewer"),tenantId:tenantA,userId:accounts.viewer.userId,report,save});
   await catalogChecks({alice,bob,viewer:client("viewer"),anonymous:client(),tenantA,tenantB,viewerIdentity:accounts.viewer.identity,clientForOwner:async()=>client("owner"),prefix:randomUUID(),check:name=>{report.checks.push(name);console.log(`PASS ${name}`);},record:async(table,id,tenantId)=>{report.records.push({table,id,tenantId});await save();}});
   await recordManagementChecks({alice,bob,viewer:client("viewer"),anonymous:client(),tenantA,tenantB,viewerIdentity:accounts.viewer.identity,clientForOwner:async()=>client("owner"),prefix:randomUUID(),check:name=>{report.checks.push(name);console.log(`PASS ${name}`);},record:async(table,id,tenantId)=>{report.records.push({table,id,tenantId});await save();}});
   report.status="passed";
