@@ -196,3 +196,85 @@ it("uses deployed booking and timezone command names", () => {
   );
   expect(getFunctionName(practiceApi.cancelBooking)).toBe("bookings:cancel");
 });
+
+import { enquiryApi } from "../../src/components/practice/enquiry-api";
+type EnquirylistArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.list>,
+    FunctionArgs<typeof enquiryApi.list>
+  >
+>;
+type EnquirylistResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.list>,
+    FunctionReturnType<typeof enquiryApi.list>
+  >
+>;
+type EnquirygetArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.get>,
+    FunctionArgs<typeof enquiryApi.get>
+  >
+>;
+type EnquirygetResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.get>,
+    FunctionReturnType<typeof enquiryApi.get>
+  >
+>;
+type EnquirycreateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.create>,
+    FunctionArgs<typeof enquiryApi.create>
+  >
+>;
+type EnquirycreateResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.create>,
+    FunctionReturnType<typeof enquiryApi.create>
+  >
+>;
+type EnquirysaveDraftArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.saveDraft>,
+    FunctionArgs<typeof enquiryApi.saveDraft>
+  >
+>;
+type EnquirysaveDraftResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.saveDraft>,
+    FunctionReturnType<typeof enquiryApi.saveDraft>
+  >
+>;
+type EnquirysetResolvedArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.setResolved>,
+    FunctionArgs<typeof enquiryApi.setResolved>
+  >
+>;
+type EnquirysetResolvedResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.setResolved>,
+    FunctionReturnType<typeof enquiryApi.setResolved>
+  >
+>;
+type EnquiryconvertArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.enquiries.convert>,
+    FunctionArgs<typeof enquiryApi.convert>
+  >
+>;
+type EnquiryconvertResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.enquiries.convert>,
+    FunctionReturnType<typeof enquiryApi.convert>
+  >
+>;
+it("uses deployed enquiry command names", () => {
+  expect(getFunctionName(enquiryApi.list)).toBe("enquiries:list");
+  expect(getFunctionName(enquiryApi.get)).toBe("enquiries:get");
+  expect(getFunctionName(enquiryApi.create)).toBe("enquiries:create");
+  expect(getFunctionName(enquiryApi.saveDraft)).toBe("enquiries:saveDraft");
+  expect(getFunctionName(enquiryApi.setResolved)).toBe("enquiries:setResolved");
+  expect(getFunctionName(enquiryApi.convert)).toBe("enquiries:convert");
+});

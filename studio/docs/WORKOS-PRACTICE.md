@@ -21,7 +21,7 @@ For staging, the callback is
 Configure WorkOS Sign-in URL as the same origin plus `/sign-in`; configure Logout
 URI as the same origin plus `/practice`. Canonical local development uses
 `http://127.0.0.1:4331/callback`, `/sign-in` and `/practice` respectively; the
-isolated booking acceptance worktree uses port 4342. The callback origin and port must
+isolated enquiry acceptance worktree uses port 4343. The callback origin and port must
 match the running server and WorkOS allowlist exactly. The environment example
 includes the matching server command. Padded values and malformed WorkOS client
 IDs are rejected before provider initialization.
@@ -76,7 +76,7 @@ References: [WorkOS Next.js SDK](https://github.com/workos/authkit-nextjs),
 The opt-in browser runner is `scripts/accept-workos-browser.mjs`. The backend
 hosted acceptance runner creates a mode-0600 credentials file in a private
 fixture directory. Run the browser check with
-`STUDIO_ACCEPTANCE_BASE_URL=http://127.0.0.1:4342 node scripts/accept-workos-browser.mjs <fixture-directory>`
+`STUDIO_ACCEPTANCE_BASE_URL=http://127.0.0.1:4343 node scripts/accept-workos-browser.mjs <fixture-directory>`
 from `studio`, or set the stable staging origin for hosted frontend acceptance.
 It reads synthetic owner/outsider credentials without printing them, uses fresh
 browser contexts and real WorkOS sign-in, and records sanitized checks and

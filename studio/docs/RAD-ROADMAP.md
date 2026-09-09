@@ -32,7 +32,7 @@ These are genuinely quick only after shared persistence and permissions exist. A
 
 The existing `backend/` implements tenant membership and atomic booking create/list, overlap detection and request-key idempotency. Extend this rather than replacing it without evidence. The reviewed `/app` currently updates a whole local state object; replace writes incrementally with explicit authorised commands. Do not expose generic whole-state mutation on the server.
 
-WorkOS AuthKit and the persisted Convex task foundation are accepted. Service and client create/list, revision-safe editing, reversible archives and client name/email search are accepted. This batch adds manual owner scheduling with active client/service linkage, immutable booked terms, explicit practice timezone and conflict-safe reschedule/cancel. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
+WorkOS AuthKit and the persisted Convex task foundation are accepted. Service and client create/list, revision-safe editing, reversible archives and client name/email search are accepted. Manual owner scheduling with active client/service linkage, immutable booked terms, explicit practice timezone and conflict-safe reschedule/cancel is accepted. This batch adds manual enquiries, unsent reply drafts and deliberate atomic client/booking conversion. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
 
 ## RAD delivery loop
 

@@ -418,3 +418,31 @@
     flex-wrap: wrap;
   }
 }
+.lp-enquiries {
+  max-width: 680px;
+}
+.lp-enquiries > h2 {
+  margin-top: 24px;
+}
+.lp-enquiries > h3 {
+  margin-top: 28px;
+}
+.lp-enquiries > p {
+  margin: 10px 0 16px;
+}
+.lp-enquiry-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.lp-record-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+.lp-root .lp-enquiry-open {
+  white-space: normal;
+  height: auto;
+  min-height: 34px;
+  max-width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
