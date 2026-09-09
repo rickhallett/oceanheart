@@ -10,6 +10,7 @@ on:
       - "studio/**"
       - ".github/workflows/studio-verify.yml"
       - ".github/workflows/studio-release-policy.yml"
+      - ".coderabbit.yaml"
   workflow_dispatch:
 
 permissions:

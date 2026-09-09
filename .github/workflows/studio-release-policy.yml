@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          studio_changes=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- studio/ .github/workflows/studio-verify.yml .github/workflows/studio-release-policy.yml)
+          studio_changes=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- studio/ .github/workflows/studio-verify.yml .github/workflows/studio-release-policy.yml .coderabbit.yaml)
           if [[ -z "$studio_changes" ]]; then
             echo "No Studio release changes in this PR."
             exit 0
