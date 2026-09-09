@@ -39,7 +39,8 @@ async function workos(path, body, auth = true) {
   });
   if (!response.ok) {
     const body = await response.json().catch(()=>({}));
-    const code = typeof body.code === "string" && /^[a-z_]{1,80}$/.test(body.code) ? body.code : "unreported";
+    const candidate = body.code ?? body.error;
+    const code = typeof candidate === "string" && /^[a-z_]{1,80}$/.test(candidate) ? candidate : "unreported";
     const error = new Error(`WorkOS ${path} failed (HTTP ${response.status}, code ${code}); no retry performed. Inspect provider dashboard; challenges require separate user action.`);
     error.safe = true; throw error;
   }
@@ -47,7 +48,7 @@ async function workos(path, body, auth = true) {
 }
 const jwks = createRemoteJWKSet(new URL(`https://api.workos.com/sso/jwks/${clientId}`));
 async function createAccount(role) {
-  const account = {role, email:`studio-rad-${runId}-${role}@example.com`, password:`Aa1!${randomBytes(30).toString("base64url")}`};
+  const account = {role, email:`${role}@studio-rad-${runId}.example.com`, password:`Aa1!${randomBytes(30).toString("base64url")}`};
   secrets.accounts.push(account);
   await save();
   // Explicit staging-only synthetic fixture, not verification of a real person's email.
