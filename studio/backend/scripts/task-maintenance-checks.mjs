@@ -394,7 +394,53 @@ export async function taskMaintenanceChecks({
     }),
     /TASK_REMOVED/,
   );
-  check("task due dates accept real YYYY-MM-DD calendar days including leap years, reject impossible dates, preserve on omitted updates, clear on null, enforce revisions and tombstone receipts with owner-only tenant isolation");
+  const datelessCreate = {
+    tenantId: tenantA,
+    title: "Dateless task",
+    requestKey: "task-dateless-original",
+  };
+  const datelessId = await alice.mutation("tasks:create", datelessCreate);
+  const readDateless = async () =>
+    (await alice.query("tasks:list", { tenantId: tenantA })).items.find(
+      (task) => task._id === datelessId,
+    );
+  assert.equal((await readDateless()).dueDate, undefined);
+  let datelessRevision = (await readDateless()).revision;
+  await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: datelessId,
+    title: "Dateless task",
+    expectedRevision: datelessRevision,
+    dueDate: "2026-10-01",
+  });
+  assert.equal((await readDateless()).dueDate, "2026-10-01");
+  assert.equal(
+    await alice.mutation("tasks:create", datelessCreate),
+    datelessId,
+    "a date-less create stays retryable after a date is set",
+  );
+  await assert.rejects(
+    alice.mutation("tasks:create", {
+      ...datelessCreate,
+      dueDate: "2026-10-01",
+    }),
+    /IDEMPOTENCY_MISMATCH/,
+  );
+  datelessRevision = (await readDateless()).revision;
+  assert.equal(
+    await alice.mutation("tasks:remove", {
+      tenantId: tenantA,
+      taskId: datelessId,
+      expectedRevision: datelessRevision,
+    }),
+    datelessId,
+  );
+  assert.equal(
+    await alice.mutation("tasks:create", datelessCreate),
+    datelessId,
+    "a date-less create stays retryable after removal",
+  );
+  check("task due dates accept real YYYY-MM-DD calendar days including leap years, reject impossible dates, preserve on omitted updates, clear on null, keep date-less creates retryable after dates/removal, enforce revisions and tombstone receipts with owner-only tenant isolation");
   const legacyId = await seedBoundaryTasks();  assert.equal(
     (await alice.mutation("tasks:update", {
       tenantId: tenantA,

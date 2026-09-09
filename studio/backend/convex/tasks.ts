@@ -105,10 +105,17 @@ export const create = mutation({
       // The receipt includes the original due date: retrying the original
       // request after a rename, date edit or removal returns the same id,
       // while reusing the key with different details is rejected.
+      // Absence is immutable too: a date-less create stores creationTitle
+      // with no creationDueDate, so its receipt is "no date" even after a
+      // later update adds one. Only legacy rows (no creationTitle marker)
+      // fall back to the live fields as their pre-image.
+      const originalDueDate =
+        existing.creationTitle !== undefined
+          ? (existing.creationDueDate ?? undefined)
+          : (existing.dueDate ?? undefined);
       if (
         (existing.creationTitle ?? existing.title) !== normalizedTitle ||
-        (existing.creationDueDate ?? existing.dueDate ?? undefined) !==
-          normalizedDueDate ||
+        originalDueDate !== normalizedDueDate ||
         existing.createdBy !== user.tokenIdentifier
       )
         throw new ConvexError("IDEMPOTENCY_MISMATCH");
