@@ -21,8 +21,10 @@ import type * as lib_createClient from "../lib/createClient.js";
 import type * as lib_gmailMessage from "../lib/gmailMessage.js";
 import type * as lib_gmailProvider from "../lib/gmailProvider.js";
 import type * as lib_gmailSecurity from "../lib/gmailSecurity.js";
+import type * as lib_settings from "../lib/settings.js";
 import type * as migrations from "../migrations.js";
 import type * as services from "../services.js";
+import type * as settings from "../settings.js";
 import type * as tasks from "../tasks.js";
 import type * as tenants from "../tenants.js";
 
@@ -46,8 +48,10 @@ declare const fullApi: ApiFromModules<{
   "lib/gmailMessage": typeof lib_gmailMessage;
   "lib/gmailProvider": typeof lib_gmailProvider;
   "lib/gmailSecurity": typeof lib_gmailSecurity;
+  "lib/settings": typeof lib_settings;
   migrations: typeof migrations;
   services: typeof services;
+  settings: typeof settings;
   tasks: typeof tasks;
   tenants: typeof tenants;
 }>;

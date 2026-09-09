@@ -169,3 +169,39 @@ it("Gmail navigation and connection data unmount on permission downgrade", async
       ),
   ).toBe(false);
 });
+
+it("settings mount for owners and remain available read-only to viewers", async () => {
+  const user = userEvent.setup();
+  const tenantId = "first" as TenantId;
+  const payload = {
+    name: "Seaside Studio",
+    revision: 0,
+    availability: {
+      monday: null,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null,
+      sunday: null,
+    },
+  };
+  vi.mocked(useQuery).mockImplementation((...args) =>
+    getFunctionName(args[0]) === "settings:get"
+      ? payload
+      : { items: [], hasMore: false, limit: 200 },
+  );
+  const view = render(<PracticeViews tenantId={tenantId} canWrite />);
+  await user.click(screen.getByRole("button", { name: "Settings" }));
+  expect(screen.getByRole("heading", { name: "Settings" })).toBeVisible();
+  expect(
+    screen.getByRole("button", { name: "Save settings" }),
+  ).toBeVisible();
+  view.rerender(<PracticeViews tenantId={tenantId} canWrite={false} />);
+  expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Settings" }));
+  expect(screen.getByText("View-only access")).toBeVisible();
+  expect(
+    screen.queryByRole("button", { name: "Save settings" }),
+  ).not.toBeInTheDocument();
+});

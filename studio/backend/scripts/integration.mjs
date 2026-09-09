@@ -3,6 +3,7 @@ import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
+import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
@@ -278,6 +279,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
   await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
   await recordManagementChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"managementlocal"});
+  await settingsChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"settings-local"});
   await writeFile(resolve(runDir,"legacy-clients.json"),JSON.stringify(Array.from({length:101},(_,i)=>({tenantId:tenantA,name:i===0?"Legacy backfill fixture":`Migration auxiliary ${i}`,email:"legacy@example.com",createdAt:123,createdBy:`${issuer}|alice`,requestKey:`legacy-fixture-${i}`}))));
   await command(["import","--env-file",".push.env","--table","clients","--append", "legacy-clients.json"]);
   let backfillCursor=null,backfillUpdated=0,backfillPages=0;

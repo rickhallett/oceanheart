@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { availabilityObject } from "./lib/settings";
 export default defineSchema({
   gmailConnections: defineTable({tenantId:v.id("tenants"),mailbox:v.optional(v.string()),status:v.union(v.literal("connected"),v.literal("disconnected"),v.literal("reauth_required")),generation:v.number(),refreshCipher:v.optional(v.string())}).index("by_tenant",["tenantId"]),
   gmailOAuthStates: defineTable({tenantId:v.id("tenants"),stateHash:v.string(),bindingHash:v.string(),sessionHash:v.string(),verifierCipher:v.string(),actor:v.string(),generation:v.number(),expiresAt:v.number(),used:v.boolean(),completed:v.boolean()}).index("by_state",["stateHash"]),
@@ -7,7 +8,8 @@ export default defineSchema({
   enquiries: defineTable({tenantId:v.id("tenants"),name:v.string(),email:v.optional(v.string()),phone:v.optional(v.string()),subject:v.string(),message:v.string(),draft:v.string(),resolved:v.boolean(),revision:v.number(),createdAt:v.number(),createdBy:v.string(),requestKey:v.string(),creationPayload:v.string(),clientId:v.optional(v.id("clients")),bookingId:v.optional(v.id("bookings"))}).index("by_tenant_resolved",["tenantId","resolved"]).index("by_tenant_request",["tenantId","requestKey"]),
   enquiryEvents: defineTable({tenantId:v.id("tenants"),enquiryId:v.id("enquiries"),action:v.union(v.literal("captured"),v.literal("draft_saved"),v.literal("converted"),v.literal("resolved"),v.literal("reopened")),at:v.number(),actor:v.string(),revision:v.number(),draft:v.optional(v.string()),clientId:v.optional(v.id("clients")),bookingId:v.optional(v.id("bookings"))}).index("by_enquiry",["enquiryId"]),
   enquiryConversions: defineTable({tenantId:v.id("tenants"),enquiryId:v.id("enquiries"),requestKey:v.string(),payload:v.string(),actor:v.string(),clientId:v.id("clients"),bookingId:v.optional(v.id("bookings"))}).index("by_tenant_request",["tenantId","requestKey"]),
-  tenants: defineTable({ name: v.string(), timeZone:v.optional(v.string()), createdBy: v.optional(v.string()), requestKey: v.optional(v.string()) })
+  tenants: defineTable({ name: v.string(), timeZone:v.optional(v.string()), createdBy: v.optional(v.string()), requestKey: v.optional(v.string()),
+    tagline:v.optional(v.string()),contactEmail:v.optional(v.string()),contactPhone:v.optional(v.string()),address:v.optional(v.string()),availability:v.optional(availabilityObject),revision:v.optional(v.number()) })
     .index("by_creator_request", ["createdBy", "requestKey"]),
   services: defineTable({tenantId:v.id("tenants"),name:v.string(),durationMinutes:v.number(),priceMinor:v.number(),currency:v.literal("GBP"),description:v.optional(v.string()),revision:v.optional(v.number()),creationPayload:v.optional(v.string()),active:v.boolean(),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
     .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]).index("by_tenant_active",["tenantId","active"]),
