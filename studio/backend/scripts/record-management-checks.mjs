@@ -31,6 +31,14 @@ export async function recordManagementChecks({alice,bob,viewer,anonymous,tenantA
     const results=await Promise.allSettled(contenders.map((c,i)=>c.mutation(`${module}:update`,{...edit,name:`Racing ${i} ${prefix}`,expectedRevision:3})));
     assert.equal(results.filter(r=>r.status==="fulfilled").length,1);
     assert.ok(results.some(r=>r.status==="rejected"&&String(r.reason).includes("REVISION_CONFLICT")));
+    const current=(await fresh.query(`${module}:list`,{tenantId:tenantA,paginationOpts})).page.find(r=>r._id===id);
+    const cleared={tenantId:tenantA,[idField]:id,name:current.name,expectedRevision:current.revision};
+    if(module==="services")Object.assign(cleared,{durationMinutes:current.durationMinutes,priceMinor:current.priceMinor,currency:current.currency});
+    assert.equal(await alice.mutation(`${module}:update`,cleared),id);
+    const saved=(await fresh.query(`${module}:list`,{tenantId:tenantA,paginationOpts})).page.find(r=>r._id===id);
+    for(const field of module==="services"?["description"]:["email","phone"])assert.ok(!(field in saved),`${field} was not removed`);
+    if(module==="clients")assert.ok(!(await fresh.query("clients:list",{tenantId:tenantA,search:"shared@example.com",paginationOpts})).page.some(r=>r._id===id),"Cleared email remains searchable");
+    assert.equal(await alice.mutation(`${module}:create`,create),id,"original create remains retryable after clearing optional fields");
     await alice.mutation("tenants:addViewer",{tenantId:tenantA,identity:viewerIdentity});
     try{
       await assert.rejects(viewer.mutation(`${module}:update`,edit),/FORBIDDEN/);
@@ -38,7 +46,7 @@ export async function recordManagementChecks({alice,bob,viewer,anonymous,tenantA
     }finally{await alice.mutation("tenants:removeViewer",{tenantId:tenantA,identity:viewerIdentity});}
     await assert.rejects(viewer.mutation(`${module}:update`,edit),/FORBIDDEN/);
   }
-  check("record edits, archive/restore preserve IDs; same-state retries succeed and concurrent divergent writes conflict");
+  check("record edits and clearing optional fields persist with stable IDs/create retries; archive/restore and concurrent divergent writes enforce revisions");
   const unique=`name${prefix.replace(/[^a-z0-9]/gi,"").slice(0,20)}`;
   const payload={tenantId:tenantA,name:unique,email:"family@example.com",requestKey:`${prefix}-search`};
   const first=await alice.mutation("clients:create",payload);await record("clients",first,tenantA);
