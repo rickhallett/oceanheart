@@ -1,5 +1,7 @@
 # Website development and release
 
+Run the commands below from the repository root.
+
 ## Production website
 
 The responsive silhouette site lives in `website/` (vinext/React), integrated
@@ -88,7 +90,7 @@ Release through a reviewed branch after `./build.sh` passes:
 1. Commit only the intended files.
 2. Fetch `origin/main` and require the branch is based on current `main`.
 3. Push the review branch and require the GitHub `verify` check to pass.
-4. Merge the reviewed branch into `main`.
+4. Obtain explicit user approval for the production release, then merge the reviewed branch into `main`.
 5. Wait for the Git-owned Vercel production deployment to report `Ready`.
 6. Verify every short route returns `308` to its canonical article.
 7. Follow every redirect and require `200`, correct canonical metadata, and the
