@@ -1,6 +1,6 @@
 # Chakra UI foundation
 
-Oceanheart Studio uses the free, open-source `@chakra-ui/react` package (lockfile version 3.37.0), Emotion and Lucide icons. No paid component catalogue, template subscription or Untitled UI dependency is required. This migration covers the public homepage, all 17 workspace modules and the `/practice` frontend.
+Oceanheart Studio uses the free, open-source `@chakra-ui/react` package (lockfile version 3.37.0), Emotion and Lucide icons. No paid component catalogue, template subscription or Untitled UI dependency is required. The original migration covered the public homepage, all 17 workspace modules and the then-current `/practice` frontend. The component map below records the current implementation.
 
 ## Component map
 
@@ -14,9 +14,9 @@ Oceanheart Studio uses the free, open-source `@chakra-ui/react` package (lockfil
 | Services, website, portal, payments, shop | Card, Table, SegmentGroup, Switch, Field, Input, NativeSelect, Textarea | Service/editor forms, shop and portal compositions |
 | Assistant, knowledge, operations | Tabs, Table, Card, Field, Button | Conversation/evidence presentation, approval queue and audience filtering |
 | Setup, settings, support, roadmap | Checkbox, Switch, Card, Field, Input, NativeSelect, Textarea | Setup choices, connection states and roadmap prioritisation |
-| `/practice` frontend | Card, Heading, Badge, Field, Input, Button, NativeSelect | Existing Clerk/Convex integration and tenant/booking behaviour |
+| `/practice` frontend | Shared StudioProvider; scoped semantic HTML controls and CSS | WorkOS AuthKit sessions, Convex practice selection and persisted tasks |
 
-All source-level native buttons, inputs, selects, textareas, tables and modal dialogs in these surfaces now use Chakra components. Semantic HTML remains appropriate for page landmarks, links inside `asChild`, forms and disclosure content. Domain behaviour is still application code: Chakra does not provide a booking engine, grounded assistant or payment service.
+The public and prototype workspace surfaces use Chakra components for buttons, inputs, selects, textareas, tables and modal dialogs. The authenticated task slice uses scoped native controls as recorded above. Semantic HTML remains appropriate for page landmarks, links inside `asChild`, forms and disclosure content. Domain behaviour is still application code: Chakra does not provide a booking engine, grounded assistant or payment service.
 
 ## Where to extend it
 
@@ -48,7 +48,7 @@ The build regenerates theme typings automatically. Regenerate after changing the
 
 The browser suite exercises existing workflows plus semantic tables, keyboard tabs, search navigation/dismissal and focus return. It visits 19 surfaces at 1440px, 1024px and 390px, checking configured viewport width, document width, browser errors and homepage typography. Desktop and phone captures are written under `test-results` for visual review. Compare widths in CSS pixels; phone screenshots include the device pixel ratio.
 
-The secretless suite verifies `/practice`'s unavailable state. Authenticated Clerk/Convex journeys require the configured provider environment and were not exercised as part of this UI migration. Prototype interactions remain local to the browser and retain their existing simulation and approval boundaries.
+The secretless suite verifies `/practice`'s unavailable state. Historical migration boundary: authenticated Clerk/Convex journeys were not exercised during the original UI migration. Current WorkOS/Convex acceptance is recorded in [WORKOS-PRACTICE.md](WORKOS-PRACTICE.md). Prototype interactions remain local to the browser and retain their existing simulation and approval boundaries.
 
 ## Migration acceptance — 9 September 2026
 
@@ -71,7 +71,7 @@ Implemented priorities 1–8 from `DESIGN-INSPECTION-2026-09-09.md`, plus shared
 
 The final production build and all **52 Playwright tests passed**, including the 57 route/viewport observations and additional 320px checks of the homepage, Today, support, payments and Enquiries. At the narrowest width, summary statistics stack instead of squeezing their text. New assertions cover support containment, visible mobile record actions, CTA colour, modal control size/borders and mobile list/detail navigation. Keyboard focus tests include the new Cancel action. Final desktop/phone captures and four dialog forms were visually reviewed after entry animations. State captures are preserved in `/Users/oai/.codex/artifacts/studio-design-polish-2026-09-09`; route captures are in `test-results`.
 
-This is local UI acceptance on `feat/studio-chakra`. The authenticated Clerk/Convex journeys and deployment remain unverified by this pass.
+Historical acceptance on `feat/studio-chakra`: this pass verified local UI only; it did not verify the then-current Clerk/Convex journeys or deployment. Current WorkOS task acceptance is recorded separately.
 
 ## Canvas feedback — 9 September 2026
 

@@ -44,6 +44,7 @@ const report = {
 };
 const browser = await chromium.launch();
 let phase = "starting";
+let activePage;
 const practiceName = `Browser acceptance ${run}`;
 const taskTitle = `Confirm persisted task ${run}`;
 async function check(name, work) {
@@ -56,21 +57,29 @@ async function login(account) {
     viewport: { width: 1440, height: 900 },
   });
   const page = await context.newPage();
+  activePage = page;
+  phase = "open configured practice";
   await page.goto(`${baseURL}/practice`);
+  phase = "open WorkOS hosted sign-in";
   await page.getByRole("link", { name: "Sign in", exact: true }).click();
+  phase = "enter WorkOS email";
   await page
     .getByRole("textbox", { name: "Email", exact: true })
     .fill(account.email);
   await page
     .getByRole("button", { name: "Continue with email", exact: true })
     .click();
+  phase = "enter WorkOS password";
   await page.locator("input[type=password]").fill(account.password);
+  phase = "submit WorkOS password";
   await page
     .getByRole("button", {
       name: /^(Sign in|Continue|Continue with password)$/i,
     })
     .click();
+  phase = "return from WorkOS callback to configured origin";
   await page.waitForURL(`${baseURL}/practice`, { timeout: 45_000 });
+  phase = "verify application session and Convex access";
   await expect(
     page.getByRole("button", { name: "Sign out", exact: true }),
   ).toBeVisible();
@@ -109,7 +118,7 @@ async function screenshot(page, width, label) {
 try {
   phase = "WorkOS account A sign-in";
   const first = await login(accounts[0]);
-  await check(phase, async () => {});
+  await check("WorkOS account A sign-in", async () => {});
   await check("explicit practice creation and empty task state", async () => {
     const add = first.page.getByRole("button", {
       name: "Add a practice",
@@ -136,8 +145,10 @@ try {
       .getByRole("button", { name: "Add task", exact: true })
       .click();
     await expect(taskRow(first.page)).toHaveCount(1);
-    await taskRow(first.page).getByRole("checkbox").check();
+    phase = "save completed state through Convex";
+    await taskRow(first.page).getByRole("checkbox").click();
     await expect(taskRow(first.page).getByRole("checkbox")).toBeChecked();
+    phase = "reload persisted task";
     await first.page.reload();
     await first.page
       .getByLabel("Current practice", { exact: true })
@@ -188,6 +199,39 @@ try {
 } catch {
   report.status = "failed";
   report.failedPhase = phase;
+  if (activePage && !activePage.isClosed()) {
+    const url = new URL(activePage.url());
+    const sensitive = fixture.accounts
+      .flatMap((account) => [
+        account.email,
+        account.password,
+        account.accessToken,
+        account.refreshToken,
+      ])
+      .filter(Boolean);
+    const safeText = (text) => {
+      for (const value of sensitive)
+        text = text.split(value).join("[redacted]");
+      return text
+        .replace(/https?:\/\/[^\s]+/g, (value) => {
+          try {
+            const parsed = new URL(value);
+            return parsed.origin + parsed.pathname;
+          } catch {
+            return "[url]";
+          }
+        })
+        .slice(0, 500);
+    };
+    report.diagnostic = {
+      url: url.origin + url.pathname,
+      visibleMessages: (
+        await activePage.locator("h1, h2, [role=alert]").allTextContents()
+      )
+        .map(safeText)
+        .filter(Boolean),
+    };
+  }
   // Do not serialize arbitrary browser/provider exception details or credentials.
   console.error(`Acceptance failed during: ${phase}`);
   process.exitCode = 1;

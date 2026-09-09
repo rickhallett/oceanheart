@@ -79,3 +79,26 @@ browser contexts and real WorkOS sign-in, and records sanitized checks and
 screenshots after authentication. It creates uniquely named synthetic practices
 and tasks through the UI. The target allowlist excludes production. Never commit
 the fixture, password screenshots, access tokens or saved browser sessions.
+
+## Local application with hosted staging services: 9 September 2026
+
+The real browser runner passed at `http://127.0.0.1:4341` against the staging
+WorkOS environment and Convex `charming-albatross-632`. It demonstrated hosted
+password sign-in, explicit practice creation, empty task state, task creation and
+completion, reload persistence, sign-out, a fresh browser login reading saved
+state, and a separate authenticated account unable to see the first practice.
+The local evidence run is `rad-browser-2026-09-09T12-06-45-826Z`. Desktop 1440px,
+400px and 320px populated screenshots were inspected: continuous white canvas,
+34px input/action controls, readable wrapping and no horizontal overflow.
+
+This verifies a local application against real hosted identity and persistence.
+It does not establish the Vercel staging frontend revision or production release.
+The same browser runner must pass at the stable staging URL after deployment.
+No credential, token, browser storage state or sign-in password screenshot is
+included in evidence.
+
+The callback sets the SDK's `baseURL` to the configured redirect URI's origin.
+Next.js can normalize an internal request hostname to `localhost`; trusting that
+hostname would redirect a `127.0.0.1` session to a different cookie origin after
+successful authentication. A route-level SDK contract test covers both local and
+HTTPS staging origins while the request exposes an internal hostname.
