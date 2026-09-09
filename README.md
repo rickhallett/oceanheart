@@ -1,104 +1,47 @@
-# Oceanheart
+<p align="center">
+  <img src="docs/assets/oceanheart-logo.svg" alt="Oceanheart" width="360" />
+</p>
 
-Oceanheart is Rick Hallett's Hugo portfolio and working-notes site, deployed to
-Vercel at [www.oceanheart.ai](https://www.oceanheart.ai).
+<p align="center">
+  <a href="https://github.com/rickhallett/oceanheart/actions/workflows/studio-verify.yml"><img src="https://github.com/rickhallett/oceanheart/actions/workflows/studio-verify.yml/badge.svg?branch=studio%2Fdev" alt="Studio verification on studio/dev" /></a>
+  <a href="https://github.com/rickhallett/oceanheart/tree/studio/dev/studio"><img src="https://img.shields.io/badge/Studio-Next.js_16-111827?logo=nextdotjs" alt="Studio: Next.js 16" /></a>
+  <a href="https://github.com/rickhallett/oceanheart/tree/studio/dev/studio/src"><img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+</p>
 
-## Production website
+Oceanheart is Rick Hallett's practice, bringing together conversation, breathwork and work with the body. This repository holds the [public website](https://www.oceanheart.ai), the writing archive, and **Oceanheart Studio**, a workspace being built for independent practitioners.
 
-The responsive silhouette site lives in `website/` (vinext/React), integrated
-from redesign commit `dc77d68`. Vercel builds a static export and overlays it
-on the Hugo archive, preserving historical articles, assets and share redirects.
-The Vercel project remains `oceanheart`, with production from `main`.
+## Oceanheart Studio
 
-```sh
-SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm ci --prefix website
-bash scripts/build-production.sh
-```
+Studio brings the daily work of a practice into one place: enquiries, bookings, client records, tasks and services. It also explores a client portal, website editing, payments and an assistant with a queue for reviewing proposed actions.
 
-For the new site preview: `npm run dev --prefix website`.
+![Oceanheart Studio Today screen, showing the sample practice's schedule, tasks and latest enquiry](docs/assets/studio-today.png)
 
-## Verify and preview the legacy archive
+*The Today screen in the development prototype. All people, appointments and payments shown are fictional.*
 
-Run the complete production verifier with one command:
+[Try the Studio development demo](https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app/app).
 
-```sh
-./build.sh
-```
+The workspace is interactive and saves sample changes in the browser. Email, payments and assistant responses are simulated. A separate Convex backend implements tenant membership and booking foundations; it is not yet connected to the prototype. See the [demo journeys and boundaries](studio/PROTOTYPE.md).
 
-It checks the share-route projection and retirement service, resolves exactly
-Hugo 0.159.1, builds into a clean destination, and checks the rendered site.
-On Linux, the build downloads only the matching official Hugo archive and
-verifies its pinned SHA256 before execution. GitHub and Vercel run this same
-command.
+## Run locally
 
-For an attended local preview with Hugo 0.159.1 installed:
+Use Node.js 24. Studio development lives on `studio/dev`.
 
 ```sh
-hugo server --bind 0.0.0.0 --port 1313
+git clone --branch studio/dev https://github.com/rickhallett/oceanheart.git
+cd oceanheart/studio
+npm ci
+STUDIO_PREVIEW=1 npm run dev -- --hostname 127.0.0.1 --port 4331
 ```
 
-## Share-friendly blog routes
+Open [localhost:4331/app](http://localhost:4331/app). The prototype needs no API keys. For build, browser checks and release steps, see [Studio development](studio/docs/DEVELOPMENT.md).
 
-The dated Hugo article URL is permanent and remains the canonical SEO URL. Each
-publicly rendered blog article also owns at least one short, stable root alias in
-its TOML frontmatter:
+## Inside the repository
 
-```toml
-aliases = ["/ai/"]
-draft = false
+| Directory | Purpose |
+| --- | --- |
+| [`studio/`](studio/) | Next.js, React, TypeScript and Chakra UI practice workspace and Studio public pages |
+| [`studio/backend/`](studio/backend/) | Independent Convex backend and integration tests |
+| [`website/`](website/) | Public Oceanheart website, built with React and vinext |
+| [`content/`](content/) | Hugo writing archive, retained alongside the public website |
 
-[build]
-render = "always"
-list = "always"
-```
-
-Hugo generates a static alias page as a hosting-independent fallback. Vercel
-serves the same alias as a permanent `308` redirect to the dated canonical
-article.
-
-After adding, removing, or changing an alias, regenerate the Vercel routes:
-
-```sh
-node scripts/sync-share-routes.mjs --write
-node scripts/sync-share-routes.mjs --check
-node scripts/sync-share-routes.mjs --list
-```
-
-`--write` updates only redirects whose destination is under `/blog/` and
-preserves unrelated manual redirects. `build.sh` runs `--check`, so a stale
-`vercel.json`, duplicate alias, missing alias, malformed alias, or collision
-with an existing root route fails the build.
-
-Alias rules:
-
-- Use one lowercase root path segment, such as `/ai/` or `/photo-curation/`.
-- Choose a short semantic name that will remain tied to that article.
-- Never repoint a permanent alias to a newer article. Add a new alias instead.
-- Do not replace the dated filename with `slug` or `url` merely to shorten it.
-- Add aliases only to articles that are intentionally public.
-
-The current mappings can be inspected without changing files:
-
-```sh
-node scripts/sync-share-routes.mjs --list
-```
-
-## Production release
-
-The main site has one deployment owner: Vercel's Git integration for `main`.
-Release through a reviewed branch after `./build.sh` passes:
-
-1. Commit only the intended files.
-2. Fetch `origin/main` and require the branch is based on current `main`.
-3. Push the review branch and require the GitHub `verify` check to pass.
-4. Merge the reviewed branch into `main`.
-5. Wait for the Git-owned Vercel production deployment to report `Ready`.
-6. Verify every short route returns `308` to its canonical article.
-7. Follow every redirect and require `200`, correct canonical metadata, and the
-   expected Open Graph preview metadata.
-
-Do not run `vercel deploy` for the main site. A second deployment path makes
-production lineage ambiguous.
-
-The primary checkout may contain unrelated work. Resolve the registered
-worktree holding `main` before editing or deploying.
+[Style guide](studio/docs/STYLE_GUIDE.md) · [Roadmap](studio/docs/RAD-ROADMAP.md) · [Website build and release](docs/WEBSITE.md)
