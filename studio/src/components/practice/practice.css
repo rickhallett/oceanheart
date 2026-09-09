@@ -260,3 +260,101 @@
     padding: 16px 0;
   }
 }
+.lp-section-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.lp-section-nav button {
+  border-color: transparent;
+}
+.lp-section-nav button[aria-pressed="true"] {
+  background: #edf2fe;
+  color: #255bd7;
+  font-weight: 600;
+}
+.lp-records {
+  max-width: 680px;
+}
+.lp-record-form {
+  max-width: 480px;
+  margin: 0 0 24px;
+}
+.lp-record-form h3 {
+  margin-bottom: 16px;
+}
+.lp-record-form fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.lp-record-form label {
+  display: block;
+  margin: 12px 0 6px;
+}
+.lp-field-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.lp-root textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+  resize: vertical;
+  color: #17212f;
+  background: white;
+  font:
+    400 13px/1.5 var(--font-sans),
+    sans-serif;
+}
+.lp-root textarea:focus-visible {
+  outline: 2px solid #255bd7;
+  outline-offset: 2px;
+}
+.lp-record-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.lp-record-list li {
+  margin: 0 0 28px;
+  overflow-wrap: anywhere;
+}
+.lp-record-list dl {
+  display: flex;
+  gap: 28px;
+  margin: 8px 0;
+}
+.lp-record-list dt {
+  font-size: 12px;
+  color: #657389;
+  margin-bottom: 5px;
+}
+.lp-record-list dd {
+  font-size: 14px;
+  color: #354256;
+  margin: 0;
+}
+.lp-record-list .lp-contact-details {
+  display: block;
+}
+.lp-contact-details > div {
+  margin-top: 12px;
+}
+.lp-record-list .lp-description {
+  white-space: pre-wrap;
+  color: #354256;
+  font-size: 14px;
+  margin-top: 12px;
+}
+.lp-root .lp-load-more {
+  margin-top: 8px;
+}
+@media (max-width: 400px) {
+  .lp-field-pair {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

@@ -1,4 +1,8 @@
-import { makeFunctionReference } from "convex/server";
+import {
+  makeFunctionReference,
+  type PaginationOptions,
+  type PaginationResult,
+} from "convex/server";
 import type { GenericId } from "convex/values";
 
 // Identity and role are derived by the backend; a selected tenant is not authority.
@@ -12,6 +16,26 @@ export type Task = {
 };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
 export const practiceApi = {
+  services: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; paginationOpts: PaginationOptions },
+    PaginationResult<Service>
+  >("services:list"),
+  createService: makeFunctionReference<
+    "mutation",
+    ServiceInput & { tenantId: TenantId; requestKey: string },
+    GenericId<"services">
+  >("services:create"),
+  clients: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; paginationOpts: PaginationOptions },
+    PaginationResult<Client>
+  >("clients:list"),
+  createClient: makeFunctionReference<
+    "mutation",
+    ClientInput & { tenantId: TenantId; requestKey: string },
+    GenericId<"clients">
+  >("clients:create"),
   tenants: makeFunctionReference<"query", Record<string, never>, Tenant[]>(
     "tenants:list",
   ),
@@ -45,3 +69,29 @@ export function readableError(error: unknown): string {
   if (/INVALID_/.test(message)) return "Check the details and try again.";
   return "We couldn’t confirm the change. Retry with the same details to safely check or save it.";
 }
+
+export type Service = {
+  _id: GenericId<"services">;
+  name: string;
+  durationMinutes: number;
+  priceMinor: number;
+  currency: "GBP";
+  description?: string;
+  active: boolean;
+  createdAt: number;
+};
+export type Client = {
+  _id: GenericId<"clients">;
+  name: string;
+  email?: string;
+  phone?: string;
+  createdAt: number;
+};
+export type ServiceInput = {
+  name: string;
+  durationMinutes: number;
+  priceMinor: number;
+  currency: "GBP";
+  description?: string;
+};
+export type ClientInput = { name: string; email?: string; phone?: string };

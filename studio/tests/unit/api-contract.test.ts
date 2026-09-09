@@ -48,3 +48,45 @@ it("uses deployed command names", () => {
   expect(getFunctionName(practiceApi.createTask)).toBe("tasks:create");
   expect(getFunctionName(practiceApi.setCompleted)).toBe("tasks:setCompleted");
 });
+type ServiceCreateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.services.create>,
+    FunctionArgs<typeof practiceApi.createService>
+  >
+>;
+type ServiceListArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.services.list>,
+    FunctionArgs<typeof practiceApi.services>
+  >
+>;
+type ServiceListResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.services.list>,
+    FunctionReturnType<typeof practiceApi.services>
+  >
+>;
+type ClientCreateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.clients.create>,
+    FunctionArgs<typeof practiceApi.createClient>
+  >
+>;
+type ClientListArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.clients.list>,
+    FunctionArgs<typeof practiceApi.clients>
+  >
+>;
+type ClientListResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.clients.list>,
+    FunctionReturnType<typeof practiceApi.clients>
+  >
+>;
+it("uses deployed service and client command names", () => {
+  expect(getFunctionName(practiceApi.services)).toBe("services:list");
+  expect(getFunctionName(practiceApi.createService)).toBe("services:create");
+  expect(getFunctionName(practiceApi.clients)).toBe("clients:list");
+  expect(getFunctionName(practiceApi.createClient)).toBe("clients:create");
+});

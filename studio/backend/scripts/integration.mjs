@@ -1,3 +1,4 @@
+import { catalogChecks } from "./catalog-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -263,6 +264,7 @@ try {
   const secondTask = await alice.mutation("tasks:create",{...taskArgs,title:"Second task",requestKey:"task-two"});
   assert.equal((await alice.query("tasks:list",{tenantId:tenantA})).items[0]._id,secondTask);
   check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
+  await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
   const start = Date.UTC(2030, 0, 10, 9);
   const hour = 3600000;
   const booking = {
