@@ -19,7 +19,7 @@ const working = [
   ['Bookings', 'A little shape to your week, with rescheduling that respects what is already there.'],
   ['Clients', 'The people behind your practice, with history in one place.'],
   ['Services', 'The work you offer, described once and reused everywhere.'],
-  ['Tasks', 'A little less on your mind: titles, due dates and completion.'],
+  ['Tasks', 'A little less on your mind: titles and completion.'],
 ];
 
 const next = [
