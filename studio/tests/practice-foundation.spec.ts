@@ -32,7 +32,13 @@ test("private practice is unavailable without configuration while the public moc
   await expect(
     page.getByRole("link", { name: "Skip to your practice" }),
   ).toBeFocused();
-  await page.getByRole("link", { name: "Explore the sample practice" }).click();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("main")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("link", { name: "Explore the sample practice" }),
+  ).toBeFocused();
+  await page.keyboard.press("Enter");
   await expect(
     page.getByRole("heading", { name: "Good morning, Amelia." }),
   ).toBeVisible();

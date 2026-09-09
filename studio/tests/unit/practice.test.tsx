@@ -17,6 +17,17 @@ describe("configuration", () => {
     NEXT_PUBLIC_CONVEX_URL: "https://example.convex.cloud",
     NEXT_PUBLIC_WORKOS_REDIRECT_URI: "https://staging.example.com/callback",
   };
+  it("rejects padded configuration and malformed WorkOS client IDs", () => {
+    for (const [key, value] of Object.entries(env)) {
+      expect(practiceConfigured({ ...env, [key]: ` ${value}` })).toBe(false);
+      expect(practiceConfigured({ ...env, [key]: `${value} ` })).toBe(false);
+    }
+    for (const value of ["client_", "invalid", "client_a/b", "client_a b"]) {
+      expect(practiceConfigured({ ...env, WORKOS_CLIENT_ID: value })).toBe(
+        false,
+      );
+    }
+  });
   it("fails closed for partial or unsafe callback configuration", () => {
     expect(practiceConfigured(env)).toBe(true);
     expect(

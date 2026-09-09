@@ -21,7 +21,7 @@ export function PracticeShell({
         </a>
         {account}
       </header>
-      <main id="practice-main" className="lp-main">
+      <main id="practice-main" className="lp-main" tabIndex={-1}>
         {children}
       </main>
     </div>
@@ -229,7 +229,7 @@ function TaskRow({
     }
   }
   return (
-    <li>
+    <li data-task-id={task._id}>
       <label className="lp-task-row">
         <input
           type="checkbox"

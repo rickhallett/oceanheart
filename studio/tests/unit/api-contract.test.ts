@@ -42,6 +42,8 @@ type CompleteArgs = Assert<
   >
 >;
 it("uses deployed command names", () => {
+  expect(getFunctionName(practiceApi.tenants)).toBe("tenants:list");
+  expect(getFunctionName(practiceApi.createTenant)).toBe("tenants:create");
   expect(getFunctionName(practiceApi.tasks)).toBe("tasks:list");
   expect(getFunctionName(practiceApi.createTask)).toBe("tasks:create");
   expect(getFunctionName(practiceApi.setCompleted)).toBe("tasks:setCompleted");

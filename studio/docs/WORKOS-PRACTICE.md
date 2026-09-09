@@ -19,8 +19,12 @@ Set these only in the intended Vercel environment or an ignored `.env.local`:
 For staging, the callback is
 `https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app/callback`.
 Configure WorkOS Sign-in URL as the same origin plus `/sign-in`; configure Logout
-URI as the same origin plus `/practice`. Local acceptance uses
-`http://127.0.0.1:4341/callback`, `/sign-in` and `/practice` respectively.
+URI as the same origin plus `/practice`. Canonical local development uses
+`http://127.0.0.1:4331/callback`, `/sign-in` and `/practice` respectively; the
+isolated acceptance worktree uses port 4341. The callback origin and port must
+match the running server and WorkOS allowlist exactly. The environment example
+includes the matching server command. Padded values and malformed WorkOS client
+IDs are rejected before provider initialization.
 Use a separate environment and cookie secret for production. See
 [staging and release policy](STAGING-AND-RELEASE.md) for deployment authority.
 The former Clerk variables are unused and must not be copied into staging.
@@ -77,7 +81,8 @@ from `studio`, or set the stable staging origin for hosted frontend acceptance.
 It reads synthetic owner/outsider credentials without printing them, uses fresh
 browser contexts and real WorkOS sign-in, and records sanitized checks and
 screenshots after authentication. It creates uniquely named synthetic practices
-and tasks through the UI. The target allowlist excludes production. Never commit
+and tasks through the UI and checkpoints their actual tenant/task IDs in the
+sanitized report for exact cleanup. The target allowlist excludes production. Never commit
 the fixture, password screenshots, access tokens or saved browser sessions.
 
 ## Local application with hosted staging services: 9 September 2026

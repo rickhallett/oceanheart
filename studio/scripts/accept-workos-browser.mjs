@@ -11,6 +11,7 @@ const fixturePath =
     ? path.join(process.argv[2], "credentials.json")
     : undefined);
 const allowed = new Set([
+  "http://127.0.0.1:4331",
   "http://127.0.0.1:4341",
   "https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app",
 ]);
@@ -40,6 +41,8 @@ const report = {
   startedAt: new Date().toISOString(),
   checks: [],
   screenshots: [],
+  practices: [],
+  tasks: [],
   status: "running",
 };
 const browser = await chromium.launch();
@@ -137,6 +140,15 @@ try {
     await expect(
       first.page.getByText("No tasks yet", { exact: true }),
     ).toBeVisible();
+    const tenantId = await first.page
+      .getByLabel("Current practice", { exact: true })
+      .inputValue();
+    expect(tenantId).toBeTruthy();
+    report.practices.push({ tenantId, name: practiceName });
+    await writeFile(
+      path.join(output, "report.json"),
+      JSON.stringify(report, null, 2) + "\n",
+    );
     await screenshot(first.page, 1440, "empty");
   });
   await check("task add, complete and reload persistence", async () => {
@@ -145,6 +157,17 @@ try {
       .getByRole("button", { name: "Add task", exact: true })
       .click();
     await expect(taskRow(first.page)).toHaveCount(1);
+    const taskId = await taskRow(first.page).getAttribute("data-task-id");
+    expect(taskId).toBeTruthy();
+    report.tasks.push({
+      taskId,
+      tenantId: report.practices[0].tenantId,
+      title: taskTitle,
+    });
+    await writeFile(
+      path.join(output, "report.json"),
+      JSON.stringify(report, null, 2) + "\n",
+    );
     phase = "save completed state through Convex";
     await taskRow(first.page).getByRole("checkbox").click();
     await expect(taskRow(first.page).getByRole("checkbox")).toBeChecked();
