@@ -18,3 +18,7 @@ These are Git worktrees, not disposable copies. Deleting one may lose uncommitte
 | studio-untitled | feat/studio-untitled-free | 25 modified/untracked paths | Preserve; review unique work before removal |
 
 Next cleanup pass: compare each branch with main and studio/dev; commit or export unique changes, then use git worktree remove only on verified redundant clean checkouts. Do not delete the shared Git store. Public website, business-card and leaflet work are outside this Studio cleanup.
+
+## Consolidation completed
+
+All historical worktrees listed above now live under `/Users/oai/work/oceanheart/_archive/worktrees/`. They were moved using Git and their HEAD/status verified unchanged. Brand/copy assets are under `assets/`. The parent now contains only `studio-dev`, `production-current`, `assets`, `_archive` and `WORKSPACE.md`. Ports 4321 and 4330 are retired; 4331 remains active. Full relocation manifest is in the parent archive.
