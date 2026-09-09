@@ -45,12 +45,25 @@ function PracticeTasks({
       canWrite={canWrite}
       filter={filter}
       changeFilter={setFilter}
-      addTask={(title, requestKey) => create({ tenantId, title, requestKey })}
+      addTask={(title, requestKey, dueDate) =>
+        create({
+          tenantId,
+          title,
+          requestKey,
+          ...(dueDate !== undefined ? { dueDate } : {}),
+        })
+      }
       setCompleted={(task, completed) =>
         complete({ tenantId, taskId: task._id, completed, expectedRevision: task.revision })
       }
-      updateTask={(task, title, expectedRevision) =>
-        update({ tenantId, taskId: task._id, title, expectedRevision })
+      updateTask={(task, title, expectedRevision, dueDate) =>
+        update({
+          tenantId,
+          taskId: task._id,
+          title,
+          expectedRevision,
+          ...(dueDate === undefined ? {} : { dueDate }),
+        })
       }
       removeTask={(task, expectedRevision) =>
         remove({ tenantId, taskId: task._id, expectedRevision })

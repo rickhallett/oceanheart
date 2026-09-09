@@ -19,6 +19,7 @@ export type Task = {
   completed: boolean;
   createdAt: number;
   revision: number;
+  dueDate?: string;
 };
 export type TaskFilter = "all" | "open" | "completed";
 export type TaskUpdateResult = { taskId: GenericId<"tasks">; revision: number };
@@ -162,7 +163,7 @@ export const practiceApi = {
   ),
   createTask: makeFunctionReference<
     "mutation",
-    { tenantId: TenantId; title: string; requestKey: string },
+    { tenantId: TenantId; title: string; requestKey: string; dueDate?: string },
     GenericId<"tasks">
   >("tasks:create"),
   setCompleted: makeFunctionReference<
@@ -182,6 +183,7 @@ export const practiceApi = {
       taskId: GenericId<"tasks">;
       title: string;
       expectedRevision: number;
+      dueDate?: string | null;
     },
     TaskUpdateResult
   >("tasks:update"),
@@ -241,6 +243,8 @@ export function readableError(error: unknown): string {
     return "The selected client or service is archived. Choose an active record.";
   if (message.includes("REVISION_CONFLICT"))
     return "This record has changed since you opened it. Reload the practice to review the latest version before editing again.";
+  if (message.includes("INVALID_DUE_DATE"))
+    return "Enter a real calendar date as YYYY-MM-DD.";
   if (message.includes("FORBIDDEN"))
     return "Your access to this practice has changed. Reload to check your permissions.";
   if (message.includes("UNAUTHENTICATED"))
