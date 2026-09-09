@@ -1,3 +1,4 @@
+import { recordManagementChecks } from "./record-management-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
@@ -265,6 +266,22 @@ try {
   assert.equal((await alice.query("tasks:list",{tenantId:tenantA})).items[0]._id,secondTask);
   check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
   await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
+  await recordManagementChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"managementlocal"});
+  await writeFile(resolve(runDir,"legacy-clients.json"),JSON.stringify(Array.from({length:101},(_,i)=>({tenantId:tenantA,name:i===0?"Legacy backfill fixture":`Migration auxiliary ${i}`,email:"legacy@example.com",createdAt:123,createdBy:`${issuer}|alice`,requestKey:`legacy-fixture-${i}`}))));
+  await command(["import","--env-file",".push.env","--table","clients","--append", "legacy-clients.json"]);
+  let backfillCursor=null,backfillUpdated=0,backfillPages=0;
+  do {
+    const batch=JSON.parse(await command(["run","--env-file",".push.env","migrations:backfillClientSearch",JSON.stringify({cursor:backfillCursor})]));
+    assert.ok(batch.scanned<=100);backfillUpdated+=batch.updated;backfillPages++;
+    if(batch.isDone)break;backfillCursor=batch.continueCursor;assert.ok(backfillPages<10);
+  }while(true);
+  assert.equal(backfillUpdated,101);assert.ok(backfillPages>=2);
+  const migrated=await alice.query("clients:list",{tenantId:tenantA,search:"backfill",paginationOpts:{numItems:50,cursor:null}});
+  assert.equal(migrated.page.length,1);assert.equal(migrated.page[0].name,"Legacy backfill fixture");assert.equal(migrated.page[0].email,"legacy@example.com");assert.equal(migrated.page[0].createdAt,123);assert.equal(migrated.page[0].revision,0);
+  const migrationId=migrated.page[0]._id;
+  await command(["run","--env-file",".push.env","migrations:backfillClientSearch",JSON.stringify({cursor:null})]);
+  assert.equal((await alice.query("clients:list",{tenantId:tenantA,search:"backfill",paginationOpts:{numItems:50,cursor:null}})).page[0]._id,migrationId);
+  check("internal bounded backfill makes legacy contacts searchable, preserves fields/ID and is repeatable");
   const start = Date.UTC(2030, 0, 10, 9);
   const hour = 3600000;
   const booking = {

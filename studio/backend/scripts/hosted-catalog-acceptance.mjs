@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ConvexHttpClient } from "convex/browser";
 import { jwtVerify, createRemoteJWKSet } from "jose";
+import { recordManagementChecks } from "./record-management-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 const target=process.env.STUDIO_STAGING_CONVEX_URL,clientId=process.env.WORKOS_CLIENT_ID,key=process.env.WORKOS_API_KEY,fixture=process.env.STUDIO_EXISTING_CREDENTIALS;
 if(target!=="https://charming-albatross-632.convex.cloud" || clientId!=="client_01M22XATNCX2AG67KHQ4VKTSTH" || process.env.STUDIO_ACCEPTANCE_ENVIRONMENT!=="environment_01M22XATA8QP8R896NV5511N1V" || !key?.startsWith("sk_test_") || !fixture || process.env.STUDIO_ALLOW_SYNTHETIC_FIXTURES!=="yes") {
@@ -39,6 +40,7 @@ try {
   assert.ok(tenantA && tenantB && tenantA!==tenantB,"Existing isolated practices required");
   report.tenants=[tenantA,tenantB];
   await catalogChecks({alice,bob,viewer:client("viewer"),anonymous:client(),tenantA,tenantB,viewerIdentity:accounts.viewer.identity,clientForOwner:async()=>client("owner"),prefix:randomUUID(),check:name=>{report.checks.push(name);console.log(`PASS ${name}`);},record:async(table,id,tenantId)=>{report.records.push({table,id,tenantId});await save();}});
+  await recordManagementChecks({alice,bob,viewer:client("viewer"),anonymous:client(),tenantA,tenantB,viewerIdentity:accounts.viewer.identity,clientForOwner:async()=>client("owner"),prefix:randomUUID(),check:name=>{report.checks.push(name);console.log(`PASS ${name}`);},record:async(table,id,tenantId)=>{report.records.push({table,id,tenantId});await save();}});
   report.status="passed";
 }catch{report.status="failed";report.failure??="Acceptance assertion/request failed; raw details suppressed to protect credentials.";console.error(report.failure);process.exitCode=1;}
 finally{report.finishedAt=new Date().toISOString();await save();console.log(`Catalogue acceptance ${report.status}; non-secret record manifest: ${directory}`);}
