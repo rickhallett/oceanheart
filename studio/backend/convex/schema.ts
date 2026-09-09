@@ -3,10 +3,10 @@ import { v } from "convex/values";
 export default defineSchema({
   tenants: defineTable({ name: v.string(), createdBy: v.optional(v.string()), requestKey: v.optional(v.string()) })
     .index("by_creator_request", ["createdBy", "requestKey"]),
-  services: defineTable({tenantId:v.id("tenants"),name:v.string(),durationMinutes:v.number(),priceMinor:v.number(),currency:v.literal("GBP"),description:v.optional(v.string()),active:v.boolean(),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
-    .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]),
-  clients: defineTable({tenantId:v.id("tenants"),name:v.string(),email:v.optional(v.string()),phone:v.optional(v.string()),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
-    .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]),
+  services: defineTable({tenantId:v.id("tenants"),name:v.string(),durationMinutes:v.number(),priceMinor:v.number(),currency:v.literal("GBP"),description:v.optional(v.string()),revision:v.optional(v.number()),creationPayload:v.optional(v.string()),active:v.boolean(),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
+    .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]).index("by_tenant_active",["tenantId","active"]),
+  clients: defineTable({tenantId:v.id("tenants"),name:v.string(),email:v.optional(v.string()),phone:v.optional(v.string()),revision:v.optional(v.number()),creationPayload:v.optional(v.string()),archived:v.optional(v.boolean()),searchText:v.optional(v.string()),createdAt:v.number(),createdBy:v.string(),requestKey:v.string()})
+    .index("by_tenant",["tenantId"]).index("by_tenant_request",["tenantId","requestKey"]).index("by_tenant_archived",["tenantId","archived"]).searchIndex("search_clients",{searchField:"searchText",filterFields:["tenantId","archived"]}),
   tasks: defineTable({ tenantId: v.id("tenants"), title: v.string(), completed: v.boolean(), createdAt: v.number(), createdBy: v.string(), requestKey: v.string() })
     .index("by_tenant", ["tenantId"])
     .index("by_tenant_request", ["tenantId", "requestKey"]),

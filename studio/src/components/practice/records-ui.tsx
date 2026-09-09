@@ -47,10 +47,11 @@ function useCreate<T>(
 ) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [conflict, setConflict] = useState(false);
   const request = useRef<{ signature: string; key: string } | null>(null);
   const busy = useRef(false);
   async function save(input: T) {
-    if (busy.current) return;
+    if (busy.current || conflict) return;
     const signature = JSON.stringify(input);
     if (request.current?.signature !== signature)
       request.current = { signature, key: crypto.randomUUID() };
@@ -63,12 +64,13 @@ function useCreate<T>(
       done();
     } catch (cause) {
       setError(readableError(cause));
+      setConflict(String(cause).includes("REVISION_CONFLICT"));
     } finally {
       busy.current = false;
       setPending(false);
     }
   }
-  return { pending, error, setError, save };
+  return { pending, error, setError, conflict, save };
 }
 function FormFrame({
   title,
@@ -77,7 +79,9 @@ function FormFrame({
   cancel,
   submit,
   children,
+  conflict = false,
 }: {
+  conflict?: boolean;
   title: string;
   pending: boolean;
   error: string;
@@ -91,7 +95,7 @@ function FormFrame({
       <fieldset disabled={pending}>
         {children}
         <div className="lp-actions">
-          <button className="lp-button" type="submit">
+          <button className="lp-button" type="submit" disabled={conflict}>
             {pending ? "Saving…" : "Save"}
           </button>
           <button type="button" onClick={cancel}>
@@ -100,6 +104,11 @@ function FormFrame({
         </div>
       </fieldset>
       {error && <p role="alert">{error}</p>}
+      {conflict && (
+        <button type="button" onClick={() => window.location.reload()}>
+          Reload practice
+        </button>
+      )}
     </form>
   );
 }
@@ -107,12 +116,14 @@ function ServiceForm({
   create,
   done,
   cancel,
+  initial,
 }: {
   create: (input: ServiceInput, requestKey: string) => Promise<unknown>;
+  initial?: Service;
   done: () => void;
   cancel: () => void;
 }) {
-  const { pending, error, setError, save } = useCreate(create, done);
+  const { pending, error, setError, conflict, save } = useCreate(create, done);
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
@@ -147,14 +158,22 @@ function ServiceForm({
   }
   return (
     <FormFrame
-      title="New service"
+      title={initial ? "Edit service" : "New service"}
+      conflict={conflict}
       pending={pending}
       error={error}
       cancel={cancel}
       submit={submit}
     >
       <label htmlFor="service-name">Service name</label>
-      <input id="service-name" name="name" maxLength={100} required autoFocus />
+      <input
+        id="service-name"
+        name="name"
+        defaultValue={initial?.name}
+        maxLength={100}
+        required
+        autoFocus
+      />
       <div className="lp-field-pair">
         <div>
           <label htmlFor="service-duration">Duration (minutes)</label>
@@ -166,7 +185,7 @@ function ServiceForm({
             max={1440}
             step={1}
             required
-            defaultValue="60"
+            defaultValue={initial?.durationMinutes ?? 60}
           />
         </div>
         <div>
@@ -174,6 +193,9 @@ function ServiceForm({
           <input
             id="service-price"
             name="price"
+            defaultValue={
+              initial ? (initial.priceMinor / 100).toFixed(2) : undefined
+            }
             inputMode="decimal"
             maxLength={12}
             placeholder="0.00"
@@ -185,6 +207,7 @@ function ServiceForm({
       <textarea
         id="service-description"
         name="description"
+        defaultValue={initial?.description}
         maxLength={2000}
         rows={3}
       />
@@ -195,12 +218,14 @@ function ClientForm({
   create,
   done,
   cancel,
+  initial,
 }: {
   create: (input: ClientInput, requestKey: string) => Promise<unknown>;
+  initial?: Client;
   done: () => void;
   cancel: () => void;
 }) {
-  const { pending, error, setError, save } = useCreate(create, done);
+  const { pending, error, setError, conflict, save } = useCreate(create, done);
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
@@ -219,7 +244,8 @@ function ClientForm({
   }
   return (
     <FormFrame
-      title="New client"
+      title={initial ? "Edit client" : "New client"}
+      conflict={conflict}
       pending={pending}
       error={error}
       cancel={cancel}
@@ -229,6 +255,7 @@ function ClientForm({
       <input
         id="client-name"
         name="name"
+        defaultValue={initial?.name}
         maxLength={100}
         required
         autoFocus
@@ -238,6 +265,7 @@ function ClientForm({
       <input
         id="client-email"
         name="email"
+        defaultValue={initial?.email}
         type="email"
         maxLength={254}
         autoComplete="email"
@@ -246,6 +274,7 @@ function ClientForm({
       <input
         id="client-phone"
         name="phone"
+        defaultValue={initial?.phone}
         type="tel"
         maxLength={40}
         autoComplete="tel"
@@ -276,49 +305,193 @@ function More({
     </button>
   );
 }
+export function RecordFilter({
+  archived,
+  change,
+  noun,
+}: {
+  archived: boolean;
+  change: (archived: boolean) => void;
+  noun: string;
+}) {
+  return (
+    <div
+      className="lp-record-filter"
+      role="group"
+      aria-label={`${noun} status`}
+    >
+      <button
+        type="button"
+        aria-pressed={!archived}
+        onClick={() => change(false)}
+      >
+        Active
+      </button>
+      <button
+        type="button"
+        aria-pressed={archived}
+        onClick={() => change(true)}
+      >
+        Archived
+      </button>
+    </div>
+  );
+}
+export function ClientSearch({
+  search,
+  change,
+}: {
+  search: string;
+  change: (search: string) => void;
+}) {
+  const [value, setValue] = useState(search),
+    [error, setError] = useState("");
+  return (
+    <form
+      className="lp-record-search"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const query = value.trim();
+        if (query.split(/\s+/).filter(Boolean).length > 16) {
+          setError("Use up to 16 search terms.");
+          return;
+        }
+        setError("");
+        change(query);
+      }}
+    >
+      <label htmlFor="client-search">Search clients by name or email</label>
+      <div className="lp-inline">
+        <input
+          id="client-search"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          maxLength={100}
+        />
+        <button type="submit">Search</button>
+        {search && (
+          <button
+            type="button"
+            onClick={() => {
+              setValue("");
+              setError("");
+              change("");
+            }}
+          >
+            Clear
+          </button>
+        )}
+      </div>
+      {error && <p role="alert">{error}</p>}
+    </form>
+  );
+}
+function RecordActions({
+  archived,
+  edit,
+  archive,
+}: {
+  archived: boolean;
+  edit: () => void;
+  archive: (archived: boolean) => Promise<unknown>;
+}) {
+  const [pending, setPending] = useState(false),
+    [error, setError] = useState("");
+  const busy = useRef(false);
+  const [conflict, setConflict] = useState(false);
+  async function change() {
+    if (busy.current || conflict) return;
+    busy.current = true;
+    setPending(true);
+    setError("");
+    try {
+      await archive(!archived);
+    } catch (cause) {
+      setError(readableError(cause));
+      setConflict(String(cause).includes("REVISION_CONFLICT"));
+    } finally {
+      busy.current = false;
+      setPending(false);
+    }
+  }
+  return (
+    <>
+      <div className="lp-actions">
+        <button type="button" disabled={pending || conflict} onClick={edit}>
+          Edit
+        </button>
+        <button
+          type="button"
+          disabled={pending || conflict}
+          onClick={() => void change()}
+        >
+          {pending ? "Saving…" : archived ? "Restore" : "Archive"}
+        </button>
+      </div>
+      {error && <p role="alert">{error}</p>}
+      {error && (
+        <button type="button" onClick={() => window.location.reload()}>
+          Reload practice
+        </button>
+      )}
+    </>
+  );
+}
 export function ServicesPanel({
   items,
   status,
   canWrite,
   create,
   loadMore,
+  archived = false,
+  update,
+  archive,
 }: {
   items: Service[];
   status: PageStatus;
   canWrite: boolean;
   create: (input: ServiceInput, requestKey: string) => Promise<unknown>;
   loadMore: () => void;
+  archived?: boolean;
+  update?: (record: Service, input: ServiceInput) => Promise<unknown>;
+  archive?: (record: Service, archived: boolean) => Promise<unknown>;
 }) {
-  const [adding, setAdding] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [adding, setAdding] = useState(false),
+    [editing, setEditing] = useState<Service>(),
+    [notice, setNotice] = useState("");
   const opener = useRef<HTMLButtonElement>(null);
   function close() {
     setAdding(false);
+    setEditing(undefined);
     requestAnimationFrame(() => opener.current?.focus());
   }
   return (
     <section className="lp-records">
       <div className="lp-section-heading">
         <h2>Services</h2>
-        {canWrite ? (
+        {canWrite && !archived ? (
           <button
             ref={opener}
             type="button"
+            disabled={adding || !!editing}
             onClick={() => {
               setAdding(true);
               setNotice("");
             }}
-            disabled={adding}
           >
             Add service
           </button>
-        ) : (
+        ) : !canWrite ? (
           <span className="lp-muted">View-only access</span>
-        )}
+        ) : null}
       </div>
-      {adding && canWrite && (
+      {(adding || editing) && canWrite && (
         <ServiceForm
-          create={create}
+          key={editing?._id ?? "new"}
+          initial={editing}
+          create={(input, key) =>
+            editing ? update!(editing, input) : create(input, key)
+          }
           cancel={close}
           done={() => {
             setNotice("Service saved.");
@@ -331,7 +504,7 @@ export function ServicesPanel({
       </p>
       {status !== "LoadingFirstPage" && items.length === 0 && (
         <div className="lp-empty">
-          <h3>No services yet</h3>
+          <h3>{archived ? "No archived services" : "No services yet"}</h3>
         </div>
       )}
       <ul className="lp-record-list">
@@ -351,6 +524,17 @@ export function ServicesPanel({
             {service.description && (
               <p className="lp-description">{service.description}</p>
             )}
+            {canWrite && update && archive && (
+              <RecordActions
+                archived={!service.active}
+                edit={() => {
+                  setAdding(false);
+                  setEditing(service);
+                  setNotice("");
+                }}
+                archive={(value) => archive(service, value)}
+              />
+            )}
           </li>
         ))}
       </ul>
@@ -363,38 +547,54 @@ export function ClientsPanel({
   status,
   create,
   loadMore,
+  archived = false,
+  search = "",
+  update,
+  archive,
 }: {
   items: Client[];
   status: PageStatus;
   create: (input: ClientInput, requestKey: string) => Promise<unknown>;
   loadMore: () => void;
+  archived?: boolean;
+  search?: string;
+  update?: (record: Client, input: ClientInput) => Promise<unknown>;
+  archive?: (record: Client, archived: boolean) => Promise<unknown>;
 }) {
-  const [adding, setAdding] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [adding, setAdding] = useState(false),
+    [editing, setEditing] = useState<Client>(),
+    [notice, setNotice] = useState("");
   const opener = useRef<HTMLButtonElement>(null);
   function close() {
     setAdding(false);
+    setEditing(undefined);
     requestAnimationFrame(() => opener.current?.focus());
   }
   return (
     <section className="lp-records">
       <div className="lp-section-heading">
         <h2>Clients</h2>
-        <button
-          ref={opener}
-          type="button"
-          onClick={() => {
-            setAdding(true);
-            setNotice("");
-          }}
-          disabled={adding}
-        >
-          Add client
-        </button>
+        {!archived && (
+          <button
+            ref={opener}
+            type="button"
+            disabled={adding || !!editing}
+            onClick={() => {
+              setAdding(true);
+              setNotice("");
+            }}
+          >
+            Add client
+          </button>
+        )}
       </div>
-      {adding && (
+      {(adding || editing) && (
         <ClientForm
-          create={create}
+          key={editing?._id ?? "new"}
+          initial={editing}
+          create={(input, key) =>
+            editing ? update!(editing, input) : create(input, key)
+          }
           cancel={close}
           done={() => {
             setNotice("Client saved.");
@@ -407,7 +607,13 @@ export function ClientsPanel({
       </p>
       {status !== "LoadingFirstPage" && items.length === 0 && (
         <div className="lp-empty">
-          <h3>No clients yet</h3>
+          <h3>
+            {search
+              ? "No clients match your search"
+              : archived
+                ? "No archived clients"
+                : "No clients yet"}
+          </h3>
         </div>
       )}
       <ul className="lp-record-list">
@@ -429,6 +635,17 @@ export function ClientsPanel({
                   </div>
                 )}
               </dl>
+            )}
+            {update && archive && (
+              <RecordActions
+                archived={client.archived}
+                edit={() => {
+                  setAdding(false);
+                  setEditing(client);
+                  setNotice("");
+                }}
+                archive={(value) => archive(client, value)}
+              />
             )}
           </li>
         ))}

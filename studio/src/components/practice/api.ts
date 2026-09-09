@@ -16,9 +16,51 @@ export type Task = {
 };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
 export const practiceApi = {
+  updateService: makeFunctionReference<
+    "mutation",
+    ServiceInput & {
+      tenantId: TenantId;
+      serviceId: GenericId<"services">;
+      expectedRevision: number;
+    },
+    GenericId<"services">
+  >("services:update"),
+  archiveService: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      serviceId: GenericId<"services">;
+      archived: boolean;
+      expectedRevision: number;
+    },
+    GenericId<"services">
+  >("services:setArchived"),
+  updateClient: makeFunctionReference<
+    "mutation",
+    ClientInput & {
+      tenantId: TenantId;
+      clientId: GenericId<"clients">;
+      expectedRevision: number;
+    },
+    GenericId<"clients">
+  >("clients:update"),
+  archiveClient: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      clientId: GenericId<"clients">;
+      archived: boolean;
+      expectedRevision: number;
+    },
+    GenericId<"clients">
+  >("clients:setArchived"),
   services: makeFunctionReference<
     "query",
-    { tenantId: TenantId; paginationOpts: PaginationOptions },
+    {
+      tenantId: TenantId;
+      paginationOpts: PaginationOptions;
+      archived?: boolean;
+    },
     PaginationResult<Service>
   >("services:list"),
   createService: makeFunctionReference<
@@ -28,7 +70,12 @@ export const practiceApi = {
   >("services:create"),
   clients: makeFunctionReference<
     "query",
-    { tenantId: TenantId; paginationOpts: PaginationOptions },
+    {
+      tenantId: TenantId;
+      paginationOpts: PaginationOptions;
+      archived?: boolean;
+      search?: string;
+    },
     PaginationResult<Client>
   >("clients:list"),
   createClient: makeFunctionReference<
@@ -60,6 +107,8 @@ export const practiceApi = {
 };
 export function readableError(error: unknown): string {
   const message = String(error);
+  if (message.includes("REVISION_CONFLICT"))
+    return "This record has changed since you opened it. Reload the practice to review the latest version before editing again.";
   if (message.includes("FORBIDDEN"))
     return "Your access to this practice has changed. Reload to check your permissions.";
   if (message.includes("UNAUTHENTICATED"))
@@ -78,9 +127,12 @@ export type Service = {
   currency: "GBP";
   description?: string;
   active: boolean;
+  revision: number;
   createdAt: number;
 };
 export type Client = {
+  archived: boolean;
+  revision: number;
   _id: GenericId<"clients">;
   name: string;
   email?: string;

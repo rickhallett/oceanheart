@@ -90,3 +90,37 @@ it("uses deployed service and client command names", () => {
   expect(getFunctionName(practiceApi.clients)).toBe("clients:list");
   expect(getFunctionName(practiceApi.createClient)).toBe("clients:create");
 });
+type ServiceUpdateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.services.update>,
+    FunctionArgs<typeof practiceApi.updateService>
+  >
+>;
+type ClientUpdateArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.clients.update>,
+    FunctionArgs<typeof practiceApi.updateClient>
+  >
+>;
+type ServiceArchiveArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.services.setArchived>,
+    FunctionArgs<typeof practiceApi.archiveService>
+  >
+>;
+type ClientArchiveArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.clients.setArchived>,
+    FunctionArgs<typeof practiceApi.archiveClient>
+  >
+>;
+it("uses deployed edit and archive command names", () => {
+  expect(getFunctionName(practiceApi.updateService)).toBe("services:update");
+  expect(getFunctionName(practiceApi.updateClient)).toBe("clients:update");
+  expect(getFunctionName(practiceApi.archiveService)).toBe(
+    "services:setArchived",
+  );
+  expect(getFunctionName(practiceApi.archiveClient)).toBe(
+    "clients:setArchived",
+  );
+});
