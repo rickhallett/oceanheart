@@ -20,7 +20,8 @@ import {
 } from "convex/react";
 import { signOutPractice } from "@/app/practice/actions";
 import { practiceApi, type TenantId } from "./api";
-import { CreatePractice, PracticeShell, TaskPanel } from "./practice-ui";
+import { CreatePractice, PracticeShell } from "./practice-ui";
+import { PracticeViews } from "./practice-views";
 
 function useWorkOSAuth() {
   const { user, loading } = useAuth();
@@ -147,32 +148,11 @@ function PracticeWorkspace() {
           <button onClick={() => setCreating(true)}>Add a practice</button>
         </div>
       </div>
-      <PracticeTasks
-        key={tenant._id}
+      <PracticeViews
+        key={`${tenant._id}:${tenant.role}`}
         tenantId={tenant._id}
         canWrite={tenant.role === "owner"}
       />
     </>
-  );
-}
-function PracticeTasks({
-  tenantId,
-  canWrite,
-}: {
-  tenantId: TenantId;
-  canWrite: boolean;
-}) {
-  const result = useQuery(practiceApi.tasks, { tenantId });
-  const create = useMutation(practiceApi.createTask);
-  const complete = useMutation(practiceApi.setCompleted);
-  return (
-    <TaskPanel
-      result={result}
-      canWrite={canWrite}
-      addTask={(title, requestKey) => create({ tenantId, title, requestKey })}
-      setCompleted={(task, completed) =>
-        complete({ tenantId, taskId: task._id, completed })
-      }
-    />
   );
 }

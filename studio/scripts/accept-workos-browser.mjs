@@ -43,6 +43,8 @@ const report = {
   screenshots: [],
   practices: [],
   tasks: [],
+  services: [],
+  clients: [],
   status: "running",
 };
 const browser = await chromium.launch();
@@ -118,6 +120,28 @@ async function screenshot(page, width, label) {
   await page.screenshot({ path: path.join(output, filename), fullPage: true });
   report.screenshots.push({ filename, width, ...metrics });
 }
+async function recordsScreenshots(page, section) {
+  for (const width of [1440, 400, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(
+      page.getByRole("heading", {
+        name: section[0].toUpperCase() + section.slice(1),
+        exact: true,
+      }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > innerWidth,
+      ),
+    ).toBe(false);
+    const filename = `${section}-${width}.png`;
+    await page.screenshot({
+      path: path.join(output, filename),
+      fullPage: true,
+    });
+    report.screenshots.push({ filename, width, overflow: false });
+  }
+}
 try {
   phase = "WorkOS account A sign-in";
   const first = await login(accounts[0]);
@@ -181,6 +205,115 @@ try {
     await screenshot(first.page, 400, "completed");
     await screenshot(first.page, 320, "completed");
   });
+  const serviceName = `Browser service ${run}`;
+  const clientName = `Browser client ${run}`;
+  await check(
+    "service creation saves exact price and persists on reload",
+    async () => {
+      await first.page.setViewportSize({ width: 1440, height: 900 });
+      await first.page
+        .getByRole("button", { name: "Services", exact: true })
+        .click();
+      await expect(
+        first.page.getByText("No services yet", { exact: true }),
+      ).toBeVisible();
+      await first.page
+        .getByRole("button", { name: "Add service", exact: true })
+        .click();
+      await first.page
+        .getByLabel("Service name", { exact: true })
+        .fill(serviceName);
+      await first.page
+        .getByLabel("Duration (minutes)", { exact: true })
+        .fill("90");
+      await first.page.getByLabel("Price (£)", { exact: true }).fill("0.29");
+      await first.page
+        .getByLabel("Description (optional)", { exact: true })
+        .fill("A synthetic acceptance service.");
+      await first.page
+        .getByRole("button", { name: "Save", exact: true })
+        .click();
+      const row = first.page
+        .locator("[data-service-id]")
+        .filter({ hasText: serviceName });
+      await expect(row).toHaveCount(1);
+      await expect(row.getByText("£0.29", { exact: true })).toBeVisible();
+      const serviceId = await row.getAttribute("data-service-id");
+      expect(serviceId).toBeTruthy();
+      report.services.push({
+        serviceId,
+        tenantId: report.practices[0].tenantId,
+        name: serviceName,
+      });
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2) + "\n",
+      );
+      await first.page.reload();
+      await first.page
+        .getByLabel("Current practice", { exact: true })
+        .selectOption({ label: practiceName });
+      await first.page
+        .getByRole("button", { name: "Services", exact: true })
+        .click();
+      await expect(
+        first.page.locator(`[data-service-id="${serviceId}"]`),
+      ).toContainText("£0.29");
+      await recordsScreenshots(first.page, "services");
+    },
+  );
+  await check(
+    "owner creates client contacts and reads them after reload",
+    async () => {
+      await first.page
+        .getByRole("button", { name: "Clients", exact: true })
+        .click();
+      await expect(
+        first.page.getByText("No clients yet", { exact: true }),
+      ).toBeVisible();
+      await first.page
+        .getByRole("button", { name: "Add client", exact: true })
+        .click();
+      await first.page
+        .getByLabel("Client name", { exact: true })
+        .fill(clientName);
+      await first.page
+        .getByLabel("Email (optional)", { exact: true })
+        .fill("client@example.invalid");
+      await first.page
+        .getByLabel("Phone (optional)", { exact: true })
+        .fill("+44 7700 900123");
+      await first.page
+        .getByRole("button", { name: "Save", exact: true })
+        .click();
+      const row = first.page
+        .locator("[data-client-id]")
+        .filter({ hasText: clientName });
+      await expect(row).toHaveCount(1);
+      const clientId = await row.getAttribute("data-client-id");
+      expect(clientId).toBeTruthy();
+      report.clients.push({
+        clientId,
+        tenantId: report.practices[0].tenantId,
+        name: clientName,
+      });
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2) + "\n",
+      );
+      await first.page.reload();
+      await first.page
+        .getByLabel("Current practice", { exact: true })
+        .selectOption({ label: practiceName });
+      await first.page
+        .getByRole("button", { name: "Clients", exact: true })
+        .click();
+      await expect(
+        first.page.locator(`[data-client-id="${clientId}"]`),
+      ).toContainText("client@example.invalid");
+      await recordsScreenshots(first.page, "clients");
+    },
+  );
   await check("sign-out ends the application session", async () => {
     await first.page
       .getByRole("button", { name: "Sign out", exact: true })
@@ -200,6 +333,18 @@ try {
       .getByLabel("Current practice", { exact: true })
       .selectOption({ label: practiceName });
     await expect(taskRow(fresh.page).getByRole("checkbox")).toBeChecked();
+    await fresh.page
+      .getByRole("button", { name: "Services", exact: true })
+      .click();
+    await expect(
+      fresh.page.locator(`[data-service-id="${report.services[0].serviceId}"]`),
+    ).toBeVisible();
+    await fresh.page
+      .getByRole("button", { name: "Clients", exact: true })
+      .click();
+    await expect(
+      fresh.page.locator(`[data-client-id="${report.clients[0].clientId}"]`),
+    ).toBeVisible();
     await fresh.context.close();
   });
   await check(

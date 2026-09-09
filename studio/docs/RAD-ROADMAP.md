@@ -32,10 +32,10 @@ These are genuinely quick only after shared persistence and permissions exist. A
 
 The existing `backend/` implements tenant membership and atomic booking create/list, overlap detection and request-key idempotency. Extend this rather than replacing it without evidence. The reviewed `/app` currently updates a whole local state object; replace writes incrementally with explicit authorised commands. Do not expose generic whole-state mutation on the server.
 
-Choose/confirm the hosted identity path before slice 1; the repository currently contains Clerk/Convex foundations. Account sign-in and hosted environment setup are user-held steps. Defer provider breadth until one real journey works. Keep external sends, charges and refunds separate from UI simulation.
+WorkOS AuthKit and the persisted Convex task foundation are accepted. This batch adds tenant-scoped service and client create/list views. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
 
 ## RAD delivery loop
 
 For each slice: define one user outcome and acceptance example; implement UI + server + permissions together; use synthetic fixtures; test happy path plus the consequential failure (tenant isolation, conflict, duplicate delivery); review desktop/mobile; merge to development. Release intentionally after acceptance. Stop adding polish unrelated to the current outcome unless it violates the canonical guide.
 
-Recommended next ticket: **Persist a task for an authenticated practice owner**. This proves the deployment, session, tenant context, mutation, query and UI-state path with the least domain complexity. Then reuse that path for clients and services before completing bookings.
+Next increments: service/client editing, archival and search, followed by booking linkage. Complete create/list acceptance before expanding these workflows.
