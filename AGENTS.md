@@ -1,6 +1,9 @@
 # Oceanheart repository instructions
 
-## Oceanheart Studio deployments
+## Oceanheart Studio delivery
+
+Keep Studio work and its evidence current in Linear using the
+[Studio tracking instructions](studio/AGENTS.md#linear-tracking).
 
 For significant Studio updates on development/staging or production, follow the
 [database readiness checks in `studio/AGENTS.md`](studio/AGENTS.md#database-readiness)

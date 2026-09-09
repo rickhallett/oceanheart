@@ -21,3 +21,11 @@ For every significant Studio update deployed to development/staging or productio
 - After deployment, verify compatibility through the affected application's hosted data journey and record the app revision, database target and check results. Report missing configuration or access as an unverified readiness check; a build or browser-local prototype does not demonstrate database readiness. For changes with no database impact, explicitly record `No database impact` and the reason.
 
 Follow the [staging and release policy](docs/STAGING-AND-RELEASE.md): development pushes deploy to staging automatically; production releases and their database changes require explicit approval for the concrete release.
+
+## Linear tracking
+
+Keep the [Oceanheart Studio Linear project](https://linear.app/tinyrick/project/oceanheart-studio-8ed48b4b1722) in sync with the work:
+
+- Before starting, find and reuse the relevant issue; create one only when no suitable issue exists. Keep its scope, acceptance criteria and responsible owner or worker clear and current.
+- Update the issue when work starts, becomes blocked, enters review or completes. Record concrete blockers and the next action; link the PR/commit, relevant staging evidence and database readiness result (including a reasoned `No database impact` when applicable).
+- Distinguish implementation, merge, staging acceptance and production release in status notes. Mark `Done` only when the issue's acceptance criteria are demonstrated, following the [delivery evidence contract](docs/DELIVERY.md#verification-and-reporting); an implemented or merged change alone does not prove staging acceptance or an approved production release.
