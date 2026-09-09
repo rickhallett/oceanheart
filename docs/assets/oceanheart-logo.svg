@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="112" viewBox="0 0 480 112" role="img" aria-labelledby="title desc">
+  <title id="title">Oceanheart</title>
+  <desc id="desc">Oceanheart's open circle and wave beside its wordmark.</desc>
+  <rect width="480" height="112" rx="12" fill="#ffffff"/>
+  <g transform="translate(20 24)" fill="none" stroke="#255bd7" stroke-width="1.2">
+    <path d="M54.8 30.1A25 25 0 1 0 49.7 48.5"/>
+    <path d="M17 35c9 0 12-10 20-5s12 8 24 0" stroke-linecap="round"/>
+  </g>
+  <text x="100" y="72" fill="#1c2635" font-family="Arial, Helvetica, sans-serif" font-size="52" letter-spacing="-2">oceanheart</text>
+</svg>
