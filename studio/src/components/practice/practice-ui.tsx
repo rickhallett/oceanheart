@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import type { Task, TaskFilter, TaskList, TaskUpdateResult } from "./api";
+import type { Task, TaskClientOption, TaskFilter, TaskList, TaskUpdateResult } from "./api";
 import { hasErrorCode, readableError } from "./api";
 
 export function PracticeShell({
@@ -117,6 +117,99 @@ export function dueDateProblem(value: string): string {
     return "Enter a real calendar date as YYYY-MM-DD.";
   return "";
 }
+export type ClientPickerState = {
+  options: TaskClientOption[];
+  status: "LoadingFirstPage" | "CanLoadMore" | "LoadingMore" | "Exhausted";
+  search: string;
+};
+// Compact tenant-scoped client picker shared by the create form and the row
+// editor. The link control is always a select labeled exactly "Client" with
+// a "None" (empty value) option for clearing; search narrows server-side.
+// Archived records can never be newly linked, so the picker only lists
+// active clients — except the currently-linked record, which stays
+// selectable (and intelligible when archived) so title/date edits keep
+// working after its client is archived.
+export function ClientSelect({
+  id,
+  value,
+  change,
+  picker,
+  changeSearch,
+  loadMore,
+  disabled,
+  currentLink,
+}: {
+  id: string;
+  value: string;
+  change: (clientId: string) => void;
+  picker: ClientPickerState;
+  changeSearch: (search: string) => void;
+  loadMore: () => void;
+  disabled?: boolean;
+  currentLink?: { id: string; name: string; archived: boolean };
+}) {
+  const loading = picker.status === "LoadingFirstPage";
+  const visible = [...picker.options];
+  if (
+    currentLink &&
+    !visible.some((option) => String(option._id) === currentLink.id)
+  ) {
+    visible.unshift({
+      _id: currentLink.id as TaskClientOption["_id"],
+      name: currentLink.name,
+      archived: currentLink.archived,
+    });
+  }
+  const empty =
+    !loading && visible.length === 0 && (value === "" || picker.search !== "");
+  return (
+    <>
+      <label htmlFor={`${id}-search`}>Search clients</label>
+      <div className="lp-inline">
+        <input
+          id={`${id}-search`}
+          value={picker.search}
+          onChange={(event) => changeSearch(event.target.value)}
+          placeholder="Search by name or email"
+          maxLength={100}
+          disabled={disabled}
+        />
+      </div>
+      <label htmlFor={id}>Client</label>
+      <div className="lp-inline">
+        <select
+          id={id}
+          value={value}
+          onChange={(event) => change(event.target.value)}
+          disabled={disabled || loading}
+        >
+          <option value="">None</option>
+          {visible.map((option) => (
+            <option key={String(option._id)} value={String(option._id)}>
+              {option.name}
+              {option.archived ? " (archived)" : ""}
+            </option>
+          ))}
+        </select>
+      </div>
+      {loading && <p role="status">Loading clients…</p>}
+      {empty && (
+        <p className="lp-muted" role="status">
+          {picker.search
+            ? "No matching clients."
+            : "No clients yet. Add a client in Clients first."}
+        </p>
+      )}
+      {picker.status === "CanLoadMore" && (
+        <div className="lp-inline">
+          <button type="button" onClick={loadMore} disabled={disabled}>
+            More clients
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
 export function TaskPanel({
   result,
   canWrite,
@@ -126,23 +219,37 @@ export function TaskPanel({
   setCompleted,
   updateTask,
   removeTask,
+  clientOptions,
+  clientsStatus,
+  clientSearch,
+  changeClientSearch,
+  loadMoreClients,
+  openClient,
 }: {
   result: TaskList | undefined;
   canWrite: boolean;
   filter: TaskFilter;
   changeFilter: (filter: TaskFilter) => void;
-  addTask: (title: string, requestKey: string, dueDate?: string) => Promise<unknown>;
+  addTask: (title: string, requestKey: string, dueDate?: string, clientId?: Task["clientId"]) => Promise<unknown>;
   setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
   updateTask: (
     task: Task,
     title: string,
     expectedRevision: number,
     dueDate?: string | null,
+    clientId?: Task["clientId"] | null,
   ) => Promise<TaskUpdateResult>;
   removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
+  clientOptions?: TaskClientOption[];
+  clientsStatus?: ClientPickerState["status"];
+  clientSearch?: string;
+  changeClientSearch?: (search: string) => void;
+  loadMoreClients?: () => void;
+  openClient?: (client: { name: string; archived: boolean }) => void;
 }) {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [clientId, setClientId] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -158,7 +265,7 @@ export function TaskPanel({
       setError(dateProblem);
       return;
     }
-    const identity = `${value}||${dueDate}`;
+    const identity = `${value}||${dueDate}||${clientId}`;
     if (request.current?.value !== identity)
       request.current = { value: identity, key: crypto.randomUUID() };
     busy.current = true;
@@ -170,10 +277,12 @@ export function TaskPanel({
         value,
         request.current.key,
         dueDate ? dueDate : undefined,
+        clientId ? (clientId as Task["clientId"]) : undefined,
       );
       request.current = null;
       setTitle("");
       setDueDate("");
+      setClientId("");
       setNotice("Task saved.");
     } catch (cause) {
       setError(readableError(cause));
@@ -220,9 +329,6 @@ export function TaskPanel({
               maxLength={200}
               disabled={pending}
             />
-            <button className="lp-button" disabled={pending || !title.trim()}>
-              {pending ? "Saving…" : "Add task"}
-            </button>
           </div>
           <label htmlFor="task-due-date">Due date</label>
           <div className="lp-inline">
@@ -233,6 +339,24 @@ export function TaskPanel({
               onChange={(e) => setDueDate(e.target.value)}
               disabled={pending}
             />
+          </div>
+          <ClientSelect
+            id="task-client"
+            value={clientId}
+            change={setClientId}
+            picker={{
+              options: clientOptions ?? [],
+              status: clientsStatus ?? "Exhausted",
+              search: clientSearch ?? "",
+            }}
+            changeSearch={changeClientSearch ?? (() => {})}
+            loadMore={loadMoreClients ?? (() => {})}
+            disabled={pending}
+          />
+          <div className="lp-inline">
+            <button className="lp-button" disabled={pending || !title.trim()}>
+              {pending ? "Saving…" : "Add task"}
+            </button>
           </div>
         </form>
       )}
@@ -271,6 +395,14 @@ export function TaskPanel({
               setCompleted={setCompleted}
               updateTask={updateTask}
               removeTask={removeTask}
+              picker={{
+                options: clientOptions ?? [],
+                status: clientsStatus ?? "Exhausted",
+                search: clientSearch ?? "",
+              }}
+              changeClientSearch={changeClientSearch ?? (() => {})}
+              loadMoreClients={loadMoreClients ?? (() => {})}
+              openClient={openClient}
               setBusy={(id, busy) =>
                 setBusyTasks((current) => {
                   const next = new Set(current);
@@ -304,6 +436,10 @@ function TaskRow({
   removeTask,
   setBusy,
   reportOutcome,
+  picker,
+  changeClientSearch,
+  loadMoreClients,
+  openClient,
 }: {
   task: Task;
   canWrite: boolean;
@@ -313,10 +449,15 @@ function TaskRow({
     title: string,
     expectedRevision: number,
     dueDate?: string | null,
+    clientId?: Task["clientId"] | null,
   ) => Promise<TaskUpdateResult>;
   removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
   setBusy: (id: string, busy: boolean) => void;
   reportOutcome: (message: string, isError?: boolean) => void;
+  picker: ClientPickerState;
+  changeClientSearch: (search: string) => void;
+  loadMoreClients: () => void;
+  openClient?: (client: { name: string; archived: boolean }) => void;
 }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -325,15 +466,20 @@ function TaskRow({
   const [restoreFocus, setRestoreFocus] = useState<"edit" | "remove" | null>(null);
   const [draft, setDraft] = useState(task.title);
   const [draftDueDate, setDraftDueDate] = useState(task.dueDate ?? "");
+  const [draftClientId, setDraftClientId] = useState(
+    task.clientId !== undefined ? String(task.clientId) : "",
+  );
   const [remoteChange, setRemoteChange] = useState(false);
   const saved = useRef({
     title: task.title,
     dueDate: task.dueDate ?? undefined,
+    clientId: task.clientId !== undefined ? String(task.clientId) : undefined,
     revision: task.revision,
   });
   const editBaseline = useRef({
     title: task.title,
     dueDate: task.dueDate ?? undefined,
+    clientId: task.clientId !== undefined ? String(task.clientId) : undefined,
     revision: task.revision,
   });
   const removeBaseline = useRef({ revision: task.revision });
@@ -345,19 +491,28 @@ function TaskRow({
   useEffect(() => {
     const previous = saved.current;
     const currentDueDate = task.dueDate ?? undefined;
+    const currentClientId =
+      task.clientId !== undefined ? String(task.clientId) : undefined;
     if (
       previous.title === task.title &&
       previous.dueDate === currentDueDate &&
+      previous.clientId === currentClientId &&
       previous.revision === task.revision
     )
       return;
-    if (draft === previous.title && (draftDueDate || undefined) === previous.dueDate) {
+    if (
+      draft === previous.title &&
+      (draftDueDate || undefined) === previous.dueDate &&
+      (draftClientId || undefined) === previous.clientId
+    ) {
       setDraft(task.title);
       setDraftDueDate(currentDueDate ?? "");
+      setDraftClientId(currentClientId ?? "");
       setRemoteChange(false);
       editBaseline.current = {
         title: task.title,
         dueDate: currentDueDate,
+        clientId: currentClientId,
         revision: task.revision,
       };
     } else {
@@ -366,9 +521,10 @@ function TaskRow({
     saved.current = {
       title: task.title,
       dueDate: currentDueDate,
+      clientId: currentClientId,
       revision: task.revision,
     };
-  }, [draft, draftDueDate, task.dueDate, task.revision, task.title]);
+  }, [draft, draftDueDate, draftClientId, task.clientId, task.dueDate, task.revision, task.title]);
   useEffect(() => {
     if (editing) editorRef.current?.focus();
   }, [editing]);
@@ -417,15 +573,29 @@ function TaskRow({
     }
     const baseline = editBaseline.current;
     const nextDueDate = draftDueDate ? draftDueDate : null;
+    const nextClientId = draftClientId
+      ? (draftClientId as Task["clientId"])
+      : null;
     startBusy();
     setError("");
     try {
-      const acknowledgement = await updateTask(task, value, baseline.revision, nextDueDate);
+      const acknowledgement = await updateTask(task, value, baseline.revision, nextDueDate, nextClientId);
       // The backend returns the actual revision, including no-op saves.
       // This prevents its later query echo being mistaken for a remote edit.
       const savedDueDate = nextDueDate ?? undefined;
-      saved.current = { title: value, dueDate: savedDueDate, revision: acknowledgement.revision };
-      editBaseline.current = { title: value, dueDate: savedDueDate, revision: acknowledgement.revision };
+      const savedClientId = nextClientId ?? undefined;
+      saved.current = {
+        title: value,
+        dueDate: savedDueDate,
+        clientId: savedClientId !== undefined ? String(savedClientId) : undefined,
+        revision: acknowledgement.revision,
+      };
+      editBaseline.current = {
+        title: value,
+        dueDate: savedDueDate,
+        clientId: savedClientId !== undefined ? String(savedClientId) : undefined,
+        revision: acknowledgement.revision,
+      };
       setEditing(false);
       setRemoteChange(false);
       reportOutcome("Task saved.");
@@ -466,6 +636,28 @@ function TaskRow({
         {task.dueDate !== undefined && (
           <span className="lp-muted">Due {task.dueDate}</span>
         )}
+        {task.clientName !== undefined &&
+          (openClient ? (
+            <button
+              type="button"
+              aria-label={`View ${task.clientName} in Clients`}
+              onClick={() =>
+                openClient({
+                  name: task.clientName as string,
+                  archived: task.clientArchived ?? false,
+                })
+              }
+              disabled={pending}
+            >
+              {task.clientName}
+              {task.clientArchived ? " (archived)" : ""}
+            </button>
+          ) : (
+            <span className="lp-muted">
+              {task.clientName}
+              {task.clientArchived ? " (archived)" : ""}
+            </span>
+          ))}
         <span className="lp-task-state">
           {pending ? "Saving…" : task.completed ? "Completed" : "Open"}
         </span>
@@ -479,10 +671,15 @@ function TaskRow({
                 editBaseline.current = {
                   title: task.title,
                   dueDate: task.dueDate ?? undefined,
+                  clientId:
+                    task.clientId !== undefined ? String(task.clientId) : undefined,
                   revision: task.revision,
                 };
                 setDraft(task.title);
                 setDraftDueDate(task.dueDate ?? "");
+                setDraftClientId(
+                  task.clientId !== undefined ? String(task.clientId) : "",
+                );
                 setRemoteChange(false);
                 setError("");
                 setEditing(true);
@@ -527,6 +724,24 @@ function TaskRow({
               disabled={pending}
             />
           </label>
+          <ClientSelect
+            id={`task-client-${String(task._id)}`}
+            value={draftClientId}
+            change={setDraftClientId}
+            picker={picker}
+            changeSearch={changeClientSearch}
+            loadMore={loadMoreClients}
+            disabled={pending}
+            currentLink={
+              task.clientId !== undefined && task.clientName !== undefined
+                ? {
+                    id: String(task.clientId),
+                    name: task.clientName,
+                    archived: task.clientArchived ?? false,
+                  }
+                : undefined
+            }
+          />
           {remoteChange && (
             <p className="lp-task-conflict" role="status">
               This task changed elsewhere. Your draft is kept until you choose what to save.
@@ -540,10 +755,15 @@ function TaskRow({
               onClick={() => {
                 setDraft(task.title);
                 setDraftDueDate(task.dueDate ?? "");
+                setDraftClientId(
+                  task.clientId !== undefined ? String(task.clientId) : "",
+                );
                 setRemoteChange(false);
                 editBaseline.current = {
                   title: task.title,
                   dueDate: task.dueDate ?? undefined,
+                  clientId:
+                    task.clientId !== undefined ? String(task.clientId) : undefined,
                   revision: task.revision,
                 };
                 setError("");
@@ -557,6 +777,9 @@ function TaskRow({
               onClick={() => {
                 setDraft(task.title);
                 setDraftDueDate(task.dueDate ?? "");
+                setDraftClientId(
+                  task.clientId !== undefined ? String(task.clientId) : "",
+                );
                 setEditing(false);
                 setRemoteChange(false);
                 setError("");

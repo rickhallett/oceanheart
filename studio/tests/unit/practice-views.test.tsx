@@ -40,6 +40,9 @@ it("resets paging and unsaved forms when practice changes, and never mounts clie
     { initialNumItems: 20 },
   ]);
   view.rerender(<PracticeViews tenantId={second} canWrite={false} />);
+  // Owner task panels mount the active-client picker; scope the viewer
+  // assertion to calls made after the role downgrade.
+  vi.mocked(usePaginatedQuery).mockClear();
   expect(screen.getByRole("button", { name: "Tasks" })).toHaveAttribute(
     "aria-pressed",
     "true",

@@ -15,6 +15,14 @@ const taskPanelCallbacks = () => ({
   changeFilter: vi.fn(),
   updateTask: vi.fn().mockResolvedValue({ taskId: "task", revision: 1 }),
   removeTask: vi.fn().mockResolvedValue("task"),
+  clientOptions: [
+    { _id: "client-a", name: "Ava Stone", archived: false },
+    { _id: "client-b", name: "Ben Cross", archived: false },
+  ] as unknown as { _id: Task["clientId"]; name: string; archived: boolean }[],
+  clientsStatus: "Exhausted" as const,
+  clientSearch: "",
+  changeClientSearch: vi.fn(),
+  loadMoreClients: vi.fn(),
 });
 
 describe("configuration", () => {
@@ -337,6 +345,7 @@ it("a two-tab edit keeps its original revision instead of adopting a newer remot
     "My two-tab draft",
     0,
     null,
+    null,
   );
 });
 it("an acknowledged edit does not flag its delayed query echo as a remote conflict", async () => {
@@ -405,7 +414,7 @@ it("task creation sends the due date, displays it and clears both fields on succ
   await user.type(screen.getByLabelText("New task"), "File returns");
   fireEvent.change(screen.getByLabelText("Due date"), { target: { value: "2026-09-15" } });
   await user.click(screen.getByRole("button", { name: "Add task" }));
-  expect(addTask).toHaveBeenCalledWith("File returns", expect.any(String), "2026-09-15");
+  expect(addTask).toHaveBeenCalledWith("File returns", expect.any(String), "2026-09-15", undefined);
   expect(screen.getByLabelText("New task")).toHaveValue("");
   expect(screen.getByLabelText("Due date")).toHaveValue("");
 });
@@ -458,14 +467,14 @@ it("the shared editor saves title and date together and clearing sends explicit 
   await user.type(screen.getByLabelText("Task title"), "Updated");
   fireEvent.change(editorDate(), { target: { value: "2024-02-29" } });
   await user.click(screen.getByRole("button", { name: "Save" }));
-  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, "2024-02-29");
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, "2024-02-29", null);
   await user.click(screen.getByRole("button", { name: /Edit Original/ }));
   const editorDateAgain = () => screen.getAllByLabelText("Due date")[1];
   await user.clear(screen.getByLabelText("Task title"));
   await user.type(screen.getByLabelText("Task title"), "Updated");
   fireEvent.change(editorDateAgain(), { target: { value: "" } });
   await user.click(screen.getByRole("button", { name: "Save" }));
-  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, null);
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ _id: "task" }), "Updated", 0, null, null);
 });
 it("a dirty date draft survives a remote change and stale saves keep their baseline revision", async () => {
   const user = userEvent.setup();
@@ -498,7 +507,7 @@ it("a dirty date draft survives a remote change and stale saves keep their basel
   expect(dirtyDate()).toHaveValue("2026-09-15");
   expect(screen.getByText(/Your draft is kept/)).toBeVisible();
   await user.click(screen.getByRole("button", { name: "Save" }));
-  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ revision: 1 }), "Original", 0, "2026-09-15");
+  expect(updateTask).toHaveBeenCalledWith(expect.objectContaining({ revision: 1 }), "Original", 0, "2026-09-15", null);
 });
 it("a stale date save keeps its draft and reports the conflict safely", async () => {
   const user = userEvent.setup();
@@ -586,4 +595,281 @@ it("viewers see due dates but are offered no date input or edit controls", async
     />,
   );
   expect(screen.queryByLabelText("Due date")).not.toBeInTheDocument();
+});
+type PickerClient = { _id: string; name: string; archived: boolean };
+const clientPickerProps = (options: PickerClient[] = [
+  { _id: "client-a", name: "Ava Stone", archived: false },
+  { _id: "client-b", name: "Ben Cross", archived: false },
+]) => ({
+  clientOptions: options as unknown as { _id: Task["clientId"]; name: string; archived: boolean }[],
+  clientsStatus: "Exhausted" as const,
+  clientSearch: "",
+  changeClientSearch: vi.fn(),
+  loadMoreClients: vi.fn(),
+});
+it("task creation sends the linked client and clears it on success", async () => {
+  const user = userEvent.setup();
+  const addTask = vi.fn().mockResolvedValue("task");
+  render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={addTask}
+      setCompleted={vi.fn()}
+      {...clientPickerProps()}
+    />,
+  );
+  await user.type(screen.getByLabelText("New task"), "Call Ava");
+  fireEvent.change(screen.getByLabelText("Client"), { target: { value: "client-a" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask).toHaveBeenCalledWith("Call Ava", expect.any(String), undefined, "client-a");
+  expect(screen.getByLabelText("New task")).toHaveValue("");
+  expect(screen.getByLabelText("Client")).toHaveValue("");
+});
+it("the picker shows loading and empty states and offers more clients", async () => {
+  const loading = render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      {...clientPickerProps([])}
+      clientsStatus="LoadingFirstPage"
+    />,
+  );
+  expect(loading.getByText("Loading clients…")).toBeVisible();
+  loading.unmount();
+  const empty = render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      {...clientPickerProps([])}
+    />,
+  );
+  expect(empty.getByText(/No clients yet/)).toBeVisible();
+  empty.unmount();
+  const more = render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      {...clientPickerProps()}
+      clientsStatus="CanLoadMore"
+    />,
+  );
+  expect(more.getByRole("button", { name: "More clients" })).toBeVisible();
+});
+it("the shared editor saves title, date and client together and None clears the link", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    clientId: "client-a" as Task["clientId"],
+    clientName: "Ava Stone",
+    clientArchived: false,
+  };
+  const updateTask = vi.fn().mockResolvedValue({ taskId: "task", revision: 1 });
+  const openClient = vi.fn();
+  render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      updateTask={updateTask}
+      {...clientPickerProps()}
+      openClient={openClient}
+    />,
+  );
+  await user.click(screen.getByRole("button", { name: "View Ava Stone in Clients" }));
+  expect(openClient).toHaveBeenCalledWith({ name: "Ava Stone", archived: false });
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const editorClient = () => screen.getAllByLabelText("Client")[1];
+  expect(editorClient()).toHaveValue("client-a");
+  await user.clear(screen.getByLabelText("Task title"));
+  await user.type(screen.getByLabelText("Task title"), "Updated");
+  fireEvent.change(editorClient(), { target: { value: "client-b" } });
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(
+    expect.objectContaining({ _id: "task" }),
+    "Updated",
+    0,
+    null,
+    "client-b",
+  );
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const editorClientAgain = () => screen.getAllByLabelText("Client")[1];
+  await user.clear(screen.getByLabelText("Task title"));
+  await user.type(screen.getByLabelText("Task title"), "Updated");
+  fireEvent.change(editorClientAgain(), { target: { value: "" } });
+  expect(screen.getAllByRole("option", { name: "None" }).length).toBeGreaterThan(0);
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(
+    expect.objectContaining({ _id: "task" }),
+    "Updated",
+    0,
+    null,
+    null,
+  );
+});
+it("an archived link stays intelligible and stays selectable in the editor", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    clientId: "client-old" as Task["clientId"],
+    clientName: "Old Client",
+    clientArchived: true,
+  };
+  const openClient = vi.fn();
+  render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      {...clientPickerProps()}
+      openClient={openClient}
+    />,
+  );
+  await user.click(screen.getByRole("button", { name: "View Old Client in Clients" }));
+  expect(openClient).toHaveBeenCalledWith({ name: "Old Client", archived: true });
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const editorClient = () => screen.getAllByLabelText("Client")[1];
+  expect(editorClient()).toHaveValue("client-old");
+  expect(screen.getByRole("option", { name: "Old Client (archived)" })).toBeInTheDocument();
+});
+it("a dirty client draft survives a remote change and stale saves keep their baseline", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+  };
+  const updateTask = vi.fn().mockResolvedValue({ taskId: "task", revision: 2 });
+  const props = {
+    result: { items: [task], hasMore: false, limit: 200 },
+    canWrite: true,
+    ...taskPanelCallbacks(),
+    addTask: vi.fn(),
+    setCompleted: vi.fn(),
+    updateTask,
+    ...clientPickerProps(),
+  };
+  const view = render(<TaskPanel {...props} />);
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const dirtyClient = () => screen.getAllByLabelText("Client")[1];
+  fireEvent.change(dirtyClient(), { target: { value: "client-b" } });
+  view.rerender(
+    <TaskPanel
+      {...props}
+      result={{ items: [{ ...task, title: "Remote title", revision: 1 }], hasMore: false, limit: 200 }}
+    />,
+  );
+  expect(dirtyClient()).toHaveValue("client-b");
+  expect(screen.getByText(/Your draft is kept/)).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(updateTask).toHaveBeenCalledWith(
+    expect.objectContaining({ revision: 1 }),
+    "Original",
+    0,
+    null,
+    "client-b",
+  );
+});
+it("a stale client save keeps its draft and reports the conflict safely", async () => {
+  const user = userEvent.setup();
+  const task = {
+    _id: "task" as Task["_id"],
+    title: "Original",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+    clientId: "client-a" as Task["clientId"],
+    clientName: "Ava Stone",
+    clientArchived: false,
+  };
+  const updateTask = vi.fn().mockRejectedValue(new Error("REVISION_CONFLICT private detail"));
+  render(
+    <TaskPanel
+      result={{ items: [task], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+      updateTask={updateTask}
+      {...clientPickerProps()}
+    />,
+  );
+  await user.click(screen.getByRole("button", { name: /Edit Original/ }));
+  const staleClient = () => screen.getAllByLabelText("Client")[1];
+  fireEvent.change(staleClient(), { target: { value: "client-b" } });
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("changed elsewhere");
+  expect(screen.getByRole("alert")).not.toHaveTextContent("private detail");
+  expect(staleClient()).toHaveValue("client-b");
+});
+it("task creation retries rotate the key after a client change", async () => {
+  const user = userEvent.setup();
+  const addTask = vi.fn().mockRejectedValueOnce(new Error("lost response")).mockResolvedValue("task");
+  render(
+    <TaskPanel
+      result={{ items: [], hasMore: false, limit: 200 }}
+      canWrite
+      {...taskPanelCallbacks()}
+      addTask={addTask}
+      setCompleted={vi.fn()}
+      {...clientPickerProps()}
+    />,
+  );
+  await user.type(screen.getByLabelText("New task"), "Review schedule");
+  fireEvent.change(screen.getByLabelText("Client"), { target: { value: "client-a" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask.mock.calls[0]).toEqual(addTask.mock.calls[1]);
+  expect(screen.getByLabelText("New task")).toHaveValue("");
+  await user.type(screen.getByLabelText("New task"), "Review schedule");
+  fireEvent.change(screen.getByLabelText("Client"), { target: { value: "client-b" } });
+  await user.click(screen.getByRole("button", { name: "Add task" }));
+  expect(addTask).toHaveBeenCalledTimes(3);
+  expect(addTask.mock.calls[2][3]).toBe("client-b");
+  expect(addTask.mock.calls[2][1]).not.toBe(addTask.mock.calls[0][1]);
+});
+it("viewer projections carry no client identity, links or controls", async () => {
+  const redacted = {
+    _id: "task" as Task["_id"],
+    title: "Linked task",
+    completed: false,
+    createdAt: 1,
+    revision: 0,
+  };
+  render(
+    <TaskPanel
+      result={{ items: [redacted], hasMore: false, limit: 200 }}
+      canWrite={false}
+      {...taskPanelCallbacks()}
+      addTask={vi.fn()}
+      setCompleted={vi.fn()}
+    />,
+  );
+  expect(screen.queryByText(/Ava Stone/)).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("Client")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /in Clients/ })).not.toBeInTheDocument();
 });

@@ -440,6 +440,301 @@ export async function taskMaintenanceChecks({
     datelessId,
     "a date-less create stays retryable after removal",
   );
+  const clientA = await alice.mutation("clients:create", {
+    tenantId: tenantA,
+    name: "Task Link Alpha",
+    requestKey: "task-link-client-a",
+  });
+  const clientB = await alice.mutation("clients:create", {
+    tenantId: tenantA,
+    name: "Task Link Beta",
+    requestKey: "task-link-client-b",
+  });
+  const archivedClient = await alice.mutation("clients:create", {
+    tenantId: tenantA,
+    name: "Task Link Archived",
+    requestKey: "task-link-client-archived",
+  });
+  await alice.mutation("clients:setArchived", {
+    tenantId: tenantA,
+    clientId: archivedClient,
+    archived: true,
+    expectedRevision: 0,
+  });
+  const foreignClient = await bob.mutation("clients:create", {
+    tenantId: tenantB,
+    name: "Foreign Client",
+    requestKey: "task-link-client-foreign",
+  });
+  const linkedCreate = {
+    tenantId: tenantA,
+    title: "Linked task",
+    requestKey: "task-link-original",
+    clientId: clientA,
+  };
+  const linkedId = await alice.mutation("tasks:create", linkedCreate);
+  const readLinked = async () =>
+    (await alice.query("tasks:list", { tenantId: tenantA })).items.find(
+      (task) => task._id === linkedId,
+    );
+  assert.equal((await readLinked()).clientId, clientA);
+  assert.equal((await readLinked()).clientName, "Task Link Alpha");
+  assert.equal((await readLinked()).clientArchived, false);
+  await assert.rejects(
+    alice.mutation("tasks:create", {
+      tenantId: tenantA,
+      title: "Archived link",
+      requestKey: "task-link-archived",
+      clientId: archivedClient,
+    }),
+    /ARCHIVED_RECORD/,
+  );
+  await assert.rejects(
+    alice.mutation("tasks:create", {
+      tenantId: tenantA,
+      title: "Foreign link",
+      requestKey: "task-link-foreign",
+      clientId: foreignClient,
+    }),
+    /FORBIDDEN/,
+  );
+  let linkedRevision = (await readLinked()).revision;
+  assert.equal(
+    (await alice.mutation("tasks:update", {
+      tenantId: tenantA,
+      taskId: linkedId,
+      title: "Linked task renamed",
+      expectedRevision: linkedRevision,
+      clientId: clientB,
+    })).revision,
+    linkedRevision + 1,
+  );
+  assert.equal((await readLinked()).clientName, "Task Link Beta");
+  linkedRevision = (await readLinked()).revision;
+  const linkOmitted = await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: linkedId,
+    title: "Linked task renamed again",
+    expectedRevision: linkedRevision,
+  });
+  assert.equal(linkOmitted.revision, linkedRevision + 1);
+  assert.equal(
+    (await readLinked()).clientId,
+    clientB,
+    "an omitted clientId preserves the existing link for legacy callers",
+  );
+  linkedRevision = (await readLinked()).revision;
+  await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: linkedId,
+    title: "Linked task renamed again",
+    expectedRevision: linkedRevision,
+    clientId: null,
+  });
+  assert.equal((await readLinked()).clientId, undefined);
+  linkedRevision = (await readLinked()).revision;
+  const clearedLinkNoop = await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: linkedId,
+    title: "Linked task renamed again",
+    expectedRevision: linkedRevision,
+    clientId: null,
+  });
+  assert.equal(
+    clearedLinkNoop.revision,
+    linkedRevision,
+    "clearing an absent link does not invent a revision",
+  );
+  await assert.rejects(
+    alice.mutation("tasks:update", {
+      tenantId: tenantA,
+      taskId: linkedId,
+      title: "Linked task renamed again",
+      expectedRevision: (await readLinked()).revision,
+      clientId: archivedClient,
+    }),
+    /ARCHIVED_RECORD/,
+  );
+  await assert.rejects(
+    alice.mutation("tasks:update", {
+      tenantId: tenantA,
+      taskId: linkedId,
+      title: "Linked task renamed again",
+      expectedRevision: (await readLinked()).revision,
+      clientId: foreignClient,
+    }),
+    /FORBIDDEN/,
+  );
+  linkedRevision = (await readLinked()).revision;
+  const linkContenders = await Promise.all([clientForOwner(), clientForOwner()]);
+  const linkRaced = await Promise.allSettled(
+    linkContenders.map((client, index) =>
+      client.mutation("tasks:update", {
+        tenantId: tenantA,
+        taskId: linkedId,
+        title: "Linked task renamed again",
+        expectedRevision: linkedRevision,
+        clientId: index === 0 ? clientA : clientB,
+      }),
+    ),
+  );
+  assert.equal(linkRaced.filter((result) => result.status === "fulfilled").length, 1);
+  assert.ok(
+    linkRaced.some(
+      (result) =>
+        result.status === "rejected" &&
+        String(result.reason).includes("REVISION_CONFLICT"),
+    ),
+  );
+  assert.equal(
+    await alice.mutation("tasks:create", linkedCreate),
+    linkedId,
+    "the original linked create request remains retryable after link edits",
+  );
+  await assert.rejects(
+    alice.mutation("tasks:create", { ...linkedCreate, clientId: clientB }),
+    /IDEMPOTENCY_MISMATCH/,
+  );
+  const unlinkedCreate = {
+    tenantId: tenantA,
+    title: "Unlinked task",
+    requestKey: "task-unlinked-original",
+  };
+  const unlinkedId = await alice.mutation("tasks:create", unlinkedCreate);
+  const readUnlinked = async () =>
+    (await alice.query("tasks:list", { tenantId: tenantA })).items.find(
+      (task) => task._id === unlinkedId,
+    );
+  await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: unlinkedId,
+    title: "Unlinked task",
+    expectedRevision: (await readUnlinked()).revision,
+    clientId: clientA,
+  });
+  assert.equal(
+    await alice.mutation("tasks:create", unlinkedCreate),
+    unlinkedId,
+    "an unlinked create stays retryable after a link is set",
+  );
+  await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: unlinkedId,
+    title: "Unlinked task",
+    expectedRevision: (await readUnlinked()).revision,
+    clientId: null,
+  });
+  await alice.mutation("tasks:remove", {
+    tenantId: tenantA,
+    taskId: unlinkedId,
+    expectedRevision: (await readUnlinked()).revision,
+  });
+  assert.equal(
+    await alice.mutation("tasks:create", unlinkedCreate),
+    unlinkedId,
+    "an unlinked create stays retryable after removal",
+  );
+  const archiveTarget = await alice.mutation("tasks:create", {
+    tenantId: tenantA,
+    title: "Soon archived link",
+    requestKey: "task-link-archive-target",
+    clientId: clientB,
+  });
+  await alice.mutation("clients:setArchived", {
+    tenantId: tenantA,
+    clientId: clientB,
+    archived: true,
+    expectedRevision: 0,
+  });
+  const archivedLink = (await alice.query("tasks:list", { tenantId: tenantA })).items.find(
+    (task) => task._id === archiveTarget,
+  );
+  assert.equal(archivedLink.clientName, "Task Link Beta");
+  assert.equal(archivedLink.clientArchived, true);
+  await alice.mutation("tasks:update", {
+    tenantId: tenantA,
+    taskId: archiveTarget,
+    title: "Soon archived link edited",
+    expectedRevision: archivedLink.revision,
+  });
+  assert.equal(
+    ((await alice.query("tasks:list", { tenantId: tenantA })).items.find(
+      (task) => task._id === archiveTarget,
+    )).clientName,
+    "Task Link Beta",
+    "archived links stay intelligible across edits",
+  );
+  await alice.mutation("tenants:addViewer", {
+    tenantId: tenantA,
+    identity: viewerIdentity,
+  });
+  try {
+    const viewerItems = (await viewer.query("tasks:list", { tenantId: tenantA })).items;
+    assert.ok(viewerItems.some((task) => task._id === linkedId));
+    for (const item of viewerItems) {
+      assert.ok(!("clientId" in item), "viewer projection leaks clientId");
+      assert.ok(!("clientName" in item), "viewer projection leaks clientName");
+      assert.ok(!("clientArchived" in item), "viewer projection leaks link state");
+    }
+    await assert.rejects(
+      viewer.mutation("tasks:create", {
+        tenantId: tenantA,
+        title: "Viewer link",
+        requestKey: "task-link-viewer",
+        clientId: clientA,
+      }),
+      /FORBIDDEN/,
+    );
+    await assert.rejects(
+      viewer.mutation("tasks:update", {
+        tenantId: tenantA,
+        taskId: linkedId,
+        title: "Viewer edit",
+        expectedRevision: (await readLinked()).revision,
+        clientId: clientA,
+      }),
+      /FORBIDDEN/,
+    );
+  } finally {
+    await alice.mutation("tenants:removeViewer", {
+      tenantId: tenantA,
+      identity: viewerIdentity,
+    });
+  }
+  await assert.rejects(
+    bob.mutation("tasks:update", {
+      tenantId: tenantB,
+      taskId: linkedId,
+      title: "Wrong tenant",
+      expectedRevision: 0,
+      clientId: foreignClient,
+    }),
+    /FORBIDDEN/,
+  );
+  await assert.rejects(
+    anonymous.mutation("tasks:create", {
+      tenantId: tenantA,
+      title: "Anon link",
+      requestKey: "task-link-anon",
+      clientId: clientA,
+    }),
+    /UNAUTHENTICATED/,
+  );
+  linkedRevision = (await readLinked()).revision;
+  assert.equal(
+    await alice.mutation("tasks:remove", {
+      tenantId: tenantA,
+      taskId: linkedId,
+      expectedRevision: linkedRevision,
+    }),
+    linkedId,
+  );
+  assert.equal(
+    await alice.mutation("tasks:create", linkedCreate),
+    linkedId,
+    "removal leaves the original linked create receipt in place",
+  );
+  check("task client links resolve live same-tenant records with names, reject archived/foreign links, preserve on omitted updates, clear on null, keep unlinked creates retryable after link edits/removal, keep archived links intelligible and redact every link field for viewers");
   check("task due dates accept real YYYY-MM-DD calendar days including leap years, reject impossible dates, preserve on omitted updates, clear on null, keep date-less creates retryable after dates/removal, enforce revisions and tombstone receipts with owner-only tenant isolation");
   const legacyId = await seedBoundaryTasks();  assert.equal(
     (await alice.mutation("tasks:update", {
