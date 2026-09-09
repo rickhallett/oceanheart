@@ -375,3 +375,46 @@
   display: block;
   margin-bottom: 6px;
 }
+.lp-bookings-workspace {
+  max-width: 680px;
+}
+.lp-zone-form {
+  margin: 20px 0 28px;
+  max-width: 560px;
+}
+.lp-zone-form label,
+.lp-booking-toolbar label {
+  display: block;
+  margin-bottom: 6px;
+}
+.lp-zone-form p {
+  margin-top: 8px;
+}
+.lp-booking-toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 20px 0 28px;
+}
+.lp-booking-toolbar input {
+  max-width: 190px;
+}
+.lp-booking-toolbar p {
+  margin-top: 8px;
+}
+.lp-booking-toolbar > button {
+  flex-shrink: 0;
+}
+.lp-section-nav {
+  flex-wrap: wrap;
+}
+@media (max-width: 400px) {
+  .lp-booking-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lp-zone-form .lp-inline {
+    flex-wrap: wrap;
+  }
+}

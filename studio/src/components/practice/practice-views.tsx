@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import { practiceApi, type TenantId } from "./api";
+import { PracticeBookings } from "./bookings";
 import { TaskPanel } from "./practice-ui";
 import {
   ServicesPanel,
@@ -14,6 +15,7 @@ import {
 export function PracticeViews(props: {
   tenantId: TenantId;
   canWrite: boolean;
+  timeZone?: string;
 }) {
   return (
     <PracticeContent key={`${props.tenantId}:${props.canWrite}`} {...props} />
@@ -44,9 +46,11 @@ function PracticeTasks({
 function PracticeContent({
   tenantId,
   canWrite,
+  timeZone,
 }: {
   tenantId: TenantId;
   canWrite: boolean;
+  timeZone?: string;
 }) {
   const [section, setSection] = useState<PracticeSection>("tasks");
   return (
@@ -60,6 +64,8 @@ function PracticeContent({
         <PracticeTasks tenantId={tenantId} canWrite={canWrite} />
       ) : section === "services" ? (
         <PracticeServices tenantId={tenantId} canWrite={canWrite} />
+      ) : canWrite && section === "bookings" ? (
+        <PracticeBookings tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite ? (
         <PracticeClients tenantId={tenantId} />
       ) : null}

@@ -12,7 +12,7 @@ const fixturePath =
     : undefined);
 const allowed = new Set([
   "http://127.0.0.1:4331",
-  "http://127.0.0.1:4341",
+  "http://127.0.0.1:4342",
   "https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app",
 ]);
 if (!allowed.has(baseURL) || !fixturePath)
@@ -45,6 +45,7 @@ const report = {
   tasks: [],
   services: [],
   clients: [],
+  bookings: [],
   status: "running",
 };
 const browser = await chromium.launch();
@@ -447,6 +448,111 @@ try {
       await recordsScreenshots(first.page, "clients", "managed");
     },
   );
+  await check(
+    "manual booking snapshots, overlap conflict, reschedule and cancellation",
+    async () => {
+      const page = first.page;
+      await page.getByRole("button", { name: "Bookings", exact: true }).click();
+      await expect(
+        page.getByText("Confirm the time zone before scheduling.", {
+          exact: false,
+        }),
+      ).toBeVisible();
+      await page
+        .getByLabel("Practice time zone", { exact: true })
+        .fill("Europe/London");
+      await page
+        .getByRole("button", { name: "Save time zone", exact: true })
+        .click();
+      await page.getByLabel("Booking date", { exact: true }).fill("2030-01-15");
+      async function fillBooking(local) {
+        await page
+          .getByRole("button", { name: "New booking", exact: true })
+          .click();
+        await page
+          .getByLabel("Find client by name or email", { exact: true })
+          .fill("record");
+        await page.getByRole("button", { name: "Find", exact: true }).click();
+        await page
+          .getByLabel("Client", { exact: true })
+          .selectOption(report.clients[0].clientId);
+        await page
+          .getByLabel("Service", { exact: true })
+          .selectOption(report.services[0].serviceId);
+        await page
+          .getByLabel("Start (Europe/London)", { exact: true })
+          .fill(local);
+      }
+      phase = "create linked booking";
+      await fillBooking("2030-01-15T09:00");
+      await page
+        .getByRole("button", { name: "Save booking", exact: true })
+        .click();
+      const row = page
+        .locator("[data-booking-id]")
+        .filter({ hasText: "Updated client" });
+      await expect(row).toHaveCount(1);
+      const bookingId = await row.getAttribute("data-booking-id");
+      expect(bookingId).toBeTruthy();
+      report.bookings.push({
+        bookingId,
+        tenantId: report.practices[0].tenantId,
+        serviceId: report.services[0].serviceId,
+        clientId: report.clients[0].clientId,
+      });
+      await writeFile(
+        path.join(output, "report.json"),
+        JSON.stringify(report, null, 2),
+      );
+      await expect(row).toContainText("90 minutes · £1.29");
+      await expect(row).toContainText("09:00");
+      phase = "reject overlapping booking";
+      await fillBooking("2030-01-15T09:30");
+      await page
+        .getByRole("button", { name: "Save booking", exact: true })
+        .click();
+      await expect(
+        page.locator(".lp-record-form").getByRole("alert"),
+      ).toContainText("overlaps");
+      await expect(
+        page.getByLabel("Start (Europe/London)", { exact: true }),
+      ).toHaveValue("2030-01-15T09:30");
+      await page
+        .locator(".lp-record-form")
+        .getByRole("button", { name: "Cancel", exact: true })
+        .click();
+      phase = "reschedule booking overnight";
+      await row
+        .getByRole("button", { name: "Reschedule", exact: true })
+        .click();
+      await page
+        .getByLabel("Start (Europe/London)", { exact: true })
+        .fill("2030-01-15T23:30");
+      await page
+        .getByRole("button", { name: "Save new time", exact: true })
+        .click();
+      await expect(row).toContainText("23:30");
+      await expect(row).toContainText("16 Jan");
+      await page.getByLabel("Booking date", { exact: true }).fill("2030-01-16");
+      await expect(row).toContainText("23:30");
+      await recordsScreenshots(page, "bookings", "overnight");
+      phase = "cancel linked booking";
+      await row
+        .getByRole("button", { name: "Cancel booking", exact: true })
+        .click();
+      await expect(row).toContainText("Cancelled");
+      phase = "reload selected practice booking";
+      await page.reload();
+      await page
+        .getByLabel("Current practice", { exact: true })
+        .selectOption(report.practices[0].tenantId);
+      await page.getByRole("button", { name: "Bookings", exact: true }).click();
+      await page.getByLabel("Booking date", { exact: true }).fill("2030-01-16");
+      await expect(
+        page.locator(`[data-booking-id="${bookingId}"]`),
+      ).toContainText("Cancelled");
+    },
+  );
   await check("sign-out ends the application session", async () => {
     await first.page
       .getByRole("button", { name: "Sign out", exact: true })
@@ -478,6 +584,18 @@ try {
     await expect(
       fresh.page.locator(`[data-client-id="${report.clients[0].clientId}"]`),
     ).toContainText("record@example.invalid");
+    await fresh.page
+      .getByRole("button", { name: "Bookings", exact: true })
+      .click();
+    await fresh.page
+      .getByLabel("Booking date", { exact: true })
+      .fill("2030-01-16");
+    await expect(
+      fresh.page.locator(`[data-booking-id="${report.bookings[0].bookingId}"]`),
+    ).toContainText("Cancelled");
+    await expect(
+      fresh.page.locator(`[data-booking-id="${report.bookings[0].bookingId}"]`),
+    ).toContainText("90 minutes · £1.29");
     await fresh.context.close();
   });
   await check(

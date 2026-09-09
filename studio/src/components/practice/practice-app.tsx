@@ -152,6 +152,7 @@ function PracticeWorkspace() {
         key={`${tenant._id}:${tenant.role}`}
         tenantId={tenant._id}
         canWrite={tenant.role === "owner"}
+        timeZone={tenant.timeZone}
       />
     </>
   );

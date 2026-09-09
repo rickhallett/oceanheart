@@ -7,7 +7,12 @@ import type { GenericId } from "convex/values";
 
 // Identity and role are derived by the backend; a selected tenant is not authority.
 export type TenantId = GenericId<"tenants">;
-export type Tenant = { _id: TenantId; name: string; role: "owner" | "viewer" };
+export type Tenant = {
+  _id: TenantId;
+  name: string;
+  role: "owner" | "viewer";
+  timeZone?: string;
+};
 export type Task = {
   _id: GenericId<"tasks">;
   title: string;
@@ -16,6 +21,46 @@ export type Task = {
 };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
 export const practiceApi = {
+  setTimeZone: makeFunctionReference<
+    "mutation",
+    { tenantId: TenantId; timeZone: string; expectedTimeZone: string | null },
+    TenantId
+  >("tenants:setTimeZone"),
+  bookings: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; from: number; to: number; practitionerId?: string },
+    { items: Booking[]; hasMore: boolean; limit: number }
+  >("bookings:list"),
+  createBooking: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      clientId: GenericId<"clients">;
+      serviceId: GenericId<"services">;
+      startsAt: number;
+      requestKey: string;
+    },
+    GenericId<"bookings">
+  >("bookings:createLinked"),
+  rescheduleBooking: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      bookingId: GenericId<"bookings">;
+      startsAt: number;
+      expectedRevision: number;
+    },
+    GenericId<"bookings">
+  >("bookings:reschedule"),
+  cancelBooking: makeFunctionReference<
+    "mutation",
+    {
+      tenantId: TenantId;
+      bookingId: GenericId<"bookings">;
+      expectedRevision: number;
+    },
+    GenericId<"bookings">
+  >("bookings:cancel"),
   updateService: makeFunctionReference<
     "mutation",
     ServiceInput & {
@@ -105,8 +150,31 @@ export const practiceApi = {
     GenericId<"tasks">
   >("tasks:setCompleted"),
 };
+export function hasErrorCode(error: unknown, code: string): boolean {
+  const data =
+    error && typeof error === "object" && "data" in error
+      ? error.data
+      : undefined;
+  return (typeof data === "string" ? data : String(error)).includes(code);
+}
 export function readableError(error: unknown): string {
-  const message = String(error);
+  const data =
+    error && typeof error === "object" && "data" in error
+      ? error.data
+      : undefined;
+  const message = typeof data === "string" ? data : String(error);
+  if (message.includes("TIME_ZONE_REQUIRED"))
+    return "Save the practice time zone before scheduling.";
+  if (message.includes("BOOKING_CONFLICT"))
+    return "That time overlaps an existing booking. Choose another time.";
+  if (message.includes("LEGACY_BOOKING"))
+    return "This older booking cannot be rescheduled. Cancel it and create a linked booking.";
+  if (message.includes("BOOKING_CANCELLED"))
+    return "This booking has been cancelled. Reload the practice to review its current state.";
+  if (message.includes("INVALID_TIME_ZONE"))
+    return "Enter a valid IANA time zone, such as Europe/London.";
+  if (message.includes("ARCHIVED_RECORD") || message.includes("INACTIVE_"))
+    return "The selected client or service is archived. Choose an active record.";
   if (message.includes("REVISION_CONFLICT"))
     return "This record has changed since you opened it. Reload the practice to review the latest version before editing again.";
   if (message.includes("FORBIDDEN"))
@@ -147,3 +215,22 @@ export type ServiceInput = {
   description?: string;
 };
 export type ClientInput = { name: string; email?: string; phone?: string };
+
+export type Booking = {
+  _id: GenericId<"bookings">;
+  startsAt: number;
+  endsAt: number;
+  clientLabel: string;
+  clientId?: GenericId<"clients">;
+  serviceId?: GenericId<"services">;
+  serviceSnapshot?: {
+    name: string;
+    durationMinutes: number;
+    priceMinor: number;
+    currency: "GBP";
+  };
+  timeZone?: string;
+  status: "scheduled" | "cancelled";
+  revision: number;
+  legacy: boolean;
+};
