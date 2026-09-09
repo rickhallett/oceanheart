@@ -349,31 +349,33 @@ function SettingsForm({
               disabled={pending || !canWrite}
             />
             <label htmlFor={`day-${day}`}>{label}</label>
-            <input
-              type="time"
-              aria-label={`${label} opening time`}
-              value={draft.availability[day]?.open ?? ""}
-              onChange={(event) =>
-                setDay(day, {
-                  open: event.target.value,
-                  close: draft.availability[day]?.close ?? "",
-                })
-              }
-              disabled={pending || !canWrite || !draft.availability[day]}
-            />
-            <span className="lp-muted">to</span>
-            <input
-              type="time"
-              aria-label={`${label} closing time`}
-              value={draft.availability[day]?.close ?? ""}
-              onChange={(event) =>
-                setDay(day, {
-                  open: draft.availability[day]?.open ?? "",
-                  close: event.target.value,
-                })
-              }
-              disabled={pending || !canWrite || !draft.availability[day]}
-            />
+            <div className="lp-time-interval">
+              <input
+                type="time"
+                aria-label={`${label} opening time`}
+                value={draft.availability[day]?.open ?? ""}
+                onChange={(event) =>
+                  setDay(day, {
+                    open: event.target.value,
+                    close: draft.availability[day]?.close ?? "",
+                  })
+                }
+                disabled={pending || !canWrite || !draft.availability[day]}
+              />
+              <span className="lp-muted">to</span>
+              <input
+                type="time"
+                aria-label={`${label} closing time`}
+                value={draft.availability[day]?.close ?? ""}
+                onChange={(event) =>
+                  setDay(day, {
+                    open: draft.availability[day]?.open ?? "",
+                    close: event.target.value,
+                  })
+                }
+                disabled={pending || !canWrite || !draft.availability[day]}
+              />
+            </div>
           </div>
         ))}
         {canWrite && !conflict && (
