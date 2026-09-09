@@ -32,10 +32,10 @@ These are genuinely quick only after shared persistence and permissions exist. A
 
 The existing `backend/` implements tenant membership and atomic booking create/list, overlap detection and request-key idempotency. Extend this rather than replacing it without evidence. The reviewed `/app` currently updates a whole local state object; replace writes incrementally with explicit authorised commands. Do not expose generic whole-state mutation on the server.
 
-WorkOS AuthKit and the persisted Convex task foundation are accepted. This batch adds tenant-scoped service and client create/list views. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
+WorkOS AuthKit and the persisted Convex task foundation are accepted. Service and client create/list views are accepted; this batch adds revision-safe editing, reversible archives and client name/email search. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
 
 ## RAD delivery loop
 
 For each slice: define one user outcome and acceptance example; implement UI + server + permissions together; use synthetic fixtures; test happy path plus the consequential failure (tenant isolation, conflict, duplicate delivery); review desktop/mobile; merge to development. Release intentionally after acceptance. Stop adding polish unrelated to the current outcome unless it violates the canonical guide.
 
-Next increments: service/client editing, archival and search, followed by booking linkage. Complete create/list acceptance before expanding these workflows.
+Next increment: booking linkage using the accepted service and client records. Complete edit/archive/search acceptance before expanding the booking workflow.

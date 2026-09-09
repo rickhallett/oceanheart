@@ -120,7 +120,7 @@ async function screenshot(page, width, label) {
   await page.screenshot({ path: path.join(output, filename), fullPage: true });
   report.screenshots.push({ filename, width, ...metrics });
 }
-async function recordsScreenshots(page, section) {
+async function recordsScreenshots(page, section, state = "") {
   for (const width of [1440, 400, 320]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(
@@ -134,7 +134,7 @@ async function recordsScreenshots(page, section) {
         () => document.documentElement.scrollWidth > innerWidth,
       ),
     ).toBe(false);
-    const filename = `${section}-${width}.png`;
+    const filename = `${section}-${state ? state + "-" : ""}${width}.png`;
     await page.screenshot({
       path: path.join(output, filename),
       fullPage: true,
@@ -314,6 +314,128 @@ try {
       await recordsScreenshots(first.page, "clients");
     },
   );
+  await check(
+    "service edits detect concurrent conflicts and archive/restore preserve identity",
+    async () => {
+      const serviceId = report.services[0].serviceId;
+      await first.page.setViewportSize({ width: 1440, height: 900 });
+      await first.page
+        .getByRole("button", { name: "Services", exact: true })
+        .click();
+      const stale = await first.context.newPage();
+      await stale.goto(`${baseURL}/practice`);
+      await stale
+        .getByLabel("Current practice", { exact: true })
+        .selectOption({ label: practiceName });
+      await stale
+        .getByRole("button", { name: "Services", exact: true })
+        .click();
+      await stale
+        .locator(`[data-service-id="${serviceId}"]`)
+        .getByRole("button", { name: "Edit", exact: true })
+        .click();
+      await first.page
+        .locator(`[data-service-id="${serviceId}"]`)
+        .getByRole("button", { name: "Edit", exact: true })
+        .click();
+      await first.page.getByLabel("Price (£)", { exact: true }).fill("1.29");
+      await first.page
+        .getByRole("button", { name: "Save", exact: true })
+        .click();
+      await expect(
+        first.page.locator(`[data-service-id="${serviceId}"]`),
+      ).toContainText("£1.29");
+      activePage = stale;
+      await stale.getByLabel("Price (£)", { exact: true }).fill("2.29");
+      await stale.getByRole("button", { name: "Save", exact: true }).click();
+      await expect(stale.getByRole("alert")).toContainText(
+        "changed since you opened",
+      );
+      await expect(
+        stale.getByRole("button", { name: "Save", exact: true }),
+      ).toBeDisabled();
+      await expect(stale.getByLabel("Price (£)", { exact: true })).toHaveValue(
+        "2.29",
+      );
+      await stale.setViewportSize({ width: 400, height: 900 });
+      await stale.screenshot({
+        path: path.join(output, "service-conflict-400.png"),
+        fullPage: true,
+      });
+      report.screenshots.push({
+        filename: "service-conflict-400.png",
+        width: 400,
+      });
+      await stale.close();
+      activePage = first.page;
+      const row = first.page.locator(`[data-service-id="${serviceId}"]`);
+      await row.getByRole("button", { name: "Archive", exact: true }).click();
+      await expect(row).toHaveCount(0);
+      await first.page
+        .getByRole("group", { name: "Service status" })
+        .getByRole("button", { name: "Archived", exact: true })
+        .click();
+      await expect(row).toContainText("£1.29");
+      await row.getByRole("button", { name: "Restore", exact: true }).click();
+      await expect(row).toHaveCount(0);
+      await first.page
+        .getByRole("group", { name: "Service status" })
+        .getByRole("button", { name: "Active", exact: true })
+        .click();
+      await expect(row).toContainText("£1.29");
+      await recordsScreenshots(first.page, "services", "managed");
+    },
+  );
+  await check(
+    "client edit, name/email search and archive/restore preserve contacts",
+    async () => {
+      const clientId = report.clients[0].clientId;
+      await first.page
+        .getByRole("button", { name: "Clients", exact: true })
+        .click();
+      const row = first.page.locator(`[data-client-id="${clientId}"]`);
+      await row.getByRole("button", { name: "Edit", exact: true }).click();
+      await first.page
+        .getByLabel("Client name", { exact: true })
+        .fill(`Updated client ${run}`);
+      await first.page
+        .getByLabel("Email (optional)", { exact: true })
+        .fill("record@example.invalid");
+      await first.page
+        .getByRole("button", { name: "Save", exact: true })
+        .click();
+      await expect(row).toContainText("record@example.invalid");
+      await first.page
+        .getByLabel("Search clients by name or email", { exact: true })
+        .fill("Updated");
+      await first.page
+        .getByRole("button", { name: "Search", exact: true })
+        .click();
+      await expect(row).toBeVisible();
+      await first.page
+        .getByLabel("Search clients by name or email", { exact: true })
+        .fill("record");
+      await first.page
+        .getByRole("button", { name: "Search", exact: true })
+        .click();
+      await expect(row).toBeVisible();
+      await row.getByRole("button", { name: "Archive", exact: true }).click();
+      await expect(row).toHaveCount(0);
+      await first.page
+        .getByRole("group", { name: "Client status" })
+        .getByRole("button", { name: "Archived", exact: true })
+        .click();
+      await expect(row).toContainText("record@example.invalid");
+      await row.getByRole("button", { name: "Restore", exact: true }).click();
+      await expect(row).toHaveCount(0);
+      await first.page
+        .getByRole("group", { name: "Client status" })
+        .getByRole("button", { name: "Active", exact: true })
+        .click();
+      await expect(row).toContainText("record@example.invalid");
+      await recordsScreenshots(first.page, "clients", "managed");
+    },
+  );
   await check("sign-out ends the application session", async () => {
     await first.page
       .getByRole("button", { name: "Sign out", exact: true })
@@ -338,13 +460,13 @@ try {
       .click();
     await expect(
       fresh.page.locator(`[data-service-id="${report.services[0].serviceId}"]`),
-    ).toBeVisible();
+    ).toContainText("£1.29");
     await fresh.page
       .getByRole("button", { name: "Clients", exact: true })
       .click();
     await expect(
       fresh.page.locator(`[data-client-id="${report.clients[0].clientId}"]`),
-    ).toBeVisible();
+    ).toContainText("record@example.invalid");
     await fresh.context.close();
   });
   await check(

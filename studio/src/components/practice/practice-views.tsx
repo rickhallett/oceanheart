@@ -7,6 +7,8 @@ import {
   ServicesPanel,
   ClientsPanel,
   PracticeNavigation,
+  RecordFilter,
+  ClientSearch,
   type PracticeSection,
 } from "./records-ui";
 export function PracticeViews(props: {
@@ -64,6 +66,7 @@ function PracticeContent({
     </>
   );
 }
+
 function PracticeServices({
   tenantId,
   canWrite,
@@ -71,35 +74,90 @@ function PracticeServices({
   tenantId: TenantId;
   canWrite: boolean;
 }) {
+  const [archived, setArchived] = useState(false);
   const { results, status, loadMore } = usePaginatedQuery(
     practiceApi.services,
-    { tenantId },
+    { tenantId, archived },
     { initialNumItems: 20 },
   );
-  const create = useMutation(practiceApi.createService);
+  const create = useMutation(practiceApi.createService),
+    update = useMutation(practiceApi.updateService),
+    archive = useMutation(practiceApi.archiveService);
   return (
-    <ServicesPanel
-      items={results}
-      status={status}
-      canWrite={canWrite}
-      loadMore={() => loadMore(20)}
-      create={(input, requestKey) => create({ ...input, tenantId, requestKey })}
-    />
+    <>
+      <RecordFilter archived={archived} change={setArchived} noun="Service" />
+      <ServicesPanel
+        key={String(archived)}
+        items={results}
+        status={status}
+        canWrite={canWrite}
+        archived={archived}
+        loadMore={() => loadMore(20)}
+        create={(input, requestKey) =>
+          create({ ...input, tenantId, requestKey })
+        }
+        update={(record, input) =>
+          update({
+            ...input,
+            tenantId,
+            serviceId: record._id,
+            expectedRevision: record.revision,
+          })
+        }
+        archive={(record, archived) =>
+          archive({
+            tenantId,
+            serviceId: record._id,
+            archived,
+            expectedRevision: record.revision,
+          })
+        }
+      />
+    </>
   );
 }
 function PracticeClients({ tenantId }: { tenantId: TenantId }) {
+  const [archived, setArchived] = useState(false),
+    [search, setSearch] = useState("");
   const { results, status, loadMore } = usePaginatedQuery(
     practiceApi.clients,
-    { tenantId },
+    { tenantId, archived, search },
     { initialNumItems: 20 },
   );
-  const create = useMutation(practiceApi.createClient);
+  const create = useMutation(practiceApi.createClient),
+    update = useMutation(practiceApi.updateClient),
+    archive = useMutation(practiceApi.archiveClient);
   return (
-    <ClientsPanel
-      items={results}
-      status={status}
-      loadMore={() => loadMore(20)}
-      create={(input, requestKey) => create({ ...input, tenantId, requestKey })}
-    />
+    <>
+      <RecordFilter archived={archived} change={setArchived} noun="Client" />
+      <ClientSearch search={search} change={setSearch} />
+      <ClientsPanel
+        key={`${archived}:${search}`}
+        items={results}
+        status={status}
+        archived={archived}
+        search={search}
+        loadMore={() => loadMore(20)}
+        create={(input, requestKey) =>
+          create({ ...input, tenantId, requestKey })
+        }
+        update={(record, input) =>
+          update({
+            ...input,
+            tenantId,
+            clientId: record._id,
+            expectedRevision: record.revision,
+          })
+        }
+        archive={(record, archived) =>
+          archive({
+            tenantId,
+            clientId: record._id,
+            archived,
+            expectedRevision: record.revision,
+          })
+        }
+      />
+    </>
   );
 }

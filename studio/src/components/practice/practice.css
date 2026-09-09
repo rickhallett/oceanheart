@@ -358,3 +358,20 @@
     gap: 0;
   }
 }
+.lp-record-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.lp-record-filter button[aria-pressed="true"] {
+  color: #255bd7;
+  border-color: #255bd7;
+}
+.lp-record-search {
+  max-width: 560px;
+  margin-bottom: 24px;
+}
+.lp-record-search label {
+  display: block;
+  margin-bottom: 6px;
+}

@@ -35,7 +35,7 @@ it("resets paging and unsaved forms when practice changes, and never mounts clie
   await user.click(screen.getByRole("button", { name: "Add service" }));
   await user.type(screen.getByLabelText("Service name"), "Unsaved");
   expect(vi.mocked(usePaginatedQuery).mock.calls.at(-1)?.slice(1)).toEqual([
-    { tenantId: first },
+    { tenantId: first, archived: false },
     { initialNumItems: 20 },
   ]);
   view.rerender(<PracticeViews tenantId={second} canWrite={false} />);
@@ -49,7 +49,7 @@ it("resets paging and unsaved forms when practice changes, and never mounts clie
   ).not.toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Services" }));
   expect(vi.mocked(usePaginatedQuery).mock.calls.at(-1)?.slice(1)).toEqual([
-    { tenantId: second },
+    { tenantId: second, archived: false },
     { initialNumItems: 20 },
   ]);
   expect(
