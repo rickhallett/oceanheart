@@ -8,7 +8,7 @@ import "@/components/practice/practice.css";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Your practice · Oceanheart Studio",
+  title: "Your practice · oceanheart Studio",
   robots: { index: false, follow: false },
 };
 

@@ -122,6 +122,8 @@ test("modal retains control focus through context updates and restores opener", 
   const input = dialog.getByRole("textbox");
   await input.fill("Keyboard focus should stay in this conversation.");
   await input.press("Tab");
+  await expect(dialog.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   const submit = dialog.getByRole("button", { name: "Add sample message" });
   await expect(submit).toBeFocused();
   await page.keyboard.press("Enter");

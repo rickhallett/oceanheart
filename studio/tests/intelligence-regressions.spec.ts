@@ -57,6 +57,12 @@ test("saved citation renders snapshot, not current source", async ({
     state.sources[0].content = "72 hours notice";
     state.sources[0].version = 9;
   });
+  const details = page.getByRole("button", { name: "Answer details", exact: true });
+  await details.click();
+  await expect(page.getByRole("dialog")).toContainText("Saved example");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(details).toBeFocused();
   await page
     .getByRole("button", { name: "Booking & cancellation policy · v2" })
     .click();
@@ -81,10 +87,10 @@ test("stale refund and reply approvals are rejected without applied outcome", as
       status: "Pending",
     });
   });
-  await page.getByRole("button", { name: /Needs your approval/ }).click();
+  await page.getByRole("tab", { name: /Needs your approval/ }).click();
   await page.getByRole("button", { name: "Approve in demo" }).first().click();
   await page.getByRole("button", { name: "Approve in demo" }).click();
-  await page.getByRole("button", { name: "History", exact: true }).click();
+  await page.getByRole("tab", { name: "History", exact: true }).click();
   await expect(
     page.locator(".ws-approval").filter({ hasText: "Not applied" }),
   ).toHaveCount(2);
@@ -105,7 +111,7 @@ test("two pending actions for one paid record cannot both apply", async ({
       title: "Duplicate refund",
     }),
   );
-  await page.getByRole("button", { name: /Needs your approval/ }).click();
+  await page.getByRole("tab", { name: /Needs your approval/ }).click();
   await page.getByRole("button", { name: "Approve in demo" }).first().click();
   await page.getByRole("button", { name: "Approve in demo" }).click();
   const state = await stored(page);
@@ -131,7 +137,7 @@ test("edited reply and changed refund amount require a fresh approval", async ({
       status: "Pending",
     });
   });
-  await page.getByRole("button", { name: /Needs your approval/ }).click();
+  await page.getByRole("tab", { name: /Needs your approval/ }).click();
   await page.getByRole("button", { name: "Approve in demo" }).first().click();
   await page.getByRole("button", { name: "Approve in demo" }).click();
   const state = await stored(page);
@@ -155,7 +161,7 @@ test("matching reply approval applies once and rejects its duplicate", async ({
         status: "Pending",
       });
   });
-  await page.getByRole("button", { name: /Needs your approval/ }).click();
+  await page.getByRole("tab", { name: /Needs your approval/ }).click();
   await page.getByRole("button", { name: "Approve in demo" }).first().click();
   await page.getByRole("button", { name: "Approve in demo" }).click();
   const state = await stored(page);

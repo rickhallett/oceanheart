@@ -1,24 +1,32 @@
-/* Shared application primitives. The editorial marketing site has its own scale. */
-.ws-root,
-.live-practice {
-  --app-caption: 11px;
-  --app-meta: 12px;
-  --app-small: 13px;
-  --app-body: 14px;
-  --app-reading: 15px;
-  --app-label: 16px;
-  --app-weight-body: 450;
-  --app-weight-label: 550;
-  --app-weight-heading: 600;
-  --app-space-1: 4px;
-  --app-space-2: 8px;
-  --app-space-3: 12px;
-  --app-space-4: 16px;
-  --app-space-6: 24px;
-  --app-space-8: 32px;
-  --app-radius-control: 10px;
-  --app-radius-panel: 16px;
-  --app-control-height: 44px;
-  --app-border: #d9e3e51f;
-  --app-shadow-panel: 0 4px 18px #02080c20, inset 0 1px 0 #ffffff03;
+/* Compatibility aliases resolve to the Chakra theme, including in portals. */
+:root {
+  --app-caption: 12px;
+  --app-meta: var(--chakra-font-sizes-meta, 13px);
+  --app-small: var(--chakra-font-sizes-small, 14px);
+  --app-body: var(--chakra-font-sizes-body, 15px);
+  --app-reading: var(--chakra-font-sizes-reading, 16px);
+  --app-label: var(--chakra-font-sizes-label, 16px);
+  --app-weight-body: var(--chakra-font-weights-normal, 500);
+  --app-weight-label: var(--chakra-font-weights-semibold, 600);
+  --app-weight-heading: var(--chakra-font-weights-semibold, 600);
+  --app-space-1: var(--chakra-spacing-1, 4px);
+  --app-space-2: var(--chakra-spacing-2, 8px);
+  --app-space-3: var(--chakra-spacing-3, 12px);
+  --app-space-4: var(--chakra-spacing-4, 16px);
+  --app-space-6: var(--chakra-spacing-6, 24px);
+  --app-space-8: var(--chakra-spacing-8, 32px);
+  --app-radius-control: var(--chakra-radii-control, 10px);
+  --app-radius-panel: var(--chakra-radii-panel, 16px);
+  --app-control-height: var(--chakra-sizes-control, 44px);
+  --app-border-width: var(--chakra-border-widths-control, 2px);
+  --app-border: var(--chakra-colors-border, #415965);
+  --app-shadow-panel: 0 4px 18px #02080c20;
+  --ws-bg: var(--chakra-colors-bg);
+  --ws-panel: var(--chakra-colors-bg-panel);
+  --ws-raised: var(--chakra-colors-bg-muted);
+  --ws-border: var(--chakra-colors-border-muted);
+  --ws-text: var(--chakra-colors-fg);
+  --ws-muted: var(--chakra-colors-fg-muted);
+  --ws-accent: var(--chakra-colors-copper-solid);
+  --ws-green: var(--chakra-colors-green-fg);
 }

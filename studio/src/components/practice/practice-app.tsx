@@ -1,4 +1,6 @@
 "use client";
+import { Badge, Box, Button, Card, Field, Flex, Grid, Heading, Input, Text } from "@chakra-ui/react";
+import { StudioSelect } from "@/components/studio-controls";
 import {
   Component,
   useRef,
@@ -45,60 +47,60 @@ function Frame({
   account?: ReactNode;
 }) {
   return (
-    <div className="live-practice">
+    <Box className="live-practice" bg="bg" color="fg">
       <a className="lp-skip" href="#practice-content">
         Skip to your practice
       </a>
-      <header className="lp-header">
+      <Flex as="header" className="lp-header">
         <Link className="lp-brand" href="/">
           <Mark />
           <span>
-            Oceanheart <small>STUDIO</small>
+            oceanheart <small>STUDIO</small>
           </span>
         </Link>
-        <div className="lp-header-end">
+        <Box className="lp-header-end">
           <Link href="/app">
             Explore the prototype <ArrowRight size={14} />
           </Link>
           {account}
-        </div>
-      </header>
+        </Box>
+      </Flex>
       <main id="practice-content" tabIndex={-1}>
         {children}
       </main>
-      <footer className="lp-footer">
+      <Flex as="footer" className="lp-footer">
         <span>Built with care. Looked after personally.</span>
         <Link href="/#contact">
           Your studio partner <ArrowRight size={14} />
         </Link>
-      </footer>
-    </div>
+      </Flex>
+    </Box>
   );
 }
 export function PracticeUnavailable() {
   return (
     <Frame>
-      <section className="lp-welcome">
-        <div className="lp-welcome-art">
+      <Grid as="section" className="lp-welcome" templateColumns={{base:"1fr",md:"1fr 1fr"}}>
+        <Box className="lp-welcome-art">
           <Mark />
           <span>
             A little more space
             <br />
             for your practice.
           </span>
-        </div>
-        <div>
+        </Box>
+        <Box>
           <span className="lp-kicker">YOUR PRACTICE</span>
-          <h1>Your workspace is taking shape.</h1>
-          <p>
+          <Heading as="h1">Your workspace is taking shape.</Heading>
+          <Text>
             Private practice accounts are not available on this deployment yet.
             You can explore the full sample workspace while we prepare it.
-          </p>
+          </Text>
           <Link className="lp-button" href="/app">
             Explore the sample practice <ArrowRight size={17} />
           </Link>
-        </div>
-      </section>
+        </Box>
+      </Grid>
     </Frame>
   );
 }
@@ -116,64 +118,64 @@ function SessionGate() {
   return (
     <Frame account={isSignedIn ? <UserButton /> : undefined}>
       {!isLoaded || isLoading ? (
-        <div className="lp-loading" role="status">
+        <Box className="lp-loading" role="status">
           <Mark />
-          <p>Opening your practice…</p>
-        </div>
+          <Text>Opening your practice…</Text>
+        </Box>
       ) : !isSignedIn ? (
-        <section className="lp-welcome">
-          <div className="lp-welcome-art">
+        <Grid as="section" className="lp-welcome" templateColumns={{base:"1fr",md:"1fr 1fr"}}>
+          <Box className="lp-welcome-art">
             <Mark />
             <span>
               A calmer day
               <br />
               starts here.
             </span>
-            <div>
+            <Box>
               <ShieldCheck size={16} /> Your own private workspace
-            </div>
-          </div>
-          <div>
+            </Box>
+          </Box>
+          <Box>
             <span className="lp-kicker">WELCOME TO YOUR STUDIO</span>
-            <h1>A thoughtful home for your practice.</h1>
-            <p>
-              Your appointments, your time, and a little more room to breathe.
+            <Heading as="h1">A thoughtful home for your practice.</Heading>
+            <Text>
+              Your appointments and tasks in one place.
               Sign in to pick up where you left off.
-            </p>
-            <div className="lp-auth-actions">
+            </Text>
+            <Box className="lp-auth-actions">
               <SignInButton mode="modal" forceRedirectUrl="/practice">
-                <button className="lp-button">
+                <Button colorPalette="copper" className="lp-button">
                   Sign in to your practice <ArrowRight size={17} />
-                </button>
+                </Button>
               </SignInButton>
               <SignUpButton mode="modal" forceRedirectUrl="/practice">
-                <button className="lp-text-button">
+                <Button colorPalette="copper" variant="ghost" className="lp-text-button">
                   New here? Create your account <ArrowRight size={15} />
-                </button>
+                </Button>
               </SignUpButton>
-            </div>
-            <p className="lp-caption">
+            </Box>
+            <Text className="lp-caption">
               <LockKeyhole size={14} /> Secure sign-in. Access limited to your
               practice memberships.
-            </p>
-          </div>
-        </section>
+            </Text>
+          </Box>
+        </Grid>
       ) : !isAuthenticated ? (
-        <section className="lp-state" role="alert">
+        <Card.Root as="section" bg="bg.panel" p={{base:6,md:10}} borderColor="border" rounded="2xl" className="lp-state" role="alert">
           <ShieldCheck />
-          <h1>Let’s reconnect your practice.</h1>
-          <p>
+          <Heading as="h1">Let’s reconnect your practice.</Heading>
+          <Text>
             You’re signed in, but we couldn’t verify your access to the
             workspace. Refresh to try again, or sign out using your account
             menu.
-          </p>
-          <button
+          </Text>
+          <Button colorPalette="copper"
             className="lp-button"
             onClick={() => window.location.reload()}
           >
             Refresh connection
-          </button>
-        </section>
+          </Button>
+        </Card.Root>
       ) : (
         <PracticeBoundary>
           <PracticeHome />
@@ -193,19 +195,19 @@ class PracticeBoundary extends Component<
   render() {
     if (this.state.failed)
       return (
-        <section className="lp-state" role="alert">
-          <h1>Your practice needs a moment.</h1>
-          <p>
+        <Card.Root as="section" bg="bg.panel" p={{base:6,md:10}} borderColor="border" rounded="2xl" className="lp-state" role="alert">
+          <Heading as="h1">Your practice needs a moment.</Heading>
+          <Text>
             We couldn’t load this workspace. Your access may have changed, or
             the connection may have been interrupted. Refresh to check again.
-          </p>
-          <button
+          </Text>
+          <Button colorPalette="copper"
             className="lp-button"
             onClick={() => window.location.reload()}
           >
             Refresh workspace
-          </button>
-        </section>
+          </Button>
+        </Card.Root>
       );
     return this.props.children;
   }
@@ -216,9 +218,9 @@ function PracticeHome() {
   const [creating, setCreating] = useState(false);
   if (!tenants)
     return (
-      <div className="lp-loading" role="status">
+      <Box className="lp-loading" role="status">
         Finding your practice…
-      </div>
+      </Box>
     );
   const tenant = tenants.find((item) => item._id === selected) ?? tenants[0];
   if (!tenant || creating)
@@ -233,15 +235,15 @@ function PracticeHome() {
     );
   return (
     <>
-      <div className="lp-workspace-heading">
-        <div>
+      <Box className="lp-workspace-heading">
+        <Box>
           <span className="lp-kicker">YOUR PRACTICE</span>
-          <h1>A little shape to your day.</h1>
-          <p>Welcome back. Here’s what’s coming up.</p>
-        </div>
-        <div className="lp-practice-picker">
+          <Heading as="h1">A little shape to your day.</Heading>
+          <Text>Welcome back. Here’s what’s coming up.</Text>
+        </Box>
+        <Box className="lp-practice-picker">
           <label htmlFor="practice-selector">Current practice</label>
-          <select
+          <StudioSelect
             id="practice-selector"
             value={tenant._id}
             onChange={(event) => setSelected(event.target.value as TenantId)}
@@ -251,20 +253,20 @@ function PracticeHome() {
                 {item.name}
               </option>
             ))}
-          </select>
-          <button className="lp-text-button" onClick={() => setCreating(true)}>
+          </StudioSelect>
+          <Button colorPalette="copper" variant="ghost" className="lp-text-button" onClick={() => setCreating(true)}>
             <Plus size={14} /> Add a practice
-          </button>
-        </div>
-      </div>
-      <section className="lp-pilot">
+          </Button>
+        </Box>
+      </Box>
+      <Card.Root as="section" className="lp-pilot" flexDirection="row" bg="bg.subtle">
         <ShieldCheck size={18} />
-        <p>
+        <Text>
           <strong>Private development workspace.</strong> Bookings here are
           saved to your account. Use sample names while we develop the service;
           reminders, payments and client invitations are not connected.
-        </p>
-      </section>
+        </Text>
+      </Card.Root>
       <Bookings key={tenant._id} tenant={tenant} />
     </>
   );
@@ -305,19 +307,19 @@ function CreatePractice({
     }
   }
   return (
-    <section className="lp-setup">
-      <div className="lp-round-icon">
+    <Card.Root as="section" className="lp-setup" bg="bg.panel" p={{base:6,md:10}} borderColor="border" rounded="2xl">
+      <Box className="lp-round-icon">
         <Flower2 size={28} />
-      </div>
+      </Box>
       <span className="lp-kicker">MAKE YOURSELF AT HOME</span>
-      <h1>Let’s give your practice a place.</h1>
-      <p>
+      <Heading as="h1">Let’s give your practice a place.</Heading>
+      <Text>
         Start with its name. You’ll become the owner of this private workspace
         and can begin organising appointments.
-      </p>
+      </Text>
       <form onSubmit={submit}>
-        <label htmlFor="practice-name">Practice name</label>
-        <input
+        <Field.Root required><Field.Label htmlFor="practice-name">Practice name</Field.Label>
+        <Input
           id="practice-name"
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -325,40 +327,41 @@ function CreatePractice({
           required
           maxLength={100}
           autoComplete="organization"
-        />
+        /></Field.Root>
         {error && (
-          <p className="lp-error" role="alert">
+          <Text className="lp-error" role="alert">
             {error}
-          </p>
+          </Text>
         )}
-        <button
+        <Button colorPalette="copper"
+          type="submit"
           className="lp-button"
           disabled={pending || unconfirmed || !name.trim()}
         >
           {pending ? "Creating your practice…" : "Create my practice"}
           <ArrowRight size={17} />
-        </button>
+        </Button>
         {unconfirmed && (
-          <button
+          <Button colorPalette="copper"
             type="button"
-            className="lp-text-button"
+            variant="ghost" className="lp-text-button"
             onClick={() => window.location.reload()}
           >
             Refresh my practices
-          </button>
+          </Button>
         )}
         {onCancel && (
-          <button
+          <Button colorPalette="copper"
             type="button"
-            className="lp-text-button"
+            variant="ghost" className="lp-text-button"
             disabled={pending}
             onClick={onCancel}
           >
             Back to my practice
-          </button>
+          </Button>
         )}
       </form>
-    </section>
+    </Card.Root>
   );
 }
 function Bookings({ tenant }: { tenant: Tenant }) {
@@ -384,38 +387,39 @@ function Bookings({ tenant }: { tenant: Tenant }) {
     month: "long",
   });
   return (
-    <div className="lp-calendar-grid">
-      <section className="lp-agenda">
+    <Grid className="lp-calendar-grid" templateColumns={{base:"1fr",xl:"minmax(0,1fr) 360px"}} gap={6} alignItems="start">
+      <Card.Root as="section" className="lp-agenda" bg="bg.panel" borderColor="border" rounded="2xl">
         <header>
-          <div>
+          <Box>
             <span className="lp-kicker">{tenant.name}</span>
-            <h2>Your appointments</h2>
-          </div>
+            <Heading as="h2">Your appointments</Heading>
+          </Box>
           {tenant.role === "owner" ? (
-            <button
+            <Button colorPalette="copper"
               ref={addButton}
               className="lp-button"
               onClick={() => setForm(true)}
               disabled={form}
             >
               <Plus size={16} /> New booking
-            </button>
+            </Button>
           ) : (
-            <span className="lp-viewer">View-only access</span>
+            <Badge colorPalette="green" className="lp-viewer">View-only access</Badge>
           )}
         </header>
-        <div className="lp-calendar-controls">
-          <div className="lp-day-switch">
-            <button
+        <Box className="lp-calendar-controls">
+          <Box className="lp-day-switch">
+            <Button colorPalette="copper"
+              variant="ghost"
               disabled={form}
               aria-label="Previous day"
               onClick={() => shift(-1)}
             >
               <ChevronLeft size={18} />
-            </button>
+            </Button>
             <label>
               <span className="lp-visually-hidden">Booking date</span>
-              <input
+              <Input
                 type="date"
                 disabled={form}
                 value={day}
@@ -424,50 +428,51 @@ function Bookings({ tenant }: { tenant: Tenant }) {
                 }}
               />
             </label>
-            <button
+            <Button colorPalette="copper"
+              variant="ghost"
               disabled={form}
               aria-label="Next day"
               onClick={() => shift(1)}
             >
               <ChevronRight size={18} />
-            </button>
-          </div>
+            </Button>
+          </Box>
           <label className="lp-resource">
             Diary{" "}
-            <select
+            <StudioSelect
               value={practitioner}
               disabled={form}
               onChange={(event) => setPractitioner(event.target.value)}
             >
               <option value="main">Main diary</option>
               <option value="online">Online sessions</option>
-            </select>
+            </StudioSelect>
           </label>
-        </div>
-        <div className="lp-day-label">
-          <h3>{dateLabel}</h3>
+        </Box>
+        <Box className="lp-day-label">
+          <Heading as="h3">{dateLabel}</Heading>
           <span>
             {result
               ? `${result.items.length}${result.hasMore ? "+" : ""} appointments`
               : "Loading…"}
           </span>
-        </div>
+        </Box>
         {notice && (
-          <p className="lp-success" role="status">
+          <Text className="lp-success" role="status">
             <Check size={16} />
             {notice}
-          </p>
+          </Text>
         )}
         {!result ? (
-          <p role="status" className="lp-empty">
+          <Text role="status" className="lp-empty">
             Loading your appointments…
-          </p>
+          </Text>
         ) : !result.items.length ? (
-          <div className="lp-empty">
+          <Box className="lp-empty">
             <CalendarDays size={32} />
-            <h3>A little breathing room.</h3>
-            <p>No appointments start in this diary today.</p>
-          </div>
+            <Heading as="h3">No appointments scheduled.</Heading>
+            <Text>No appointments start in this diary today.</Text>
+          </Box>
         ) : (
           <ol className="lp-bookings">
             {result.items.map((booking) => (
@@ -479,9 +484,9 @@ function Bookings({ tenant }: { tenant: Tenant }) {
                   })}
                 </time>
                 <span className="lp-booking-dot" />
-                <div>
-                  <h3>{booking.clientLabel}</h3>
-                  <p>
+                <Box>
+                  <Heading as="h3">{booking.clientLabel}</Heading>
+                  <Text>
                     {Math.round((booking.endsAt - booking.startsAt) / 60000)}{" "}
                     minutes ·{" "}
                     {new Date(booking.endsAt).toLocaleTimeString("en-GB", {
@@ -489,25 +494,25 @@ function Bookings({ tenant }: { tenant: Tenant }) {
                       minute: "2-digit",
                     })}{" "}
                     finish
-                  </p>
-                </div>
-                <span className="lp-confirmed">Confirmed</span>
+                  </Text>
+                </Box>
+                <Badge colorPalette="green" className="lp-confirmed">Confirmed</Badge>
               </li>
             ))}
           </ol>
         )}
         {result?.hasMore && (
-          <p role="status">
+          <Text role="status">
             Showing the first {result.limit} appointments. More appointments
             exist in this diary.
-          </p>
+          </Text>
         )}
-        <p className="lp-caption">
+        <Text className="lp-caption">
           Times shown in {Intl.DateTimeFormat().resolvedOptions().timeZone}.
           This view shows appointments starting on the selected day.
-        </p>
-      </section>
-      <aside className="lp-side-panel">
+        </Text>
+      </Card.Root>
+      <Card.Root as="aside" className="lp-side-panel" borderColor="border" rounded="2xl">
         {form ? (
           <BookingForm
             tenantId={tenant._id}
@@ -526,30 +531,28 @@ function Bookings({ tenant }: { tenant: Tenant }) {
           />
         ) : (
           <>
-            <div className="lp-round-icon">
+            <Box className="lp-round-icon">
               <Flower2 size={25} />
-            </div>
-            <h2>
-              Your time,
-              <br />
-              thoughtfully organised.
-            </h2>
-            <p>
+            </Box>
+            <Heading as="h2">
+              Your practice diary
+            </Heading>
+            <Text>
               Keep a clear view of the day ahead. Your practice’s appointments
               are visible only to its members.
-            </p>
-            <div className="lp-side-note">
+            </Text>
+            <Box className="lp-side-note">
               <LockKeyhole size={17} />
               <span>
                 {tenant.role === "owner"
                   ? "You own this workspace."
                   : "Your membership allows you to view appointments."}
               </span>
-            </div>
+            </Box>
           </>
         )}
-      </aside>
-    </div>
+      </Card.Root>
+    </Grid>
   );
 }
 function BookingForm({
@@ -614,55 +617,47 @@ function BookingForm({
   return (
     <form className="lp-booking-form" onSubmit={submit}>
       <span className="lp-kicker">A PLACE IN YOUR DAY</span>
-      <h2>New appointment</h2>
-      <p>Use a first name or reference. Leave clinical information out.</p>
-      <label>
-        Client or reference
-        <input
+      <Heading as="h2">New appointment</Heading>
+      <Text>Use a first name or reference. Leave clinical information out.</Text>
+      <Field.Root><Field.Label>Client or reference</Field.Label><Input
           autoFocus
           name="client"
           required
           maxLength={100}
           placeholder="e.g. Alex"
         />
-      </label>
-      <label>
-        Date
-        <input name="day" type="date" required defaultValue={day} />
-      </label>
-      <div className="lp-form-row">
-        <label>
-          Time
-          <input name="time" type="time" required defaultValue="09:00" />
-        </label>
-        <label>
-          Duration
-          <select name="duration" defaultValue="60">
+      </Field.Root>
+      <Field.Root><Field.Label>Date</Field.Label><Input name="day" type="date" required defaultValue={day} />
+      </Field.Root>
+      <Box className="lp-form-row">
+        <Field.Root><Field.Label>Time</Field.Label><Input name="time" type="time" required defaultValue="09:00" />
+        </Field.Root>
+        <Field.Root><Field.Label>Duration</Field.Label><StudioSelect name="duration" defaultValue="60">
             <option value="20">20 minutes</option>
             <option value="30">30 minutes</option>
             <option value="45">45 minutes</option>
             <option value="60">60 minutes</option>
             <option value="90">90 minutes</option>
-          </select>
-        </label>
-      </div>
+          </StudioSelect>
+        </Field.Root>
+      </Box>
       {error && (
-        <p role="alert" className="lp-error">
+        <Text role="alert" className="lp-error">
           {error}
-        </p>
+        </Text>
       )}
-      <button className="lp-button" disabled={pending}>
+      <Button colorPalette="copper" type="submit" className="lp-button" disabled={pending}>
         {pending ? "Saving appointment…" : "Save appointment"}
         <Check size={16} />
-      </button>
-      <button
-        className="lp-text-button"
+      </Button>
+      <Button colorPalette="copper"
+        variant="ghost" className="lp-text-button"
         type="button"
         disabled={pending}
         onClick={onCancel}
       >
         Cancel
-      </button>
+      </Button>
     </form>
   );
 }

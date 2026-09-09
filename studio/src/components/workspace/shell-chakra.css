@@ -1,0 +1,203 @@
+/* The shell is composed with Chakra; these selectors bridge existing screen layouts. */
+.studio-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 264px;
+  background: var(--chakra-colors-bg-subtle);
+  border-right: 2px solid var(--chakra-colors-border);
+  flex-direction: column;
+  z-index: 30;
+}
+.studio-sidebar nav,
+.studio-drawer nav {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 12px 20px;
+}
+.studio-sidebar .ws-brand,
+.studio-drawer .ws-brand {
+  padding: 20px 24px 16px;
+}
+.studio-sidebar .ws-practice-identity,
+.studio-drawer .ws-practice-identity {
+  margin: 0 16px 12px;
+  padding: 14px 12px;
+  border: 2px solid var(--chakra-colors-border);
+  border-radius: 12px;
+  background: var(--chakra-colors-bg-panel);
+}
+.studio-sidebar .ws-user,
+.studio-drawer .ws-user {
+  justify-content: flex-start;
+  border-top: 2px solid var(--chakra-colors-border);
+  border-radius: 0;
+  padding: 18px 20px;
+  flex-shrink: 0;
+  text-align: left;
+}
+.studio-topbar {
+  min-height: 60px;
+  background: var(--chakra-colors-bg);
+  border-bottom: 2px solid var(--chakra-colors-border);
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.studio-body .ws-main {
+  max-width: 1512px;
+  margin: 0 auto;
+  padding: 20px 32px;
+}
+.studio-body .ws-page-heading {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--chakra-colors-border);
+}
+.studio-dialog {
+  --ws-text: var(--chakra-colors-fg);
+  --ws-muted: var(--chakra-colors-fg-muted);
+  --ws-accent: var(--chakra-colors-copper-fg);
+  --ws-border: var(--chakra-colors-border);
+  --ws-panel: var(--chakra-colors-bg-panel);
+  --ws-raised: var(--chakra-colors-bg-muted);
+  font-family: var(--font-sans), sans-serif;
+}
+.studio-dialog .ws-field {
+  width: 100%;
+}
+.studio-dialog .ws-field input,
+.studio-dialog .ws-field select,
+.studio-dialog .ws-field textarea {
+  width: 100%;
+}
+.ws-panel[data-scope="card"] {
+  box-shadow: 0 8px 28px #00000012;
+}
+.ws-panel-heading[data-scope="card"] {
+  gap: 16px;
+}
+.ws-field [data-scope="field"][data-part="label"] {
+  color: var(--chakra-colors-fg);
+  font-size: 14px;
+  font-weight: 500;
+}
+@media (max-width: 1023px) {
+  .studio-body .ws-main {
+    padding: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .studio-topbar {
+    min-height: 60px;
+  }
+  .studio-body .ws-main {
+    padding: 20px 16px;
+  }
+}
+.studio-drawer {
+  --ws-accent: var(--chakra-colors-copper-fg);
+  --ws-border: var(--chakra-colors-border);
+  --ws-muted: var(--chakra-colors-fg-muted);
+}
+.studio-drawer .ws-nav-group a {
+  font-size: 14px;
+  min-height: 44px;
+  gap: 12px;
+}
+.studio-drawer .ws-nav-group a svg {
+  width: 17px;
+}
+.studio-drawer .ws-practice-identity strong {
+  font-size: 14px;
+}
+.studio-drawer .ws-brand > span {
+  font-size: 23px;
+}
+.studio-drawer .ws-user small {
+  display: block;
+  color: var(--chakra-colors-fg-muted);
+}
+/* Closed overlay content must remain absent from keyboard and accessibility trees. */
+.studio-drawer[hidden],
+.studio-drawer[data-state="closed"] {
+  display: none;
+}
+.studio-drawer {
+  font-family: var(--font-sans), sans-serif;
+}
+.studio-drawer h2 {
+  font-family: inherit;
+}
+.studio-drawer .ws-practice-identity small {
+  display: block;
+  color: var(--chakra-colors-fg-muted);
+}
+.studio-drawer .ws-brand small {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 4px;
+}
+
+.studio-sample-notice {
+  margin-bottom: 16px;
+  color: var(--chakra-colors-fg-muted);
+  font-size: 14px;
+}
+.studio-sample-notice summary {
+  width: fit-content;
+  cursor: pointer;
+  min-height: 32px;
+  padding: 4px 0;
+  font-weight: 600;
+  color: var(--chakra-colors-fg);
+}
+.studio-sample-notice summary span {
+  color: var(--chakra-colors-fg-muted);
+  font-weight: 400;
+}
+.studio-sample-notice p {
+  max-width: 68ch;
+  margin: 8px 0 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--chakra-colors-border);
+}
+.studio-sidebar .ws-nav-group > p,
+.studio-drawer .ws-nav-group > p {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--chakra-colors-fg-muted);
+  margin: 16px 12px 8px;
+  font-weight: 600;
+}
+.studio-sidebar .ws-nav-group a,
+.studio-drawer .ws-nav-group a {
+  font-size: 14px;
+  font-weight: 500;
+}
+.studio-sidebar .studio-nav-primary a,
+.studio-drawer .studio-nav-primary a {
+  font-size: 15px;
+  font-weight: 600;
+}
+.studio-nav-secondary {
+  border-top: 2px solid var(--chakra-colors-border);
+  margin-top: 16px;
+  padding-top: 4px;
+}
+.studio-sidebar .studio-nav-secondary a,
+.studio-drawer .studio-nav-secondary a {
+  color: var(--chakra-colors-fg-muted);
+}
+.studio-sidebar .ws-nav-group a[aria-current],
+.studio-drawer .ws-nav-group a[aria-current] {
+  color: var(--chakra-colors-copper-fg);
+  border: 2px solid var(--chakra-colors-border-emphasized);
+  background: var(--chakra-colors-bg-muted);
+}
+.studio-feature-search:focus,
+.studio-feature-search:focus-visible {
+  outline: 2px solid var(--chakra-colors-copper-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}

@@ -1,6 +1,21 @@
 "use client";
 import { useState } from "react";
 import {
+  Card,
+  Checkbox,
+  SegmentGroup,
+  Table,
+  SimpleGrid,
+  Stat,
+} from "@chakra-ui/react";
+import {
+  StudioButton,
+  StudioInput,
+  StudioSelect,
+  StudioTextarea,
+} from "@/components/studio-controls";
+import "./content-chakra.css";
+import {
   ArrowRight,
   Plus,
   CalendarDays,
@@ -125,7 +140,7 @@ export function BookingForm({
       }}
     >
       <Field label="Client">
-        <select
+        <StudioSelect
           name="client"
           disabled={!!booking || !!clientId}
           defaultValue={booking?.clientId || clientId || state.clients[0]?.id}
@@ -135,10 +150,10 @@ export function BookingForm({
               {c.name}
             </option>
           ))}
-        </select>
+        </StudioSelect>
       </Field>
       <Field label="Service">
-        <select
+        <StudioSelect
           name="service"
           disabled={!!booking || available.length === 0}
           defaultValue={
@@ -155,11 +170,11 @@ export function BookingForm({
               {s.name} · {s.duration} min · {money(s.price)}
             </option>
           ))}
-        </select>
+        </StudioSelect>
       </Field>
-      <div className="ws-form-grid">
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} className="ws-form-grid">
         <Field label="Date">
-          <input
+          <StudioInput
             name="day"
             type="date"
             required
@@ -167,14 +182,14 @@ export function BookingForm({
           />
         </Field>
         <Field label="Time">
-          <input
+          <StudioInput
             name="time"
             type="time"
             required
             defaultValue={booking?.time || "15:00"}
           />
         </Field>
-      </div>
+      </SimpleGrid>
       {available.length === 0 && (
         <p role="alert">Add or show a service before booking a session.</p>
       )}
@@ -217,24 +232,29 @@ function BookingDetail({ id }: { id: string }) {
           <p>{c.email}</p>
         </div>
       </div>
-      <div className="ws-detail-grid">
+      <SimpleGrid
+        as="dl"
+        columns={{ base: 1, md: 2 }}
+        gap={6}
+        className="ws-detail-grid ws-session-facts"
+      >
         <div>
-          <small>Session</small>
-          {s.name}
+          <dt>Session</dt>
+          <dd>{s.name}</dd>
         </div>
         <div>
-          <small>When</small>
-          {b.day} · {b.time}
+          <dt>When</dt>
+          <dd>{b.day} · {b.time}</dd>
         </div>
         <div>
-          <small>Duration</small>
-          {s.duration} minutes
+          <dt>Duration</dt>
+          <dd>{s.duration} minutes</dd>
         </div>
         <div>
-          <small>Price</small>
-          {money(s.price)}
+          <dt>Price</dt>
+          <dd>{money(s.price)}</dd>
         </div>
-      </div>
+      </SimpleGrid>
       <Pill>{b.status}</Pill>
       <div className="ws-actions">
         <Action
@@ -286,11 +306,11 @@ export function Agenda({ day = demoDay }: { day?: string }) {
           const c = state.clients.find((c) => c.id === b.clientId)!;
           const s = state.services.find((s) => s.id === b.serviceId)!;
           return (
-            <button
+            <StudioButton
               className="ws-agenda-row"
               key={b.id}
               onClick={() =>
-                open("Session details", <BookingDetail id={b.id} />)
+                open("Session details", <BookingDetail id={b.id} />, "reading")
               }
             >
               <time>{b.time}</time>
@@ -307,12 +327,12 @@ export function Agenda({ day = demoDay }: { day?: string }) {
                 {b.status}
               </Pill>
               <ChevronRight size={17} />
-            </button>
+            </StudioButton>
           );
         })
       ) : (
         <Empty
-          title="A little breathing room"
+          title="No sessions scheduled"
           body="No sessions on this day. Add a booking when you’re ready."
         />
       )}
@@ -332,65 +352,94 @@ export function Today() {
           <p className="ws-date-label">Tuesday, 8 September · a sample day</p>
           <h1>Good morning, {state.practice.owner}.</h1>
           <p>
-            You have {bookings.length} sessions today. There’s room to take a
-            breath.
+            You have {bookings.length} {bookings.length === 1 ? "session" : "sessions"} today.
           </p>
         </div>
         <Action onClick={() => open("Book a session", <BookingForm />)}>
           <Plus size={17} /> New booking
         </Action>
       </div>
-      <div className="ws-stat-strip">
-        <button onClick={() => go("calendar")}>
-          <span>On the calendar</span>
-          <strong>
-            {bookings.length} <small>sessions today</small>
-          </strong>
-        </button>
-        <button onClick={() => go("inbox")}>
-          <span>Waiting for you</span>
-          <strong>
-            {state.inbox.filter((m) => m.status === "New").length}{" "}
-            <small>new enquiries</small>
-          </strong>
-        </button>
-        <button onClick={() => go("payments")}>
-          <span>This week, so far</span>
-          <strong>
-            {money(
-              state.payments
-                .filter((p) => p.status === "Paid")
-                .reduce((a, p) => a + p.amount, 0),
-            )}{" "}
-            <small>received</small>
-          </strong>
-        </button>
-      </div>
-      <div className="ws-dashboard-grid">
+      {pending > 0 && (
+        <StudioButton
+          className="ws-approval-banner"
+          onClick={() => go("assistant")}
+        >
+          <span className="ws-dot" />
+          {pending} action{pending > 1 ? "s" : ""} waiting for your review{" "}
+          <ArrowRight size={16} />
+        </StudioButton>
+      )}
+      <SimpleGrid
+        columns={{ base: 1, md: 2 }}
+        gap={6}
+        className="ws-dashboard-grid ws-today-work"
+      >
         <Panel
-          title="Your day"
+          title="Schedule"
           action={
-            <button className="ws-link" onClick={() => go("calendar")}>
+            <StudioButton className="ws-link" onClick={() => go("calendar")}>
               View calendar <ArrowUpRight size={15} />
-            </button>
+            </StudioButton>
           }
         >
           <Agenda />
           <div className="ws-agenda-footer">
-            <Clock size={15} /> 16:30 · A little time for notes and tomorrow
+            <Clock size={15} /> 16:30 · Notes and preparation
           </div>
         </Panel>
-        <Panel title="A few next steps">
+        <Panel title="Tasks">
           <TaskList limit={4} />
-          <button
+          <StudioButton
             className="ws-link ws-panel-footer"
             onClick={() => go("tasks")}
           >
             All your tasks <ArrowRight size={15} />
-          </button>
+          </StudioButton>
         </Panel>
-        <Panel title="A conversation to come back to">
-          <button
+      </SimpleGrid>
+      <div className="ws-stat-strip">
+        <Stat.Root asChild>
+          <StudioButton onClick={() => go("calendar")}>
+            <Stat.Label as="span">Appointments</Stat.Label>
+            <Stat.ValueText as="span">
+              {bookings.length} <small>sessions today</small>
+            </Stat.ValueText>
+          </StudioButton>
+        </Stat.Root>
+        <Stat.Root asChild>
+          <StudioButton onClick={() => go("inbox")}>
+            <Stat.Label as="span">New enquiries</Stat.Label>
+            <Stat.ValueText as="span">
+              {state.inbox.filter((m) => m.status === "New").length}{" "}
+              <small>new enquiries</small>
+            </Stat.ValueText>
+          </StudioButton>
+        </Stat.Root>
+        <Stat.Root asChild>
+          <StudioButton onClick={() => go("payments")}>
+            <Stat.Label as="span">Payments received</Stat.Label>
+            <Stat.ValueText as="span">
+              {money(
+                state.payments
+                  .filter((p) => p.status === "Paid")
+                  .reduce((a, p) => a + p.amount, 0),
+              )}{" "}
+              <small>received</small>
+            </Stat.ValueText>
+          </StudioButton>
+        </Stat.Root>
+      </div>
+
+      <SimpleGrid
+        columns={{ base: 1, md: 2 }}
+        gap={6}
+        className="ws-today-secondary"
+      >
+        <Panel
+          title="Latest enquiry"
+          className="ws-secondary-panel"
+        >
+          <StudioButton
             className="ws-conversation-preview"
             onClick={() => go("inbox")}
           >
@@ -404,39 +453,23 @@ export function Today() {
               <small>Sophie Ellis · New enquiry</small>
             </div>
             <ArrowUpRight size={18} />
-          </button>
+          </StudioButton>
         </Panel>
-        <Panel title="Your studio partner" className="ws-partner-panel">
+        <Panel
+          title="Support"
+          className="ws-partner-panel ws-secondary-panel"
+        >
           <span className="ws-partner-initial">R</span>
           <h3>
-            A familiar person.
-            <br />A little less to carry.
+            Practice support
           </h3>
           <p>Something not quite working? Tell Rick what’s on your mind.</p>
-          <button className="ws-link" onClick={() => go("support")}>
+          <StudioButton className="ws-link" onClick={() => go("support")}>
             Open your conversation <ArrowRight size={15} />
-          </button>
+          </StudioButton>
         </Panel>
-      </div>
-      {pending > 0 && (
-        <button className="ws-approval-banner" onClick={() => go("assistant")}>
-          <span className="ws-dot" />
-          {pending} action{pending > 1 ? "s" : ""} waiting for your review{" "}
-          <ArrowRight size={16} />
-        </button>
-      )}
-      <div className="ws-journey">
-        <div>
-          <h3>Take the practice for a spin.</h3>
-          <p>
-            Start with Sophie’s enquiry. Draft a reply, approve it, then book
-            her first conversation.
-          </p>
-        </div>
-        <Action secondary onClick={() => go("inbox")}>
-          Try the journey <ArrowRight size={16} />
-        </Action>
-      </div>
+      </SimpleGrid>
+
     </>
   );
 }
@@ -445,18 +478,23 @@ export function TaskList({ limit }: { limit?: number }) {
   return (
     <div className="ws-tasks">
       {state.tasks.slice(0, limit).map((t) => (
-        <label key={t.id} className={t.done ? "is-done" : ""}>
-          <input
-            type="checkbox"
-            checked={t.done}
-            onChange={() =>
-              update((d) => {
-                d.tasks.find((x) => x.id === t.id)!.done = !t.done;
-              })
-            }
-          />
-          <span>{t.text}</span>
-        </label>
+        <Checkbox.Root
+          key={t.id}
+          className={t.done ? "is-done" : ""}
+          colorPalette="copper"
+          checked={t.done}
+          onCheckedChange={() =>
+            update((d) => {
+              d.tasks.find((x) => x.id === t.id)!.done = !t.done;
+            })
+          }
+        >
+          <Checkbox.HiddenInput />
+          <Checkbox.Control>
+            <Checkbox.Indicator />
+          </Checkbox.Control>
+          <Checkbox.Label>{t.text}</Checkbox.Label>
+        </Checkbox.Root>
       ))}
     </div>
   );
@@ -480,7 +518,7 @@ export function Tasks() {
           setText("");
         }}
       >
-        <input
+        <StudioInput
           aria-label="New task"
           placeholder="Something else on your mind…"
           value={text}
@@ -513,22 +551,20 @@ export function Calendar() {
   return (
     <>
       <div className="ws-toolbar">
-        <div className="ws-segment">
-          {["Day", "Week"].map((v) => (
-            <button
-              key={v}
-              aria-pressed={mode === v}
-              onClick={() => setMode(v)}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
+        <SegmentGroup.Root
+          value={mode}
+          onValueChange={(e) => setMode(e.value!)}
+          colorPalette="copper"
+          className="ws-filter-control"
+        >
+          <SegmentGroup.Indicator />
+          <SegmentGroup.Items items={["Day", "Week"]} />
+        </SegmentGroup.Root>
         <div className="ws-date-control">
-          <button aria-label="Previous day" onClick={() => move(-1)}>
+          <StudioButton aria-label="Previous day" onClick={() => move(-1)}>
             <ChevronLeft size={18} />
-          </button>
-          <input
+          </StudioButton>
+          <StudioInput
             aria-label="Calendar date"
             type="date"
             value={day}
@@ -536,9 +572,9 @@ export function Calendar() {
               if (e.target.value) setDay(e.target.value);
             }}
           />
-          <button aria-label="Next day" onClick={() => move(1)}>
+          <StudioButton aria-label="Next day" onClick={() => move(1)}>
             <ChevronRight size={18} />
-          </button>
+          </StudioButton>
         </div>
         <Action onClick={() => open("Book a session", <BookingForm />)}>
           <Plus size={16} /> New booking
@@ -547,7 +583,7 @@ export function Calendar() {
       {mode === "Week" && (
         <div className="ws-week">
           {dates.map((d) => (
-            <button
+            <StudioButton
               key={d}
               className={d === day ? "selected" : ""}
               onClick={() => setDay(d)}
@@ -559,8 +595,7 @@ export function Calendar() {
                 })}
               </span>
               <strong>{Number(d.slice(-2))}</strong>
-              <span className="ws-dot" />
-            </button>
+            </StudioButton>
           ))}
         </div>
       )}
@@ -574,10 +609,6 @@ export function Calendar() {
       >
         <Agenda day={day} />
       </Panel>
-      <p className="ws-footnote">
-        Sample calendar · bookings are shared with Today and client histories.
-        Availability rules can be explored in Settings.
-      </p>
     </>
   );
 }
@@ -603,13 +634,13 @@ function ClientForm() {
       }}
     >
       <Field label="Full name">
-        <input name="name" required />
+        <StudioInput name="name" required />
       </Field>
       <Field label="Email">
-        <input name="email" type="email" required />
+        <StudioInput name="email" type="email" required />
       </Field>
       <Field label="Phone">
-        <input name="phone" type="tel" />
+        <StudioInput name="phone" type="tel" />
       </Field>
       <p className="ws-help">
         Use fictional information in this public prototype.
@@ -624,23 +655,24 @@ export function ClientDetail({ id }: { id: string }) {
   const c = state.clients.find((c) => c.id === id)!;
   const bookings = state.bookings.filter((b) => b.clientId === id);
   return (
-    <div className="ws-form">
+    <div className="ws-form ws-client-detail">
       <div className="ws-person">
         <Avatar name={c.name} />
         <div>
           <h3>{c.name}</h3>
-          <p>
-            {c.email} · {c.phone}
-          </p>
+          <div className="ws-client-contact">
+            <span>{c.email}</span>
+            {c.phone && <span>{c.phone}</span>}
+          </div>
         </div>
       </div>
       <Pill>{c.status}</Pill>
       <h3>Session history</h3>
       {bookings.length ? (
         bookings.map((b) => (
-          <div className="ws-simple-row" key={b.id}>
+          <div className="ws-simple-row ws-client-session" key={b.id}>
             <span>
-              {b.day} · {b.time}
+              <span className="ws-client-session-date">{b.day} · {b.time}</span>
               <small>
                 {state.services.find((s) => s.id === b.serviceId)?.name}
               </small>
@@ -676,7 +708,7 @@ export function ClientDetail({ id }: { id: string }) {
         }}
       >
         <Field label="Add a practical note">
-          <textarea
+          <StudioTextarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Preferences or arrangements. Use fictional data, not clinical records."
@@ -699,7 +731,7 @@ export function Clients() {
       <div className="ws-toolbar">
         <div className="ws-search">
           <Search size={17} />
-          <input
+          <StudioInput
             aria-label="Search clients"
             placeholder="Find a person…"
             value={q}
@@ -711,31 +743,67 @@ export function Clients() {
         </Action>
       </div>
       <Panel>
-        <div className="ws-table-heading">
-          <span>Client</span>
-          <span>Sessions</span>
-          <span>Status</span>
-        </div>
-        {rows.map((c) => (
-          <button
-            key={c.id}
-            className="ws-client-row"
-            onClick={() => open(c.name, <ClientDetail id={c.id} />)}
-          >
-            <div className="ws-person">
-              <Avatar name={c.name} />
-              <div>
-                <strong>{c.name}</strong>
-                <small>{c.email}</small>
+        <div className="ws-mobile-records">
+          {rows.map((c) => (
+            <Card.Root as="article" key={c.id} className="ws-mobile-record">
+              <StudioButton
+                className="ws-record-title"
+                onClick={() => open(c.name, <ClientDetail id={c.id} />, "editor")}
+              >
+                <Avatar name={c.name} />
+                <span>
+                  <strong>{c.name}</strong>
+                  <small>{c.email}</small>
+                </span>
+                <ChevronRight size={17} />
+              </StudioButton>
+              <div className="ws-record-meta">
+                <span>
+                  {state.bookings.filter((b) => b.clientId === c.id).length}{" "}
+                  sessions
+                </span>
+                <Pill>{c.status}</Pill>
               </div>
-            </div>
-            <span>
-              {state.bookings.filter((b) => b.clientId === c.id).length}
-            </span>
-            <Pill>{c.status}</Pill>
-            <ChevronRight size={17} />
-          </button>
-        ))}
+            </Card.Root>
+          ))}
+        </div>
+        <Table.ScrollArea className="ws-desktop-records">
+          <Table.Root variant="line" size="lg" className="ws-data-table">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Client</Table.ColumnHeader>
+                <Table.ColumnHeader>Sessions</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {rows.map((c) => (
+                <Table.Row key={c.id}>
+                  <Table.Cell>
+                    <StudioButton
+                      variant="ghost"
+                      className="ws-person ws-table-person"
+                      onClick={() => open(c.name, <ClientDetail id={c.id} />, "editor")}
+                    >
+                      <Avatar name={c.name} />
+                      <span>
+                        <strong>{c.name}</strong>
+                        <small>{c.email}</small>
+                      </span>
+                      <ChevronRight size={17} />
+                    </StudioButton>
+                  </Table.Cell>
+                  <Table.Cell>
+                    {state.bookings.filter((b) => b.clientId === c.id).length}
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Pill>{c.status}</Pill>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
         {!rows.length && (
           <Empty
             title="No matching clients"
@@ -779,15 +847,15 @@ function Conversation({ id }: { id: string }) {
         </div>
         <Pill>{m.status}</Pill>
       </header>
-      <div className="ws-bubble">
+      <Card.Root variant="subtle" className="ws-bubble">
         <small>{c.name} · Website enquiry</small>
         <p>{m.body}</p>
-      </div>
+      </Card.Root>
       {m.messages.map((text, i) => (
-        <div className="ws-bubble outgoing" key={i}>
+        <Card.Root variant="subtle" className="ws-bubble outgoing" key={i}>
           <small>You · simulated reply</small>
           <p>{text}</p>
-        </div>
+        </Card.Root>
       ))}
       <div className="ws-thread-actions">
         <Action secondary onClick={generate}>
@@ -801,22 +869,6 @@ function Conversation({ id }: { id: string }) {
         >
           Book a session
         </Action>
-        <button
-          className="ws-link"
-          onClick={() =>
-            update((d) => {
-              d.inbox.find((x) => x.id === id)!.status = "Escalated";
-              d.tickets.push({
-                id: "ST-" + uid().slice(0, 4),
-                title: m.subject,
-                status: "Open",
-                messages: [`${c.name}: ${m.body}`],
-              });
-            }, "Conversation handed to your studio partner in the demo.")
-          }
-        >
-          Ask Rick to help <ArrowUpRight size={14} />
-        </button>
       </div>
       <form
         onSubmit={(e) => {
@@ -845,7 +897,7 @@ function Conversation({ id }: { id: string }) {
         }}
       >
         <Field label="Your reply">
-          <textarea
+          <StudioTextarea
             rows={5}
             value={draft}
             onChange={(e) => {
@@ -875,10 +927,6 @@ function Conversation({ id }: { id: string }) {
           Send to approval queue <ArrowRight size={16} />
         </Action>
       </form>
-      <p className="ws-footnote">
-        This prototype never sends email. Approved replies appear in this sample
-        conversation.
-      </p>
     </div>
   );
 }
@@ -886,27 +934,29 @@ export function Inbox() {
   const { state } = useStudio();
   const [selected, setSelected] = useState(state.inbox[0].id);
   const [filter, setFilter] = useState("All");
+  const [mobileDetail, setMobileDetail] = useState(false);
   return (
-    <div className="ws-inbox">
-      <aside>
-        <div className="ws-segment">
-          {["All", "New", "Replied"].map((f) => (
-            <button
-              key={f}
-              aria-pressed={filter === f}
-              onClick={() => setFilter(f)}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+    <div className={`ws-inbox ${mobileDetail ? "ws-inbox-detail-open" : ""}`}>
+      <aside className="ws-inbox-list">
+        <SegmentGroup.Root
+          value={filter}
+          onValueChange={(e) => setFilter(e.value!)}
+          colorPalette="copper"
+          className="ws-filter-control"
+        >
+          <SegmentGroup.Indicator />
+          <SegmentGroup.Items items={["All", "New", "Replied"]} />
+        </SegmentGroup.Root>
         {state.inbox
           .filter((m) => filter === "All" || m.status === filter)
           .map((m) => (
-            <button
+            <StudioButton
               className={`ws-inbox-item ${selected === m.id ? "active" : ""}`}
               key={m.id}
-              onClick={() => setSelected(m.id)}
+              onClick={() => {
+                setSelected(m.id);
+                setMobileDetail(true);
+              }}
             >
               <span>
                 <strong>
@@ -917,10 +967,18 @@ export function Inbox() {
               <h3>{m.subject}</h3>
               <p>{m.body}</p>
               <small>{m.status}</small>
-            </button>
+            </StudioButton>
           ))}
       </aside>
-      <Conversation key={selected} id={selected} />
+      <div className="ws-inbox-detail">
+        <StudioButton
+          className="ws-inbox-back"
+          onClick={() => setMobileDetail(false)}
+        >
+          <ChevronLeft size={17} /> Back to enquiries
+        </StudioButton>
+        <Conversation key={selected} id={selected} />
+      </div>
     </div>
   );
 }
@@ -949,11 +1007,11 @@ function ServiceForm({ service }: { service?: Service }) {
       }}
     >
       <Field label="Service name">
-        <input name="name" required defaultValue={service?.name} />
+        <StudioInput name="name" required defaultValue={service?.name} />
       </Field>
-      <div className="ws-form-grid">
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} className="ws-form-grid">
         <Field label="Duration (minutes)">
-          <input
+          <StudioInput
             name="duration"
             type="number"
             min="5"
@@ -963,7 +1021,7 @@ function ServiceForm({ service }: { service?: Service }) {
           />
         </Field>
         <Field label="Price (£)">
-          <input
+          <StudioInput
             name="price"
             type="number"
             min="0"
@@ -972,9 +1030,9 @@ function ServiceForm({ service }: { service?: Service }) {
             defaultValue={service?.price || 0}
           />
         </Field>
-      </div>
+      </SimpleGrid>
       <Field label="Description">
-        <textarea
+        <StudioTextarea
           name="description"
           defaultValue={service?.description}
           required
@@ -994,7 +1052,11 @@ export function Services() {
           <Plus size={16} /> New service
         </Action>
       </div>
-      <div className="ws-service-grid">
+      <SimpleGrid
+        columns={{ base: 1, md: 3 }}
+        gap={6}
+        className="ws-service-grid"
+      >
         {state.services.map((s) => (
           <Panel key={s.id}>
             <div className="ws-service-icon">
@@ -1018,7 +1080,7 @@ export function Services() {
               >
                 Edit details
               </Action>
-              <button
+              <StudioButton
                 className="ws-link"
                 onClick={() =>
                   update((d) => {
@@ -1027,11 +1089,11 @@ export function Services() {
                 }
               >
                 {s.active ? "Hide service" : "Make available"}
-              </button>
+              </StudioButton>
             </div>
           </Panel>
         ))}
-      </div>
+      </SimpleGrid>
     </>
   );
 }

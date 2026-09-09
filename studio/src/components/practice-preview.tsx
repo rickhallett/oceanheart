@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge, Box, Button, Card, Checkbox, Heading, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import {
   House,
@@ -12,7 +13,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  Check,
   X,
 } from "lucide-react";
 import { Mark } from "./ui";
@@ -62,26 +62,20 @@ export function PracticePreview() {
     );
   }
   const taskList = (
-    <div className="task-list">
+    <Stack className="preview-task-list" gap={3}>
       {tasks.map((task, i) => (
-        <label key={task} className={completed.includes(i) ? "done" : ""}>
-          <input
-            type="checkbox"
-            checked={completed.includes(i)}
-            onChange={() => toggleTask(i)}
-          />
-          <span className="checkbox">
-            {completed.includes(i) && <Check size={11} />}
-          </span>
-          <span>{task}</span>
-        </label>
+        <Checkbox.Root key={task} checked={completed.includes(i)} onCheckedChange={() => toggleTask(i)} colorPalette="copper" size="sm" alignItems="start">
+          <Checkbox.HiddenInput />
+          <Checkbox.Control mt="1px"><Checkbox.Indicator /></Checkbox.Control>
+          <Checkbox.Label fontSize="14px" fontWeight="500" lineHeight="1.5" color={completed.includes(i) ? "fg.muted" : "fg"} textDecoration={completed.includes(i) ? "line-through" : undefined}>{task}</Checkbox.Label>
+        </Checkbox.Root>
       ))}
-    </div>
+    </Stack>
   );
 
   return (
-    <div className="preview-wrap">
-      <div
+    <Box className="preview-wrap">
+      <Box
         className="practice-preview"
         aria-label="Interactive practice workspace preview"
       >
@@ -89,7 +83,7 @@ export function PracticePreview() {
           <Mark className="preview-mark" />
           <nav aria-label="Example workspace">
             {navigation.map(({ name, icon: Icon }) => (
-              <button
+              <Button variant="ghost"
                 key={name}
                 type="button"
                 onClick={() => {
@@ -100,58 +94,58 @@ export function PracticePreview() {
               >
                 <Icon size={18} strokeWidth={1.25} />
                 <span>{name}</span>
-              </button>
+              </Button>
             ))}
           </nav>
-          <div className="sidebar-motto">
+          <Box className="sidebar-motto">
             <span />A calmer practice.
             <br />
             Brighter days.
-          </div>
+          </Box>
         </aside>
-        <div className="preview-main">
+        <Box className="preview-main">
           <header className="preview-heading">
-            <h2>{active}</h2>
-            {(active === "Today" || active === "Bookings") && <div className="preview-date">
+            <Heading as="h2">{active}</Heading>
+            {(active === "Today" || active === "Bookings") && <Box className="preview-date">
               <span>{formattedDate}</span>
-              <button aria-label="Previous day" onClick={() => { setDay(day - 1); setDetail(null); }}>
+              <Button variant="ghost" aria-label="Previous day" onClick={() => { setDay(day - 1); setDetail(null); }}>
                 <ChevronLeft size={16} />
-              </button>
-              <button aria-label="Next day" onClick={() => { setDay(day + 1); setDetail(null); }}>
+              </Button>
+              <Button variant="ghost" aria-label="Next day" onClick={() => { setDay(day + 1); setDetail(null); }}>
                 <ChevronRight size={16} />
-              </button>
-            </div>}
+              </Button>
+            </Box>}
           </header>
           {detail ? (
-            <div className="preview-detail">
-              <button
+            <Box className="preview-detail">
+              <Button variant="ghost"
                 className="close-detail"
                 onClick={() => setDetail(null)}
                 aria-label="Close details"
               >
                 <X size={18} />
-              </button>
-              <p className="eyebrow">Example workspace</p>
-              <h3>{detail}</h3>
-              <p>
+              </Button>
+              <Text className="eyebrow">Example workspace</Text>
+              <Heading as="h3">{detail}</Heading>
+              <Text>
                 Everything you need for the next step, kept together with the
                 conversation.
-              </p>
-              <div className="detail-note">
+              </Text>
+              <Box className="detail-note">
                 This is an interactive design preview using fictional
                 information.
-              </div>
-              <button className="preview-back" onClick={() => setDetail(null)}>
+              </Box>
+              <Button variant="ghost" className="preview-back" onClick={() => setDetail(null)}>
                 Back to {active.toLowerCase()} <ArrowRight size={14} />
-              </button>
-            </div>
+              </Button>
+            </Box>
           ) : (
             <>
               {(active === "Today" || active === "Bookings") && (
-                <div className="appointments">
-                  {day !== 0 && <p className="preview-description">No appointments on this day.</p>}
+                <Box className="appointments">
+                  {day !== 0 && <Text className="preview-description">No appointments on this day.</Text>}
                   {(day === 0 ? appointments : []).map(([time, title, subtitle, colour]) => (
-                    <button
+                    <Button variant="ghost"
                       className="appointment"
                       key={time}
                       onClick={() => setDetail(title)}
@@ -163,19 +157,19 @@ export function PracticePreview() {
                         <small>{subtitle}</small>
                       </span>
                       <ChevronRight size={15} strokeWidth={1} />
-                    </button>
+                    </Button>
                   ))}
-                </div>
+                </Box>
               )}
               {active === "Today" && (
-                <div className="preview-cards">
-                  <section className="preview-card">
-                    <h3>
-                      Enquiries <span className="count">3</span>
-                    </h3>
-                    <div className="enquiry-list">
+                <Box className="preview-cards">
+                  <Card.Root as="section" className="preview-card">
+                    <Heading as="h3">
+                      Enquiries <Badge colorPalette="copper" rounded="full">3</Badge>
+                    </Heading>
+                    <Box className="enquiry-list">
                       {enquiries.map((e, i) => (
-                        <button
+                        <Button variant="ghost"
                           key={e}
                           onClick={() => {
                             setActive("Enquiries");
@@ -189,46 +183,46 @@ export function PracticePreview() {
                               {["2 hours ago", "5 hours ago", "1 day ago"][i]}
                             </small>
                           </span>
-                        </button>
+                        </Button>
                       ))}
-                    </div>
-                    <button
+                    </Box>
+                    <Button variant="ghost"
                       className="preview-link"
                       onClick={() => setActive("Enquiries")}
                     >
                       View all enquiries <ArrowRight size={13} />
-                    </button>
-                  </section>
-                  <section className="preview-card">
-                    <h3>Your next steps</h3>
+                    </Button>
+                  </Card.Root>
+                  <Card.Root as="section" className="preview-card">
+                    <Heading as="h3">Your next steps</Heading>
                     {taskList}
-                    <button
+                    <Button variant="ghost"
                       className="preview-link"
                       onClick={() => setActive("Tasks")}
                     >
                       View all tasks <ArrowRight size={13} />
-                    </button>
-                  </section>
-                </div>
+                    </Button>
+                  </Card.Root>
+                </Box>
               )}
               {active === "Tasks" && (
-                <div className="workspace-section">
-                  <p className="preview-description">
+                <Box className="workspace-section">
+                  <Text className="preview-description">
                     A little less on your mind.
-                  </p>
+                  </Text>
                   {taskList}
-                  <p className="task-progress" aria-live="polite">
+                  <Text className="task-progress" aria-live="polite">
                     {completed.length} of {tasks.length} tasks complete
-                  </p>
-                </div>
+                  </Text>
+                </Box>
               )}
               {active === "Enquiries" && (
-                <div className="workspace-section">
-                  <p className="preview-description">
+                <Box className="workspace-section">
+                  <Text className="preview-description">
                     Every conversation has a place.
-                  </p>
+                  </Text>
                   {enquiries.map((e) => (
-                    <button
+                    <Button variant="ghost"
                       className="workspace-row"
                       key={e}
                       onClick={() => setDetail(e)}
@@ -236,18 +230,18 @@ export function PracticePreview() {
                       <MessageCircle size={17} />
                       {e}
                       <ChevronRight size={15} />
-                    </button>
+                    </Button>
                   ))}
-                </div>
+                </Box>
               )}
               {active === "Clients" && (
-                <div className="workspace-section">
-                  <p className="preview-description">
+                <Box className="workspace-section">
+                  <Text className="preview-description">
                     The people at the heart of your practice.
-                  </p>
+                  </Text>
                   {["Alex Morgan", "Jamie Ellis", "Sam Taylor"].map(
                     (name, i) => (
-                      <button
+                      <Button variant="ghost"
                         className="workspace-row"
                         key={name}
                         onClick={() => setDetail(name)}
@@ -265,22 +259,22 @@ export function PracticePreview() {
                           </small>
                         </span>
                         <ChevronRight size={15} />
-                      </button>
+                      </Button>
                     ),
                   )}
-                </div>
+                </Box>
               )}
               {active === "Messages" && (
-                <div className="workspace-section">
-                  <p className="preview-description">
+                <Box className="workspace-section">
+                  <Text className="preview-description">
                     Your conversations, easy to find.
-                  </p>
+                  </Text>
                   {[
                     "A question before my first session",
                     "Thank you for today",
                     "Moving next week’s appointment",
                   ].map((e) => (
-                    <button
+                    <Button variant="ghost"
                       className="workspace-row"
                       key={e}
                       onClick={() => setDetail(e)}
@@ -288,21 +282,21 @@ export function PracticePreview() {
                       <Mail size={17} />
                       {e}
                       <ChevronRight size={15} />
-                    </button>
+                    </Button>
                   ))}
-                </div>
+                </Box>
               )}
               {active === "Settings" && (
-                <div className="workspace-section">
-                  <p className="preview-description">
+                <Box className="workspace-section">
+                  <Text className="preview-description">
                     Made to fit the way you work.
-                  </p>
+                  </Text>
                   {[
                     "Practice details",
                     "Services and prices",
                     "Booking availability",
                   ].map((e) => (
-                    <button
+                    <Button variant="ghost"
                       className="workspace-row"
                       key={e}
                       onClick={() => setDetail(e)}
@@ -310,20 +304,20 @@ export function PracticePreview() {
                       <Settings size={16} />
                       {e}
                       <ChevronRight size={15} />
-                    </button>
+                    </Button>
                   ))}
-                </div>
+                </Box>
               )}
             </>
           )}
-        </div>
-      </div>
-      <p className="preview-caption">
+        </Box>
+      </Box>
+      <Text className="preview-caption">
         <span /> A glimpse of your practice, organised.{" "}
         <a className="try-preview" href="/app">
-          Explore the app <ArrowRight size={12} />
+          Explore the workspace <ArrowRight size={16} />
         </a>
-      </p>
-    </div>
+      </Text>
+    </Box>
   );
 }

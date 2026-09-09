@@ -4,22 +4,43 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
-import { X, Check, ArrowUpRight } from "lucide-react";
+import {
+  Avatar as ChakraAvatar,
+  Badge,
+  Button,
+  Card,
+  CloseButton,
+  Dialog,
+  EmptyState,
+  Field as ChakraField,
+  Flex,
+  Portal,
+  Spinner,
+  Stack,
+  Toast,
+  Toaster,
+  createToaster,
+} from "@chakra-ui/react";
+import { StudioSelect } from "@/components/studio-controls";
+import { Check, ArrowUpRight } from "lucide-react";
 import { initialState, type State, type View, type Priority } from "./model";
 import { restoreState } from "./persisted-state";
+const toaster = createToaster({ placement: "bottom-end", duration: 4500 });
+const ModalActionContext = createContext(false);
 const key = "oceanheart-studio-workspace-v1";
 type Context = {
   state: State;
   update: (fn: (draft: State) => void, notice?: string) => void;
-  open: (title: string, body: ReactNode) => void;
+  open: (title: string, body: ReactNode, size?: DialogSize) => void;
   close: () => void;
   go: (view: View) => void;
   reset: () => void;
 };
+type DialogSize = "compact" | "form" | "reading" | "editor";
+const dialogWidths = { compact: "400px", form: "480px", reading: "560px", editor: "640px" };
 export const StudioContext = createContext<Context>(null!);
 export const useStudio = () => useContext(StudioContext);
 export function Provider({
@@ -31,10 +52,11 @@ export function Provider({
 }) {
   const [state, setState] = useState<State>(initialState);
   const [ready, setReady] = useState(false);
-  const [toast, setToast] = useState("");
+  const setToast = (description: string) =>
+    toaster.create({ description, type: "success" });
   const [storageError, setStorageError] = useState(false);
   const [recovered, setRecovered] = useState(false);
-  const [modal, setModal] = useState<{ title: string; body: ReactNode } | null>(
+  const [modal, setModal] = useState<{ title: string; body: ReactNode; size: DialogSize } | null>(
     null,
   );
   const close = useCallback(() => setModal(null), []);
@@ -68,11 +90,6 @@ export function Provider({
         setStorageError(true);
       }
   }, [state, ready]);
-  useEffect(() => {
-    if (!toast) return;
-    const timer = setTimeout(() => setToast(""), 4500);
-    return () => clearTimeout(timer);
-  }, [toast]);
   function update(fn: (d: State) => void, notice?: string) {
     setState((prev) => {
       const draft = structuredClone(prev);
@@ -87,7 +104,7 @@ export function Provider({
         state,
         update,
         go,
-        open: (title, body) => setModal({ title, body }),
+        open: (title, body, size = "form") => setModal({ title, body, size }),
         close,
         reset: () => {
           setState(structuredClone(initialState));
@@ -98,7 +115,10 @@ export function Provider({
       {ready ? (
         children
       ) : (
-        <div className="ws-loading">Opening your practice…</div>
+        <Stack align="center" justify="center" minH="100vh" w="full">
+          <Spinner color="copper.400" />
+          Opening your practice…
+        </Stack>
       )}
       {recovered && (
         <div role="status" className="ws-storage">
@@ -113,14 +133,19 @@ export function Provider({
           roadmap before leaving.
         </div>
       )}
-      {toast && (
-        <div role="status" className="ws-toast">
-          <Check size={16} />
-          {toast}
-        </div>
-      )}
+      <Portal>
+        <Toaster toaster={toaster} width="min(384px, calc(100vw - 32px))">
+          {(toast) => (
+            <Toast.Root width="full" maxW="full">
+              <Toast.Indicator />
+              <Toast.Description minW="0" overflowWrap="anywhere">{toast.description}</Toast.Description>
+              <Toast.CloseTrigger />
+            </Toast.Root>
+          )}
+        </Toaster>
+      </Portal>
       {modal && (
-        <Modal title={modal.title} onClose={close}>
+        <Modal title={modal.title} size={modal.size} onClose={close}>
           {modal.body}
         </Modal>
       )}
@@ -128,75 +153,54 @@ export function Provider({
   );
 }
 function Modal({
+  size,
   title,
   children,
   onClose,
 }: {
   title: string;
   children: ReactNode;
+  size: DialogSize;
   onClose: () => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const previous = document.activeElement as HTMLElement;
-    const root = ref.current;
-    root?.focus();
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "Tab" && root) {
-        const nodes = root.querySelectorAll<HTMLElement>(
-          'button,a[href],input,select,textarea,[tabindex="0"]',
-        );
-        const first = nodes[0],
-          last = nodes[nodes.length - 1];
-        if (
-          e.shiftKey &&
-          (document.activeElement === first || document.activeElement === root)
-        ) {
-          e.preventDefault();
-          last?.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first?.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", handler);
-    return () => {
-      document.removeEventListener("keydown", handler);
-      previous?.focus();
-    };
-  }, [onClose]);
   return (
-    <div
-      className="ws-modal-backdrop"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+    <Dialog.Root
+      open
+      onOpenChange={(details) => {
+        if (!details.open) onClose();
       }}
+      placement="center"
+      scrollBehavior="inside"
+      size="lg"
     >
-      <div
-        className="ws-modal"
-        ref={ref}
-        tabIndex={-1}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-      >
-        <header>
-          <h2>{title}</h2>
-          <button
-            className="ws-icon-button"
-            onClick={onClose}
-            aria-label="Close dialog"
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner p={{ base: 3, md: 6 }}>
+          <Dialog.Content
+            className="studio-dialog"
+            width="full"
+            maxWidth={dialogWidths[size]}
+            data-dialog-size={size}
+            bg="bg.panel"
+            color="fg"
+            borderWidth="control"
+            borderColor="border"
+            borderRadius="2xl"
           >
-            <X size={20} />
-          </button>
-        </header>
-        {children}
-      </div>
-    </div>
+            <Dialog.Header>
+              <Dialog.Title fontSize="2xl">{title}</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton aria-label="Close dialog" size="sm" />
+            </Dialog.CloseTrigger>
+            <Dialog.Body pb="6"><ModalActionContext.Provider value>{children}</ModalActionContext.Provider></Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 }
+
 export function Panel({
   title,
   children,
@@ -209,15 +213,28 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={`ws-panel ${className}`}>
+    <Card.Root
+      as="section"
+      className={`ws-panel ${className}`}
+      bg="bg.panel"
+      borderColor="border"
+      borderRadius="xl"
+      variant="outline"
+    >
       {title && (
-        <header className="ws-panel-heading">
-          <h2>{title}</h2>
+        <Card.Header
+          className="ws-panel-heading"
+          p="0"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Card.Title as="h2">{title}</Card.Title>
           {action}
-        </header>
+        </Card.Header>
       )}
       {children}
-    </section>
+    </Card.Root>
   );
 }
 export function Pill({
@@ -227,15 +244,47 @@ export function Pill({
   children: ReactNode;
   tone?: string;
 }) {
-  return <span className={`ws-pill ${tone}`}>{children}</span>;
+  const status = typeof children === "string" ? children : "";
+  const statusTones: Record<string, string> = {
+    Returning: "green", Active: "green", Confirmed: "green", Completed: "green",
+    Paid: "green", Ready: "green", Replied: "green", Resolved: "green", Published: "green",
+    New: "blue", "New enquiry": "blue", Open: "blue", "Draft ready": "blue",
+    Pending: "amber", "In progress": "amber", "Needs sync": "amber", Escalated: "amber",
+    Cancelled: "red", Failed: "red", Rejected: "red", Blocked: "red",
+    Refunded: "neutral", Hidden: "neutral",
+  };
+  const resolvedTone = statusTones[status] || tone || "neutral";
+  return (
+    <Badge
+      className="ws-pill"
+      data-tone={resolvedTone}
+      variant="subtle"
+      colorPalette={
+        tone === "green"
+          ? "green"
+          : tone === "red"
+            ? "red"
+            : tone === "amber"
+              ? "orange"
+              : "copper"
+      }
+      borderRadius="full"
+    >
+      {children}
+    </Badge>
+  );
 }
 export function Empty({ title, body }: { title: string; body: string }) {
   return (
-    <div className="ws-empty">
-      <Check size={26} />
-      <h3>{title}</h3>
-      <p>{body}</p>
-    </div>
+    <EmptyState.Root className="ws-empty">
+      <EmptyState.Content>
+        <EmptyState.Indicator>
+          <Check size={26} />
+        </EmptyState.Indicator>
+        <EmptyState.Title as="h3">{title}</EmptyState.Title>
+        <EmptyState.Description>{body}</EmptyState.Description>
+      </EmptyState.Content>
+    </EmptyState.Root>
   );
 }
 export function Action({
@@ -251,16 +300,26 @@ export function Action({
   type?: "button" | "submit";
   disabled?: boolean;
 }) {
-  return (
-    <button
+  const inModal = useContext(ModalActionContext);
+  const { close } = useStudio();
+  const button = (
+    <Button
+      colorPalette="copper"
+      variant={secondary ? "outline" : "solid"}
       type={type}
       className={`ws-button ${secondary ? "secondary" : ""}`}
       onClick={onClick}
       disabled={disabled}
     >
       {children}
-    </button>
+    </Button>
   );
+  return inModal && type === "submit" ? (
+    <Flex className="ws-dialog-actions" gap="3" justify="flex-end" mt="6">
+      <Button type="button" variant="outline" onClick={close}>Cancel</Button>
+      {button}
+    </Flex>
+  ) : button;
 }
 export function Field({
   label,
@@ -270,21 +329,17 @@ export function Field({
   children: ReactNode;
 }) {
   return (
-    <label className="ws-field">
-      <span>{label}</span>
+    <ChakraField.Root className="ws-field">
+      <ChakraField.Label>{label}</ChakraField.Label>
       {children}
-    </label>
+    </ChakraField.Root>
   );
 }
 export function Avatar({ name }: { name: string }) {
   return (
-    <span className="ws-avatar">
-      {name
-        .split(" ")
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join("")}
-    </span>
+    <ChakraAvatar.Root className="ws-avatar" size="sm" colorPalette="copper">
+      <ChakraAvatar.Fallback name={name} />
+    </ChakraAvatar.Root>
   );
 }
 export const priorities: Priority[] = [
@@ -297,9 +352,11 @@ export const priorities: Priority[] = [
 export function FeatureVote({ view }: { view: View }) {
   const { state, update, go } = useStudio();
   return (
-    <div className="ws-feature-vote">
+    <details className="ws-feature-feedback">
+      <summary>Help shape this feature</summary>
+      <div className="ws-feature-vote">
       <span>Does this belong in your first version?</span>
-      <select
+      <StudioSelect
         aria-label="Feature priority"
         value={state.priorities[view] || "Unsorted"}
         onChange={(e) =>
@@ -311,10 +368,11 @@ export function FeatureVote({ view }: { view: View }) {
         {priorities.map((p) => (
           <option key={p}>{p}</option>
         ))}
-      </select>
-      <button onClick={() => go("roadmap")}>
+      </StudioSelect>
+      <Button variant="ghost" size="sm" onClick={() => go("roadmap")}>
         View roadmap <ArrowUpRight size={13} />
-      </button>
-    </div>
+      </Button>
+      </div>
+    </details>
   );
 }

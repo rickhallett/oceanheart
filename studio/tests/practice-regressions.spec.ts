@@ -142,6 +142,8 @@ test("reset clears unsaved settings fields before a subsequent save", async ({
 
 test("reply and refund requests cannot be queued twice", async ({ page }) => {
   await seed(page, (s) => (s.approvals = []), "/app/inbox");
+  if (page.viewportSize()!.width < 768)
+    await page.locator(".ws-inbox-list").getByRole("button", { name: /A first appointment/ }).click();
   await page
     .getByLabel("Your reply", { exact: true })
     .fill("Thank you. We can arrange a first conversation.");
@@ -149,6 +151,8 @@ test("reply and refund requests cannot be queued twice", async ({ page }) => {
   await send.click();
   await expect(send).toBeDisabled();
   await page.reload();
+  if (page.viewportSize()!.width < 768)
+    await page.locator(".ws-inbox-list").getByRole("button", { name: /A first appointment/ }).click();
   await expect(send).toBeDisabled();
   expect(
     (await stored(page)).approvals.filter((a) => a.type === "reply"),

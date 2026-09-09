@@ -1,0 +1,818 @@
+/* Domain layouts sit above the shared Chakra recipes: legible, spacious and
+   responsive while preserving each workflow's distinctive composition. */
+.ws-root .ws-data-table {
+  width: 100%;
+  font-size: 15px;
+}
+.ws-root .ws-data-table th {
+  color: var(--ws-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 16px 20px;
+  background: var(--ws-raised);
+  white-space: nowrap;
+}
+.ws-root .ws-data-table td {
+  padding: 18px 20px;
+  border-color: var(--ws-border);
+  vertical-align: middle;
+}
+.ws-root .ws-data-table h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.ws-root .ws-data-table p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+.ws-root .ws-table-person {
+  height: auto;
+  min-height: 52px;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+  padding: 0;
+  gap: 14px;
+  background: transparent;
+  color: var(--ws-text);
+}
+.ws-root .ws-table-person > span {
+  text-align: left;
+}
+.ws-root .ws-table-person small {
+  font-size: var(--app-small);
+  font-weight: var(--app-weight-body);
+  margin-top: 4px;
+}
+.ws-root .ws-filter-control {
+  flex-wrap: wrap;
+  max-width: 100%;
+  background: var(--ws-panel);
+  padding: 4px;
+  border: var(--app-border-width) solid var(--ws-border);
+  border-radius: 12px;
+}
+.ws-root .ws-filter-control [data-part="item"] {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.ws-root .ws-filter-control [data-part="item"][data-state="checked"] {
+  color: var(--ws-text);
+}
+.ws-root .ws-content-tabs {
+  overflow-x: auto;
+  max-width: 100%;
+  border-color: var(--ws-border);
+}
+.ws-root .ws-content-tabs button {
+  min-height: 48px;
+  font-size: 14px;
+  white-space: nowrap;
+  padding: 12px 20px;
+}
+.ws-root .ws-tasks [data-scope="checkbox"][data-part="root"] {
+  display: flex;
+  min-height: 44px;
+  padding: 10px 0;
+  gap: 14px;
+  align-items: center;
+  border-bottom: 1px solid var(--ws-border);
+  cursor: pointer;
+}
+.ws-root .ws-tasks [data-part="label"] {
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ws-root .ws-tasks .is-done [data-part="label"] {
+  text-decoration: line-through;
+  color: var(--ws-muted);
+}
+.ws-root .ws-setup-options [data-scope="checkbox"][data-part="root"] {
+  padding: 20px;
+  min-height: 94px;
+  align-items: flex-start;
+  gap: 14px;
+  border: var(--app-border-width) solid var(--ws-border);
+  border-radius: 14px;
+  background: var(--ws-panel);
+  cursor: pointer;
+}
+.ws-root .ws-setup-options [data-part="root"][data-state="checked"] {
+  border-color: var(--ws-accent);
+  background: var(--ws-raised);
+}
+.ws-root .ws-setup-options [data-part="label"] {
+  display: grid;
+  gap: 5px;
+}
+.ws-root .ws-connection [data-scope="switch"] {
+  flex-shrink: 0;
+}
+.ws-root .ws-bubble {
+  padding: 22px 24px;
+  border: var(--app-border-width) solid var(--ws-border);
+  box-shadow: none;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 94%;
+  margin-bottom: 16px;
+}
+.ws-root .ws-bubble.outgoing {
+  background: var(--ws-raised);
+  border-color: color-mix(in srgb, var(--ws-accent) 30%, transparent);
+}
+.ws-root .ws-bubble details {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ws-border);
+}
+.ws-root .ws-bubble summary {
+  cursor: pointer;
+  color: var(--ws-muted);
+  font-size: 14px;
+}
+.ws-root .ws-approval {
+  padding: 24px;
+  margin: 0 0 18px;
+  gap: 14px;
+  border: var(--app-border-width) solid var(--ws-border);
+}
+.ws-root .ws-info-strip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+  border: var(--app-border-width) solid var(--ws-border);
+}
+.ws-root .ws-explainer {
+  padding: 24px;
+  margin-top: 20px;
+  border: var(--app-border-width) solid var(--ws-border);
+  gap: 10px;
+}
+.ws-root .ws-roadmap-journey {
+  padding: 18px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.ws-root .ws-service-grid,
+.ws-root .ws-dashboard-grid {
+  gap: 24px;
+}
+.ws-root .ws-chat-input {
+  gap: 12px;
+  padding: 20px;
+}
+.ws-root .ws-inline-form {
+  gap: 12px;
+}
+.ws-root .ws-search {
+  min-width: 220px;
+}
+.ws-root .ws-search input {
+  min-height: 44px;
+  font-size: 15px;
+}
+@media (max-width: 767px) {
+  .ws-root .ws-data-table td,
+  .ws-root .ws-data-table th {
+    padding: 14px 12px;
+  }
+  .ws-root .ws-data-table {
+    min-width: 570px;
+  }
+  .ws-root .ws-info-strip {
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+  .ws-root .ws-info-strip > div {
+    flex: 1;
+    min-width: 180px;
+  }
+  .ws-root .ws-bubble {
+    max-width: 100%;
+    padding: 18px;
+  }
+  .ws-root .ws-toolbar {
+    gap: 14px;
+  }
+  .ws-root .ws-filter-control [data-part="item"] {
+    padding: 10px 13px;
+  }
+  .ws-root .ws-content-tabs button {
+    padding: 12px 14px;
+  }
+  .ws-root .ws-inline-form {
+    flex-wrap: wrap;
+  }
+  .ws-root .ws-inline-form input {
+    flex-basis: 100%;
+  }
+}
+.ws-root .ws-stat-strip > .chakra-stat__root {
+  align-items: flex-start;
+  flex-direction: column;
+  height: auto;
+  min-height: 114px;
+  gap: 12px;
+  text-align: left;
+}
+.ws-root .ws-stat-strip .chakra-stat__label {
+  color: var(--ws-muted);
+  font-size: 14px;
+  font-weight: var(--app-weight-body);
+}
+.ws-root .ws-stat-strip .chakra-stat__valueText {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 32px;
+  color: var(--ws-text);
+  line-height: 1.25;
+}
+.ws-root .ws-stat-strip .chakra-stat__valueText small {
+  font-size: 14px;
+  font-weight: var(--app-weight-body);
+}
+.ws-root .ws-agenda-row,
+.ws-root .ws-conversation-preview,
+.ws-root .ws-inbox-item,
+.ws-root .ws-prompt-list button {
+  height: auto;
+  min-height: 56px;
+}
+.ws-root .ws-inbox-item {
+  display: block;
+  text-align: left;
+}
+.ws-root .ws-search [data-scope="native-select"] {
+  min-width: 0;
+}
+
+/* Ark's native input is the accessible click target. Legacy input decoration
+   must not turn that transparent target into a second visible checkbox. */
+.ws-root [data-scope="checkbox"][data-part="root"] {
+  position: relative;
+}
+.ws-root [data-scope="checkbox"][data-part="root"] > input[type="checkbox"] {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  clip: auto !important;
+  clip-path: none !important;
+  overflow: visible !important;
+  transform: none !important;
+  z-index: 1;
+  cursor: pointer;
+}
+.ws-root [data-scope="checkbox"][data-part="control"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: var(--app-border-width) solid var(--ws-muted);
+  border-radius: 5px;
+}
+.ws-root [data-scope="checkbox"][data-part="control"][data-state="checked"] {
+  border-color: var(--ws-accent);
+}
+
+/* Record families expose the same actions in the composition appropriate to
+   the viewport. display:none removes the alternate controls from navigation. */
+.ws-root .ws-mobile-records {
+  display: none;
+}
+.ws-root .ws-desktop-records {
+  display: block;
+}
+.ws-root .ws-mobile-record {
+  padding: 18px;
+  gap: 12px;
+  border: 2px solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+  background: var(--ws-panel);
+  min-width: 0;
+}
+.ws-root .ws-mobile-record h3 {
+  margin: 0;
+  font-size: var(--app-label);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ws-root .ws-mobile-record p {
+  margin: 0;
+  font-size: var(--app-reading);
+  overflow-wrap: anywhere;
+}
+.ws-root .ws-record-title {
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  height: auto;
+  padding: 0;
+  gap: 12px;
+  text-align: left;
+  justify-content: flex-start;
+  color: var(--ws-text);
+}
+.ws-root .ws-record-title > span {
+  flex: 1;
+  min-width: 0;
+}
+.ws-root .ws-record-title > svg {
+  flex-shrink: 0;
+}
+.ws-root .ws-record-title strong {
+  font-size: var(--app-label);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ws-root .ws-record-title small {
+  font-size: var(--app-meta);
+  line-height: 1.5;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.ws-root .ws-record-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+.ws-root .ws-record-amount {
+  font-size: 20px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ws-root .ws-record-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--app-meta);
+  color: var(--ws-muted);
+}
+.ws-root .ws-record-action {
+  border-top: 2px solid var(--app-border);
+  padding-top: 10px;
+}
+.ws-root .ws-record-action > button {
+  min-height: 44px;
+  font-size: var(--app-label);
+  justify-content: flex-start;
+}
+.ws-root .ws-support-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto 20px;
+  align-items: center;
+  gap: 16px;
+  height: auto;
+  min-height: 80px;
+  padding: 20px 0;
+}
+.ws-root .ws-support-row > div {
+  min-width: 0;
+}
+.ws-root .ws-support-row h3 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 18px;
+  line-height: 1.45;
+}
+.ws-root .ws-support-row p {
+  white-space: normal;
+  font-size: var(--app-meta);
+}
+.ws-root .ws-inbox-detail {
+  min-width: 0;
+}
+.ws-root .ws-inbox-back {
+  display: none;
+}
+.ws-root .ws-inbox-list > .ws-filter-control {
+  margin-bottom: 12px;
+}
+.ws-root .ws-today-work {
+  margin: 16px 0 24px;
+}
+.ws-root .ws-approval-banner {
+  height: auto;
+  min-height: 48px;
+  padding: 14px 18px;
+  margin: 0 0 16px;
+  border: 2px solid var(--app-border);
+  justify-content: flex-start;
+}
+.ws-root .ws-secondary-panel {
+  background: transparent;
+  border-width: 0;
+  border-top: 2px solid var(--app-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 0;
+}
+.ws-root .ws-secondary-panel.ws-partner-panel {
+  background: transparent;
+}
+.ws-root .ws-secondary-panel .ws-partner-initial {
+  display: none;
+}
+.ws-root .ws-secondary-panel h3 {
+  font-size: 18px;
+}
+.ws-root .ws-secondary-panel .ws-conversation-preview {
+  padding: 0;
+}
+.ws-root .ws-secondary-panel .ws-conversation-preview p {
+  font-size: var(--app-reading);
+  line-height: 1.6;
+}
+.ws-root .ws-journey {
+  margin: 16px 0;
+  padding: 20px 0;
+  border-top: 2px solid var(--app-border);
+}
+.ws-root .ws-journey h3 {
+  font-size: 18px;
+}
+.ws-root .ws-assistant-grid {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 960px;
+  gap: 0;
+}
+.ws-root .ws-assistant-intro {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 8px 14px;
+  padding: 0 0 20px;
+  text-align: left;
+}
+.ws-root .ws-assistant-mark {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  grid-row: span 2;
+}
+.ws-root .ws-assistant-intro h2 {
+  font-size: 22px;
+  margin: 0;
+}
+.ws-root .ws-assistant-intro h2 br {
+  display: none;
+}
+.ws-root .ws-assistant-intro p {
+  max-width: none;
+  margin: 0;
+  font-size: var(--app-reading);
+}
+.ws-root .ws-assistant-prompts {
+  padding: 16px 0 0;
+  border-top: 2px solid var(--app-border);
+}
+.ws-root .ws-assistant-prompts h3 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+.ws-root .ws-assistant-prompts .ws-prompt-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ws-root .ws-assistant-prompts .ws-prompt-list button {
+  font-size: var(--app-label);
+  border: 2px solid var(--app-border);
+  padding: 12px;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+}
+.ws-root .ws-assistant-prompts .ws-field {
+  max-width: 360px;
+}
+.ws-root .ws-secondary-explanation,
+.ws-root .ws-operations .ws-explainer {
+  border: 0;
+  border-top: 2px solid var(--app-border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 20px 0;
+  margin-top: 16px;
+}
+.ws-root .ws-portal .ws-panel {
+  background: var(--ws-panel);
+  border: var(--app-border-width) solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+  box-shadow: none;
+  padding: 24px;
+}
+.ws-root .ws-portal > header {
+  margin-bottom: 24px;
+}
+.ws-root .ws-portal .ws-simple-row {
+  flex-wrap: wrap;
+  height: auto;
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .ws-root .ws-desktop-records {
+    display: none;
+  }
+  .ws-root .ws-mobile-records {
+    display: grid;
+    gap: 14px;
+  }
+  .ws-root .ws-support-row {
+    grid-template-columns: 32px minmax(0, 1fr) 20px;
+    gap: 10px 12px;
+    padding: 16px 0;
+  }
+  .ws-root .ws-support-row > .ws-source-icon {
+    grid-column: 1;
+    grid-row: 1;
+    width: 32px;
+  }
+  .ws-root .ws-support-row > div {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .ws-root .ws-support-row > .ws-pill {
+    display: inline-flex;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .ws-root .ws-support-row > svg {
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .ws-root .ws-support-row h3 {
+    font-size: 17px;
+  }
+  .ws-root .ws-inbox {
+    display: block;
+    min-height: 0;
+  }
+  .ws-root .ws-inbox > .ws-inbox-list {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    border: 0;
+    padding: 16px;
+  }
+  .ws-root .ws-inbox-list > .ws-filter-control {
+    width: fit-content;
+    flex-shrink: 0;
+  }
+  .ws-root .ws-inbox .ws-inbox-item {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 18px 8px;
+  }
+  .ws-root .ws-inbox .ws-inbox-item h3 {
+    display: block;
+    font-size: 18px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .ws-root .ws-inbox .ws-inbox-item p {
+    display: -webkit-box;
+    font-size: 15px;
+  }
+  .ws-root .ws-inbox .ws-inbox-item small {
+    display: block;
+    font-size: 12px;
+  }
+  .ws-root .ws-inbox-detail {
+    display: none;
+  }
+  .ws-root .ws-inbox-detail-open > .ws-inbox-list {
+    display: none;
+  }
+  .ws-root .ws-inbox-detail-open > .ws-inbox-detail {
+    display: block;
+  }
+  .ws-root .ws-inbox-back {
+    display: flex;
+    margin: 12px 16px 0;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .ws-root .ws-inbox .ws-thread {
+    padding: 20px 16px;
+  }
+  .ws-root .ws-welcome {
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .ws-root .ws-today-work {
+    gap: 16px;
+  }
+  .ws-root .ws-today-secondary {
+    gap: 0;
+  }
+  .ws-root .ws-assistant-prompts .ws-prompt-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-root .ws-chat-input {
+    padding: 16px 0 0;
+  }
+}
+.ws-root .ws-knowledge-note summary {
+  cursor: pointer;
+  font-size: var(--app-label);
+  line-height: 1.5;
+}
+.ws-root .ws-knowledge-note p {
+  margin-top: 12px;
+  font-size: var(--app-reading);
+}
+.ws-root .ws-data-table td {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 767px) {
+  .ws-root .ws-mobile-record .ws-pill {
+    max-width: 100%;
+    white-space: normal;
+  }
+  .ws-root .ws-record-heading > h3 {
+    min-width: 0;
+  }
+  .ws-root .ws-info-strip:has(.ws-knowledge-note) {
+    padding: 16px;
+    gap: 12px;
+  }
+}
+
+/* Secondary sections and phone records do not need a second outer frame. */
+.ws-root .ws-panel-heading > h2:only-child {
+  min-width: 0;
+  flex-shrink: 1;
+}
+.ws-root .ws-panel.ws-secondary-panel {
+  border: 0;
+  border-top: var(--app-border-width) solid var(--ws-border);
+}
+@media (max-width: 359px) {
+  .ws-root .ws-stat-strip { grid-template-columns: minmax(0, 1fr); }
+  .ws-root .ws-stat-strip > .chakra-stat__root {
+    min-width: 0;
+    padding: 16px 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--ws-border);
+  }
+  .ws-root .ws-stat-strip > .chakra-stat__root:last-child { border-bottom: 0; }
+}
+.ws-root .ws-agenda-row time {
+  width: 46px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 767px) {
+  .ws-root .ws-panel:has(> .ws-mobile-records) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .ws-root .ws-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ws-root .ws-footer > * {
+    width: auto;
+    max-width: 100%;
+    text-align: left;
+  }
+  .ws-root .ws-footer button {
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+/* Task rows share compact spacing on Today and Tasks. */
+.ws-root .ws-tasks { gap: 0; padding-block: 0; }
+.ws-root .ws-today-work { align-items: start; }
+
+/* Give conversation previews more room while keeping compact filters. */
+@media (min-width: 768px) {
+  .ws-root .ws-inbox { grid-template-columns: minmax(280px, 32%) minmax(0, 1fr); }
+}
+.ws-root .ws-inbox-list > .ws-filter-control { width: fit-content; padding: 2px; }
+.ws-root .ws-inbox-list > .ws-filter-control [data-part="item"] {
+  min-height: 36px;
+  padding: 6px 12px;
+}
+
+.ws-root .ws-website-check { color: var(--ws-muted); line-height: 1.6; }
+.ws-root .ws-website-check p { color: var(--ws-text); font-weight: 600; margin-bottom: 8px; }
+.ws-root .ws-website-check ul { list-style: disc; padding-left: 18px; }
+.ws-root .ws-website-check li { padding-block: 3px; }
+.ws-root .ws-browser-bar > span {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+.ws-root .ws-browser-bar > span:nth-child(1) { background: #ff5f57; }
+.ws-root .ws-browser-bar > span:nth-child(2) { background: #febc2e; }
+.ws-root .ws-browser-bar > span:nth-child(3) { background: #28c840; }
+
+/* Native selects need room for their text inside the fixed control height. */
+.ws-root select.chakra-native-select__field,
+.studio-dialog select.chakra-native-select__field {
+  height: var(--app-control-height);
+  padding-block: 0;
+  padding-inline-end: 40px;
+  line-height: normal;
+}
+.ws-root .ws-portal { background: var(--chakra-colors-bg-subtle); }
+.ws-root .ws-portal > p { font-size: var(--app-body); }
+.ws-knowledge-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 767px) {
+  .ws-root .ws-portal .ws-panel { padding: 16px; }
+}
+
+/* A conversation canvas rather than a stack of demonstration cards. */
+.ws-root .ws-assistant-grid { max-width: 960px; margin-inline: auto; }
+.ws-root .ws-panel.ws-chat { background: transparent; border: 0; padding: 24px 0; box-shadow: none; }
+.ws-root .ws-chat-turn { margin-bottom: 36px; }
+.ws-root .ws-chat .ws-bubble { max-width: 100%; border: 0; background: transparent; padding: 16px 0; margin-bottom: 8px; }
+.ws-root .ws-chat .ws-bubble.outgoing { width: fit-content; max-width: 85%; margin-left: auto; background: var(--ws-raised); padding: 14px 20px; border-radius: 16px; }
+.ws-root .ws-chat .ws-bubble > small { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.ws-root .ws-chat .ws-citation { width: fit-content; max-width: 100%; padding: 8px 12px; margin-top: 12px; }
+.ws-root .ws-answer-details { width: fit-content; color: var(--ws-muted); padding: 8px 0; font-size: 14px; }
+.ws-root .ws-chat .ws-bubble > .ws-link { width: fit-content; justify-content: flex-start; padding-inline: 0; }
+.ws-conversation-empty { padding: 48px 0 24px; }
+.ws-conversation-empty h2 { font-size: 28px; margin-bottom: 12px; }
+.ws-conversation-empty p { color: var(--ws-muted); }
+.ws-conversation-compose { border-top: 1px solid var(--ws-border); padding-top: 20px; }
+.ws-conversation-compose .ws-field { max-width: 240px; margin-bottom: 12px; }
+.ws-starting-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.ws-starting-questions button { border: 1px solid var(--ws-border); border-radius: 12px; padding: 10px 14px; }
+.ws-root .ws-chat-input { margin-top: 12px; border: 2px solid var(--app-border); border-radius: 16px; padding: 12px; background: var(--ws-panel); }
+.ws-root .ws-chat-input input { border: 0; background: transparent; }
+.ws-root .ws-composer-note { font-size: 12px; color: var(--ws-muted); margin-top: 12px; }
+.ws-answer-evidence ol { list-style: decimal; padding-left: 20px; }
+.ws-answer-evidence li { margin-block: 12px; }
+
+.ws-root .ws-knowledge-actions .ws-button,
+.ws-root .ws-view-source { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+@media (min-width: 768px) {
+  .ws-root .ws-search input { font-size: 14px; }
+}
+
+.ws-root .ws-stat-strip .ws-stat-text { font-size: 20px; font-weight: 600; }
+/* Flat filters: text and an underline identify selection. */
+.ws-root .ws-filter-control,
+.ws-root .ws-inbox-list > .ws-filter-control {
+  background: transparent; border: 0; border-radius: 0; padding: 0; box-shadow: none;
+}
+.ws-root .ws-filter-control [data-part="indicator"] { display: none; }
+.ws-root .ws-filter-control [data-part="item"] {
+  background: transparent; border: 0; border-bottom: 2px solid transparent;
+  border-radius: 0; box-shadow: none; min-height: 38px; padding: 8px 14px; color: var(--ws-muted);
+}
+.ws-root .ws-filter-control [data-part="item"]::before { display: none; }
+.ws-root .ws-filter-control [data-part="item"][data-state="checked"] {
+  background: transparent; border-bottom-color: var(--ws-accent); color: var(--ws-text);
+}
+
+.ws-root .ws-shop-connection { display:flex; justify-content:flex-end; margin-bottom:12px; }
+.ws-root .ws-product-row { display:grid; grid-template-columns:minmax(0,1fr) 90px 120px auto; align-items:center; gap:20px; padding:14px 0; border-top:1px solid var(--ws-border); }
+.ws-root .ws-product-row h3 { font-size:15px; font-weight:600; margin:0; }
+.ws-root .ws-product-stock { color:var(--ws-muted); font-size:14px; }
+.ws-root .ws-product-row .ws-button, .ws-root .ws-support-toolbar .ws-button { min-height:36px; padding:6px 12px; font-size:14px; }
+.ws-root .ws-support-toolbar { font-size:14px; color:var(--ws-muted); }
+.ws-root .ws-panel.ws-support-list { padding:0 16px; border-radius:8px; }
+.ws-root .ws-support-list .ws-support-row { padding:16px 0; gap:16px; }
+.ws-root .ws-support-list .ws-support-row h3 { font-size:15px; }
+.ws-root .ws-sample-settings > p { font-size:14px; color:var(--ws-muted); line-height:1.5; margin-bottom:16px; }
+.ws-root input, .ws-root textarea, .ws-root select, .studio-dialog input, .studio-dialog textarea, .studio-dialog select { font-weight:400; }
+@media(max-width:767px) {
+ .ws-root .ws-product-row { grid-template-columns:1fr auto; gap:8px 16px; }
+ .ws-root .ws-product-row .ws-button { justify-self:end; }
+ .ws-root .ws-support-list .ws-support-row { display:flex; flex-wrap:wrap; }
+ .ws-root .ws-support-list .ws-support-row > div { flex:1 1 65%; }
+}
+.ws-root .ws-support-list .ws-support-row { grid-template-columns:minmax(0,1fr) auto 24px; }
+.ws-root div.ws-table-person { display:flex; align-items:center; gap:14px; }

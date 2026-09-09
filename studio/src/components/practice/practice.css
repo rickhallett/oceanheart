@@ -37,15 +37,8 @@
   color: var(--lp-muted);
   margin: 0 0 22px;
 }
-.live-practice button,
-.live-practice input,
-.live-practice select {
-  font: inherit;
-}
-.live-practice button:disabled {
-  cursor: default;
-  opacity: 0.5;
-}
+
+
 .live-practice :focus-visible {
   outline: 2px solid var(--lp-accent);
   outline-offset: 4px;
@@ -110,33 +103,9 @@
   letter-spacing: 2.2px;
   color: var(--lp-accent);
 }
-.lp-button {
-  background: #dfaa82;
-  color: #251a13;
-  border: 1px solid #eabc97;
-  border-radius: 8px;
-  padding: 12px 19px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  font-weight: 600 !important;
-  font-size: var(--app-reading) !important;
-}
-.lp-button:hover:not(:disabled) {
-  background: #ebbb94;
-}
-.lp-text-button {
-  background: transparent;
-  border: 0;
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  color: #d8bda6;
-  padding: 10px 0;
-  font-size: var(--app-body) !important;
-}
+
+
+
 .lp-welcome {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -221,7 +190,7 @@
 .lp-setup {
   max-width: 570px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 32px;
 }
 .lp-round-icon {
   color: #dcba9d;
@@ -239,25 +208,9 @@
   display: block;
   font-size: var(--app-body);
 }
-.live-practice input,
-.live-practice select {
-  display: block;
-  width: 100%;
-  background: #09141b;
-  color: #e0ded6;
-  border: 1px solid #c7d3da26;
-  border-radius: 8px;
-  padding: 11px 12px;
-  min-height: 44px;
-  min-width: 0;
-  margin: 7px 0 20px;
-}
+
 .lp-setup form {
   margin-top: 30px;
-}
-.lp-setup form .lp-text-button {
-  display: block;
-  margin-top: 12px;
 }
 .live-practice .lp-error {
   color: #efb6a1;
@@ -342,15 +295,7 @@
   align-items: center;
   gap: 5px;
 }
-.lp-day-switch button {
-  width: 32px;
-  height: 40px;
-  background: transparent;
-  border: 0;
-  display: grid;
-  place-items: center;
-  color: #c1b29f;
-}
+
 .lp-day-switch input {
   margin: 0;
   width: 160px;
@@ -427,15 +372,7 @@
   background: #a2c3af;
   flex-shrink: 0;
 }
-.lp-confirmed,
-.lp-viewer {
-  color: #a6bba9;
-  border: 1px solid #b4c2b522;
-  background: #b4c2b507;
-  border-radius: 5px;
-  font-size: var(--app-meta);
-  padding: 4px 7px;
-}
+
 .lp-side-panel {
   border: 1px solid #c9b2971e;
   border-radius: var(--app-radius-panel);
@@ -469,14 +406,6 @@
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 12px;
-}
-.lp-booking-form .lp-button {
-  width: 100%;
-  margin: 2px 0 8px;
-}
-.lp-booking-form .lp-text-button {
-  width: 100%;
-  justify-content: center;
 }
 .live-practice .lp-success {
   display: flex;
@@ -637,7 +566,7 @@
   font-weight: var(--app-weight-label);
 }
 .live-practice :is(input, select) { border-radius: var(--app-radius-control); }
-.lp-button { box-shadow: inset 0 1px 0 #ffffff25, 0 3px 8px #03090d30; }
+
 .lp-side-panel { box-shadow: var(--app-shadow-panel); }
 .lp-bookings h3 { font-weight: var(--app-weight-heading); }
 .lp-bookings li { padding-block: 24px; }
@@ -649,3 +578,38 @@
   .lp-calendar-controls { gap: 12px; }
   .lp-resource select { width: 168px; }
 }
+
+/* Chakra controls and panels share the same rhythm as the workspace. */
+.live-practice { --lp-border:var(--line); }
+.live-practice .lp-button { min-height:48px; height:auto; padding:12px 20px; gap:12px; white-space:normal; }
+.live-practice .lp-text-button { min-height:44px; height:auto; padding:10px 8px; white-space:normal; }
+.live-practice input,.live-practice select { margin-top:6px; margin-bottom:18px; }
+.lp-welcome { gap:64px; }
+.lp-welcome-art { border-radius:24px; min-height:480px; background:linear-gradient(0deg,#102029e8,#10202988),url('/ocean-at-dusk.webp') center/cover; }
+.lp-setup { width:100%; }
+.lp-setup form { display:flex; flex-direction:column; gap:16px; }
+.lp-setup input { margin-bottom:0; }
+.lp-calendar-controls { gap:20px; flex-wrap:wrap; }
+.lp-resource { min-width:200px; }
+.lp-resource > div { width:168px; }
+.lp-day-switch input { margin:0; }
+.lp-day-switch button { min-width:36px; padding:8px; }
+.lp-resource select { margin:0; }
+.lp-booking-form [data-scope="field"] { margin-top:16px; }
+.lp-booking-form [data-scope="field"] input,.lp-booking-form [data-scope="field"] select { margin:0; }
+.lp-booking-form .lp-button { margin-top:24px; }
+.live-practice .lp-caption { color:#a2b1ba; line-height:1.7; }
+.lp-side-panel { position:sticky; top:24px; }
+@media(max-width:650px) { .lp-welcome { gap:24px; } .lp-welcome-art { min-height:300px; border-radius:20px; } .lp-side-panel { position:static; } .lp-resource > div { flex:1; width:auto; } .lp-resource select { width:100%; } }
+
+/* Shared token roles govern practice controls and surfaces. */
+.live-practice { --lp-accent:var(--chakra-colors-copper-solid); --lp-muted:var(--chakra-colors-fg-muted); --lp-border:var(--chakra-colors-border); background:var(--chakra-colors-bg); color:var(--chakra-colors-fg); }
+.lp-agenda, .lp-side-panel, .lp-welcome-art, .lp-pilot, .lp-setup, .lp-state { border-width:2px; border-color:var(--chakra-colors-border); border-radius:var(--app-radius-panel); }
+.lp-agenda, .lp-side-panel { background:var(--chakra-colors-bg-panel); }
+.live-practice :is(input, select) { border-width:2px; }
+.live-practice .lp-button { display:inline-flex; align-items:center; justify-content:center; flex-wrap:nowrap; font-size:14px; font-weight:600; color:var(--chakra-colors-copper-contrast); background:var(--chakra-colors-copper-solid); border:2px solid var(--chakra-colors-copper-solid); border-radius:var(--app-radius-control); }
+.live-practice .lp-button:is(:hover,:focus-visible,:active) { color:var(--chakra-colors-copper-contrast); }
+.lp-button > svg { flex-shrink:0; }
+.live-practice .lp-text-button, .lp-header-end a, .live-practice label, .lp-footer { font-size:14px; font-weight:500; }
+.live-practice .lp-caption, .lp-kicker, .lp-brand small { font-size:12px; font-weight:500; }
+@media(max-width:650px) { .lp-header-end a { font-size:14px; max-width:140px; } .lp-welcome .lp-button { width:100%; gap:10px; padding-inline:12px; } }

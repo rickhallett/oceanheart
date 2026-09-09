@@ -1,6 +1,10 @@
+# Studio development baseline
+
+The accepted application lives on `studio/dev`. Start with [development and release](docs/DEVELOPMENT.md), [the canonical style guide](docs/STYLE_GUIDE.md), and [the RAD roadmap](docs/RAD-ROADMAP.md). Older implementation notes below may describe the pre-promotion prototype.
+
 # Oceanheart Studio
 
-Next.js 16 App Router + TypeScript landing page for Oceanheart Studio.
+Next.js 16 App Router + TypeScript + Chakra UI for Oceanheart Studio's public site and practice workspace.
 
 ## Local development
 
@@ -13,7 +17,9 @@ npm run typecheck
 
 ## Design system
 
-`src/app/globals.css` owns shared colour, typography, surface and spacing styles. `src/components/ui.tsx` exports the brand mark, primary link, text link and eyebrow. Website and future portal routes can share these components within the same Next.js application. `practice-preview.tsx` is a client component with fictional, in-memory demonstration data; it does not store personal or clinical information or connect to business systems.
+Chakra UI's free, open-source components provide the shared interface foundation. `src/theme.ts` owns semantic colours and component recipes; `StudioProvider` applies them across the public site, `/app` and `/practice`. Brand typography and domain layouts remain in scoped CSS. See [the component map and development conventions](docs/CHAKRA-UI.md).
+
+`src/components/ui.tsx` exports the brand mark, primary link, text link and eyebrow. `practice-preview.tsx` is a client component with fictional, in-memory demonstration data; it does not store personal or clinical information or connect to business systems.
 
 The contact links open an email draft addressed to rick@oceanheart.ai. There is no server-side enquiry collection or claim of successful delivery.
 
