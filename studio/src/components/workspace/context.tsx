@@ -30,7 +30,8 @@ import { initialState, type State, type View, type Priority } from "./model";
 import { restoreState } from "./persisted-state";
 const toaster = createToaster({ placement: "bottom-end", duration: 4500 });
 const ModalActionContext = createContext(false);
-const key = "oceanheart-studio-workspace-v1";
+// Keep earlier demo edits under their original key; this dataset has its own workspace.
+const key = "oceanheart-studio-rick-demo-v1";
 type Context = {
   state: State;
   update: (fn: (draft: State) => void, notice?: string) => void;

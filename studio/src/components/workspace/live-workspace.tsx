@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useMutation, useQuery } from "convex/react";
 import { Shell } from "./workspace";
@@ -23,10 +23,10 @@ import { signOutPractice } from "@/app/practice/actions";
 import "../practice/practice.css";
 import "../practice/task-maintenance.css";
 import "./live-workspace.css";
+import "./workspace-refinements.css";
 
 export function LiveWorkspace() {
   const { user } = useAuth();
-  const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
   const candidate = path.split("/")[2] || "today";
@@ -50,14 +50,25 @@ export function LiveWorkspace() {
   ) {
     const query = new URLSearchParams(tenantId ? { practice: tenantId } : {});
     Object.entries(extras).forEach(([key, value]) => query.set(key, value));
-    router.push(`${next === "today" ? "/app" : `/app/${next}`}?${query}`);
+    // All workspace screens use the same authenticated client shell. Native
+    // history updates Next's pathname/search hooks without a server route
+    // transition that remounts AuthKit and the Convex connection.
+    window.history.pushState(
+      null,
+      "",
+      `${next === "today" ? "/app" : `/app/${next}`}?${query}`,
+    );
+    window.scrollTo(0, 0);
   }
   const ownerName =
     [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
     "Your account";
   const canWrite = tenant?.role === "owner";
   let content;
-  if (!tenants) content = <WorkspaceLoading label="Loading practices…" fullScreen={false} />;
+  if (!tenants)
+    content = (
+      <WorkspaceLoading label="Loading practices…" fullScreen={false} />
+    );
   else if (creating || !tenant)
     content = (
       <CreatePractice

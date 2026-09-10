@@ -1,3 +1,9 @@
+import {
+  demoClients,
+  demoServices,
+  demoEnquiries,
+  demoTasks,
+} from "../../../backend/convex/lib/demoData";
 export const modules = [
   ["today", "Today", "Your day, at a glance"],
   ["inbox", "Enquiries", "Manage enquiries and replies"],
@@ -10,7 +16,11 @@ export const modules = [
   ["assistant", "Assistant", "Draft responses and review suggested actions"],
   ["payments", "Payments", "Track payments and refunds"],
   ["shop", "Shop", "Manage products and orders"],
-  ["portal", "Client portal", "Preview client appointments, messages and payments"],
+  [
+    "portal",
+    "Client portal",
+    "Preview client appointments, messages and payments",
+  ],
   ["support", "Support", "Requests and support conversations"],
   ["setup", "Setup", "Configure your practice"],
   ["settings", "Settings", "Practice details and connections"],
@@ -159,166 +169,90 @@ export type State = {
     q: string;
     answer: string;
     sourceId?: string;
-    citation?: Pick<Source, "id" | "title" | "version" | "content" | "audience">;
+    citation?: Pick<
+      Source,
+      "id" | "title" | "version" | "content" | "audience"
+    >;
     trace: string[];
   }[];
   setupStep: number;
   setupDescription: string;
   release: string;
 };
-export const demoDay = "2026-09-08";
+export const demoDay = "2026-09-10";
+const demoDate = (offset: number) =>
+  new Date(Date.UTC(2026, 8, 10 + offset)).toISOString().slice(0, 10);
 export const initialState: State = {
   practice: {
-    name: "Stillwater Practice",
-    owner: "Amelia",
-    email: "amelia@example.com",
-    modality: "Reflexology & holistic wellbeing",
-    location: "Bristol & online",
-    welcome: "A little time to come back to yourself.",
-    hours: "Tuesday to Friday, 09:00–17:00",
+    name: "Rick Hallett — Demo Practice",
+    owner: "Rick Hallett",
+    email: "rick@example.com",
+    modality: "Practical wellbeing & administrative reality checks",
+    location: "The Fictional Rooms, Bristol & online",
+    welcome:
+      "A fictional practice for people whose productivity systems have become a second job. Come in, put the dashboard down, and take the hour you actually booked.",
+    hours: "Monday to Friday, 09:00–17:00. Lunch has survived the roadmap.",
   },
-  clients: [
-    {
-      id: "c1",
-      name: "Lucy Parker",
-      email: "lucy@example.com",
-      phone: "07700 900101",
-      status: "Returning",
-      notes: ["Prefers morning appointments."],
-    },
-    {
-      id: "c2",
-      name: "James Wood",
-      email: "james@example.com",
-      phone: "07700 900102",
-      status: "Returning",
-      notes: ["Usually books online sessions."],
-    },
-    {
-      id: "c3",
-      name: "Amira Khan",
-      email: "amira@example.com",
-      phone: "07700 900103",
-      status: "New",
-      notes: [],
-    },
-    {
-      id: "c4",
-      name: "Sophie Ellis",
-      email: "sophie@example.com",
-      phone: "07700 900104",
-      status: "New enquiry",
-      notes: [],
-    },
-  ],
-  services: [
-    {
-      id: "s1",
-      name: "Reflexology session",
-      duration: 60,
-      price: 65,
-      description:
-        "An unhurried, one-to-one reflexology session in the practice.",
-      active: true,
-    },
-    {
-      id: "s2",
-      name: "First conversation",
-      duration: 20,
-      price: 0,
-      description:
-        "A short call to meet and talk about what you are looking for.",
-      active: true,
-    },
-    {
-      id: "s3",
-      name: "Online wellbeing session",
-      duration: 45,
-      price: 50,
-      description: "Space to reflect, wherever you are.",
-      active: true,
-    },
-  ],
-  bookings: [
-    {
-      id: "b1",
-      clientId: "c1",
-      serviceId: "s1",
-      day: demoDay,
-      time: "09:00",
-      status: "Confirmed",
-    },
-    {
-      id: "b2",
-      clientId: "c2",
-      serviceId: "s3",
-      day: demoDay,
-      time: "11:00",
-      status: "Confirmed",
-    },
-    {
-      id: "b3",
-      clientId: "c3",
-      serviceId: "s2",
-      day: demoDay,
-      time: "14:00",
-      status: "Confirmed",
-    },
-    {
-      id: "b4",
-      clientId: "c1",
-      serviceId: "s1",
-      day: "2026-09-10",
-      time: "10:00",
-      status: "Awaiting payment",
-    },
-  ],
-  inbox: [
-    {
-      id: "m1",
-      clientId: "c4",
-      subject: "A first appointment",
-      body: "Hello Amelia, I found your practice through a friend. I’ve never tried reflexology before. Could we have a quick conversation before I book? Thursday morning would be lovely.",
-      status: "New",
-      reply: "",
-      messages: [],
-    },
-    {
-      id: "m2",
-      clientId: "c1",
-      subject: "Moving Thursday’s session",
-      body: "Would it be possible to move my Thursday appointment to Friday? The same time would be ideal. Thank you!",
-      status: "New",
-      reply: "",
-      messages: [],
-    },
-    {
-      id: "m3",
-      clientId: "c2",
-      subject: "Where is the online session link?",
-      body: "Looking forward to our session. Where will I find the joining link?",
-      status: "Draft ready",
-      reply:
-        "Hi James, your joining link is included in your booking confirmation. If it hasn’t arrived, I can help you find it before the session.",
-      messages: [],
-    },
-  ],
-  tasks: [
-    { id: "t1", text: "Reply to Sophie’s first enquiry", done: false },
-    { id: "t2", text: "Confirm Thursday’s booking", done: false },
-    { id: "t3", text: "Review the new welcome page", done: false },
-    { id: "t4", text: "Update next week’s availability", done: true },
-  ],
+  clients: demoClients.map(([name, background, note], i) => ({
+    id: `c${i + 1}`,
+    name,
+    email: `${name.toLowerCase().replaceAll(" ", ".")}@example.com`,
+    phone: `07700 900${String(100 + i)}`,
+    status: i === 23 ? "Archived" : i % 4 === 0 ? "New" : "Returning",
+    notes: ["Fictional demonstration client.", background, note],
+  })),
+  services: demoServices.map(([name, duration, price, description], i) => ({
+    id: `s${i + 1}`,
+    name,
+    duration,
+    price,
+    description,
+    active: i < 9,
+  })),
+  bookings: Array.from({ length: 48 }, (_, i) => ({
+    id: `b${i + 1}`,
+    clientId: `c${(i % 24) + 1}`,
+    serviceId: `s${(i % 9) + 1}`,
+    day: demoDate(Math.floor(i / 4) - 4),
+    time: ["09:00", "11:00", "13:00", "15:00"][i % 4],
+    status:
+      i % 11 === 0
+        ? "Cancelled"
+        : i < 16
+          ? "Completed"
+          : i % 7 === 0
+            ? "Awaiting payment"
+            : "Confirmed",
+  })),
+  inbox: demoEnquiries.map(([subject, body, reply], i) => ({
+    id: `m${i + 1}`,
+    clientId: `c${i === 19 ? 24 : i + 1}`,
+    subject,
+    body,
+    status: i > 16 ? "Replied" : reply ? "Draft ready" : "New",
+    reply,
+    messages:
+      i > 16
+        ? [
+            "Rick: Thanks for your enquiry. This fictional conversation is resolved; no email has been sent.",
+          ]
+        : [],
+  })),
+  tasks: demoTasks.map((text, i) => ({
+    id: `t${i + 1}`,
+    text,
+    done: i % 5 === 0,
+  })),
   sources: [
     {
       id: "k1",
       title: "Booking & cancellation policy",
-      kind: "Notion",
+      kind: "Document",
       audience: "Public",
       status: "Ready",
       version: 2,
       content:
-        "Clients can reschedule or cancel without charge with at least 24 hours’ notice. Changes within 24 hours are reviewed personally by Amelia. First conversations are free and last 20 minutes. Refunds always need Amelia’s approval.",
+        "Fictional demo policy: cancel or reschedule with at least 24 hours' notice. Later changes are reviewed by Rick. First conversations are free and last 20 minutes. Refunds require Rick's approval. Mercury being in retrograde does not change the clock, although we appreciate the context.",
     },
     {
       id: "k2",
@@ -328,97 +262,169 @@ export const initialState: State = {
       status: "Ready",
       version: 1,
       content:
-        "Please arrive five minutes before your session. Wear comfortable clothing. A reflexology session lasts 60 minutes and costs £65. The practice is in Bristol. Online session links are included in the booking confirmation.",
+        "The fictional practice is in Bristol and online. Arrive five minutes before your appointment. Wear comfortable clothing and bring yourself. No journal, personal brand or three-year vision is required. The Unoptimised Hour is 60 minutes and £65. Online joining links are in booking confirmations.",
     },
     {
       id: "k3",
       title: "Practice voice & support guide",
       kind: "Notion",
       audience: "Team only",
+      status: "Ready",
+      version: 2,
+      content:
+        "Be kind, concrete and brief. The jokes belong to the fictional demo, not to real clients' vulnerabilities. Never promise clinical outcomes. Escalate sensitive questions to Rick. If a reply contains transformational journey twice, make some tea and start again.",
+    },
+    {
+      id: "k4",
+      title: "The all-in-one manifesto, abridged",
+      kind: "Document",
+      audience: "Team only",
+      status: "Ready",
+      version: 1,
+      content:
+        "The app should help a person answer an enquiry, book a session and get on with their day. It does not need to become their lifestyle. Any feature proposing to optimise the feeling of having too many features must first survive a short walk outside.",
+    },
+    {
+      id: "k5",
+      title: "Payments in this demonstration",
+      kind: "Document",
+      audience: "Public",
+      status: "Ready",
+      version: 1,
+      content:
+        "All clients, invoices and transactions in this demo are fictional. No payments are collected and no messages are sent. The paid badges demonstrate interface states; they are not provider receipts.",
+    },
+    {
+      id: "k6",
+      title: "Availability notes",
+      kind: "Notion",
+      audience: "Team only",
       status: "Needs sync",
       version: 1,
       content:
-        "Use a warm, direct tone. Ask one question at a time. Hand clinical questions to Amelia. Never promise treatment outcomes. Sensitive changes need a person to review them.",
+        "Working hours are Monday to Friday, 09:00 to 17:00 in Europe/London. Leave time for lunch. A free rectangle in the calendar is not a moral failure.",
     },
   ],
   approvals: [
     {
       id: "a1",
-      title: "Review a refund request",
+      title: "Review Cressida's fictional refund",
       detail:
-        "James has requested a £50 refund for an earlier online session. Check the circumstances before making a decision.",
+        "Cressida has requested a refund after a change of plans. Review the circumstances; do not automate sympathy or payments.",
       type: "refund",
       paymentId: "p2",
-      amount: 50,
-      status: "Pending",
-    },
-  ],
-  payments: [
-    {
-      id: "p1",
-      clientId: "c1",
-      description: "Reflexology · 8 September",
-      amount: 65,
-      status: "Paid",
-    },
-    {
-      id: "p2",
-      clientId: "c2",
-      description: "Online session · 8 September",
-      amount: 50,
-      status: "Paid",
-    },
-    {
-      id: "p3",
-      clientId: "c1",
-      description: "Reflexology · 10 September",
       amount: 65,
       status: "Pending",
     },
   ],
+  payments: Array.from({ length: 24 }, (_, i) => ({
+    id: `p${i + 1}`,
+    clientId: `c${i + 1}`,
+    description: `Demo: ${demoServices[i % 9][0]}`,
+    amount: demoServices[i % 9][2],
+    status: i === 22 ? "Refunded" : i % 4 === 0 ? "Pending" : "Paid",
+  })),
   tickets: [
     {
-      id: "ST-12",
-      title: "Help me tidy up my booking page",
-      status: "In progress",
+      id: "ST-42",
+      title: "The all-in-one app has become two apps",
+      status: "Resolved",
       messages: [
-        "Amelia: I’d like the first conversation to be easier to find.",
-        "Rick: Absolutely. I’ll bring it to the top and make the wording clearer. You can review it before it goes live.",
+        "Rick: I appear to have commissioned a second application while trying to improve the first.",
+        "Support: Precision is now the only development target. The alternate universe has been closed for maintenance.",
+      ],
+    },
+    {
+      id: "ST-43",
+      title: "Please make navigation feel like navigation",
+      status: "Resolved",
+      messages: [
+        "Rick: Why do I have time to reconsider my career between Clients and Tasks?",
+        "Support: We stopped rebuilding the authenticated shell on every click. The pause was implementation, not mindfulness.",
+      ],
+    },
+    {
+      id: "ST-44",
+      title: "Request: fewer buttons having a group hug",
+      status: "Resolved",
+      messages: [
+        "Rick: The enquiry actions have formed a dense social cluster.",
+        "Support: Spacing restored. Each button now has enough personal space to make a decision.",
+      ],
+    },
+    {
+      id: "ST-45",
+      title: "The fern would like dark mode",
+      status: "Open",
+      messages: [
+        "Barnaby: Our head of culture has some feedback.",
+        "Rick: Please establish whether this is a product requirement or a watering issue.",
       ],
     },
   ],
-  priorities: {},
-  featureNotes: {},
+  priorities: {
+    inbox: "Essential",
+    calendar: "Essential",
+    clients: "Essential",
+    tasks: "Essential",
+    services: "Essential",
+    assistant: "Later",
+    shop: "Later",
+  },
+  featureNotes: {
+    tasks:
+      "Let me finish a task before asking me to design a productivity philosophy.",
+    calendar:
+      "A reliable booking beats an ambitious diagram of a reliable booking.",
+  },
   connections: {
-    Notion: true,
-    Stripe: true,
+    Notion: false,
+    Stripe: false,
     Shopify: false,
-    Calendar: true,
-    Linear: true,
+    Calendar: false,
+    Linear: false,
   },
   activity: [
-    "09:02 · Lucy’s payment recorded",
-    "08:45 · Booking knowledge synced",
-    "Yesterday · Rick updated your welcome page",
+    "Demo · Navigation stopped taking a contemplative pause",
+    "Demo · Lunch successfully defended from a strategy session",
+    "Demo · Twenty-four entirely fictional clients arrived without a CRM migration",
   ],
   published: false,
   products: [
-    { id: "pr1", name: "A moment of calm · journal", price: 18, stock: 12 },
-    { id: "pr2", name: "Gift a reflexology session", price: 65, stock: 50 },
+    { id: "pr1", name: "The Good Enough Notebook", price: 12, stock: 24 },
+    {
+      id: "pr2",
+      name: "A meeting that could have been tea — mug",
+      price: 16,
+      stock: 18,
+    },
+    {
+      id: "pr3",
+      name: "Premium whitespace, pocket edition",
+      price: 8,
+      stock: 40,
+    },
+    { id: "pr4", name: "Gift an Unoptimised Hour", price: 65, stock: 50 },
   ],
   orders: [
     {
-      id: "OH-1042",
-      clientId: "c1",
-      item: "A moment of calm · journal",
+      id: "DEMO-1042",
+      clientId: "c3",
+      item: "The Good Enough Notebook",
       status: "Processing",
+    },
+    {
+      id: "DEMO-1043",
+      clientId: "c12",
+      item: "A meeting that could have been tea — mug",
+      status: "Dispatched",
     },
   ],
   chatHistory: [],
   setupStep: 0,
   setupDescription:
-    "I run a small reflexology practice in Bristol. I offer one-to-one sessions and introductory calls. Most enquiries arrive by email and my diary is in a spreadsheet.",
-  release: "2026.09.08.1",
+    "Rick Hallett's fictional demonstration practice offers practical wellbeing sessions, introductory calls and a modest resistance to productivity theatre. Enquiries, appointments, tasks and records should work together without becoming a second job.",
+  release: "2026.09.10.rick-demo.1",
 };
 export const money = (n: number) =>
   new Intl.NumberFormat("en-GB", {

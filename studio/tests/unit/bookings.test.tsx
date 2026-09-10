@@ -225,7 +225,8 @@ it("overnight rows display both dates and saved terms, legacy rows only allow ca
     </ul>,
   );
   expect(screen.getByText(/15 Jan.*16 Jan/)).toBeVisible();
-  expect(screen.getByText(/Consultation · 90 minutes · £62.50/)).toBeVisible();
+  expect(screen.getByText("Consultation", { exact: true })).toBeVisible();
+  expect(screen.getByText(/90 minutes · £62.50/)).toBeVisible();
   view.rerender(
     <ul>
       <BookingRow

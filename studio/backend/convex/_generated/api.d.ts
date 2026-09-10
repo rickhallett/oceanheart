@@ -10,6 +10,7 @@
 
 import type * as bookings from "../bookings.js";
 import type * as clients from "../clients.js";
+import type * as demoSeed from "../demoSeed.js";
 import type * as enquiries from "../enquiries.js";
 import type * as gmail from "../gmail.js";
 import type * as gmailConnections from "../gmailConnections.js";
@@ -18,6 +19,7 @@ import type * as lib_access from "../lib/access.js";
 import type * as lib_bookingCommands from "../lib/bookingCommands.js";
 import type * as lib_catalog from "../lib/catalog.js";
 import type * as lib_createClient from "../lib/createClient.js";
+import type * as lib_demoData from "../lib/demoData.js";
 import type * as lib_gmailMessage from "../lib/gmailMessage.js";
 import type * as lib_gmailProvider from "../lib/gmailProvider.js";
 import type * as lib_gmailSecurity from "../lib/gmailSecurity.js";
@@ -38,6 +40,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
   clients: typeof clients;
+  demoSeed: typeof demoSeed;
   enquiries: typeof enquiries;
   gmail: typeof gmail;
   gmailConnections: typeof gmailConnections;
@@ -46,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   "lib/bookingCommands": typeof lib_bookingCommands;
   "lib/catalog": typeof lib_catalog;
   "lib/createClient": typeof lib_createClient;
+  "lib/demoData": typeof lib_demoData;
   "lib/gmailMessage": typeof lib_gmailMessage;
   "lib/gmailProvider": typeof lib_gmailProvider;
   "lib/gmailSecurity": typeof lib_gmailSecurity;

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { initialState, type State } from "../src/components/workspace/model";
-const key = "oceanheart-studio-workspace-v1";
+const key = "oceanheart-studio-rick-demo-v1";
 async function seed(page: Page, change: (state: State) => void = () => {}) {
   const state = structuredClone(initialState);
   change(state);

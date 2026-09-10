@@ -57,27 +57,33 @@ export function PracticeEnquiries({
     <section className="lp-enquiries">
       <h2>Enquiries</h2>
       <p className="lp-muted">
-        Manually recorded enquiries. Reply drafts are saved here and are not
-        sent.
+        Record enquiries, prepare replies and link people to your practice.
+        Reply drafts stay here until you send them elsewhere.
       </p>
-      <div className="lp-actions" role="group" aria-label="Enquiry status">
-        {[false, true].map((value) => (
-          <button
-            key={String(value)}
-            type="button"
-            aria-pressed={resolved === value}
-            onClick={() => {
-              setResolved(value);
-              setAdding(false);
-            }}
-          >
-            {value ? "Resolved" : "Open"}
-          </button>
-        ))}
+      <div className="lp-enquiry-toolbar">
+        <div
+          className="lp-actions lp-enquiry-tabs"
+          role="group"
+          aria-label="Enquiry status"
+        >
+          {[false, true].map((value) => (
+            <button
+              key={String(value)}
+              type="button"
+              aria-pressed={resolved === value}
+              onClick={() => {
+                setResolved(value);
+                setAdding(false);
+              }}
+            >
+              {value ? "Resolved" : "Open"}
+            </button>
+          ))}
+        </div>
+        <button type="button" onClick={() => setAdding(true)} disabled={adding}>
+          Record enquiry
+        </button>
       </div>
-      <button type="button" onClick={() => setAdding(true)} disabled={adding}>
-        Record enquiry
-      </button>
       {adding && (
         <EnquiryCapture
           create={(input, key) =>
@@ -100,20 +106,25 @@ export function PracticeEnquiries({
             <li key={item._id} data-enquiry-id={item._id}>
               <button
                 className="lp-enquiry-open"
+                aria-label={item.subject}
                 type="button"
                 onClick={() => setSelected(item._id)}
               >
-                {item.subject}
+                <span className="lp-enquiry-row-main">
+                  <span className="lp-enquiry-sender">{item.name}</span>
+                  <span className="lp-enquiry-subject">{item.subject}</span>
+                  {item.clientId && (
+                    <span className="lp-muted">
+                      Client linked{item.bookingId ? " · Booking linked" : ""}
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={`lp-enquiry-draft${item.hasDraft ? " lp-enquiry-draft-saved" : ""}`}
+                >
+                  {item.hasDraft ? "Draft saved, not sent" : "No reply draft"}
+                </span>
               </button>
-              <p>
-                {item.name} ·{" "}
-                {item.hasDraft ? "Draft saved, not sent" : "No reply draft"}
-              </p>
-              {item.clientId && (
-                <p className="lp-muted">
-                  Client linked{item.bookingId ? " · Booking linked" : ""}
-                </p>
-              )}
             </li>
           ))}
         </ul>
@@ -275,153 +286,187 @@ function EnquiryDetail({
   const command = useCommand();
   if (!record) return <p role="status">Loading enquiry…</p>;
   return (
-    <section className="lp-enquiries" data-enquiry-detail-id={record._id}>
+    <section
+      className="lp-enquiries lp-enquiry-detail"
+      data-enquiry-detail-id={record._id}
+    >
       <button type="button" onClick={back}>
         Back to enquiries
       </button>
-      <h2>{record.subject}</h2>
-      <p>
-        {record.name}
-        {record.email ? ` · ${record.email}` : ""}
-        {record.phone ? ` · ${record.phone}` : ""}
-      </p>
-      <p className="lp-enquiry-message">{record.message}</p>
-      <p className="lp-muted">
-        {record.resolved ? "Resolved" : "Open"} ·{" "}
-        {record.source?.kind === "gmail"
-          ? `Imported from Gmail (${record.source.mailbox})`
-          : "Manually recorded"}
-      </p>
-      {record.source?.truncated && (
-        <p className="lp-muted">
-          Imported message text was truncated. Check Gmail for the full
-          original.
-        </p>
-      )}
-      <h3>Reply draft — not sent</h3>
-      {draft ? (
-        <ReplyDraft
-          initial={draft.draft}
-          save={(text) =>
-            save({
-              tenantId,
-              enquiryId,
-              text,
-              expectedRevision: draft.revision,
-            })
-          }
-          done={() => {
-            setDraft(undefined);
-            setNotice("Reply draft saved. Nothing was sent.");
-          }}
-          cancel={() => setDraft(undefined)}
-        />
-      ) : (
-        <>
-          <p className="lp-enquiry-message">
-            {record.draft || "No reply draft yet."}
-          </p>
-          <button
-            type="button"
-            disabled={!!conversion || command.pending}
-            onClick={() => {
-              setDraft(record);
-              setNotice("");
-            }}
+      <header className="lp-enquiry-detail-heading">
+        <span className="lp-enquiry-detail-status">
+          {record.resolved ? "Resolved" : "Open enquiry"}
+        </span>
+        <h2>{record.subject}</h2>
+      </header>
+      <div className="lp-enquiry-detail-grid">
+        <div className="lp-enquiry-conversation">
+          <article
+            aria-label="Original enquiry"
+            className="lp-enquiry-original"
           >
-            Edit reply draft
-          </button>
-        </>
-      )}
-      <h3>Linked records</h3>
-      {record.clientId ? (
-        <p data-linked-client-id={record.clientId}>
-          Client: {record.linkedClient?.name ?? "Linked client"}
-          {record.linkedClient?.archived ? " (archived)" : ""}
-        </p>
-      ) : (
-        <p>No client linked.</p>
-      )}
-      {record.linkedBooking && (
-        <p data-linked-booking-id={record.linkedBooking._id}>
-          {record.linkedBooking.serviceName ?? "Booking"} ·{" "}
-          {displayBookingTime(
-            record.linkedBooking.startsAt,
-            timeZone ?? record.linkedBooking.timeZone ?? "UTC",
-          )}{" "}
-          –{" "}
-          {displayBookingTime(
-            record.linkedBooking.endsAt,
-            timeZone ?? record.linkedBooking.timeZone ?? "UTC",
-          )}{" "}
-          ·{" "}
-          {record.linkedBooking.status === "cancelled"
-            ? "Cancelled"
-            : "Scheduled"}
-        </p>
-      )}
-      {conversion ? (
-        <ConversionLoader
-          tenantId={tenantId}
-          record={conversion}
-          timeZone={timeZone}
-          convert={(input, key) =>
-            convert({
-              ...input,
-              tenantId,
-              enquiryId,
-              expectedRevision: conversion.revision,
-              requestKey: key,
-            })
-          }
-          done={() => {
-            setConversion(undefined);
-            setNotice("Records linked. The enquiry status is unchanged.");
-          }}
-          cancel={() => setConversion(undefined)}
-        />
-      ) : (
-        !record.bookingId && (
-          <button
-            type="button"
-            disabled={!!draft || command.pending}
-            onClick={() => {
-              setConversion(record);
-              setNotice("");
-            }}
-          >
-            {record.clientId ? "Link booking" : "Convert to client / booking"}
-          </button>
-        )
-      )}
-      <div className="lp-actions">
-        <button
-          type="button"
-          disabled={
-            !!draft || !!conversion || command.pending || command.conflict
-          }
-          onClick={() =>
-            void command.run(
-              () =>
-                resolve({
+            <div className="lp-enquiry-sender-line">
+              <span className="lp-client-avatar" aria-hidden="true">
+                {record.name
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")}
+              </span>
+              <div className="lp-enquiry-contact">
+                <strong>{record.name}</strong>
+                {record.email && <span>{record.email}</span>}
+                {record.phone && <span>{record.phone}</span>}
+              </div>
+            </div>
+            <p className="lp-enquiry-message">{record.message}</p>
+            <p className="lp-muted">
+              {record.resolved ? "Resolved" : "Open"} ·{" "}
+              {record.source?.kind === "gmail"
+                ? `Imported from Gmail (${record.source.mailbox})`
+                : "Manually recorded"}
+            </p>
+            {record.source?.truncated && (
+              <p className="lp-muted">
+                Imported message text was truncated. Check Gmail for the full
+                original.
+              </p>
+            )}
+          </article>
+          <section className="lp-enquiry-reply" aria-label="Reply draft">
+            <h3>Reply draft — not sent</h3>
+            {draft ? (
+              <ReplyDraft
+                initial={draft.draft}
+                save={(text) =>
+                  save({
+                    tenantId,
+                    enquiryId,
+                    text,
+                    expectedRevision: draft.revision,
+                  })
+                }
+                done={() => {
+                  setDraft(undefined);
+                  setNotice("Reply draft saved. Nothing was sent.");
+                }}
+                cancel={() => setDraft(undefined)}
+              />
+            ) : (
+              <>
+                <p className="lp-enquiry-message">
+                  {record.draft || "No reply draft yet."}
+                </p>
+                <button
+                  type="button"
+                  disabled={!!conversion || command.pending}
+                  onClick={() => {
+                    setDraft(record);
+                    setNotice("");
+                  }}
+                >
+                  Edit reply draft
+                </button>
+              </>
+            )}
+          </section>
+        </div>
+        <aside className="lp-enquiry-related" aria-label="Enquiry details">
+          <h3>Linked records</h3>
+          {record.clientId ? (
+            <p data-linked-client-id={record.clientId}>
+              Client: {record.linkedClient?.name ?? "Linked client"}
+              {record.linkedClient?.archived ? " (archived)" : ""}
+            </p>
+          ) : (
+            <p>No client linked.</p>
+          )}
+          {record.linkedBooking && (
+            <p data-linked-booking-id={record.linkedBooking._id}>
+              {record.linkedBooking.serviceName ?? "Booking"} ·{" "}
+              {displayBookingTime(
+                record.linkedBooking.startsAt,
+                timeZone ?? record.linkedBooking.timeZone ?? "UTC",
+              )}{" "}
+              –{" "}
+              {displayBookingTime(
+                record.linkedBooking.endsAt,
+                timeZone ?? record.linkedBooking.timeZone ?? "UTC",
+              )}{" "}
+              ·{" "}
+              {record.linkedBooking.status === "cancelled"
+                ? "Cancelled"
+                : "Scheduled"}
+            </p>
+          )}
+          {conversion ? (
+            <ConversionLoader
+              tenantId={tenantId}
+              record={conversion}
+              timeZone={timeZone}
+              convert={(input, key) =>
+                convert({
+                  ...input,
                   tenantId,
                   enquiryId,
-                  resolved: !record.resolved,
-                  expectedRevision: record.revision,
-                }),
-              () =>
-                setNotice(
-                  record.resolved ? "Enquiry reopened." : "Enquiry resolved.",
-                ),
+                  expectedRevision: conversion.revision,
+                  requestKey: key,
+                })
+              }
+              done={() => {
+                setConversion(undefined);
+                setNotice("Records linked. The enquiry status is unchanged.");
+              }}
+              cancel={() => setConversion(undefined)}
+            />
+          ) : (
+            !record.bookingId && (
+              <button
+                type="button"
+                disabled={!!draft || command.pending}
+                onClick={() => {
+                  setConversion(record);
+                  setNotice("");
+                }}
+              >
+                {record.clientId
+                  ? "Link booking"
+                  : "Convert to client / booking"}
+              </button>
             )
-          }
-        >
-          {command.pending
-            ? "Saving…"
-            : record.resolved
-              ? "Reopen enquiry"
-              : "Resolve enquiry"}
-        </button>
+          )}
+          <div className="lp-actions">
+            <button
+              type="button"
+              disabled={
+                !!draft || !!conversion || command.pending || command.conflict
+              }
+              onClick={() =>
+                void command.run(
+                  () =>
+                    resolve({
+                      tenantId,
+                      enquiryId,
+                      resolved: !record.resolved,
+                      expectedRevision: record.revision,
+                    }),
+                  () =>
+                    setNotice(
+                      record.resolved
+                        ? "Enquiry reopened."
+                        : "Enquiry resolved.",
+                    ),
+                )
+              }
+            >
+              {command.pending
+                ? "Saving…"
+                : record.resolved
+                  ? "Reopen enquiry"
+                  : "Resolve enquiry"}
+            </button>
+          </div>
+        </aside>
       </div>
       <CommandFeedback {...command} />
       {notice && <p role="status">{notice}</p>}

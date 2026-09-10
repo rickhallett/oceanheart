@@ -334,3 +334,15 @@
 }
 .ws-root .ws-inline-form >input {box-sizing:border-box;height:34px!important;min-height:34px!important;padding:5px 10px;line-height:20px}
 .ws-root .ws-inline-form {align-items:center}
+
+/* Mail-detail reading hierarchy, shared with the live enquiry refinement. */
+.ws-root .ws-thread > header { align-items: flex-start; gap: 16px; }
+.ws-root .ws-thread .ws-person { align-items: flex-start; min-width: 0; }
+.ws-root .ws-thread h2 { font-size: 22px; line-height: 1.35; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-person p { margin-top: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-bubble { padding: 0; margin: 28px 0; background: transparent; border: 0; box-shadow: none; max-width: 68ch; }
+.ws-root .ws-thread .ws-bubble p { line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-bubble small { display: block; margin-bottom: 12px; color: #657389; }
+.ws-root .ws-thread-actions { gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+.ws-root .ws-thread form textarea { min-height: 180px; line-height: 1.65; }
+@media (max-width: 600px) { .ws-root .ws-thread > header { flex-wrap: wrap; } }

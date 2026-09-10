@@ -62,7 +62,7 @@ test("record tables expose headers and assistant tabs support keyboard navigatio
     await expect(table.getByRole("columnheader", { name: "Status", exact: true })).toBeVisible();
     await expect(table.getByRole("columnheader", { name: "Client", exact: true })).toHaveCSS("border-top-width", "0px");
   } else {
-    const client = page.getByRole("article").filter({ hasText: "Lucy Parker" });
+    const client = page.getByRole("article").filter({ hasText: "Cressida Moonbeam" });
     await expect(client).toContainText("2 sessions");
     await expect(client.getByText("Returning", { exact: true })).toBeVisible();
     await expect(page.getByRole("table")).toHaveCount(0);
@@ -103,7 +103,7 @@ test("primary actions keep contrast and readable styling inside dialogs", async 
 test("mobile records and support titles fit their containers", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await page.goto("/app/support");
-  const row = page.locator(".ws-support-row");
+  const row = page.locator(".ws-support-row").first();
   await expect(row).toBeVisible();
   const bounds = await row.evaluate(element => {
     const row = element.getBoundingClientRect();
@@ -114,13 +114,13 @@ test("mobile records and support titles fit their containers", async ({ page }) 
   expect(bounds.titleBottom).toBeLessThanOrEqual(bounds.rowBottom);
   expect(bounds.rowBottom).toBeLessThanOrEqual(bounds.panelBottom);
   await page.goto("/app/payments");
-  const record = page.getByRole("article").filter({ hasText: "Lucy Parker" }).filter({ hasText: "Paid" }).first();
+  const record = page.getByRole("article").filter({ hasText: "Cressida Moonbeam" }).filter({ hasText: "Paid" }).first();
   await expect(record.getByText("Paid", { exact: true })).toBeVisible();
   await expect(record.getByRole("button", { name: "Request refund", exact: true })).toBeVisible();
   expect((await record.boundingBox())!.width).toBeLessThanOrEqual(390);
   await page.goto("/app/inbox");
   await expect(page.locator(".ws-inbox-list")).toBeVisible();
-  await page.locator(".ws-inbox-list").getByRole("button", { name: /A first appointment/ }).click();
+  await page.locator(".ws-inbox-list").getByRole("button", { name: /Can I book a discovery call/ }).click();
   await expect(page.getByRole("textbox", { name: "Your reply" })).toBeVisible();
   await page.getByRole("button", { name: "Back to enquiries", exact: true }).click();
   await expect(page.locator(".ws-inbox-list")).toBeVisible();
@@ -135,7 +135,7 @@ test("mobile records and support titles fit their containers", async ({ page }) 
 
 test("notifications remain inside the viewport", async ({ page }) => {
   await page.goto("/app/payments");
-  await page.getByRole("button", { name: "Simulate payment", exact: true }).click();
+  await page.getByRole("button", { name: "Simulate payment", exact: true }).first().click();
   const notice = page.getByRole("status").filter({ hasText: "Sample payment received" });
   await expect(notice).toBeVisible();
   await expect.poll(async () => {

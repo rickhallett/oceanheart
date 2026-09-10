@@ -226,7 +226,14 @@ export function Shell({ view, live }: { view: View; live?: LiveShell }) {
                   <Link
                     onClick={(event) => {
                       setMenu(false);
-                      if (live) {
+                      if (
+                        live &&
+                        !event.metaKey &&
+                        !event.ctrlKey &&
+                        !event.shiftKey &&
+                        !event.altKey &&
+                        event.button === 0
+                      ) {
                         event.preventDefault();
                         go(id as View);
                       }

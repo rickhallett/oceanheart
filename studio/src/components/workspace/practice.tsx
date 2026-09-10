@@ -824,7 +824,7 @@ function Conversation({ id }: { id: string }) {
       m.id === "m1"
         ? `Hi ${c.name.split(" ")[0]}, thank you for getting in touch. A first conversation is a lovely place to start. It’s a free 20-minute call. Would Thursday at 11:00 work for you?`
         : m.id === "m2"
-          ? "Hi Lucy, of course. With at least 24 hours’ notice, there’s no charge to move your session. Let’s find a time on Friday that works for you."
+          ? `Hi ${c.name.split(" ")[0]}, thank you for your enquiry. The listed session price covers our time together. Let me know which appointment you would like.`
           : `Hi ${c.name.split(" ")[0]}, your joining link is included in your booking confirmation. If you can’t find it, I’ll help before the session.`;
     setDraft(reply);
     update((d) => {
