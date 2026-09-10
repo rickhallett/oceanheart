@@ -6,7 +6,7 @@ The public sample uses 10 September 2026 and its own local-storage key `oceanhea
 
 `demoSeed:seedRick` is internal. The operator supplies a source tenant and its exact owner identity. One transaction creates a separate Rick Hallett — Demo Practice with the same owner, preserving all source records. A fixed creator/request key makes retries return the original demo tenant without overwriting edits. It never runs automatically. Dates are anchored to the London-local seed date, with past/upcoming appointments, open/completed tasks and archived/retired examples.
 
-Staging seed: `charming-albatross-632`, tenant `jd75twx1tbhws9agbs2rqeg9kn8e5237`. Second invocation returned `created:false`. Production currently serves the public sample without backend configuration; never wire production to staging data or treat sample payment states as provider receipts.
+Staging seed: `charming-albatross-632`, tenant `jd75twx1tbhws9agbs2rqeg9kn8e5237`. Second invocation returned `created:false`. The public sample remains available explicitly at `/app?demo=1`, including on authenticated deployments. It mounts only browser-local fictional state and preserves the demo query during navigation. Never wire production to staging data or treat sample payment states as provider receipts. WorkOS production requires its separate billing activation and configuration.
 
 Enquiry detail reference: [Intercom on Mobbin](https://mobbin.com/apps/intercom-web-e2b63d2e-e001-426a-93f3-b5bd11346744/6e269961-628f-4a8b-b490-a34aea334a69/screens). Conversation/reply occupy a reading column; related records/actions sit alongside and stack on mobile in the white Precision shell.
 

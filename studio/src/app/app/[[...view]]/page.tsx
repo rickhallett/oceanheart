@@ -12,14 +12,16 @@ export const metadata: Metadata = {
 export default async function AppPage({
   searchParams,
 }: {
-  searchParams: Promise<{ authError?: string }>;
+  searchParams: Promise<{ authError?: string; demo?: string }>;
 }) {
-  // Unconfigured builds remain an explicit demonstration. Configured environments
-  // always use verified identity and live records, never browser sample data.
+  const params = await searchParams;
+  // Explicit public demo uses only fictional browser-local state. It never
+  // mounts auth/data providers or imports samples into a signed-in practice.
+  if (params.demo === "1") return <Workspace demo />;
   if (!practiceConfigured()) return <Workspace />;
   const { accessToken: _accessToken, ...auth } = await withAuth();
   if (!auth.user)
-    return <WorkspaceEntry authError={!!(await searchParams).authError} />;
+    return <WorkspaceEntry authError={!!params.authError} />;
   return (
     <PracticeApp
       convexUrl={process.env.NEXT_PUBLIC_CONVEX_URL!}

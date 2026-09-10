@@ -26,6 +26,7 @@ export function WorkspaceEntry({ authError }: { authError?: boolean }) {
                 <a className="ws-entry-signin" href="/sign-in">
                   Sign in
                 </a>
+                <p><a href="/app?demo=1">Explore the fictional demo</a></p>
               </div>
             </div>
           ),
