@@ -19,6 +19,7 @@ export default defineSchema({
     .index("by_tenant", ["tenantId"])
     .index("by_tenant_removed", ["tenantId", "removedAt"])
     .index("by_tenant_removed_completed", ["tenantId", "removedAt", "completed"])
+    .index("by_tenant_removed_due", ["tenantId", "removedAt", "dueDate"])
     .index("by_tenant_request", ["tenantId", "requestKey"]),
   memberships: defineTable({
     tenantId: v.id("tenants"),

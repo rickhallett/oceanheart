@@ -1,8 +1,9 @@
 import { mutation, query } from "./_generated/server";
-import type { MutationCtx } from "./_generated/server";
-import type { Id } from "./_generated/dataModel";
+import type { MutationCtx, QueryCtx } from "./_generated/server";
+import type { Doc, Id } from "./_generated/dataModel";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
+import { practiceDayAt } from "./lib/practiceDay";
 
 const taskFilter = v.union(
   v.literal("all"),
@@ -53,22 +54,54 @@ async function taskClient(ctx: MutationCtx, tenantId: Id<"tenants">, clientId: I
   return record;
 }
 
+async function projectTasks(
+  ctx: QueryCtx,
+  tenantId: Id<"tenants">,
+  identity: string,
+  rows: Doc<"tasks">[],
+) {
+  // Clients are owner-only records, but tasks are member-readable. Redact
+  // link identity in the backend so viewer UI cannot accidentally expose it.
+  const membership = await ctx.db
+    .query("memberships")
+    .withIndex("by_tenant_identity", (q) =>
+      q.eq("tenantId", tenantId).eq("identity", identity),
+    )
+    .unique();
+  const isOwner = membership?.role === "owner";
+  return Promise.all(
+    rows.map(async (row) => {
+      const { _id, title, completed, createdAt, revision, dueDate, clientId } = row;
+      // Archived same-tenant links stay intelligible. Missing or malformed
+      // foreign-tenant references read as unlinked.
+      const linked =
+        isOwner && clientId !== undefined ? await ctx.db.get(clientId) : null;
+      const tenantLinked = linked?.tenantId === tenantId ? linked : null;
+      return {
+        _id,
+        title,
+        completed,
+        createdAt,
+        revision: revision ?? 0,
+        ...(dueDate !== undefined ? { dueDate } : {}),
+        ...(tenantLinked
+          ? {
+              clientId: tenantLinked._id,
+              clientName: tenantLinked.name,
+              clientArchived: tenantLinked.archived ?? false,
+            }
+          : {}),
+      };
+    }),
+  );
+}
+
 export const list = query({
   // `filter` is optional so deployed clients using the original list contract
   // keep receiving the complete, active task list.
   args: { tenantId: v.id("tenants"), filter: v.optional(taskFilter) },
   handler: async (ctx, { tenantId, filter = "all" }) => {
     const user = await requireMember(ctx, tenantId);
-    // Clients are owner-only records, but tasks are member-readable. The
-    // backend derives the role and redacts every client link field for
-    // viewers; frontend hiding alone would still leak identity.
-    const membership = await ctx.db
-      .query("memberships")
-      .withIndex("by_tenant_identity", (q) =>
-        q.eq("tenantId", tenantId).eq("identity", user.tokenIdentifier),
-      )
-      .unique();
-    const isOwner = membership?.role === "owner";
     const source =
       filter === "all"
         ? ctx.db
@@ -86,33 +119,51 @@ export const list = query({
             );
     const rows = await source.order("desc").take(201);
     return {
-      items: await Promise.all(
-        rows.slice(0, 200).map(async (row) => {
-          const { _id, title, completed, createdAt, revision, dueDate, clientId } = row;
-          // Archived links stay intelligible: the name resolves with its
-          // archived flag. Deleted records (admin-only) read as unlinked.
-          const linked =
-            isOwner && clientId !== undefined
-              ? await ctx.db.get(clientId)
-              : null;
-          const tenantLinked =
-            linked?.tenantId === tenantId ? linked : null;
-          return {
-            _id,
-            title,
-            completed,
-            createdAt,
-            revision: revision ?? 0,
-            ...(dueDate !== undefined ? { dueDate } : {}),
-            ...(tenantLinked
-              ? {
-                  clientId: tenantLinked._id,
-                  clientName: tenantLinked.name,
-                  clientArchived: tenantLinked.archived ?? false,
-                }
-              : {}),
-          };
-        }),
+      items: await projectTasks(
+        ctx,
+        tenantId,
+        user.tokenIdentifier,
+        rows.slice(0, 200),
+      ),
+      hasMore: rows.length > 200,
+      limit: 200,
+    };
+  },
+});
+
+export const today = query({
+  args: { tenantId: v.id("tenants"), refreshKey: v.number() },
+  handler: async (ctx, { tenantId }) => {
+    const user = await requireMember(ctx, tenantId);
+    const tenant = await ctx.db.get(tenantId);
+    if (!tenant) throw new ConvexError("FORBIDDEN");
+    if (!tenant.timeZone) return { status: "setup_required" as const };
+    const practiceDay = practiceDayAt(tenant.timeZone);
+    if (!practiceDay) return { status: "invalid_time_zone" as const };
+    // Equality is applied by the index before the bounded take, so newer
+    // tasks for other dates can never crowd today's work out of the result.
+    const rows = await ctx.db
+      .query("tasks")
+      .withIndex("by_tenant_removed_due", (q) =>
+        q
+          .eq("tenantId", tenantId)
+          .eq("removedAt", undefined)
+          .eq("dueDate", practiceDay.day),
+      )
+      .order("desc")
+      .take(201);
+    return {
+      status: "ready" as const,
+      day: practiceDay.day,
+      timeZone: practiceDay.timeZone,
+      from: practiceDay.from,
+      to: practiceDay.to,
+      refreshAfterMs: practiceDay.refreshAfterMs,
+      items: await projectTasks(
+        ctx,
+        tenantId,
+        user.tokenIdentifier,
+        rows.slice(0, 200),
       ),
       hasMore: rows.length > 200,
       limit: 200,

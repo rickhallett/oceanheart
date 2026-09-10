@@ -23,11 +23,20 @@ cancelled but cannot be rescheduled through this linked workflow. The backend
 records create/reschedule/cancel transitions. No hard deletes, availability
 promises, public slots, reminders or external messages are included.
 
+The default Today view gives owners a compact read-only summary through the
+separate `bookings:today` query. That query derives `[day start,next day start)`
+from server time and the tenant's stored zone, includes prior-day bookings that
+still overlap, and excludes cancelled rows and either exclusive boundary.
+Callers provide no date bounds. The existing `bookings:list` agenda contract is
+unchanged. Viewers do not start the Today booking query.
+
 ## Verification
 
 Unit tests cover DST gaps/folds, local day boundaries, invalid agenda query
 suppression, retry/pending controls, revision conflicts, overnight display and
 owner-only mounting. Generated API contract checks cover every booking command.
+Native Today checks cover overlap boundaries, cancellation, legacy scheduled
+rows, tenant isolation and the explicit 200-row `hasMore` signal.
 `npm run verify` performs the standard build, TypeScript, unit and browser checks.
 The opt-in real WorkOS runner also creates a linked booking, rejects overlap,
 reschedules overnight, cancels and verifies persistence in a fresh session. It

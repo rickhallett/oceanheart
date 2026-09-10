@@ -5,6 +5,7 @@ import type { Id, Doc } from "./_generated/dataModel";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 import { expectedRevision, requestKey } from "./lib/catalog";
+import { practiceDayAt } from "./lib/practiceDay";
 export const create=mutation({
   args:{tenantId:v.id("tenants"),practitionerId:v.string(),startsAt:v.number(),endsAt:v.number(),clientLabel:v.string(),requestKey:v.string()},
   handler:async(ctx,args)=>{
@@ -56,6 +57,20 @@ export const list=query({
     if(!Number.isSafeInteger(args.from)||!Number.isSafeInteger(args.to)||args.to<=args.from||args.to-args.from>31*MAX_DURATION)throw new ConvexError("INVALID_WINDOW");
     const rows=await ctx.db.query("bookings").withIndex("by_tenant_start",q=>q.eq("tenantId",args.tenantId).gt("startsAt",args.from-MAX_DURATION).lt("startsAt",args.to)).filter(q=>q.and(q.gt(q.field("endsAt"),args.from),args.practitionerId?q.eq(q.field("practitionerId"),args.practitionerId):q.eq(1,1))).take(201);
     return {items:rows.slice(0,200).map(r=>({_id:r._id,startsAt:r.startsAt,endsAt:r.endsAt,clientLabel:r.clientLabel,...(r.clientId?{clientId:r.clientId}:{}),...(r.serviceId?{serviceId:r.serviceId}:{}),...(r.serviceSnapshot?{serviceSnapshot:r.serviceSnapshot}:{}),...(r.timeZone?{timeZone:r.timeZone}:{}),status:r.status??"scheduled",revision:r.revision??0,legacy:!r.serviceSnapshot})),hasMore:rows.length>200,limit:200};
+  },
+});
+
+export const today=query({
+  args:{tenantId:v.id("tenants"),refreshKey:v.number()},
+  handler:async(ctx,{tenantId})=>{
+    await requireMember(ctx,tenantId,true);
+    const tenant=await ctx.db.get(tenantId);
+    if(!tenant)throw new ConvexError("FORBIDDEN");
+    if(!tenant.timeZone)return {status:"setup_required" as const};
+    const day=practiceDayAt(tenant.timeZone);
+    if(!day)return {status:"invalid_time_zone" as const};
+    const rows=await ctx.db.query("bookings").withIndex("by_tenant_start",q=>q.eq("tenantId",tenantId).gt("startsAt",day.from-MAX_DURATION).lt("startsAt",day.to)).filter(q=>q.and(q.gt(q.field("endsAt"),day.from),q.neq(q.field("status"),"cancelled"))).take(201);
+    return {status:"ready" as const,day:day.day,timeZone:day.timeZone,from:day.from,to:day.to,refreshAfterMs:day.refreshAfterMs,items:rows.slice(0,200).map(r=>({_id:r._id,startsAt:r.startsAt,endsAt:r.endsAt,clientLabel:r.clientLabel,...(r.clientId?{clientId:r.clientId}:{}),...(r.serviceId?{serviceId:r.serviceId}:{}),...(r.serviceSnapshot?{serviceSnapshot:r.serviceSnapshot}:{}),...(r.timeZone?{timeZone:r.timeZone}:{}),status:r.status??"scheduled",revision:r.revision??0,legacy:!r.serviceSnapshot})),hasMore:rows.length>200,limit:200};
   },
 });
 export const history=query({

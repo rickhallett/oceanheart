@@ -167,6 +167,38 @@
 .lp-tasks {
   max-width: 680px;
 }
+.lp-today {
+  max-width: 680px;
+}
+.lp-today-date {
+  margin-top: 6px !important;
+}
+.lp-today-group {
+  margin-top: 28px;
+}
+.lp-today-group > h3 {
+  margin-bottom: 12px;
+}
+.lp-today-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+.lp-today-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+  min-height: 42px;
+  margin-bottom: 8px;
+}
+.lp-root .lp-today-title {
+  color: #17212f;
+  overflow-wrap: anywhere;
+}
+.lp-today-list .lp-task-state {
+  margin-left: 0;
+}
 .lp-task-form label {
   display: block;
   margin-bottom: 6px;

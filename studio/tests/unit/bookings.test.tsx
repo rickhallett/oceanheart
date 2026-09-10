@@ -6,8 +6,10 @@ import userEvent from "@testing-library/user-event";
 import {
   BookingForm,
   BookingRow,
+  PracticeBookings,
   RescheduleForm,
   TimeZoneForm,
+  validPracticeTimeZone,
 } from "../../src/components/practice/bookings";
 import {
   bookingTimeChoices,
@@ -18,7 +20,13 @@ import type {
   Booking,
   Client,
   Service,
+  TenantId,
 } from "../../src/components/practice/api";
+vi.mock("convex/react", () => ({
+  useMutation: vi.fn(() => vi.fn()),
+  useQuery: vi.fn(),
+  usePaginatedQuery: vi.fn(),
+}));
 const client = {
   _id: "client",
   name: "Alex",
@@ -97,6 +105,20 @@ it("uses local day boundaries across 23 and 25 hour days", () => {
   expect(() => bookingDay("2011-12-30", "Pacific/Apia")).toThrow(
     "does not exist",
   );
+});
+it("fails closed before mounting an agenda for an invalid saved zone", () => {
+  expect(validPracticeTimeZone("Europe/London")).toBe(true);
+  expect(validPracticeTimeZone("Not/AZone")).toBe(false);
+  expect(validPracticeTimeZone("+01:00")).toBe(false);
+  expect(validPracticeTimeZone()).toBe(false);
+  render(
+    <PracticeBookings
+      tenantId={"practice" as TenantId}
+      timeZone="Not/AZone"
+    />,
+  );
+  expect(screen.getByLabelText("Practice time zone")).toHaveValue("Not/AZone");
+  expect(screen.queryByLabelText("Booking date")).toBeNull();
 });
 it("timezone suggestion is only saved by an explicit action", async () => {
   const save = vi.fn().mockResolvedValue(undefined);

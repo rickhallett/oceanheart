@@ -43,7 +43,7 @@ it("resets paging and unsaved forms when practice changes, and never mounts clie
   // Owner task panels mount the active-client picker; scope the viewer
   // assertion to calls made after the role downgrade.
   vi.mocked(usePaginatedQuery).mockClear();
-  expect(screen.getByRole("button", { name: "Tasks" })).toHaveAttribute(
+  expect(screen.getByRole("button", { name: "Today" })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
@@ -74,7 +74,7 @@ it("removes owner-only client data immediately when the practice role changes", 
   expect(
     screen.queryByRole("heading", { name: "Clients" }),
   ).not.toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Tasks" })).toBeVisible();
+  expect(screen.getByRole("heading", { name: "Today" })).toBeVisible();
 });
 
 it("role downgrade unmounts the private booking agenda and prevents further booking reads", async () => {

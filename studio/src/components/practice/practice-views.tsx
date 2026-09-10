@@ -8,6 +8,7 @@ import { PracticeEnquiries } from "./enquiries";
 import { PracticeBookings } from "./bookings";
 import { TaskPanel } from "./practice-ui";
 import { PracticeSettings } from "./settings";
+import { PracticeToday } from "./today";
 import {
   ServicesPanel,
   ClientsPanel,
@@ -172,7 +173,7 @@ function PracticeContent({
   gmailStatus?: string;
 }) {
   const [section, setSection] = useState<PracticeSection>(
-    canWrite && gmailStatus ? "gmail" : "tasks",
+    canWrite && gmailStatus ? "gmail" : "today",
   );
   const [enquiryId, setEnquiryId] = useState<EnquiryId>();
   const [clientFocus, setClientFocus] = useState<
@@ -189,7 +190,13 @@ function PracticeContent({
           setSection(next);
         }}
       />
-      {section === "tasks" ? (
+      {section === "today" ? (
+        <PracticeToday
+          tenantId={tenantId}
+          canWrite={canWrite}
+          openBookings={() => setSection("bookings")}
+        />
+      ) : section === "tasks" ? (
         <PracticeTasks
           tenantId={tenantId}
           canWrite={canWrite}

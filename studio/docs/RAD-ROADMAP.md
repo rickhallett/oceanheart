@@ -34,6 +34,12 @@ The existing `backend/` implements tenant membership and atomic booking create/l
 
 WorkOS AuthKit and the persisted Convex task foundation are accepted. Service and client create/list, revision-safe editing, reversible archives and client name/email search are accepted. Manual owner scheduling with active client/service linkage, immutable booked terms, explicit practice timezone and conflict-safe reschedule/cancel is accepted. This batch adds manual enquiries, unsent reply drafts and deliberate atomic client/booking conversion. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
 
+The next compact `/practice` increment adds a default Today view over the real
+task and booking records. Server time plus the saved practice IANA zone is
+authoritative; the client only triggers rollover refresh. Task selection occurs
+before the 200-row cap, owner booking summaries use half-open overlap semantics,
+and viewers never query bookings or receive client-link identity.
+
 ## RAD delivery loop
 
 For each slice: define one user outcome and acceptance example; implement UI + server + permissions together; use synthetic fixtures; test happy path plus the consequential failure (tenant isolation, conflict, duplicate delivery); review desktop/mobile; merge to development. Release intentionally after acceptance. Stop adding polish unrelated to the current outcome unless it violates the canonical guide.

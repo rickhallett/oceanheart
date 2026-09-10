@@ -28,6 +28,7 @@ export function PracticeBookings({
   timeZone?: string;
 }) {
   const setZone = useMutation(practiceApi.setTimeZone);
+  const agendaTimeZone = validPracticeTimeZone(timeZone) ? timeZone : undefined;
   return (
     <section className="lp-bookings-workspace">
       <h2>Bookings</h2>
@@ -42,11 +43,24 @@ export function PracticeBookings({
           })
         }
       />
-      {timeZone && (
-        <BookingAgenda key={timeZone} tenantId={tenantId} timeZone={timeZone} />
+      {agendaTimeZone && (
+        <BookingAgenda
+          key={agendaTimeZone}
+          tenantId={tenantId}
+          timeZone={agendaTimeZone}
+        />
       )}
     </section>
   );
+}
+export function validPracticeTimeZone(value?: string): value is string {
+  if (!value || /^[+-]/.test(value)) return false;
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone: value }).format();
+    return true;
+  } catch {
+    return false;
+  }
 }
 export function TimeZoneForm({
   current,
@@ -64,10 +78,7 @@ export function TimeZoneForm({
     event.preventDefault();
     if (busy.current || conflict) return;
     const zone = value.trim();
-    try {
-      new Intl.DateTimeFormat("en-GB", { timeZone: zone }).format();
-      if (!zone || /^[+-]/.test(zone)) throw Error();
-    } catch {
+    if (!validPracticeTimeZone(zone)) {
       setError("Enter a valid IANA time zone, such as Europe/London.");
       return;
     }

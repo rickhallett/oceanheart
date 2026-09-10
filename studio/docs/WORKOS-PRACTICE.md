@@ -56,6 +56,17 @@ the desired boolean, and the list reflects saved query data. Switching practice
 remounts task controls to discard unsaved input. Reload reads the backend anew.
 The initial list is bounded at 200 newest tasks and reports when more exist.
 
+Today is the default selected-practice view for owners and viewers. Its date is
+derived by Convex from server time and the practice's saved IANA time zone; the
+browser sends only a refresh key and cannot select the day or booking window.
+It shows active tasks due on that practice date, including open and completed
+work. Owners also see scheduled bookings overlapping the half-open local-day
+window; viewers never start that private query or receive client-link fields.
+Missing or invalid zones fail closed with an explicit setup state, and the
+owner action opens Bookings, where the time zone is actually editable. Results
+are bounded at 200 with visible truncation copy and refresh just after the
+server-calculated next practice midnight.
+
 ## Verification
 
 `npm run verify` includes a production build, TypeScript, isolated component
@@ -63,6 +74,10 @@ and API contract tests, and desktop/mobile Playwright checks. Component tests
 exercise failure/retry semantics and view-only controls; they do not establish
 real WorkOS token issuance or hosted persistence. Type-level tests compare the
 small frontend references with the generated backend arguments and results.
+Focused Today tests cover 23/25-hour London dates, owner/viewer mounting,
+explicit setup states and rollover-timer cleanup. Native backend acceptance
+adds task pre-limit selection, booking boundaries and permission/redaction
+checks.
 
 For secretless checks in a locally configured checkout, override the five auth
 variables to empty for the whole command. Do not run the state-changing browser
