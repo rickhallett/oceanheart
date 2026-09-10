@@ -171,12 +171,16 @@ export const today = query({
   },
 });
 
-export async function createTask(ctx: MutationCtx, {tenantId,title:rawTitle,requestKey,dueDate:rawDueDate,clientId:rawClientId}: {tenantId:Id<"tenants">;title:string;requestKey:string;dueDate?:string;clientId?:Id<"clients">}) {
+export async function createTask(ctx: MutationCtx, {tenantId,title:rawTitle,requestKey,dueDate:rawDueDate,clientId:rawClientId}: {tenantId:Id<"tenants">;title:string;requestKey:string;dueDate?:string;clientId?:Id<"clients">}, approval = false) {
     const user = await requireMember(ctx, tenantId, true);
     const normalizedTitle = taskTitle(rawTitle);
     const normalizedDueDate =
       rawDueDate === undefined ? undefined : taskDueDate(rawDueDate);
     if (!requestKey || requestKey.trim() !== requestKey || requestKey.length > 128)
+      throw new ConvexError("INVALID_REQUEST_KEY");
+    if (requestKey.startsWith("proposal:") && !approval)
+      throw new ConvexError("RESERVED_REQUEST_KEY");
+    if (approval && !requestKey.startsWith("proposal:"))
       throw new ConvexError("INVALID_REQUEST_KEY");
     const existing = await ctx.db
       .query("tasks")
@@ -185,6 +189,9 @@ export async function createTask(ctx: MutationCtx, {tenantId,title:rawTitle,requ
       )
       .unique();
     if (existing) {
+      // Only the proposal execution receipt may replay an approved action.
+      // A pre-existing task cannot prove that approval created it.
+      if (approval) throw new ConvexError("PROPOSAL_TASK_COLLISION");
       // The create receipt is deliberately independent from later edits or
       // removal, so a lost original response cannot create a second task.
       // The receipt includes the original due date: retrying the original
@@ -246,7 +253,7 @@ export const create = mutation({
     dueDate: v.optional(v.string()),
     clientId: v.optional(v.id("clients")),
   },
-  handler: createTask,
+  handler: (ctx, args) => createTask(ctx, args),
 });
 
 export const setCompleted = mutation({

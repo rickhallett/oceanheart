@@ -147,7 +147,7 @@ export const approve = mutation({
       tenantId: p.tenantId,
       ...p.task,
       requestKey: `proposal:${p._id}`,
-    });
+    }, true);
     await ctx.db.patch(p._id, {
       status: "executed",
       taskId,

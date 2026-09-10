@@ -74,6 +74,28 @@ export async function approvedActionChecks({
   check(
     "immutable normalized proposal is retryable and has no task effect before approval",
   );
+  // Public callers cannot manufacture an approval execution receipt.
+  await assert.rejects(alice.mutation("tasks:create", {
+    tenantId, ...base.task, requestKey: `proposal:${id}`,
+  }), /RESERVED_REQUEST_KEY/);
+  assert.equal(await count(), 0);
+  const collision = await prepare("legacy-collision");
+  await alter({ proposalId: collision, precreateTask: true });
+  await assert.rejects(alice.mutation("approvedActions:approve", {
+    tenantId, proposalId: collision,
+  }), /PROPOSAL_TASK_COLLISION/);
+  const blocked = await alice.query("approvedActions:get", { tenantId, proposalId: collision });
+  assert.equal(blocked.status, "pending");
+  assert.equal(blocked.taskId, null);
+  assert.equal(await count(), 1);
+  const legacyTask = (await alice.query("tasks:list", { tenantId })).items[0];
+  await alice.mutation("tasks:remove", { tenantId, taskId: legacyTask._id, expectedRevision: 0 });
+  const ordinary = { tenantId, title: "Ordinary manual task", requestKey: "ordinary-retry" };
+  const ordinaryId = await alice.mutation("tasks:create", ordinary);
+  await alice.mutation("tasks:remove", { tenantId, taskId: ordinaryId, expectedRevision: 0 });
+  assert.equal(await alice.mutation("tasks:create", ordinary), ordinaryId);
+  assert.equal(await count(), 0);
+  check("reserved public keys and pre-existing proposal collisions fail closed; ordinary removed-task receipts replay");
   for (const denied of [bob, viewer, anonymous])
     for (const [kind, fn, args] of [
       ["query", "get", { tenantId, proposalId: id }],
