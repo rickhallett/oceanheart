@@ -1,3 +1,4 @@
+import { approvedActionChecks } from "./approved-action-checks.mjs";
 import { citedAnswerChecks } from "./cited-answer-checks.mjs";
 import { sourceLibraryChecks } from "./source-library-checks.mjs";
 import {gmailChecks} from "./gmail-checks.mjs";
@@ -112,6 +113,10 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
+  await writeFile(resolve(runDir,"convex/approvedActionTest.ts"), `import {internalMutation} from "./_generated/server";
+import {v} from "convex/values";
+export const alter=internalMutation({args:{proposalId:v.optional(v.id("actionProposals")),expiresAt:v.optional(v.number()),tenantId:v.optional(v.id("tenants")),demoteOwner:v.optional(v.boolean()),makeSecondOwner:v.optional(v.boolean()),precreateTask:v.optional(v.boolean())},handler:async(ctx,args)=>{if(args.makeSecondOwner&&args.tenantId)await ctx.db.insert("memberships",{tenantId:args.tenantId,identity:"${issuer}|bob",role:"owner"});if(args.precreateTask&&args.proposalId){const p=await ctx.db.get(args.proposalId);if(!p)throw new Error("Missing proposal");await ctx.db.insert("tasks",{tenantId:p.tenantId,...p.task,creationTitle:p.task.title,creationDueDate:p.task.dueDate,completed:false,revision:0,createdAt:Date.now(),createdBy:p.actor,requestKey:"proposal:"+p._id});}if(args.proposalId&&args.expiresAt!==undefined)await ctx.db.patch(args.proposalId,{expiresAt:args.expiresAt});if(args.demoteOwner&&args.tenantId){const members=await ctx.db.query("memberships").withIndex("by_tenant_identity",q=>q.eq("tenantId",args.tenantId!)).collect();for(const m of members)if(m.role==="owner")await ctx.db.patch(m._id,{role:"viewer"});}}});
+`);
   // Malformed pointer fixture is installed only in this disposable local backend.
   await writeFile(resolve(runDir,"convex/sourceLibraryTest.ts"), `import {internalMutation} from "./_generated/server";
 import {v} from "convex/values";
@@ -225,7 +230,7 @@ export const transition=action({args:{name:v.union(v.literal("reserve"),v.litera
     { recursive: true },
   );
   assert.equal(
-    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest") && !line.includes("paymentTest")).join("\n"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest") && !line.includes("paymentTest") && !line.includes("approvedActionTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -249,7 +254,9 @@ export const transition=action({args:{name:v.union(v.literal("reserve"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
-  if (process.env.STUDIO_INTEGRATION_SLICE === "cited-answers") {
+  if (process.env.STUDIO_INTEGRATION_SLICE === "approved-actions") {
+    await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "cited-answers") {
     await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
   } else if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
     await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
@@ -615,6 +622,7 @@ export const transition=action({args:{name:v.union(v.literal("reserve"),v.litera
   await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
   }
   if (!process.env.STUDIO_INTEGRATION_SLICE) await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

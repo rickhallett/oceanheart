@@ -144,3 +144,20 @@
   color: #657389;
   overflow-wrap: anywhere;
 }
+
+.approved-task {
+  margin: 28px 0;
+  max-width: 840px;
+}
+.approved-task label {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0;
+}
+.approved-task p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.approved-task h3 {
+  font-size: 16px;
+}
