@@ -9,7 +9,7 @@ import {
   proposalEvidence,
   PROPOSAL_LIFETIME_MS,
 } from "./lib/actionContract";
-import { createTask, taskTitle, taskDueDate } from "./tasks";
+import { createTask, setTaskCompleted, taskTitle, taskDueDate } from "./tasks";
 import { resolveCurrent } from "./citedAnswers";
 const identify = {
   tenantId: v.id("tenants"),
@@ -42,9 +42,24 @@ async function evidence(
   );
 }
 async function current(ctx: QueryCtx, p: Doc<"actionProposals">) {
-  if (p.action !== "task.create" || p.version !== 1)
+  if (!["task.create", "task.complete"].includes(p.action) || p.version !== 1)
     throw new ConvexError("INVALID_ACTION");
   if (Date.now() >= p.expiresAt) throw new ConvexError("PROPOSAL_EXPIRED");
+  if (p.action === "task.complete") {
+    if (!p.target) throw new ConvexError("INVALID_ACTION");
+    const task = await ctx.db.get(p.target.taskId);
+    if (!task || task.tenantId !== p.tenantId)
+      throw new ConvexError("FORBIDDEN");
+    if (
+      task.removedAt !== undefined ||
+      task.completed ||
+      (task.revision ?? 0) !== p.target.revision ||
+      task.title !== p.task.title ||
+      task.dueDate !== p.task.dueDate
+    )
+      throw new ConvexError("TASK_CHANGED");
+    return;
+  }
   const revisions = await evidence(ctx, p);
   if (
     revisions.some((r, i) => r !== p.sourceRevisions[i]) ||
@@ -105,6 +120,71 @@ export const prepare = mutation({
     });
   },
 });
+export const prepareCompletion = mutation({
+  args: {
+    tenantId: v.id("tenants"),
+    taskId: v.id("tasks"),
+    expectedRevision: v.number(),
+    requestKey: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const actor = await requireMember(ctx, args.tenantId, true);
+    checkKey(args.requestKey);
+    if (
+      !Number.isSafeInteger(args.expectedRevision) ||
+      args.expectedRevision < 0
+    )
+      throw new ConvexError("INVALID_REVISION");
+    const payload = JSON.stringify({
+      action: "task.complete",
+      taskId: args.taskId,
+      revision: args.expectedRevision,
+    });
+    const prior = await ctx.db
+      .query("actionProposals")
+      .withIndex("by_tenant_request", (q) =>
+        q.eq("tenantId", args.tenantId).eq("requestKey", args.requestKey),
+      )
+      .unique();
+    if (prior) {
+      if (
+        prior.actor !== actor.tokenIdentifier ||
+        prior.creationPayload !== payload
+      )
+        throw new ConvexError("IDEMPOTENCY_MISMATCH");
+      return prior._id;
+    }
+    const task = await ctx.db.get(args.taskId);
+    if (!task || task.tenantId !== args.tenantId)
+      throw new ConvexError("FORBIDDEN");
+    if (
+      task.removedAt !== undefined ||
+      task.completed ||
+      (task.revision ?? 0) !== args.expectedRevision
+    )
+      throw new ConvexError("TASK_CHANGED");
+    const now = Date.now();
+    return ctx.db.insert("actionProposals", {
+      tenantId: args.tenantId,
+      actor: actor.tokenIdentifier,
+      action: "task.complete",
+      version: 1,
+      task: {
+        title: task.title,
+        ...(task.dueDate !== undefined ? { dueDate: task.dueDate } : {}),
+      },
+      target: { taskId: task._id, revision: args.expectedRevision },
+      references: [],
+      citations: [],
+      sourceRevisions: [],
+      requestKey: args.requestKey,
+      creationPayload: payload,
+      status: "pending",
+      createdAt: now,
+      expiresAt: now + PROPOSAL_LIFETIME_MS,
+    });
+  },
+});
 export const get = query({
   args: identify,
   handler: async (ctx, args) => {
@@ -117,13 +197,16 @@ export const get = query({
       } catch {
         eligible = false;
         reason =
-          "The proposal expired or its source approval changed. Prepare a new proposal.";
+          p.action === "task.complete"
+            ? "The task changed or this proposal expired. Prepare a new proposal."
+            : "The proposal expired or its source approval changed. Prepare a new proposal.";
       }
     return {
       proposalId: p._id,
       action: p.action,
       version: p.version,
       task: p.task,
+      target: p.target ?? null,
       status: p.status,
       expiresAt: p.expiresAt,
       taskId: p.taskId ?? null,
@@ -143,11 +226,23 @@ export const approve = mutation({
     }
     if (p.status !== "pending") throw new ConvexError("PROPOSAL_REJECTED");
     await current(ctx, p);
-    const taskId = await createTask(ctx, {
-      tenantId: p.tenantId,
-      ...p.task,
-      requestKey: `proposal:${p._id}`,
-    }, true);
+    const taskId =
+      p.action === "task.complete"
+        ? await setTaskCompleted(ctx, {
+            tenantId: p.tenantId,
+            taskId: p.target!.taskId,
+            expectedRevision: p.target!.revision,
+            completed: true,
+          })
+        : await createTask(
+            ctx,
+            {
+              tenantId: p.tenantId,
+              ...p.task,
+              requestKey: `proposal:${p._id}`,
+            },
+            true,
+          );
     await ctx.db.patch(p._id, {
       status: "executed",
       taskId,
