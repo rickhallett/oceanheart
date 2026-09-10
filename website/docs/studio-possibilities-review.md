@@ -80,3 +80,5 @@ Selected hero: Kai chose study 5 (split title, generated source `exec-bdbb89f3-5
 ## Gentle motion
 
 Scenario, step, connection and product changes use a cancellable 240ms fade/4px lift without remounting controls or live regions. Reduced-motion preference suppresses these effects. Buttons and links gently transition their visual states; expandable sections animate opening, with height transitions in supporting browsers. Product motion is opt-in for this variant. TypeScript and production build passed. Live browser motion verification was unavailable in this tool session.
+
+Motion refinement: removed translation and reduced opacity change to 72–100% over 600ms. Start before paint to avoid a full-opacity flash. Control transitions now 350ms; accordion height 500ms. TypeScript passed. Supersedes the original 240ms motion treatment.

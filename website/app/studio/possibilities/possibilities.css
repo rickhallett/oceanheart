@@ -183,13 +183,13 @@
 .p-foundation-art { display: block; width: 100%; height: auto; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .possibilities-page :is(button, a, summary) { transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
-  .possibilities-page .journey-steps button > span { transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease; }
-  .possibilities-page details[open] .p-expanded { animation: p-soft-reveal 240ms ease-out; }
+  .possibilities-page :is(button, a, summary) { transition: color 350ms ease, background-color 350ms ease, border-color 350ms ease, box-shadow 350ms ease; }
+  .possibilities-page .journey-steps button > span { transition: color 350ms ease, background-color 350ms ease, border-color 350ms ease; }
+  .possibilities-page details[open] .p-expanded { animation: p-soft-reveal 600ms ease; }
   @supports (interpolate-size: allow-keywords) {
     .possibilities-page details { interpolate-size: allow-keywords; }
-    .possibilities-page details::details-content { height: 0; overflow: clip; transition: height 240ms ease, content-visibility 240ms allow-discrete; }
+    .possibilities-page details::details-content { height: 0; overflow: clip; transition: height 500ms ease, content-visibility 500ms allow-discrete; }
     .possibilities-page details[open]::details-content { height: auto; }
   }
 }
-@keyframes p-soft-reveal { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes p-soft-reveal { from { opacity: .72; } to { opacity: 1; } }
