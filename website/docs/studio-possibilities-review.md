@@ -70,3 +70,7 @@ This revision passed production build and TypeScript. Browser inspection covered
 ## Second visual revision
 
 Replaced the foundation circles with ImageGen artwork using the page palette (#255BD7, #17212F, #F4F7FD, #EDF3FF, #ADC3EF and white), retaining equivalent accessible alt text. Removed the links and result tagline. Applied the requested hero, button, Google outcome, collaboration and closing copy verbatim. Increased portrait side fading and enlarged desktop hero art from a 420px to 490px maximum with a wider grid allocation. Build and TypeScript passed; generated graphic, larger poster and portrait inspected in the browser. Original artwork preserved.
+
+## Six hero studies
+
+Six ImageGen edits of the approved light poster isolate the palm, building and flame effects and explore text placement: image only, title above, caption below, text alongside, split title and opposite corners. Originals are preserved; no main-page hero selection changed. Comparison route: `/studio/possibilities/artwork`, marked noindex. All six assets verified loaded in the local browser; build passed. Files: `public/images/studio-possibilities/hero-study-1.png` through `hero-study-6.png`.
