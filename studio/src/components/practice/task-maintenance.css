@@ -32,6 +32,13 @@
   width: 100%;
 }
 
+.lp-root .lp-task-client {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
 .lp-task-editor,
 .lp-task-remove {
   margin: 4px 0 12px 28px;

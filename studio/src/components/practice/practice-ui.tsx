@@ -639,6 +639,7 @@ function TaskRow({
         {task.clientName !== undefined &&
           (openClient ? (
             <button
+              className="lp-task-client"
               type="button"
               aria-label={`View ${task.clientName} in Clients`}
               onClick={() =>
