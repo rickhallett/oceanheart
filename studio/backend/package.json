@@ -9,6 +9,7 @@
     "test:integration": "node --test scripts/gmail-security.test.mjs scripts/fixture-membership.test.mjs scripts/browser-credentials.test.mjs scripts/auth-policy.test.mjs scripts/process-lifecycle.test.mjs && node scripts/integration.mjs"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "0.5.1",
     "convex": "1.45.0"
   },
   "devDependencies": {

@@ -21,6 +21,7 @@ const settings: Settings = {
   contactPhone: "01234 567890",
   address: "1 Seaside Road",
   revision: 2,
+  enforceBookingHours: false,
   availability: {
     monday: { open: "09:00", close: "17:30" },
     tuesday: null,
@@ -36,6 +37,7 @@ const remote: Settings = {
   tagline: "Remote edit",
   contactEmail: "remote@example.com",
   revision: 3,
+  enforceBookingHours: true,
   availability: {
     monday: { open: "08:00", close: "16:00" },
     tuesday: null,
@@ -49,6 +51,7 @@ const remote: Settings = {
 const legacy: Settings = {
   name: "Legacy practice",
   revision: 0,
+  enforceBookingHours: false,
   availability: {
     monday: null,
     tuesday: null,
@@ -88,6 +91,7 @@ it("loads and shows saved details with the enabled weekdays and time zone note",
   expect(screen.getByLabelText("Wednesday opening time")).toHaveValue("09:30");
   expect(screen.getByLabelText("Wednesday closing time")).toHaveValue("13:00");
   expect(screen.getByText(/Europe\/London/)).toBeVisible();
+  expect(screen.getByRole("checkbox", { name: /Enforce weekly hours/ })).not.toBeChecked();
 });
 it("legacy practices without settings open as all days closed with empty details", () => {
   vi.mocked(useQuery).mockReturnValue(legacy);
@@ -106,6 +110,8 @@ it("legacy practices without settings open as all days closed with empty details
     expect(dayToggle(day)).not.toBeChecked();
   }
   expect(screen.getByLabelText("Monday opening time")).toBeDisabled();
+  expect(screen.getByRole("checkbox", { name: /Enforce weekly hours/ })).toBeDisabled();
+  expect(screen.getByText(/Save a practice time zone in Bookings first/)).toBeVisible();
 });
 it("turning a closed day on applies the 09:00–17:00 defaults", async () => {
   const user = userEvent.setup();
@@ -133,11 +139,14 @@ it("sends a trimmed payload with one interval per open day and omits blanks", as
   const user = userEvent.setup();
   const update = vi.fn().mockResolvedValue(3);
   vi.mocked(useMutation).mockReturnValue(update as never);
-  render(<PracticeSettings tenantId={tenantId} canWrite />);
+  render(
+    <PracticeSettings tenantId={tenantId} canWrite timeZone="Europe/London" />,
+  );
   await user.clear(screen.getByLabelText("Tagline (optional)"));
   await user.type(screen.getByLabelText("Tagline (optional)"), "  New line  ");
   await user.clear(screen.getByLabelText("Contact email (optional)"));
   await user.click(dayToggle("Tuesday"));
+  await user.click(screen.getByRole("checkbox", { name: /Enforce weekly hours/ }));
   await user.click(saveButton());
   expect(update.mock.calls[0][0]).toEqual({
     tenantId,
@@ -147,6 +156,7 @@ it("sends a trimmed payload with one interval per open day and omits blanks", as
     tagline: "New line",
     contactPhone: "01234 567890",
     address: "1 Seaside Road",
+    enforceBookingHours: true,
     availability: {
       monday: { open: "09:00", close: "17:30" },
       tuesday: { open: "09:00", close: "17:00" },
@@ -158,6 +168,23 @@ it("sends a trimmed payload with one interval per open day and omits blanks", as
     },
   });
   expect(screen.getByRole("status")).toHaveTextContent("Settings saved.");
+});
+it("keeps an unsaved enforcement change through a reactive conflict", async () => {
+  const user = userEvent.setup();
+  const update = vi.fn().mockResolvedValue(3);
+  vi.mocked(useMutation).mockReturnValue(update as never);
+  const view = render(
+    <PracticeSettings tenantId={tenantId} canWrite timeZone="Europe/London" />,
+  );
+  await user.click(screen.getByRole("checkbox", { name: /Enforce weekly hours/ }));
+  vi.mocked(useQuery).mockReturnValue(remote);
+  view.rerender(
+    <PracticeSettings tenantId={tenantId} canWrite timeZone="Europe/London" />,
+  );
+  expect(screen.getByRole("checkbox", { name: /Enforce weekly hours/ })).toBeChecked();
+  expect(screen.getByRole("alert")).toHaveTextContent("changed elsewhere");
+  await user.click(screen.getByRole("button", { name: "Load latest settings" }));
+  expect(screen.getByRole("checkbox", { name: /Enforce weekly hours/ })).toBeChecked();
 });
 it("keeps entered values after a failed save and retries with the same snapshot", async () => {
   const user = userEvent.setup();
@@ -255,6 +282,7 @@ it("a tenant switch at the same revision never leaks the prior draft", async () 
   const other: Settings = {
     name: "Other practice",
     revision: 0,
+    enforceBookingHours: false,
     availability: {
       monday: null,
       tuesday: null,
@@ -319,6 +347,7 @@ it("viewers see the saved values read-only without owner actions", () => {
   expect(screen.getByText("View-only access")).toBeVisible();
   expect(screen.getByLabelText("Practice name")).toBeDisabled();
   expect(dayToggle("Tuesday")).toBeDisabled();
+  expect(screen.getByRole("checkbox", { name: /Enforce weekly hours/ })).toBeDisabled();
   expect(
     screen.queryByRole("button", { name: "Save settings" }),
   ).not.toBeInTheDocument();

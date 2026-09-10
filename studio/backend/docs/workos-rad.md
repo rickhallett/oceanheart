@@ -94,13 +94,17 @@ Before hosted catalogue checks change viewer membership, the runner durably reco
 
 ## Manual booking workflow
 
-One practice has one calendar lane. This is owner-operated booking, not a public availability system: working hours, buffers, external calendar sync, notifications and payments are outside this increment.
+One practice has one calendar lane. This is owner-operated booking, not a public availability system. Saved weekly hours can be enforced for owner writes through an explicit tenant opt-in that defaults off; buffers, exceptions, external calendar sync, notifications, payments and public booking remain outside this increment.
 
 Owners explicitly save `tenants.setTimeZone({tenantId,timeZone,expectedTimeZone})`; `expectedTimeZone` is the last value or null. An identical value is retry-safe; divergent stale changes fail `REVISION_CONFLICT`. The named time zone is validated by the backend runtime; fixed numeric offsets are rejected. `Europe/London` may be suggested by the UI but is never selected from the browser or saved automatically. `tenants.list` includes the saved optional `timeZone`.
 
 - `bookings.createLinked({tenantId,clientId,serviceId,startsAt,requestKey})` validates owner membership and active tenant-local references, derives end time from service duration, and captures immutable `{name,durationMinutes,priceMinor,currency}` service terms, client label and the saved practice time zone. It fails `TIME_ZONE_REQUIRED` until setup is explicit. The request key and original linked creation payload preserve retry identity even after rescheduling, cancellation or referenced-record edits/archive. New bookings use server-owned lane key `practice`; it is not an authorization input.
 - `bookings.reschedule({tenantId,bookingId,startsAt,expectedRevision})` moves a linked booking while preserving its ID, snapshot duration, original booked-at time zone, client and service. Same desired time is a no-op retry; stale divergent changes fail. Cancelled bookings cannot be moved. Legacy unlinked records return `LEGACY_BOOKING` rather than inventing a service snapshot.
 - `bookings.cancel({tenantId,bookingId,expectedRevision})` marks a linked or legacy booking cancelled without deletion, retaining terms and identity. Repeated cancellation is a no-op; stale first cancellation fails. Cancellation releases its interval.
+
+`settings.update` accepts optional `enforceBookingHours`; current clients send it explicitly while omitted values from older callers preserve the stored flag. Enabling requires a saved tenant time zone. When enabled, `bookings.createLinked`, compatibility `bookings.create`, `bookings.reschedule` and enquiry booking creation read the tenant row inside the same mutation and require the entire half-open elapsed interval to fit one continuous saved weekday segment. Exact close is allowed; closed days and midnight crossings are not. Repeated-hour boundaries apply to every real occurrence, but a booking cannot bridge a disallowed fold segment. A nonexistent opening or closing makes that local day unavailable. Existing bookings are not rewritten.
+
+Linked and legacy create receipt lookups, same-time reschedule retries and `enquiryConversions` receipts remain ahead of mutable hours checks. An exact retry therefore returns its original ID/result after hours or time-zone changes; a genuinely new write uses current settings. A failed enquiry conversion rolls back any client, link, event and receipt created in that mutation. Hours failures use `OUTSIDE_PRACTICE_HOURS`; missing or malformed enforced zones continue to fail closed with `TIME_ZONE_REQUIRED` or `INVALID_TIME_ZONE`.
 
 All times are safe-integer UTC milliseconds within the supported Date range, intervals are positive and at most 24 hours, and duration is elapsed time. The UI resolves local input using the saved practice zone, rejects daylight-saving gaps, and requires an explicit earlier/later choice for repeated local times before submitting an exact instant. The backend does not infer wall-clock intent from UTC. The agenda displays instants in the current practice zone; original booking time-zone snapshots remain available if setup changes. [Temporal time-zone ambiguity](https://tc39.es/proposal-temporal/docs/timezone.html).
 
@@ -125,14 +129,17 @@ ready date, zone, window, refresh delay, items and pagination fields.
 The Today database change is one additive task index on
 `tenantId,removedAt,dueDate`; existing rows need no backfill and no stored record
 is rewritten. The earlier booking changes remain additive optional booking
-fields, an optional tenant time zone, a tenant/start index and the events table.
+fields, an optional tenant time zone, an optional tenant enforcement flag, a
+tenant/start index and the events table.
 No import, hosted deployment or historical-record mutation is required by this
 code change. Preserve the existing client-search backfill readiness requirement
 from the prior increment. Native acceptance covers snapshot persistence,
 linked/legacy collision interoperability, owner-only contacts and history,
 archived/foreign references, concurrent identical/different creates,
 concurrent divergent reschedules, cancellation and original-create retries,
-Today boundaries/caps/redaction, and audit transition order.
+Today boundaries/caps/redaction, whole-interval weekly-hours enforcement,
+conversion rollback, receipt replay after settings changes, and audit
+transition order.
 
 Standalone root-operated hosted booking acceptance is `node scripts/hosted-booking-acceptance.mjs`, with the existing explicit staging gates/private credentials path and `STUDIO_BOOKING_TEST_START_MS` set to an exact future UTC millisecond instant. It authenticates existing synthetic users, creates two isolated practice fixtures with recorded request keys/IDs, and runs only the new booking workflow checks. It records prior fixture time-zone/membership state before changing those fields; existing practices are not modified. New fixture records/time zones are intentionally retained for inspection, with no claim that unset time zones can be restored by the current setter. There is no account creation, catalogue-management regression loop, import, migration, reset or automatic deletion. Tokens remain memory-only and the private report contains exact created record IDs.
 

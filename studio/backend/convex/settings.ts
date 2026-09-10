@@ -20,6 +20,7 @@ export const get = query({
       ...(current.contactPhone ? { contactPhone: current.contactPhone } : {}),
       ...(current.address ? { address: current.address } : {}),
       availability: current.availability,
+      enforceBookingHours: current.enforceBookingHours,
     };
   },
 });
@@ -33,13 +34,13 @@ export const update = mutation({
     contactPhone: v.optional(v.string()),
     address: v.optional(v.string()),
     availability: availabilityObject,
+    enforceBookingHours: v.optional(v.boolean()),
     expectedRevision: v.number(),
     expectedTimeZone: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
     await requireMember(ctx, args.tenantId, true);
     catalog.expectedRevision(args.expectedRevision);
-    const data = settingsFields(args);
     const tenant = await ctx.db.get(args.tenantId);
     if (!tenant) throw new ConvexError("FORBIDDEN");
     // Availability intervals are wall-clock times in the practice time zone.
@@ -48,6 +49,15 @@ export const update = mutation({
     if ((tenant.timeZone ?? null) !== args.expectedTimeZone)
       throw new ConvexError("TIME_ZONE_CHANGED");
     const current = currentSettings(tenant);
+    const data = settingsFields({
+      ...args,
+      // Older callers omit this field. Preserve an existing opt-in instead
+      // of silently turning it off during an unrelated settings save.
+      enforceBookingHours:
+        args.enforceBookingHours ?? current.enforceBookingHours,
+    });
+    if (data.enforceBookingHours && !tenant.timeZone)
+      throw new ConvexError("TIME_ZONE_REQUIRED");
     // Accept a retried already-applied desired state without bumping the
     // revision; a divergent stale edit is rejected below.
     if (canonical(current) === canonical(data))
@@ -61,6 +71,7 @@ export const update = mutation({
       contactPhone: data.contactPhone,
       address: data.address,
       availability: data.availability,
+      enforceBookingHours: data.enforceBookingHours,
       revision: (tenant.revision ?? 0) + 1,
     });
     return (tenant.revision ?? 0) + 1;

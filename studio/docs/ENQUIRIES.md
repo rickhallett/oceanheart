@@ -14,7 +14,8 @@ move the window start to narrow incomplete results. Practice timezone and DST
 rules are shared with Bookings.
 
 The backend converts enquiry, client and booking in one transaction. An overlap
-failure rolls back the new records and leaves form values available to correct.
+or enabled practice-hours failure rolls back the new records and leaves form
+values available to correct.
 Stable request keys make retries safe. Existing links cannot be reassigned, and
 conversion does not resolve the enquiry automatically. Detail shows the linked
 client and appointment time/status so the outcome is visible. Draft and status

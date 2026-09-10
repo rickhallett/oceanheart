@@ -246,6 +246,7 @@ it("overnight rows display both dates and saved terms, legacy rows only allow ca
 it.each([
   ["ARCHIVED_RECORD", "Choose an active record"],
   ["BOOKING_CANCELLED", "has been cancelled"],
+  ["OUTSIDE_PRACTICE_HOURS", "saved weekly hours"],
   ["INVALID_TIME_ZONE", "valid IANA time zone"],
 ])(
   "maps the actual %s booking error without exposing internals",
