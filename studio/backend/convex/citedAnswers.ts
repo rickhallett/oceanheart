@@ -98,7 +98,7 @@ async function snapshot(
     passages: retrieve(args.question, sources),
   };
 }
-async function resolveCurrent(
+export async function resolveCurrent(
   ctx: QueryCtx,
   args: {
     tenantId: Id<"tenants">;

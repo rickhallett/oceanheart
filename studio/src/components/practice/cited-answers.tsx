@@ -11,6 +11,7 @@ import type { Id } from "../../../backend/convex/_generated/dataModel";
 import type { AnswerResult } from "../../../backend/convex/citedAnswers";
 import type { TenantId } from "./api";
 import "./source-library.css";
+import { PrepareTask } from "./approved-task";
 
 type Result = Pick<AnswerResult, "references" | "citations"> & {
   status: "passages" | "answer" | "abstain";
@@ -256,6 +257,15 @@ export function CurrentAnswer({
             </li>
           ))}
         </ol>
+      )}
+      {result.status === "answer" && citations.length > 0 && (
+        <PrepareTask
+          tenantId={tenantId}
+          evidence={{
+            references: result.references,
+            citations: result.citations,
+          }}
+        />
       )}
       {result.usage && (
         <p className="answer-usage">

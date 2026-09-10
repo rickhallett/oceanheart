@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as approvedActions from "../approvedActions.js";
 import type * as bookings from "../bookings.js";
 import type * as citedAnswers from "../citedAnswers.js";
 import type * as clients from "../clients.js";
@@ -18,6 +19,7 @@ import type * as gmailConnections from "../gmailConnections.js";
 import type * as gmailInternal from "../gmailInternal.js";
 import type * as http from "../http.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_actionContract from "../lib/actionContract.js";
 import type * as lib_answerProvider from "../lib/answerProvider.js";
 import type * as lib_bookingCommands from "../lib/bookingCommands.js";
 import type * as lib_bookingHours from "../lib/bookingHours.js";
@@ -48,6 +50,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  approvedActions: typeof approvedActions;
   bookings: typeof bookings;
   citedAnswers: typeof citedAnswers;
   clients: typeof clients;
@@ -58,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   gmailInternal: typeof gmailInternal;
   http: typeof http;
   "lib/access": typeof lib_access;
+  "lib/actionContract": typeof lib_actionContract;
   "lib/answerProvider": typeof lib_answerProvider;
   "lib/bookingCommands": typeof lib_bookingCommands;
   "lib/bookingHours": typeof lib_bookingHours;

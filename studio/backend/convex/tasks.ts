@@ -11,7 +11,7 @@ const taskFilter = v.union(
   v.literal("completed"),
 );
 
-function taskTitle(value: string) {
+export function taskTitle(value: string) {
   const normalized = value.trim();
   if (
     !normalized ||
@@ -29,7 +29,7 @@ function expectedRevision(value: number) {
 
 // Optional real calendar date as YYYY-MM-DD. A calendar date is not an
 // instant: no time zone, no time of day, no Today/client interpretation.
-function taskDueDate(value: string) {
+export function taskDueDate(value: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value))
     throw new ConvexError("INVALID_DUE_DATE");
   const year = Number(value.slice(0, 4));
@@ -171,15 +171,7 @@ export const today = query({
   },
 });
 
-export const create = mutation({
-  args: {
-    tenantId: v.id("tenants"),
-    title: v.string(),
-    requestKey: v.string(),
-    dueDate: v.optional(v.string()),
-    clientId: v.optional(v.id("clients")),
-  },
-  handler: async (ctx, { tenantId, title: rawTitle, requestKey, dueDate: rawDueDate, clientId: rawClientId }) => {
+export async function createTask(ctx: MutationCtx, {tenantId,title:rawTitle,requestKey,dueDate:rawDueDate,clientId:rawClientId}: {tenantId:Id<"tenants">;title:string;requestKey:string;dueDate?:string;clientId?:Id<"clients">}) {
     const user = await requireMember(ctx, tenantId, true);
     const normalizedTitle = taskTitle(rawTitle);
     const normalizedDueDate =
@@ -244,7 +236,17 @@ export const create = mutation({
       createdBy: user.tokenIdentifier,
       requestKey,
     });
+}
+
+export const create = mutation({
+  args: {
+    tenantId: v.id("tenants"),
+    title: v.string(),
+    requestKey: v.string(),
+    dueDate: v.optional(v.string()),
+    clientId: v.optional(v.id("clients")),
   },
+  handler: createTask,
 });
 
 export const setCompleted = mutation({
