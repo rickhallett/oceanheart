@@ -99,10 +99,16 @@ export function Workspace({ demo = false }: { demo?: boolean }) {
   const safeView = modules.some((m) => m[0] === view) ? view : "today";
   return (
     <div className="ws-root">
-      <Provider go={(v) => {
-        window.history.pushState(null, "", `${v === "today" ? "/app" : `/app/${v}`}${demo ? "?demo=1" : ""}`);
-        window.scrollTo(0, 0);
-      }}>
+      <Provider
+        go={(v) => {
+          window.history.pushState(
+            null,
+            "",
+            `${v === "today" ? "/app" : `/app/${v}`}${demo ? "?demo=1" : ""}`,
+          );
+          window.scrollTo(0, 0);
+        }}
+      >
         <Shell view={safeView} demo={demo} />
       </Provider>
     </div>
@@ -118,7 +124,15 @@ export type LiveShell = {
   account?: ReactNode;
   content: ReactNode;
 };
-export function Shell({ view, live, demo = false }: { view: View; live?: LiveShell; demo?: boolean }) {
+export function Shell({
+  view,
+  live,
+  demo = false,
+}: {
+  view: View;
+  live?: LiveShell;
+  demo?: boolean;
+}) {
   const studio = useStudio();
   const go = live?.go ?? studio.go;
   const practiceName = live?.practiceName ?? studio.state.practice.name;
@@ -139,6 +153,13 @@ export function Shell({ view, live, demo = false }: { view: View; live?: LiveShe
   });
   const Screen = screens[view];
   const title = modules.find((m) => m[0] === view)!;
+  const liveDescriptions: Partial<Record<View, string>> = {
+    payments: "Payment actions for your bookings",
+    support: "Guidance and a way to get in touch",
+    website: "Your practice online",
+    portal: "The next step in client self-service",
+    shop: "Products and services for your practice",
+  };
   useEffect(() => {
     setMenu(false);
     setSearch(false);
@@ -503,14 +524,17 @@ export function Shell({ view, live, demo = false }: { view: View; live?: LiveShe
           </ChakraPortal>
         </Dialog.Root>
         <main id="workspace-main" className="ws-main" tabIndex={-1}>
-          {view !== "today" && (
-            <Stack className="ws-page-heading" gap="2">
-              <Heading as="h1" fontSize={{ base: "3xl", md: "4xl" }}>
-                {title[1]}
-              </Heading>
-              <Text color="fg.muted">{title[2]}</Text>
-            </Stack>
-          )}
+          {view !== "today" &&
+            !(live && ["knowledge", "assistant"].includes(view)) && (
+              <Stack className="ws-page-heading" gap="2">
+                <Heading as="h1" fontSize={{ base: "3xl", md: "4xl" }}>
+                  {title[1]}
+                </Heading>
+                <Text color="fg.muted">
+                  {(live && liveDescriptions[view]) || title[2]}
+                </Text>
+              </Stack>
+            )}
           {live ? live.content : <Screen />}
         </main>
         <footer className="ws-footer">

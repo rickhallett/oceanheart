@@ -18,7 +18,7 @@ it("preserves a dirty draft across remote edits until explicit recovery", () => 
   const view = render(
     <SourceEditor initial={initial} revision={0} save={save} cancel={cancel} />,
   );
-  fireEvent.change(screen.getByLabelText("Source text"), {
+  fireEvent.change(screen.getByLabelText("Document text"), {
     target: { value: "My unsaved work" },
   });
   view.rerender(
@@ -29,12 +29,12 @@ it("preserves a dirty draft across remote edits until explicit recovery", () => 
       cancel={cancel}
     />,
   );
-  expect(screen.getByLabelText("Source text")).toHaveValue("My unsaved work");
-  expect(screen.getByRole("button", { name: "Save source" })).toBeDisabled();
+  expect(screen.getByLabelText("Document text")).toHaveValue("My unsaved work");
+  expect(screen.getByRole("button", { name: "Save document" })).toBeDisabled();
   fireEvent.click(screen.getByRole("button", { name: "Load latest version" }));
-  expect(screen.getByLabelText("Source text")).toHaveValue("Remote version");
+  expect(screen.getByLabelText("Document text")).toHaveValue("Remote version");
   expect(
-    screen.getByRole("button", { name: "Save source" }),
+    screen.getByRole("button", { name: "Save document" }),
   ).not.toBeDisabled();
 });
 it("retains a failed draft and reuses exactly the same request key on retry", async () => {
@@ -50,20 +50,20 @@ it("retains a failed draft and reuses exactly the same request key on retry", as
       cancel={() => {}}
     />,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  fireEvent.click(screen.getByRole("button", { name: "Save document" }));
   await screen.findByRole("alert");
-  expect(screen.getByLabelText("Source text")).toHaveValue(initial.content);
-  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  expect(screen.getByLabelText("Document text")).toHaveValue(initial.content);
+  fireEvent.click(screen.getByRole("button", { name: "Save document" }));
   await waitFor(() => expect(save).toHaveBeenCalledTimes(2));
   expect(save.mock.calls[0][1]).toBe(save.mock.calls[1][1]);
 });
 it("never renders imported Markdown as HTML and bounds UTF8 bytes", () => {
   render(<SourceEditor initial={initial} save={vi.fn()} cancel={() => {}} />);
   expect(document.querySelector("script")).toBeNull();
-  fireEvent.change(screen.getByLabelText("Source text"), {
+  fireEvent.change(screen.getByLabelText("Document text"), {
     target: { value: "😀".repeat(8193) },
   });
-  expect(screen.getByRole("button", { name: "Save source" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Save document" })).toBeDisabled();
 });
 it("blocks edits when source is archived remotely", () => {
   const view = render(
@@ -83,13 +83,13 @@ it("blocks edits when source is archived remotely", () => {
       cancel={() => {}}
     />,
   );
-  expect(screen.getByLabelText("Source text")).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Save source" })).toBeDisabled();
+  expect(screen.getByLabelText("Document text")).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Save document" })).toBeDisabled();
 });
 it("does not mount private queries for viewers", () => {
   render(<SourceLibrary tenantId={"tenant" as TenantId} canWrite={false} />);
   expect(screen.getByText("Owner access required")).toBeVisible();
-  expect(screen.queryByText("Add source")).not.toBeInTheDocument();
+  expect(screen.queryByText("Add document")).not.toBeInTheDocument();
 });
 
 it("picks only editable fields from Convex documents at initialization and latest recovery", async () => {
@@ -116,7 +116,7 @@ it("picks only editable fields from Convex documents at initialization and lates
   fireEvent.change(screen.getByLabelText("Title"), {
     target: { value: "Edited title" },
   });
-  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  fireEvent.click(screen.getByRole("button", { name: "Save document" }));
   await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
   expect(save.mock.calls[0][0]).toEqual({ ...initial, title: "Edited title" });
   expect(Object.keys(save.mock.calls[0][0]).sort()).toEqual([
@@ -140,7 +140,7 @@ it("picks only editable fields from Convex documents at initialization and lates
     />,
   );
   fireEvent.click(screen.getByRole("button", { name: "Load latest version" }));
-  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  fireEvent.click(screen.getByRole("button", { name: "Save document" }));
   await waitFor(() => expect(save).toHaveBeenCalledTimes(2));
   expect(save.mock.calls[1][0]).toEqual({
     ...initial,

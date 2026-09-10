@@ -6,6 +6,7 @@ import { api } from "../../../backend/convex/_generated/api";
 import type { TenantId } from "./api";
 import "./source-library.css";
 import { TaskApproval, PrepareCompletion } from "./approved-task";
+import { BookOpen, FileText, Plus, Search } from "lucide-react";
 import { CitedAnswers } from "./cited-answers";
 
 type SourceId = Id<"knowledgeSources">;
@@ -18,11 +19,11 @@ type Fields = {
 function errorText(error: unknown) {
   const text = String(error);
   if (text.includes("REVISION_CONFLICT"))
-    return "This source changed elsewhere. Load the latest version before saving or approving.";
+    return "This document changed elsewhere. Load the latest version before saving or using it in answers.";
   if (text.includes("FORBIDDEN"))
     return "Owner access is required. Your draft has not been saved.";
   if (text.includes("INVALID_SOURCE"))
-    return "Enter a title and non-empty text up to 32 KiB. Provenance is limited to 500 characters.";
+    return "Enter a title and non-empty text up to 32 KiB. The source description is limited to 500 characters.";
   if (text.includes("SOURCE_ARCHIVED"))
     return "This source is archived and cannot be changed.";
   return "Could not save the change. Your draft is retained; try again.";
@@ -54,13 +55,15 @@ class LibraryBoundary extends Component<
 export function SourceLibrary({
   tenantId,
   canWrite,
+  initialSection = "documents",
 }: {
   tenantId: TenantId;
   canWrite: boolean;
+  initialSection?: "documents" | "answers" | "tasks";
 }) {
   return canWrite ? (
     <LibraryBoundary key={tenantId}>
-      <Library tenantId={tenantId} />
+      <Library tenantId={tenantId} initialSection={initialSection} />
     </LibraryBoundary>
   ) : (
     <div className="lp-empty">
@@ -69,10 +72,20 @@ export function SourceLibrary({
     </div>
   );
 }
-function Library({ tenantId }: { tenantId: TenantId }) {
+function Library({
+  tenantId,
+  initialSection,
+}: {
+  tenantId: TenantId;
+  initialSection: "documents" | "answers" | "tasks";
+}) {
   const [archived, setArchived] = useState(false),
     [selected, setSelected] = useState<SourceId>(),
-    [adding, setAdding] = useState(false);
+    [adding, setAdding] = useState(false),
+    [section, setSection] = useState<"documents" | "answers" | "tasks">(
+      initialSection,
+    ),
+    [search, setSearch] = useState("");
   const sources = usePaginatedQuery(
     api.sourceLibrary.list,
     { tenantId, archived },
@@ -81,75 +94,157 @@ function Library({ tenantId }: { tenantId: TenantId }) {
   const create = useMutation(api.sourceLibrary.create);
   return (
     <section className="source-library">
-      <h1>Knowledge library</h1>
-      <p>
-        Keep approved practice information here. Sources are owner-only. Paste
-        text or import a UTF-8 .txt or .md file, up to 32 KiB.
-      </p>
-      <PrepareCompletion tenantId={tenantId} />
-      <TaskApproval tenantId={tenantId} />
-      {!adding && !selected && (
+      <header className="knowledge-header">
+        <div>
+          <h1>Knowledge library</h1>
+          <p>Your practice information, ready when you need it.</p>
+        </div>
+        {!adding && !selected && section === "documents" && (
+          <button className="knowledge-primary" onClick={() => setAdding(true)}>
+            <Plus size={16} />
+            Add document
+          </button>
+        )}
+      </header>
+      <nav className="knowledge-tabs" aria-label="Knowledge sections">
+        {(
+          [
+            ["documents", "Documents"],
+            ["answers", "Ask your library"],
+            ["tasks", "Tasks"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            aria-current={section === id ? "page" : undefined}
+            onClick={() => setSection(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+      <div hidden={section !== "answers"}>
         <CitedAnswers tenantId={tenantId} canWrite={true} />
-      )}
-      {adding ? (
-        <SourceEditor
-          save={async (fields, key) => {
-            const id = await create({ tenantId, ...fields, requestKey: key });
-            setAdding(false);
-            setSelected(id);
-          }}
-          cancel={() => setAdding(false)}
-        />
-      ) : selected ? (
-        <SourceDetail
-          key={selected}
-          tenantId={tenantId}
-          sourceId={selected}
-          back={() => setSelected(undefined)}
-        />
-      ) : (
-        <>
-          <div className="source-toolbar">
-            <button onClick={() => setAdding(true)}>Add source</button>
-            <label>
-              Show{" "}
-              <select
-                value={String(archived)}
-                onChange={(e) => setArchived(e.target.value === "true")}
-              >
-                <option value="false">Active sources</option>
-                <option value="true">Archived sources</option>
-              </select>
-            </label>
-          </div>
-          {sources.status === "LoadingFirstPage" ? (
-            <p role="status">Loading sources…</p>
-          ) : !sources.results.length ? (
-            <p>No {archived ? "archived" : "active"} sources yet.</p>
-          ) : (
-            <ul className="source-list">
-              {sources.results.map((s) => (
-                <li key={s._id}>
-                  <button onClick={() => setSelected(s._id)}>{s.title}</button>
-                  <span>
-                    {s.archived
-                      ? "Archived"
-                      : s.approvedVersionId === s.currentVersionId
-                        ? "Approved"
-                        : "Needs approval"}{" "}
-                    · Owner-only
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {sources.status === "CanLoadMore" && (
-            <button onClick={() => sources.loadMore(20)}>
-              Load more sources
-            </button>
-          )}
-        </>
-      )}
+      </div>
+      <div hidden={section !== "tasks"}>
+        <PrepareCompletion tenantId={tenantId} />
+      </div>
+      <TaskApproval tenantId={tenantId} />
+      <div hidden={section !== "documents"}>
+        {adding ? (
+          <SourceEditor
+            save={async (fields, key) => {
+              const id = await create({ tenantId, ...fields, requestKey: key });
+              setAdding(false);
+              setSelected(id);
+            }}
+            cancel={() => setAdding(false)}
+          />
+        ) : selected ? (
+          <SourceDetail
+            key={selected}
+            tenantId={tenantId}
+            sourceId={selected}
+            back={() => setSelected(undefined)}
+          />
+        ) : (
+          <>
+            <div className="source-toolbar">
+              <label className="knowledge-search">
+                <Search size={16} aria-hidden="true" />
+                <input
+                  aria-label="Search loaded documents"
+                  placeholder="Find a document…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </label>
+              <label className="knowledge-filter">
+                <span className="sr-only">Show</span>{" "}
+                <select
+                  value={String(archived)}
+                  onChange={(e) => setArchived(e.target.value === "true")}
+                >
+                  <option value="false">Active documents</option>
+                  <option value="true">Archived documents</option>
+                </select>
+              </label>
+            </div>
+            {sources.status === "LoadingFirstPage" ? (
+              <p role="status">Loading sources…</p>
+            ) : !sources.results.length ? (
+              <div className="knowledge-empty">
+                <BookOpen size={28} aria-hidden="true" />
+                <h2>
+                  {archived
+                    ? "No archived documents"
+                    : "A home for your practice knowledge"}
+                </h2>
+                <p>
+                  {archived
+                    ? "Documents you archive will appear here."
+                    : "Add a policy, a service guide or useful notes. Choose which documents to use when you ask a question."}
+                </p>
+                {!archived && (
+                  <button
+                    className="knowledge-primary"
+                    onClick={() => setAdding(true)}
+                  >
+                    Add your first document
+                  </button>
+                )}
+              </div>
+            ) : (
+              <ul className="source-list">
+                {sources.results
+                  .filter((s) =>
+                    s.title.toLowerCase().includes(search.toLowerCase()),
+                  )
+                  .map((s) => (
+                    <li key={s._id}>
+                      <FileText
+                        className="knowledge-document-icon"
+                        size={20}
+                        aria-hidden="true"
+                      />
+                      <button
+                        className="knowledge-document-title"
+                        onClick={() => setSelected(s._id)}
+                      >
+                        {s.title}
+                      </button>
+                      <span>
+                        {s.archived
+                          ? "Archived"
+                          : s.approvedVersionId === s.currentVersionId
+                            ? "Used in answers"
+                            : "Not used in answers"}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            )}
+            {search &&
+              sources.results.length > 0 &&
+              !sources.results.some((s) =>
+                s.title.toLowerCase().includes(search.toLowerCase()),
+              ) && (
+                <p className="knowledge-hint">
+                  No matches in the loaded documents. Try another title
+                  {sources.status === "CanLoadMore"
+                    ? " or load more documents"
+                    : ""}
+                  .
+                </p>
+              )}
+            {sources.status === "CanLoadMore" && (
+              <button onClick={() => sources.loadMore(20)}>
+                Load more sources
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </section>
   );
 }
@@ -193,7 +288,7 @@ function SourceDetail({
   return (
     <>
       <button disabled={pending} onClick={back}>
-        Back to sources
+        Back to documents
       </button>
       <h2>{source.title}</h2>
       <p>
@@ -201,9 +296,8 @@ function SourceDetail({
         {source.archived
           ? "Archived"
           : source.approvedVersionId === version._id
-            ? "Approved for future answers"
-            : "Needs approval"}{" "}
-        · Owner-only
+            ? "Used in answers"
+            : "Not used in answers"}{" "}
       </p>
       {error && <p role="alert">{error}</p>}
       {editing ? (
@@ -225,35 +319,42 @@ function SourceDetail({
         />
       ) : (
         <>
-          <p>{version.provenance || "No provenance supplied"}</p>
-          <pre className="source-text">{version.content}</pre>
+          <p>{version.provenance || ""}</p>
           {!source.archived && (
             <div className="source-toolbar">
               <button disabled={pending} onClick={() => setEditing(true)}>
-                Edit source
+                Edit document
               </button>
-              {source.approvedVersionId === version._id ? (
-                <button disabled={pending} onClick={() => status("revoke")}>
-                  Revoke approval
-                </button>
-              ) : (
-                <button disabled={pending} onClick={() => status("approve")}>
-                  Approve version {version.number}
-                </button>
-              )}
+              <button
+                className="document-answer-switch"
+                role="switch"
+                aria-checked={source.approvedVersionId === version._id}
+                disabled={pending}
+                onClick={() =>
+                  status(
+                    source.approvedVersionId === version._id
+                      ? "revoke"
+                      : "approve",
+                  )
+                }
+              >
+                <span aria-hidden="true" className="document-switch-track" />
+                Use in answers
+              </button>
               <button
                 disabled={pending}
                 onClick={() => setArchiveConfirm(true)}
               >
-                Archive source
+                Archive document
               </button>
             </div>
           )}
+          <pre className="source-text">{version.content}</pre>
           {archiveConfirm && (
             <div role="group" aria-label="Confirm archive">
               <p>
-                Archive this source and revoke its approval? Version history
-                will remain private to owners.
+                Archive this document? It will no longer be used in answers. You
+                can still read its previous versions.
               </p>
               <button disabled={pending} onClick={() => status("archive")}>
                 Confirm archive
@@ -262,7 +363,7 @@ function SourceDetail({
                 disabled={pending}
                 onClick={() => setArchiveConfirm(false)}
               >
-                Keep source
+                Keep document
               </button>
             </div>
           )}
@@ -300,7 +401,7 @@ function VersionHistory({
             <button onClick={() => setSelected(v._id)}>
               View version {v.number}: {v.title}
             </button>
-            <small>SHA-256: {v.hash}</small>
+            <small>Saved version {v.number}</small>
           </li>
         ))}
       </ul>
@@ -386,11 +487,14 @@ export function SourceEditor({
   }
   return (
     <form onSubmit={submit} className="source-editor">
-      <h2>{initial ? "Edit source" : "Add source"}</h2>
+      <h2>{initial ? "Edit document" : "Add document"}</h2>
+      <p className="knowledge-hint">
+        Keep a policy, guide or reference in one place.
+      </p>
       {error && <p role="alert">{error}</p>}
       {(stale || archived) && (
         <p role="alert">
-          This source changed elsewhere. Your draft is retained.
+          This document changed elsewhere. Your draft is retained.
           {!archived && (
             <button
               type="button"
@@ -409,6 +513,7 @@ export function SourceEditor({
         <label>
           Title
           <input
+            placeholder="e.g. Cancellation policy"
             required
             maxLength={160}
             value={fields.title}
@@ -416,40 +521,7 @@ export function SourceEditor({
           />
         </label>
         <label>
-          Provenance (optional)
-          <input
-            maxLength={500}
-            value={fields.provenance}
-            onChange={(e) =>
-              setFields({ ...fields, provenance: e.target.value })
-            }
-          />
-        </label>
-        <label>
-          Format
-          <select
-            value={fields.format}
-            onChange={(e) =>
-              setFields({
-                ...fields,
-                format: e.target.value as Fields["format"],
-              })
-            }
-          >
-            <option value="text">Plain text</option>
-            <option value="markdown">Markdown</option>
-          </select>
-        </label>
-        <label>
-          Import text file
-          <input
-            type="file"
-            accept=".txt,.md"
-            onChange={(e) => loadFile(e.target.files?.[0])}
-          />
-        </label>
-        <label>
-          Source text
+          Document text
           <textarea
             required
             rows={12}
@@ -457,9 +529,48 @@ export function SourceEditor({
             onChange={(e) => setFields({ ...fields, content: e.target.value })}
           />
         </label>
+        <details className="document-options">
+          <summary>Import a file or add document details</summary>
+          <div className="document-options-grid">
+            {" "}
+            <label>
+              Where it came from (optional)
+              <input
+                maxLength={500}
+                value={fields.provenance}
+                onChange={(e) =>
+                  setFields({ ...fields, provenance: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Format
+              <select
+                value={fields.format}
+                onChange={(e) =>
+                  setFields({
+                    ...fields,
+                    format: e.target.value as Fields["format"],
+                  })
+                }
+              >
+                <option value="text">Plain text</option>
+                <option value="markdown">Markdown</option>
+              </select>
+            </label>
+            <label>
+              Import text file
+              <input
+                type="file"
+                accept=".txt,.md"
+                onChange={(e) => loadFile(e.target.files?.[0])}
+              />
+            </label>
+          </div>
+        </details>
         <p>
-          Saving creates an unapproved version. Approval applies only to the
-          exact saved version. Text is displayed as text, including Markdown.
+          After saving, choose “Use in answers” to make this version available
+          to your library assistant.
         </p>
         <div className="source-toolbar">
           <button
@@ -470,7 +581,7 @@ export function SourceEditor({
             }
             type="submit"
           >
-            {pending ? "Saving…" : "Save source"}
+            {pending ? "Saving…" : "Save document"}
           </button>
           <button type="button" onClick={cancel}>
             Cancel

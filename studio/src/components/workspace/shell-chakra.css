@@ -201,3 +201,13 @@
   outline-offset: 2px;
   box-shadow: none;
 }
+
+/* Precision is light even when the public site's global scheme is dark. */
+html:has(.ws-root) {
+  color-scheme: light;
+}
+.studio-sidebar nav,
+.studio-drawer nav {
+  scrollbar-width: thin;
+  scrollbar-color: #c5ccd6 transparent;
+}
