@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 /** Keep content and focus mounted while gently introducing a changed view. */
 export function useSoftTransition(value: string | number, enabled = true) {
@@ -12,9 +12,23 @@ export function useSoftTransition(value: string | number, enabled = true) {
     if (!changed || !enabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const animation = ref.current?.animate(
       [{ opacity: 0.72 }, { opacity: 1 }],
-      { duration: 600, easing: 'cubic-bezier(.25,.1,.25,1)' },
+      { duration: 900, easing: 'cubic-bezier(.25,.1,.25,1)' },
     );
     return () => animation?.cancel();
   }, [value, enabled]);
   return ref;
+}
+
+/** Delay pointer changes briefly; superseded clicks cannot apply stale content. */
+export function useTransitionDelay(enabled = true) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current !== null) clearTimeout(timer.current); }, []);
+  return (change: () => void, immediate = false) => {
+    if (timer.current !== null) clearTimeout(timer.current);
+    if (immediate || !enabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      change();
+    } else {
+      timer.current = setTimeout(() => { timer.current = null; change(); }, 120);
+    }
+  };
 }

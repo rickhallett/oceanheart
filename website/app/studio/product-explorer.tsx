@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useSoftTransition } from "./use-soft-transition";
+import { useSoftTransition, useTransitionDelay } from "./use-soft-transition";
 
 const views = [
   {
@@ -41,6 +41,7 @@ const views = [
 export function ProductExplorer({ gentleMotion = false }: { gentleMotion?: boolean }) {
   const [selected, setSelected] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const transition = useTransitionDelay(gentleMotion);
   const view = views[selected];
   const panelMotion = useSoftTransition(selected, gentleMotion);
   return (
@@ -57,7 +58,7 @@ export function ProductExplorer({ gentleMotion = false }: { gentleMotion?: boole
             aria-selected={selected === index}
             aria-controls={`view-${item.id}`}
             tabIndex={selected === index ? 0 : -1}
-            onClick={() => setSelected(index)}
+            onClick={() => transition(() => setSelected(index))}
             onKeyDown={(event) => {
               const key = event.key;
               if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(key)) return;
@@ -68,7 +69,7 @@ export function ProductExplorer({ gentleMotion = false }: { gentleMotion?: boole
                   : key === "End"
                     ? views.length - 1
                     : (index + (key === "ArrowRight" ? 1 : -1) + views.length) % views.length;
-              setSelected(next);
+              transition(() => setSelected(next), true);
               tabs.current[next]?.focus();
             }}
           >
