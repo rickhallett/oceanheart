@@ -17,6 +17,7 @@ import {
   useConvexAuth,
 } from "convex/react";
 import { LiveWorkspace } from "../workspace/live-workspace";
+import { WorkspaceLoading } from "../workspace/workspace-loading";
 
 function useWorkOSAuth() {
   const { user, loading } = useAuth();
@@ -82,7 +83,7 @@ class DataBoundary extends Component<
 }
 function AuthenticatedPractice() {
   const { isLoading, isAuthenticated } = useConvexAuth();
-  if (isLoading) return <p role="status">Connecting to your practice…</p>;
+  if (isLoading) return <WorkspaceLoading label="Connecting to your practice…" />;
   if (!isAuthenticated)
     return (
       <section className="lp-intro">

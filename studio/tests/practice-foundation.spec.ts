@@ -18,7 +18,7 @@ test("legacy practice redirects to the single Precision workspace", async ({
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/practice");
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByRole("heading", { name: "Good morning, Amelia." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Good morning, Rick Hallett." })).toBeVisible();
   await expect(page.getByRole("main")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(errors).toEqual([]);

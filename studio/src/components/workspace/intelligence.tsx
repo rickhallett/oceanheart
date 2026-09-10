@@ -283,20 +283,20 @@ export function Assistant() {
       "what is the cancellation policy": {
         sourceId: "k1",
         passage:
-          "Clients can reschedule or cancel without charge with at least 24 hours’ notice. Changes within 24 hours are reviewed personally by Amelia.",
+          "Fictional demo policy: cancel or reschedule with at least 24 hours' notice. Later changes are reviewed by Rick.",
       },
-      "how much is a reflexology session": {
+      "how much is the unoptimised hour": {
         sourceId: "k2",
-        passage: "A reflexology session lasts 60 minutes and costs £65.",
+        passage: "The Unoptimised Hour is 60 minutes and £65.",
       },
       "where is the practice": {
         sourceId: "k2",
-        passage: "The practice is in Bristol.",
+        passage: "The fictional practice is in Bristol and online.",
       },
       "where is the online session link": {
         sourceId: "k2",
         passage:
-          "Online session links are included in the booking confirmation.",
+          "Online joining links are in booking confirmations.",
       },
     };
     const example =
@@ -503,7 +503,7 @@ export function Assistant() {
                 <label htmlFor="assistant-question" className="ws-composer-label">{conversation.length ? "Ask another question" : "Ask a question"}</label>
                 {conversation.length === 0 && (
                   <div className="ws-starting-questions">
-                    {["What is the cancellation policy?", "How much is a reflexology session?"].map(prompt => (
+                    {["What is the cancellation policy?", "How much is the Unoptimised Hour?"].map(prompt => (
                       <StudioButton key={prompt} onClick={() => ask(prompt)}>{prompt}</StudioButton>
                     ))}
                   </div>

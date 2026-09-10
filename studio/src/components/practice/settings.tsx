@@ -142,7 +142,10 @@ function SettingsForm({
     const zoneSame = next.timeZone === baseline.timeZone;
     const clean = canonical(draft) === canonical(baseline.draft);
     const matchesLive = canonical(draft) === canonical(next.draft);
-    if (!conflict && ((zoneSame && (clean || matchesLive)) || (!zoneSame && clean))) {
+    if (
+      !conflict &&
+      ((zoneSame && (clean || matchesLive)) || (!zoneSame && clean))
+    ) {
       setBaseline(next);
       setDraft(next.draft);
     } else if (!conflict && !zoneSame) {
@@ -248,143 +251,160 @@ function SettingsForm({
     day: keyof WeeklyAvailability,
     entry: WeeklyAvailability[keyof WeeklyAvailability],
   ) {
-    setDraft((previous) => ({ ...previous, availability: { ...previous.availability, [day]: entry } }));
+    setDraft((previous) => ({
+      ...previous,
+      availability: { ...previous.availability, [day]: entry },
+    }));
   }
   const zone = live.timeZone ?? timeZone;
   return (
     <form className="lp-record-form lp-settings-form" onSubmit={submit}>
-      <h3>Practice details</h3>
       <fieldset disabled={pending || !canWrite}>
-        <label htmlFor="settings-name">Practice name</label>
-        <input
-          id="settings-name"
-          value={draft.name}
-          onChange={(event) =>
-            setDraft((previous) => ({ ...previous, name: event.target.value }))
-          }
-          maxLength={100}
-          autoComplete="organization"
-          required
-        />
-        <label htmlFor="settings-tagline">Tagline (optional)</label>
-        <input
-          id="settings-tagline"
-          value={draft.tagline}
-          onChange={(event) =>
-            setDraft((previous) => ({
-              ...previous,
-              tagline: event.target.value,
-            }))
-          }
-          maxLength={200}
-          placeholder="A short line about your practice"
-        />
-        <div className="lp-field-pair">
-          <div>
-            <label htmlFor="settings-email">Contact email (optional)</label>
+        <div className="lp-settings-grid">
+          <section className="lp-settings-group">
+            <h3>Practice details</h3>
+            <p className="lp-muted">
+              The name and contact details for your practice.
+            </p>
+            <label htmlFor="settings-name">Practice name</label>
             <input
-              id="settings-email"
-              value={draft.email}
+              id="settings-name"
+              value={draft.name}
               onChange={(event) =>
                 setDraft((previous) => ({
                   ...previous,
-                  email: event.target.value,
+                  name: event.target.value,
                 }))
               }
-              type="email"
-              maxLength={254}
-              autoComplete="email"
+              maxLength={100}
+              autoComplete="organization"
+              required
             />
-          </div>
-          <div>
-            <label htmlFor="settings-phone">Contact phone (optional)</label>
+            <label htmlFor="settings-tagline">Tagline (optional)</label>
             <input
-              id="settings-phone"
-              value={draft.phone}
+              id="settings-tagline"
+              value={draft.tagline}
               onChange={(event) =>
                 setDraft((previous) => ({
                   ...previous,
-                  phone: event.target.value,
+                  tagline: event.target.value,
                 }))
               }
-              type="tel"
-              maxLength={40}
-              autoComplete="tel"
+              maxLength={200}
+              placeholder="A short line about your practice"
             />
-          </div>
-        </div>
-        <label htmlFor="settings-address">Address (optional)</label>
-        <input
-          id="settings-address"
-          value={draft.address}
-          onChange={(event) =>
-            setDraft((previous) => ({
-              ...previous,
-              address: event.target.value,
-            }))
-          }
-          maxLength={500}
-          placeholder="Practice address"
-        />
-        <h3 className="lp-settings-sub">Default weekly availability</h3>
-        <p className="lp-muted lp-availability-note">
-          Defaults for future public scheduling — existing bookings are
-          unchanged. Times are in the practice time zone
-          {zone ? ` (${zone})` : ""}.
-        </p>
-        {DAYS.map(([day, label]) => (
-          <div className="lp-day-row" key={day}>
-            <input
-              type="checkbox"
-              id={`day-${day}`}
-              checked={draft.availability[day] !== null}
-              onChange={() =>
-                setDay(
-                  day,
-                  draft.availability[day]
-                    ? null
-                    : { open: "09:00", close: "17:00" },
-                )
-              }
-              disabled={pending || !canWrite}
-            />
-            <label htmlFor={`day-${day}`}>{label}</label>
-            <div className="lp-time-interval">
-              <input
-                type="time"
-                aria-label={`${label} opening time`}
-                value={draft.availability[day]?.open ?? ""}
-                onChange={(event) =>
-                  setDay(day, {
-                    open: event.target.value,
-                    close: draft.availability[day]?.close ?? "",
-                  })
-                }
-                disabled={pending || !canWrite || !draft.availability[day]}
-              />
-              <span className="lp-muted">to</span>
-              <input
-                type="time"
-                aria-label={`${label} closing time`}
-                value={draft.availability[day]?.close ?? ""}
-                onChange={(event) =>
-                  setDay(day, {
-                    open: draft.availability[day]?.open ?? "",
-                    close: event.target.value,
-                  })
-                }
-                disabled={pending || !canWrite || !draft.availability[day]}
-              />
+            <div className="lp-field-pair">
+              <div>
+                <label htmlFor="settings-email">Contact email (optional)</label>
+                <input
+                  id="settings-email"
+                  value={draft.email}
+                  onChange={(event) =>
+                    setDraft((previous) => ({
+                      ...previous,
+                      email: event.target.value,
+                    }))
+                  }
+                  type="email"
+                  maxLength={254}
+                  autoComplete="email"
+                />
+              </div>
+              <div>
+                <label htmlFor="settings-phone">Contact phone (optional)</label>
+                <input
+                  id="settings-phone"
+                  value={draft.phone}
+                  onChange={(event) =>
+                    setDraft((previous) => ({
+                      ...previous,
+                      phone: event.target.value,
+                    }))
+                  }
+                  type="tel"
+                  maxLength={40}
+                  autoComplete="tel"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+            <label htmlFor="settings-address">Address (optional)</label>
+            <input
+              id="settings-address"
+              value={draft.address}
+              onChange={(event) =>
+                setDraft((previous) => ({
+                  ...previous,
+                  address: event.target.value,
+                }))
+              }
+              maxLength={500}
+              placeholder="Practice address"
+            />
+          </section>
+          <section className="lp-settings-group">
+            <h3 className="lp-settings-sub">Default weekly availability</h3>
+            <p className="lp-muted lp-availability-note">
+              Defaults for future public scheduling — existing bookings are
+              unchanged. Times are in the practice time zone
+              {zone ? ` (${zone})` : ""}.
+            </p>
+            {DAYS.map(([day, label]) => (
+              <div className="lp-day-row" key={day}>
+                <input
+                  type="checkbox"
+                  id={`day-${day}`}
+                  checked={draft.availability[day] !== null}
+                  onChange={() =>
+                    setDay(
+                      day,
+                      draft.availability[day]
+                        ? null
+                        : { open: "09:00", close: "17:00" },
+                    )
+                  }
+                  disabled={pending || !canWrite}
+                />
+                <label htmlFor={`day-${day}`}>{label}</label>
+                <div
+                  className="lp-time-interval"
+                  data-closed={!draft.availability[day]}
+                >
+                  {!draft.availability[day] && (
+                    <span className="lp-day-closed">Unavailable</span>
+                  )}
+                  <input
+                    type="time"
+                    aria-label={`${label} opening time`}
+                    value={draft.availability[day]?.open ?? ""}
+                    onChange={(event) =>
+                      setDay(day, {
+                        open: event.target.value,
+                        close: draft.availability[day]?.close ?? "",
+                      })
+                    }
+                    disabled={pending || !canWrite || !draft.availability[day]}
+                  />
+                  <span className="lp-muted">to</span>
+                  <input
+                    type="time"
+                    aria-label={`${label} closing time`}
+                    value={draft.availability[day]?.close ?? ""}
+                    onChange={(event) =>
+                      setDay(day, {
+                        open: draft.availability[day]?.open ?? "",
+                        close: event.target.value,
+                      })
+                    }
+                    disabled={pending || !canWrite || !draft.availability[day]}
+                  />
+                </div>
+              </div>
+            ))}
+          </section>
+        </div>
         {canWrite && !conflict && (
           <div className="lp-actions">
-            <button
-              className="lp-button"
-              type="submit"
-              disabled={pending}
-            >
+            <button className="lp-button" type="submit" disabled={pending}>
               {pending ? "Saving…" : "Save settings"}
             </button>
             <button type="button" onClick={reset} disabled={pending}>

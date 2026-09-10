@@ -34,17 +34,23 @@ export function PracticeBookings({
   return (
     <section className="lp-bookings-workspace">
       <h2>Bookings</h2>
-      <TimeZoneForm
-        key={timeZone ?? "unset"}
-        current={timeZone}
-        save={(zone) =>
-          setZone({
-            tenantId,
-            timeZone: zone,
-            expectedTimeZone: timeZone ?? null,
-          })
-        }
-      />
+      <details className="lp-booking-zone" open={!agendaTimeZone}>
+        <summary>
+          Practice time zone
+          {agendaTimeZone ? ` · ${agendaTimeZone}` : " · Setup required"}
+        </summary>
+        <TimeZoneForm
+          key={timeZone ?? "unset"}
+          current={timeZone}
+          save={(zone) =>
+            setZone({
+              tenantId,
+              timeZone: zone,
+              expectedTimeZone: timeZone ?? null,
+            })
+          }
+        />
+      </details>
       {agendaTimeZone && (
         <BookingAgenda
           key={agendaTimeZone}
@@ -660,23 +666,49 @@ export function BookingRow({
     }
   }
   return (
-    <li data-booking-id={booking._id}>
-      <h3>{booking.clientLabel}</h3>
-      <p>
-        {displayBookingTime(booking.startsAt, timeZone)} –{" "}
-        {displayBookingTime(booking.endsAt, timeZone)}
-      </p>
-      <p>
-        {booking.serviceSnapshot
-          ? `${booking.serviceSnapshot.name} · ${booking.serviceSnapshot.durationMinutes} minutes · ${formatPrice(booking.serviceSnapshot.priceMinor)}`
-          : "Legacy booking"}
-      </p>
-      <p className="lp-muted">
-        {booking.status === "cancelled" ? "Cancelled" : "Scheduled"}
-        {booking.timeZone && booking.timeZone !== timeZone
-          ? ` · Originally booked in ${booking.timeZone}`
-          : ""}
-      </p>
+    <li data-booking-id={booking._id} className="lp-booking-record">
+      <div className="lp-booking-when">
+        <strong>
+          {new Intl.DateTimeFormat("en-GB", {
+            timeZone,
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(booking.startsAt)}
+        </strong>
+        <span>
+          {new Intl.DateTimeFormat("en-GB", {
+            timeZone,
+            day: "numeric",
+            month: "short",
+          }).format(booking.startsAt)}
+        </span>
+      </div>
+      <div className="lp-booking-description">
+        <div className="lp-booking-record-heading">
+          <h3>{booking.clientLabel}</h3>
+          <span
+            className={`lp-record-status lp-record-status-${booking.status}`}
+          >
+            {booking.status === "cancelled" ? "Cancelled" : "Scheduled"}
+          </span>
+        </div>
+        <p className="lp-booking-service">
+          {booking.serviceSnapshot?.name ?? "Legacy booking"}
+        </p>
+        <p className="lp-booking-range">
+          {displayBookingTime(booking.startsAt, timeZone)} –{" "}
+          {displayBookingTime(booking.endsAt, timeZone)}
+        </p>
+        {booking.serviceSnapshot && (
+          <p className="lp-record-caption">
+            {booking.serviceSnapshot.durationMinutes} minutes ·{" "}
+            {formatPrice(booking.serviceSnapshot.priceMinor)}
+          </p>
+        )}
+        {booking.timeZone && booking.timeZone !== timeZone && (
+          <p className="lp-muted">Originally booked in {booking.timeZone}</p>
+        )}
+      </div>
       {booking.status === "scheduled" && (
         <div className="lp-actions">
           {!booking.legacy && (

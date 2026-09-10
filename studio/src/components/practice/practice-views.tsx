@@ -58,7 +58,12 @@ export function PracticeTasks({
     filter,
     changeFilter: setFilter,
     setCompleted: (task, completed) =>
-      complete({ tenantId, taskId: task._id, completed, expectedRevision: task.revision }),
+      complete({
+        tenantId,
+        taskId: task._id,
+        completed,
+        expectedRevision: task.revision,
+      }),
     removeTask: (task, expectedRevision) =>
       remove({ tenantId, taskId: task._id, expectedRevision }),
     openClient,
@@ -116,7 +121,9 @@ function OwnedTaskPanel({
     | "loadMoreClients"
   >;
   create: (args: CreateTaskArgs) => Promise<unknown>;
-  update: (args: UpdateTaskArgs) => Promise<{ taskId: Task["_id"]; revision: number }>;
+  update: (
+    args: UpdateTaskArgs,
+  ) => Promise<{ taskId: Task["_id"]; revision: number }>;
 }) {
   const [clientSearch, setClientSearch] = useState("");
   const {
@@ -239,7 +246,9 @@ function PracticeContent({
         <PracticeBookings tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite ? (
         <PracticeClients
-          key={clientFocus ? `${clientFocus.name}||${clientFocus.archived}` : "all"}
+          key={
+            clientFocus ? `${clientFocus.name}||${clientFocus.archived}` : "all"
+          }
           tenantId={tenantId}
           focus={clientFocus}
         />
@@ -266,8 +275,14 @@ export function PracticeServices({
     archive = useMutation(practiceApi.archiveService);
   return (
     <>
-      <RecordFilter archived={archived} change={setArchived} noun="Service" />
       <ServicesPanel
+        filters={
+          <RecordFilter
+            archived={archived}
+            change={setArchived}
+            noun="Service"
+          />
+        }
         key={String(archived)}
         items={results}
         status={status}
@@ -316,13 +331,31 @@ export function PracticeClients({
     archive = useMutation(practiceApi.archiveClient);
   return (
     <>
-      <RecordFilter archived={archived} change={setArchived} noun="Client" />
-      <ClientSearch search={search} change={setSearch} />
       <ClientsPanel
-        history={(client) => <>
-          <ClientNotes key={`notes:${client._id}`} tenantId={tenantId} client={client} />
-          <ClientHistory key={client._id} tenantId={tenantId} client={client} />
-        </>}
+        filters={
+          <div className="lp-directory-filters">
+            <RecordFilter
+              archived={archived}
+              change={setArchived}
+              noun="Client"
+            />
+            <ClientSearch key={search} search={search} change={setSearch} />
+          </div>
+        }
+        history={(client) => (
+          <>
+            <ClientNotes
+              key={`notes:${client._id}`}
+              tenantId={tenantId}
+              client={client}
+            />
+            <ClientHistory
+              key={client._id}
+              tenantId={tenantId}
+              client={client}
+            />
+          </>
+        )}
         key={`${archived}:${search}`}
         items={results}
         status={status}

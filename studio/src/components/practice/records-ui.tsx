@@ -377,6 +377,8 @@ export function ClientSearch({
           value={value}
           onChange={(event) => setValue(event.target.value)}
           maxLength={100}
+          placeholder="Name or email"
+          type="search"
         />
         <button type="submit">Search</button>
         {search && (
@@ -448,6 +450,7 @@ function RecordActions({
   );
 }
 export function ServicesPanel({
+  filters,
   items,
   status,
   canWrite,
@@ -457,6 +460,7 @@ export function ServicesPanel({
   update,
   archive,
 }: {
+  filters?: ReactNode;
   items: Service[];
   status: PageStatus;
   canWrite: boolean;
@@ -476,9 +480,10 @@ export function ServicesPanel({
     requestAnimationFrame(() => opener.current?.focus());
   }
   return (
-    <section className="lp-records">
+    <section className="lp-records lp-services-directory">
       <div className="lp-section-heading">
         <h2>Services</h2>
+        {filters}
         {canWrite && !archived ? (
           <button
             ref={opener}
@@ -520,7 +525,12 @@ export function ServicesPanel({
       <ul className="lp-record-list">
         {items.map((service) => (
           <li key={service._id} data-service-id={service._id}>
-            <h3>{service.name}</h3>
+            <div className="lp-service-heading">
+              <h3>{service.name}</h3>
+              <span className="lp-record-caption">
+                {service.active ? "Active" : "Archived"}
+              </span>
+            </div>
             <dl>
               <div>
                 <dt>Duration</dt>
@@ -528,7 +538,9 @@ export function ServicesPanel({
               </div>
               <div>
                 <dt>Price</dt>
-                <dd>{formatPrice(service.priceMinor)}</dd>
+                <dd className="lp-service-price">
+                  {formatPrice(service.priceMinor)}
+                </dd>
               </div>
             </dl>
             {service.description && (
@@ -553,6 +565,7 @@ export function ServicesPanel({
   );
 }
 export function ClientsPanel({
+  filters,
   items,
   status,
   create,
@@ -563,6 +576,7 @@ export function ClientsPanel({
   archive,
   history,
 }: {
+  filters?: ReactNode;
   items: Client[];
   status: PageStatus;
   create: (input: ClientInput, requestKey: string) => Promise<unknown>;
@@ -583,9 +597,10 @@ export function ClientsPanel({
     requestAnimationFrame(() => opener.current?.focus());
   }
   return (
-    <section className="lp-records">
+    <section className="lp-records lp-clients-directory">
       <div className="lp-section-heading">
         <h2>Clients</h2>
+        {filters}
         {!archived && (
           <button
             ref={opener}
@@ -631,7 +646,23 @@ export function ClientsPanel({
       <ul className="lp-record-list">
         {items.map((client) => (
           <li key={client._id} data-client-id={client._id}>
-            <h3>{client.name}</h3>
+            <div className="lp-client-identity">
+              <span className="lp-record-avatar" aria-hidden="true">
+                {client.name
+                  .trim()
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((word) => word[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+              <div>
+                <h3>{client.name}</h3>
+                <span className="lp-record-caption">
+                  {client.archived ? "Archived client" : "Client"}
+                </span>
+              </div>
+            </div>
             {(client.email || client.phone) && (
               <dl className="lp-contact-details">
                 {client.email && (
@@ -659,7 +690,7 @@ export function ClientsPanel({
                 archive={(value) => archive(client, value)}
               />
             )}
-            {history?.(client)}
+            <div className="lp-client-details">{history?.(client)}</div>
           </li>
         ))}
       </ul>

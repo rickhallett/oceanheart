@@ -18,7 +18,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   House,
   Inbox as InboxIcon,
@@ -93,15 +93,17 @@ const screens = {
   settings: Settings,
   roadmap: Roadmap,
 };
-export function Workspace() {
-  const router = useRouter();
+export function Workspace({ demo = false }: { demo?: boolean }) {
   const path = usePathname();
   const view = (path.split("/")[2] || "today") as View;
   const safeView = modules.some((m) => m[0] === view) ? view : "today";
   return (
     <div className="ws-root">
-      <Provider go={(v) => router.push(v === "today" ? "/app" : `/app/${v}`)}>
-        <Shell view={safeView} />
+      <Provider go={(v) => {
+        window.history.pushState(null, "", `${v === "today" ? "/app" : `/app/${v}`}${demo ? "?demo=1" : ""}`);
+        window.scrollTo(0, 0);
+      }}>
+        <Shell view={safeView} demo={demo} />
       </Provider>
     </div>
   );
@@ -116,7 +118,7 @@ export type LiveShell = {
   account?: ReactNode;
   content: ReactNode;
 };
-export function Shell({ view, live }: { view: View; live?: LiveShell }) {
+export function Shell({ view, live, demo = false }: { view: View; live?: LiveShell; demo?: boolean }) {
   const studio = useStudio();
   const go = live?.go ?? studio.go;
   const practiceName = live?.practiceName ?? studio.state.practice.name;
@@ -226,14 +228,20 @@ export function Shell({ view, live }: { view: View; live?: LiveShell }) {
                   <Link
                     onClick={(event) => {
                       setMenu(false);
-                      if (live) {
+                      if (
+                        !event.metaKey &&
+                        !event.ctrlKey &&
+                        !event.shiftKey &&
+                        !event.altKey &&
+                        event.button === 0
+                      ) {
                         event.preventDefault();
                         go(id as View);
                       }
                     }}
                     href={
                       live?.href?.(id as View) ??
-                      (id === "today" ? "/app" : `/app/${id}`)
+                      `${id === "today" ? "/app" : `/app/${id}`}${demo ? "?demo=1" : ""}`
                     }
                     aria-current={view === id ? "page" : undefined}
                   >

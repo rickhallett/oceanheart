@@ -1,0 +1,29 @@
+.root {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #fff;
+  color: #657389;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+.root p { margin: 0; }
+.fullScreen { min-height: 100svh; }
+.inline { min-height: 60svh; }
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #d8dfe8;
+  border-top-color: #255bd7;
+  border-radius: 50%;
+  animation: turn 800ms linear infinite;
+}
+@keyframes turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}

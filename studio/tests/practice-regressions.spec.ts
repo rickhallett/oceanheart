@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import { initialState, type State } from "../src/components/workspace/model";
-const storageKey = "oceanheart-studio-workspace-v1";
+import { initialState, demoDay, type State } from "../src/components/workspace/model";
+const storageKey = "oceanheart-studio-rick-demo-v1";
 async function seed(page: Page, change: (s: State) => void, path: string) {
   const data = structuredClone(initialState);
   change(data);
@@ -69,7 +69,7 @@ test("portal rescheduling preserves client service and payment state", async ({
   await seed(
     page,
     (s) => {
-      s.bookings = [s.bookings[3]];
+      s.bookings = [{...s.bookings[3], clientId:"c1", serviceId:"s1", day:demoDay, status:"Awaiting payment"}];
       s.services[0].active = false;
     },
     "/app/portal",
@@ -91,6 +91,7 @@ test("portal rescheduling preserves client service and payment state", async ({
   const data = await stored(page);
   expect(data.bookings[0]).toEqual({
     ...initialState.bookings[3],
+    clientId:"c1", serviceId:"s1", status:"Awaiting payment",
     day: "2026-09-11",
     time: "12:00",
   });
@@ -106,6 +107,7 @@ test("completed sessions cannot be rescheduled and leave upcoming portal session
     (s) => {
       s.bookings = [s.bookings[0]];
       s.bookings[0].status = "Completed";
+      s.bookings[0].day = demoDay;
     },
     "/app/calendar",
   );
@@ -143,7 +145,7 @@ test("reset clears unsaved settings fields before a subsequent save", async ({
 test("reply and refund requests cannot be queued twice", async ({ page }) => {
   await seed(page, (s) => (s.approvals = []), "/app/inbox");
   if (page.viewportSize()!.width < 768)
-    await page.locator(".ws-inbox-list").getByRole("button", { name: /A first appointment/ }).click();
+    await page.locator(".ws-inbox-list").getByRole("button", { name: /Can I book a discovery call/ }).click();
   await page
     .getByLabel("Your reply", { exact: true })
     .fill("Thank you. We can arrange a first conversation.");
@@ -152,7 +154,7 @@ test("reply and refund requests cannot be queued twice", async ({ page }) => {
   await expect(send).toBeDisabled();
   await page.reload();
   if (page.viewportSize()!.width < 768)
-    await page.locator(".ws-inbox-list").getByRole("button", { name: /A first appointment/ }).click();
+    await page.locator(".ws-inbox-list").getByRole("button", { name: /Can I book a discovery call/ }).click();
   await expect(send).toBeDisabled();
   expect(
     (await stored(page)).approvals.filter((a) => a.type === "reply"),
