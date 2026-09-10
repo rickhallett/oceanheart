@@ -1,3 +1,4 @@
+import { citedAnswerChecks } from "./cited-answer-checks.mjs";
 import { sourceLibraryChecks } from "./source-library-checks.mjs";
 import {gmailChecks} from "./gmail-checks.mjs";
 import {randomBytes} from "node:crypto";
@@ -242,7 +243,9 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
-  if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
+  if (process.env.STUDIO_INTEGRATION_SLICE === "cited-answers") {
+    await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
     await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
   } else {
   const tenantA = await alice.mutation("tenants:create", {
@@ -602,6 +605,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   });
   await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
   }
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

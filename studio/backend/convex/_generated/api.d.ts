@@ -9,6 +9,7 @@
  */
 
 import type * as bookings from "../bookings.js";
+import type * as citedAnswers from "../citedAnswers.js";
 import type * as clients from "../clients.js";
 import type * as demoSeed from "../demoSeed.js";
 import type * as enquiries from "../enquiries.js";
@@ -16,6 +17,7 @@ import type * as gmail from "../gmail.js";
 import type * as gmailConnections from "../gmailConnections.js";
 import type * as gmailInternal from "../gmailInternal.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_answerProvider from "../lib/answerProvider.js";
 import type * as lib_bookingCommands from "../lib/bookingCommands.js";
 import type * as lib_bookingHours from "../lib/bookingHours.js";
 import type * as lib_catalog from "../lib/catalog.js";
@@ -25,6 +27,7 @@ import type * as lib_gmailMessage from "../lib/gmailMessage.js";
 import type * as lib_gmailProvider from "../lib/gmailProvider.js";
 import type * as lib_gmailSecurity from "../lib/gmailSecurity.js";
 import type * as lib_practiceDay from "../lib/practiceDay.js";
+import type * as lib_retrieval from "../lib/retrieval.js";
 import type * as lib_settings from "../lib/settings.js";
 import type * as migrations from "../migrations.js";
 import type * as services from "../services.js";
@@ -41,6 +44,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   bookings: typeof bookings;
+  citedAnswers: typeof citedAnswers;
   clients: typeof clients;
   demoSeed: typeof demoSeed;
   enquiries: typeof enquiries;
@@ -48,6 +52,7 @@ declare const fullApi: ApiFromModules<{
   gmailConnections: typeof gmailConnections;
   gmailInternal: typeof gmailInternal;
   "lib/access": typeof lib_access;
+  "lib/answerProvider": typeof lib_answerProvider;
   "lib/bookingCommands": typeof lib_bookingCommands;
   "lib/bookingHours": typeof lib_bookingHours;
   "lib/catalog": typeof lib_catalog;
@@ -57,6 +62,7 @@ declare const fullApi: ApiFromModules<{
   "lib/gmailProvider": typeof lib_gmailProvider;
   "lib/gmailSecurity": typeof lib_gmailSecurity;
   "lib/practiceDay": typeof lib_practiceDay;
+  "lib/retrieval": typeof lib_retrieval;
   "lib/settings": typeof lib_settings;
   migrations: typeof migrations;
   services: typeof services;
