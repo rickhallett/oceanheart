@@ -165,7 +165,7 @@
 .p-foundation-statement h2 span { color: #255bd7; }
 .p-foundation-statement > p { font-size: 17px; margin-top: 24px; max-width: 440px; }
 .p-hero h1 { margin-top: 0; }
-.p-hero-art img { box-shadow: none; }
+.p-hero-art img { box-shadow: none; opacity: 0.9; }
 .p-section-intro h2, .p-workspace-heading h2, .p-together h2, .p-closing h2, .p-vision h2 { margin-top: 0; }
 .possibilities-scenarios button { grid-template-columns: 24px 1fr; }
 .possibilities-journey .journey-quote { margin-top: 0; }
