@@ -561,6 +561,7 @@ export function ClientsPanel({
   search = "",
   update,
   archive,
+  history,
 }: {
   items: Client[];
   status: PageStatus;
@@ -570,6 +571,7 @@ export function ClientsPanel({
   search?: string;
   update?: (record: Client, input: ClientInput) => Promise<unknown>;
   archive?: (record: Client, archived: boolean) => Promise<unknown>;
+  history?: (record: Client) => ReactNode;
 }) {
   const [adding, setAdding] = useState(false),
     [editing, setEditing] = useState<Client>(),
@@ -657,6 +659,7 @@ export function ClientsPanel({
                 archive={(value) => archive(client, value)}
               />
             )}
+            {history?.(client)}
           </li>
         ))}
       </ul>

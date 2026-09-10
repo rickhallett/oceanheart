@@ -6,6 +6,27 @@ import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 import { expectedRevision, requestKey } from "./lib/catalog";
 import { practiceDayAt } from "./lib/practiceDay";
+import { paginationOptsValidator } from "convex/server";
+import { pageSize } from "./lib/catalog";
+
+export const forClient = query({
+  args: { tenantId: v.id("tenants"), clientId: v.id("clients"), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, { tenantId, clientId, paginationOpts }) => {
+    await requireMember(ctx, tenantId, true);
+    const client = await ctx.db.get(clientId);
+    if (!client || client.tenantId !== tenantId) throw new ConvexError("FORBIDDEN");
+    pageSize(paginationOpts.numItems);
+    const result = await ctx.db.query("bookings")
+      .withIndex("by_tenant_client_start", q => q.eq("tenantId", tenantId).eq("clientId", clientId))
+      .order("desc").paginate(paginationOpts);
+    return { ...result, page: result.page.map(r => ({
+      _id: r._id, startsAt: r.startsAt, endsAt: r.endsAt,
+      status: r.status ?? "scheduled", revision: r.revision ?? 0,
+      ...(r.serviceSnapshot ? { serviceSnapshot: r.serviceSnapshot } : {}),
+      ...(r.timeZone ? { timeZone: r.timeZone } : {}),
+    })) };
+  },
+});
 export const create=mutation({
   args:{tenantId:v.id("tenants"),practitionerId:v.string(),startsAt:v.number(),endsAt:v.number(),clientLabel:v.string(),requestKey:v.string()},
   handler:async(ctx,args)=>{
