@@ -36,9 +36,9 @@ export default function PossibilitiesPage() {
       <div className="p-hero-copy">
 
         <h1 id="possibilities-title">Put the power<br />to change things<br /><span>in your hands.</span></h1>
-        <p className="studio-lead">Keep the thread with clients. Make a new group happen. Have something left at the end of the day.</p>
+        <p className="studio-lead">Keep the thread with clients. Make that new group happen. Leave more room for life.</p>
         <p className="p-hero-description">Studio brings clients, enquiries, appointments and tasks together. Work with Rick at Oceanheart to adapt it, connect your everyday tools and build the things your particular practice needs.</p>
-        <div className="studio-actions"><a className="studio-button" href="#everyday">See what could change <SmallArrow down /></a><a className="studio-link" href={demo}>Explore Studio</a></div>
+        <div className="studio-actions"><a className="studio-button" href="#everyday">Free your mind... <SmallArrow down /></a><a className="studio-link" href={demo}>Explore Studio</a></div>
         <p className="p-small p-hero-note">For independent therapists, coaches, bodyworkers and small practices.</p>
       </div>
       <figure className="p-hero-art"><img src="/images/studio-possibilities/enterprise-human-light.png" width="1054" height="1492" alt="Enterprise-grade. Human-sized. A hand holding a miniature technological structure, recreated from the approved Oceanheart artwork in a light palette." fetchPriority="high" /></figure>
@@ -46,11 +46,7 @@ export default function PossibilitiesPage() {
 
     <section className="p-foundation studio-wide" aria-labelledby="foundation-title">
       <div className="p-foundation-statement"><h2 id="foundation-title">Good software.<br />Someone on your side.<br /><span>A way to make it yours.</span></h2><p>Studio gives your practice a shared foundation. Oceanheart brings the engineering and personal support to shape what happens around it.</p></div>
-      <div className="p-foundation-combination"><div className="p-foundation-inputs">
-        <div><h3>Studio</h3><p>Clients, enquiries, appointments and tasks, brought together.</p><a href="#workspace">Explore the workspace</a></div>
-        <span className="p-foundation-plus" aria-hidden="true">+</span>
-        <div><h3>Oceanheart</h3><p>Work directly with Rick to adapt, connect and build.</p><a href="#together">Work with Rick</a></div>
-      </div><p className="p-foundation-result">Your practice, with more room to move.</p></div>
+      <div className="p-foundation-combination"><img className="p-foundation-art" src="/images/studio-possibilities/studio-oceanheart.png" alt="Studio: clients, enquiries, appointments and tasks, brought together. Plus Oceanheart: work directly with Rick to adapt, connect and build." width="1536" height="1024" loading="lazy" /></div>
     </section>
 
     <section id="everyday" className="p-section studio-wide" aria-labelledby="everyday-title">
@@ -81,10 +77,10 @@ export default function PossibilitiesPage() {
 
     <section id="together" className="p-together studio-wide" aria-labelledby="together-title">
       <figure className="p-portrait"><img src="/images/rick-portrait-looking-left-v2.png" alt="Rick Hallett" width="1128" height="1938" loading="lazy" /></figure>
-      <div><h2 id="together-title">Show me where<br />it gets difficult.</h2><p>I’m Rick. My background brings together fifteen years in clinical practice, software engineering, and a life spent around contemplative and wellness communities.</p><p>I work with AI every day to investigate, prototype and build. That means we can explore ideas in working software, then refine them around what you learn by using them.</p><p>You work with the person who can understand the difficulty, make the change and help keep it working.</p><ol className="p-collaboration"><li><strong>Bring one real example.</strong><span>Include the workarounds and the tools you already use.</span></li><li><strong>Try a useful change.</strong><span>Agree the scope. Explore an early version. Keep your judgement involved.</span></li><li><strong>Make it part of the working day.</strong><span>Check the whole journey and agree ongoing support as things evolve.</span></li></ol></div>
+      <div><h2 id="together-title">Show me where<br />it gets difficult.</h2><p>I’m Rick. My background brings together fifteen years in clinical practice, software engineering, and a life spent around contemplative and wellness communities.</p><p>I work with AI every day to investigate, prototype and build. That means we can explore ideas in working software, then refine them around what you learn by using them.</p><p>You work with the person who can understand the difficulty, make the change and help keep it working.</p><ol className="p-collaboration"><li><strong>Bring one real example.</strong><span>Include the workarounds and the tools you already use.</span></li><li><strong>Try a useful change.</strong><span>Agree the scope. Explore an early version.</span></li><li><strong>Make it part of the working day.</strong><span>Check the whole journey and agree ongoing support as things evolve.</span></li></ol></div>
     </section>
 
-    <section className="p-closing studio-wide" aria-labelledby="closing-title"><h2 id="closing-title">You don’t have to<br /><span>figure it all out alone.</span></h2><p>Start with something that takes too much effort, an idea you haven’t been able to try, or a change you want your practice to make room for.</p><div className="studio-actions"><a className="studio-button" href={contact}>Have a free first conversation <SmallArrow /></a><a className="studio-link" href={demo}>Try the Studio demo</a></div><a className="p-email" href="mailto:rick@oceanheart.ai">rick@oceanheart.ai</a></section>
+    <section className="p-closing studio-wide" aria-labelledby="closing-title"><h2 id="closing-title">You don’t have to<br /><span>figure it all out alone.</span></h2><p>Start with something that takes too much effort, an idea you haven’t been able to try. I can help you think bigger.</p><div className="studio-actions"><a className="studio-button" href={contact}>Have a free first conversation <SmallArrow /></a><a className="studio-link" href={demo}>Try the Studio demo</a></div><a className="p-email" href="mailto:rick@oceanheart.ai">rick@oceanheart.ai</a></section>
     <Footer />
   </main>;
 }

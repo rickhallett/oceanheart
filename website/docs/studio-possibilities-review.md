@@ -66,3 +66,7 @@ Applied the 19 annotated comments: stronger opening about agency; faithful light
 Mobbin MCP layout reference: [Ploy overlapping forms](https://mobbin.com/sites/sections/c3a0c0ec-ad38-47e0-81b6-4db0654fee47). Used as composition guidance, with original implementation.
 
 This revision passed production build and TypeScript. Browser inspection covered desktop hero, connected foundation, coloured selectors and faded portrait, plus 390px and 320px layout checks. Zero `.p-kicker` elements remain. Microsoft selector state verified. The earlier full interaction coverage remains applicable; interaction logic was unchanged.
+
+## Second visual revision
+
+Replaced the foundation circles with ImageGen artwork using the page palette (#255BD7, #17212F, #F4F7FD, #EDF3FF, #ADC3EF and white), retaining equivalent accessible alt text. Removed the links and result tagline. Applied the requested hero, button, Google outcome, collaboration and closing copy verbatim. Increased portrait side fading and enlarged desktop hero art from a 420px to 490px maximum with a wider grid allocation. Build and TypeScript passed; generated graphic, larger poster and portrait inspected in the browser. Original artwork preserved.
