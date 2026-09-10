@@ -125,14 +125,15 @@ it("picks only editable fields from Convex documents at initialization and lates
     "provenance",
     "title",
   ]);
+  const latestDocument = {
+    ...metadata,
+    _id: "version2",
+    number: 2,
+    content: "New document",
+  };
   view.rerender(
     <SourceEditor
-      initial={{
-        ...metadata,
-        _id: "version2",
-        number: 2,
-        content: "New document",
-      }}
+      initial={latestDocument}
       revision={1}
       save={save}
       cancel={() => {}}
