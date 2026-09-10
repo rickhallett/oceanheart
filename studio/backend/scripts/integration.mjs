@@ -1,3 +1,4 @@
+import { sourceLibraryChecks } from "./source-library-checks.mjs";
 import {gmailChecks} from "./gmail-checks.mjs";
 import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
@@ -109,6 +110,11 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
+  // Malformed pointer fixture is installed only in this disposable local backend.
+  await writeFile(resolve(runDir,"convex/sourceLibraryTest.ts"), `import {internalMutation} from "./_generated/server";
+import {v} from "convex/values";
+export const point=internalMutation({args:{sourceId:v.id("knowledgeSources"),versionId:v.optional(v.id("knowledgeVersions"))},handler:async(ctx,args)=>{await ctx.db.patch(args.sourceId,{currentVersionId:args.versionId});}});
+`);
   // This allowlisted adapter exists ONLY in the isolated local copy, never hosted source.
   await writeFile(resolve(runDir,"convex/gmailTest.ts"), `import {action} from "./_generated/server";
 import {internal} from "./_generated/api";
@@ -212,7 +218,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     { recursive: true },
   );
   assert.equal(
-    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest")).join("\n"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -236,6 +242,9 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
+  if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
+    await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
+  } else {
   const tenantA = await alice.mutation("tenants:create", {
       name: "Practice A",
     }),
@@ -591,6 +600,8 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
       await command(["import","--env-file",".push.env","--table","bookings","--append","today-bookings.json"]);
     },
   });
+  await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
+  }
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(
