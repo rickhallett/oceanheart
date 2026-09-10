@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.37.0",
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@workos-inc/authkit-nextjs": "^4.3.1",
