@@ -3,10 +3,10 @@ import * as catalog from "./catalog";
 
 // Practice details live on the tenants table (with the existing name and time
 // zone) plus one default weekly availability record. Availability is the
-// owner's declared default for future public scheduling: each of the seven
+// owner's declared weekly hours: each of the seven
 // weekdays is either closed (null) or one open/close interval written in the
-// practice time zone. It is not an enforced bookable slot and only that single
-// source is stored.
+// practice time zone. Enforcement remains opt-in and only this single source
+// is stored.
 export const WEEKDAYS = [
   "monday",
   "tuesday",
@@ -70,6 +70,7 @@ export function settingsFields(args: {
   contactPhone?: string;
   address?: string;
   availability: Record<Weekday, DayInterval>;
+  enforceBookingHours: boolean;
 }) {
   const result = {
     name: catalog.name(args.name),
@@ -78,6 +79,7 @@ export function settingsFields(args: {
     contactPhone: phone(args.contactPhone),
     address: text(args.address, 500, "INVALID_ADDRESS"),
     availability: normalizeAvailability(args.availability),
+    enforceBookingHours: args.enforceBookingHours,
   };
   return result;
 }
@@ -110,6 +112,7 @@ export function currentSettings(tenant: {
   contactPhone?: string;
   address?: string;
   availability?: Record<Weekday, DayInterval>;
+  enforceBookingHours?: boolean;
 }) {
   return {
     name: tenant.name,
@@ -118,6 +121,7 @@ export function currentSettings(tenant: {
     contactPhone: tenant.contactPhone ?? undefined,
     address: tenant.address ?? undefined,
     availability: tenant.availability ?? closedWeek(),
+    enforceBookingHours: tenant.enforceBookingHours ?? false,
   };
 }
 // Convex may preserve a storage-insertion key order that differs from the

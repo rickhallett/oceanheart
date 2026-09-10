@@ -1,8 +1,8 @@
 # Manual practitioner bookings
 
-The authenticated `/practice` Bookings view is owner-only. One practice has one
+The authenticated `/app` Bookings view is owner-only. One practice has one
 calendar lane. Confirm an IANA practice timezone explicitly before scheduling;
-Europe/London is a suggestion. `/app` remains a separate browser-local demo.
+Europe/London is a suggestion. `/practice` redirects to this same workspace.
 
 Choose an active client and service using searchable client results and explicit
 load-more controls. The backend stores client/service IDs and snapshots the
@@ -23,6 +23,23 @@ cancelled but cannot be rescheduled through this linked workflow. The backend
 records create/reschedule/cancel transitions. No hard deletes, availability
 promises, public slots, reminders or external messages are included.
 
+Saved weekly hours are optional and enforcement defaults off. When an owner
+enables it, `bookings:createLinked`, retained legacy `bookings:create`, linked
+reschedule and booking creation during enquiry conversion all read the current
+tenant setting inside their mutation. The complete half-open elapsed interval
+must fit one continuous allowed segment; checking only the submitted endpoint
+wall times is insufficient. Adjacent appointments ending exactly at close are
+allowed. Closed days and intervals crossing local midnight are denied.
+
+On a repeated-hour day, ambiguous opening and closing times apply to each real
+occurrence. An appointment may use either occurrence only when its whole
+elapsed interval remains allowed; crossing a disallowed fold segment is denied.
+If a saved opening or closing time does not exist on a clock-forward day, that
+local day fails closed. Existing appointments are not revalidated or changed.
+Exact original create and conversion receipts are resolved before current
+hours or time-zone checks, so safe retries remain replayable after settings
+change. New writes use current settings and fail `OUTSIDE_PRACTICE_HOURS`.
+
 The default Today view gives owners a compact read-only summary through the
 separate `bookings:today` query. That query derives `[day start,next day start)`
 from server time and the tenant's stored zone, includes prior-day bookings that
@@ -37,6 +54,9 @@ suppression, retry/pending controls, revision conflicts, overnight display and
 owner-only mounting. Generated API contract checks cover every booking command.
 Native Today checks cover overlap boundaries, cancellation, legacy scheduled
 rows, tenant isolation and the explicit 200-row `hasMore` signal.
+Focused native hours checks cover default-off compatibility, every authoritative
+write path, whole-interval DST folds/gaps, atomic conversion rollback, tenant
+isolation and receipt replay after settings changes.
 `npm run verify` performs the standard build, TypeScript, unit and browser checks.
 The opt-in real WorkOS runner also creates a linked booking, rejects overlap,
 reschedules overnight, cancels and verifies persistence in a fresh session. It

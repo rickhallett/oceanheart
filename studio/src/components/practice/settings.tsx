@@ -31,6 +31,7 @@ type Draft = {
   phone: string;
   address: string;
   availability: WeeklyAvailability;
+  enforceBookingHours: boolean;
 };
 type Baseline = {
   revision: number;
@@ -45,6 +46,7 @@ function draftFromSettings(settings: PracticeSettings): Draft {
     phone: settings.contactPhone ?? "",
     address: settings.address ?? "",
     availability: structuredClone(settings.availability),
+    enforceBookingHours: settings.enforceBookingHours,
   };
 }
 function baselineFromSettings(settings: PracticeSettings): Baseline {
@@ -208,10 +210,12 @@ function SettingsForm({
       phone: draft.phone.trim(),
       address: draft.address.trim(),
       availability: week,
+      enforceBookingHours: draft.enforceBookingHours,
     };
     const input: SettingsInput = {
       name: saved.name,
       availability: saved.availability,
+      enforceBookingHours: saved.enforceBookingHours,
       ...(saved.tagline ? { tagline: saved.tagline } : {}),
       ...(saved.email ? { contactEmail: saved.email } : {}),
       ...(saved.phone ? { contactPhone: saved.phone } : {}),
@@ -344,10 +348,35 @@ function SettingsForm({
           <section className="lp-settings-group">
             <h3 className="lp-settings-sub">Default weekly availability</h3>
             <p className="lp-muted lp-availability-note">
-              Defaults for future public scheduling — existing bookings are
-              unchanged. Times are in the practice time zone
+              Saved weekly hours for scheduling. Times are in the practice time zone
               {zone ? ` (${zone})` : ""}.
             </p>
+            <label className="lp-hours-enforcement" htmlFor="enforce-booking-hours">
+              <input
+                id="enforce-booking-hours"
+                type="checkbox"
+                checked={draft.enforceBookingHours}
+                onChange={(event) =>
+                  setDraft((previous) => ({
+                    ...previous,
+                    enforceBookingHours: event.target.checked,
+                  }))
+                }
+                disabled={
+                  pending ||
+                  !canWrite ||
+                  (!zone && !draft.enforceBookingHours)
+                }
+              />
+              <span>
+                <strong>Enforce weekly hours</strong>
+                <span className="lp-muted">
+                  Reject new and rescheduled bookings outside these hours.
+                  Existing bookings stay unchanged.
+                  {!zone && " Save a practice time zone in Bookings first."}
+                </span>
+              </span>
+            </label>
             {DAYS.map(([day, label]) => (
               <div className="lp-day-row" key={day}>
                 <input

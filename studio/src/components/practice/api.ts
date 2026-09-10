@@ -299,6 +299,8 @@ export function readableError(error: unknown): string {
     return "The practice time zone changed since you opened these settings. Load the latest settings before saving.";
   if (message.includes("BOOKING_CONFLICT"))
     return "That time overlaps an existing booking. Choose another time.";
+  if (message.includes("OUTSIDE_PRACTICE_HOURS"))
+    return "That appointment falls outside the practice’s saved weekly hours.";
   if (message.includes("LEGACY_BOOKING"))
     return "This older booking cannot be rescheduled. Cancel it and create a linked booking.";
   if (message.includes("BOOKING_CANCELLED"))
@@ -351,6 +353,7 @@ export type PracticeSettings = {
   contactPhone?: string;
   address?: string;
   availability: WeeklyAvailability;
+  enforceBookingHours: boolean;
 };
 export type SettingsInput = {
   name: string;
@@ -359,6 +362,7 @@ export type SettingsInput = {
   contactPhone?: string;
   address?: string;
   availability: WeeklyAvailability;
+  enforceBookingHours?: boolean;
 };
 export type Client = {
   archived: boolean;
