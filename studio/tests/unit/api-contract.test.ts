@@ -213,6 +213,18 @@ type bookingsResult = Assert<
     FunctionReturnType<typeof practiceApi.bookings>
   >
 >;
+type startBookingCheckoutArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.payments.startCheckout>,
+    FunctionArgs<typeof practiceApi.startBookingCheckout>
+  >
+>;
+type startBookingCheckoutResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.payments.startCheckout>,
+    FunctionReturnType<typeof practiceApi.startBookingCheckout>
+  >
+>;
 type createBookingArgs = Assert<
   Equal<
     FunctionArgs<typeof api.bookings.createLinked>,
@@ -252,6 +264,9 @@ type cancelBookingResult = Assert<
 it("uses deployed booking and timezone command names", () => {
   expect(getFunctionName(practiceApi.setTimeZone)).toBe("tenants:setTimeZone");
   expect(getFunctionName(practiceApi.bookings)).toBe("bookings:list");
+  expect(getFunctionName(practiceApi.startBookingCheckout)).toBe(
+    "payments:startCheckout",
+  );
   expect(getFunctionName(practiceApi.createBooking)).toBe(
     "bookings:createLinked",
   );

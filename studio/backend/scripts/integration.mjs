@@ -4,6 +4,7 @@ import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { bookingHoursChecks } from "./booking-hours-checks.mjs";
+import { paymentChecks } from "./payment-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
@@ -121,6 +122,11 @@ import {internal} from "./_generated/api";
 import {v} from "convex/values";
 export const transition=action({args:{name:v.union(v.literal("consume"),v.literal("finish"),v.literal("importMessage"),v.literal("disconnect"),v.literal("expireState")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>ctx.runMutation(internal.gmailInternal[name],args)});
 `);
+  await writeFile(resolve(runDir,"convex/paymentTest.ts"), `import {action} from "./_generated/server";
+import {internal} from "./_generated/api";
+import {v} from "convex/values";
+export const transition=action({args:{name:v.union(v.literal("reserve"),v.literal("current"),v.literal("guard"),v.literal("attach"),v.literal("reconcile")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>name==="current"?ctx.runQuery(internal.paymentsInternal.current,args):ctx.runMutation(internal.paymentsInternal[name==="attach"?"attachSession":name==="guard"?"guardCheckout":name],args)});
+`);
   for (const file of ["package.json", "tsconfig.json", "auth-policy.ts"])
     await cp(resolve(root, file), resolve(runDir, file));
   await symlink(
@@ -218,7 +224,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     { recursive: true },
   );
   assert.equal(
-    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest")).join("\n"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest") && !line.includes("paymentTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -244,6 +250,8 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     anonymous = await client();
   if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
     await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "payments") {
+    await paymentChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"payment-local"});
   } else {
   const tenantA = await alice.mutation("tenants:create", {
       name: "Practice A",
@@ -552,6 +560,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   check("list truncation explicitly reported with hasMore and limit");
   const bookingFixtures=await bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"booking-local"});
   await bookingHoursChecks({alice,bob,viewer,check,prefix:"hours-local"});
+  await paymentChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"payment-local"});
   const oldStart=Date.UTC(2041,0,10,9),oldArgs={tenantId:tenantA,practitionerId:"pre-upgrade",startsAt:oldStart,endsAt:oldStart+3600000,clientLabel:"Pre-upgrade booking",requestKey:"pre-upgrade"};
   await writeFile(resolve(runDir,"legacy-bookings.json"),JSON.stringify([{...oldArgs,createdBy:`${issuer}|alice`}]));
   await command(["import","--env-file",".push.env","--table","bookings","--append","legacy-bookings.json"]);

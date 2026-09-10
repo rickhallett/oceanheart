@@ -31,6 +31,22 @@ export default defineSchema({
     .index("by_tenant_identity", ["tenantId", "identity"])
     .index("by_identity", ["identity"]),
   bookingEvents: defineTable({tenantId:v.id("tenants"),bookingId:v.id("bookings"),action:v.union(v.literal("created"),v.literal("rescheduled"),v.literal("cancelled")),at:v.number(),actor:v.string(),revision:v.number(),startsAt:v.number(),endsAt:v.number(),previousStartsAt:v.optional(v.number()),previousEndsAt:v.optional(v.number())}).index("by_booking",["bookingId"]),
+  paymentAttempts: defineTable({
+    tenantId:v.id("tenants"),bookingId:v.id("bookings"),requestKey:v.string(),actor:v.string(),
+    bookingRevision:v.number(),amountMinor:v.number(),currency:v.literal("GBP"),serviceName:v.string(),
+    status:v.union(v.literal("creating"),v.literal("pending"),v.literal("failed"),v.literal("paid")),
+    providerIdempotencyKey:v.string(),providerSessionId:v.optional(v.string()),providerPaymentIntentId:v.optional(v.string()),
+    checkoutUrl:v.optional(v.string()),providerStatus:v.optional(v.string()),failureCode:v.optional(v.string()),
+    createdAt:v.number(),updatedAt:v.number(),
+  })
+    .index("by_tenant_booking",["tenantId","bookingId"])
+    .index("by_tenant_booking_status",["tenantId","bookingId","status"])
+    .index("by_tenant_request",["tenantId","requestKey"])
+    .index("by_provider_session",["providerSessionId"]),
+  paymentEvents: defineTable({
+    providerEventId:v.string(),tenantId:v.id("tenants"),attemptId:v.id("paymentAttempts"),
+    providerCreated:v.number(),providerType:v.string(),processedAt:v.number(),
+  }).index("by_provider_event",["providerEventId"]),
   bookings: defineTable({
     clientId:v.optional(v.id("clients")),serviceId:v.optional(v.id("services")),
     serviceSnapshot:v.optional(v.object({name:v.string(),durationMinutes:v.number(),priceMinor:v.number(),currency:v.literal("GBP")})),
