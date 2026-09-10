@@ -29,6 +29,7 @@ import type * as lib_settings from "../lib/settings.js";
 import type * as migrations from "../migrations.js";
 import type * as services from "../services.js";
 import type * as settings from "../settings.js";
+import type * as sourceLibrary from "../sourceLibrary.js";
 import type * as tasks from "../tasks.js";
 import type * as tenants from "../tenants.js";
 
@@ -60,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   migrations: typeof migrations;
   services: typeof services;
   settings: typeof settings;
+  sourceLibrary: typeof sourceLibrary;
   tasks: typeof tasks;
   tenants: typeof tenants;
 }>;

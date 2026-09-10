@@ -1,3 +1,4 @@
+import { sourceLibraryChecks } from "./source-library-checks.mjs";
 import {gmailChecks} from "./gmail-checks.mjs";
 import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
@@ -236,6 +237,9 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
+  if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
+    await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  } else {
   const tenantA = await alice.mutation("tenants:create", {
       name: "Practice A",
     }),
@@ -591,6 +595,8 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
       await command(["import","--env-file",".push.env","--table","bookings","--append","today-bookings.json"]);
     },
   });
+  await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  }
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(
