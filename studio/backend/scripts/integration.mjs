@@ -280,6 +280,14 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
   await taskMaintenanceChecks({
     alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,
+    seedForeignLinkedTask:async(foreignClientId)=>{
+      const malformed={tenantId:tenantA,title:"Malformed foreign-linked task",completed:false,createdAt:Date.now(),createdBy:`${issuer}|alice`,requestKey:"malformed-foreign-linked-task",clientId:foreignClientId};
+      await writeFile(resolve(runDir,"malformed-foreign-linked-task.json"),JSON.stringify([malformed]));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","malformed-foreign-linked-task.json"]);
+      const task=(await alice.query("tasks:list",{tenantId:tenantA})).items.find(item=>item.title===malformed.title);
+      assert.ok(task,"malformed foreign-linked task import was not visible to native task query");
+      return task._id;
+    },
     seedBoundaryTasks:async()=>{
       const legacy={tenantId:tenantA,title:"Legacy task",completed:false,createdAt:1,createdBy:`${issuer}|alice`,requestKey:"legacy-task"};
       await writeFile(resolve(runDir,"legacy-task.json"),JSON.stringify([legacy]));

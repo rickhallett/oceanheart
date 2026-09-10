@@ -95,6 +95,8 @@ export const list = query({
             isOwner && clientId !== undefined
               ? await ctx.db.get(clientId)
               : null;
+          const tenantLinked =
+            linked?.tenantId === tenantId ? linked : null;
           return {
             _id,
             title,
@@ -102,11 +104,11 @@ export const list = query({
             createdAt,
             revision: revision ?? 0,
             ...(dueDate !== undefined ? { dueDate } : {}),
-            ...(linked
+            ...(tenantLinked
               ? {
-                  clientId: linked._id,
-                  clientName: linked.name,
-                  clientArchived: linked.archived ?? false,
+                  clientId: tenantLinked._id,
+                  clientName: tenantLinked.name,
+                  clientArchived: tenantLinked.archived ?? false,
                 }
               : {}),
           };
@@ -131,10 +133,6 @@ export const create = mutation({
     const normalizedTitle = taskTitle(rawTitle);
     const normalizedDueDate =
       rawDueDate === undefined ? undefined : taskDueDate(rawDueDate);
-    const normalizedClientId =
-      rawClientId === undefined
-        ? undefined
-        : (await taskClient(ctx, tenantId, rawClientId))._id;
     if (!requestKey || requestKey.trim() !== requestKey || requestKey.length > 128)
       throw new ConvexError("INVALID_REQUEST_KEY");
     const existing = await ctx.db
@@ -166,12 +164,19 @@ export const create = mutation({
       if (
         (existing.creationTitle ?? existing.title) !== normalizedTitle ||
         originalDueDate !== normalizedDueDate ||
-        (originalClientId ?? undefined) !== (normalizedClientId ?? undefined) ||
+        (originalClientId ?? undefined) !== (rawClientId ?? undefined) ||
         existing.createdBy !== user.tokenIdentifier
       )
         throw new ConvexError("IDEMPOTENCY_MISMATCH");
       return existing._id;
     }
+    // Receipt retries above compare the immutable original client id without
+    // revalidating its current lifecycle state. A genuinely new link must
+    // still resolve to a live client owned by this tenant.
+    const normalizedClientId =
+      rawClientId === undefined
+        ? undefined
+        : (await taskClient(ctx, tenantId, rawClientId))._id;
     return ctx.db.insert("tasks", {
       tenantId,
       title: normalizedTitle,

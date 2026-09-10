@@ -8,7 +8,7 @@ import {
   dueDateProblem,
 } from "../../src/components/practice/practice-ui";
 import { practiceConfigured } from "../../src/lib/practice-config";
-import type { Task } from "../../src/components/practice/api";
+import type { Task, TaskClientOption } from "../../src/components/practice/api";
 
 const taskPanelCallbacks = () => ({
   filter: "all" as const,
@@ -18,7 +18,7 @@ const taskPanelCallbacks = () => ({
   clientOptions: [
     { _id: "client-a", name: "Ava Stone", archived: false },
     { _id: "client-b", name: "Ben Cross", archived: false },
-  ] as unknown as { _id: Task["clientId"]; name: string; archived: boolean }[],
+  ] as TaskClientOption[],
   clientsStatus: "Exhausted" as const,
   clientSearch: "",
   changeClientSearch: vi.fn(),
@@ -596,12 +596,12 @@ it("viewers see due dates but are offered no date input or edit controls", async
   );
   expect(screen.queryByLabelText("Due date")).not.toBeInTheDocument();
 });
-type PickerClient = { _id: string; name: string; archived: boolean };
+type PickerClient = TaskClientOption;
 const clientPickerProps = (options: PickerClient[] = [
-  { _id: "client-a", name: "Ava Stone", archived: false },
-  { _id: "client-b", name: "Ben Cross", archived: false },
+  { _id: "client-a" as TaskClientOption["_id"], name: "Ava Stone", archived: false },
+  { _id: "client-b" as TaskClientOption["_id"], name: "Ben Cross", archived: false },
 ]) => ({
-  clientOptions: options as unknown as { _id: Task["clientId"]; name: string; archived: boolean }[],
+  clientOptions: options,
   clientsStatus: "Exhausted" as const,
   clientSearch: "",
   changeClientSearch: vi.fn(),

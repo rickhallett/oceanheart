@@ -10,6 +10,7 @@ export async function taskMaintenanceChecks({
   viewerIdentity,
   clientForOwner,
   check,
+  seedForeignLinkedTask,
   seedBoundaryTasks,
 }) {
   const create = {
@@ -466,6 +467,17 @@ export async function taskMaintenanceChecks({
     name: "Foreign Client",
     requestKey: "task-link-client-foreign",
   });
+  const malformedForeignLinkedTask = await seedForeignLinkedTask(foreignClient);
+  const malformedProjection = (
+    await alice.query("tasks:list", { tenantId: tenantA })
+  ).items.find((task) => task._id === malformedForeignLinkedTask);
+  assert.ok(malformedProjection, "malformed foreign-linked task was not listed");
+  assert.ok(!("clientId" in malformedProjection), "foreign clientId leaked to owner");
+  assert.ok(!("clientName" in malformedProjection), "foreign client name leaked to owner");
+  assert.ok(
+    !("clientArchived" in malformedProjection),
+    "foreign client archive state leaked to owner",
+  );
   const linkedCreate = {
     tenantId: tenantA,
     title: "Linked task",
@@ -634,12 +646,13 @@ export async function taskMaintenanceChecks({
     unlinkedId,
     "an unlinked create stays retryable after removal",
   );
-  const archiveTarget = await alice.mutation("tasks:create", {
+  const archiveTargetCreate = {
     tenantId: tenantA,
     title: "Soon archived link",
     requestKey: "task-link-archive-target",
     clientId: clientB,
-  });
+  };
+  const archiveTarget = await alice.mutation("tasks:create", archiveTargetCreate);
   await alice.mutation("clients:setArchived", {
     tenantId: tenantA,
     clientId: clientB,
@@ -651,6 +664,20 @@ export async function taskMaintenanceChecks({
   );
   assert.equal(archivedLink.clientName, "Task Link Beta");
   assert.equal(archivedLink.clientArchived, true);
+  assert.equal(
+    await alice.mutation("tasks:create", archiveTargetCreate),
+    archiveTarget,
+    "the original linked create stays retryable after its client is archived",
+  );
+  await assert.rejects(
+    alice.mutation("tasks:create", {
+      tenantId: tenantA,
+      title: "New task for archived client",
+      requestKey: "task-link-new-after-archive",
+      clientId: clientB,
+    }),
+    /ARCHIVED_RECORD/,
+  );
   await alice.mutation("tasks:update", {
     tenantId: tenantA,
     taskId: archiveTarget,
@@ -734,7 +761,7 @@ export async function taskMaintenanceChecks({
     linkedId,
     "removal leaves the original linked create receipt in place",
   );
-  check("task client links resolve live same-tenant records with names, reject archived/foreign links, preserve on omitted updates, clear on null, keep unlinked creates retryable after link edits/removal, keep archived links intelligible and redact every link field for viewers");
+  check("task client links resolve only same-tenant records with names, redact malformed foreign references, reject new archived/foreign links, preserve original retries after archive, preserve on omitted updates, clear on null, keep unlinked creates retryable after link edits/removal, keep archived links intelligible and redact every link field for viewers");
   check("task due dates accept real YYYY-MM-DD calendar days including leap years, reject impossible dates, preserve on omitted updates, clear on null, keep date-less creates retryable after dates/removal, enforce revisions and tombstone receipts with owner-only tenant isolation");
   const legacyId = await seedBoundaryTasks();  assert.equal(
     (await alice.mutation("tasks:update", {
