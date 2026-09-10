@@ -5,6 +5,33 @@ import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 import * as validate from "./lib/catalog";
 const fields={name:v.string(),email:v.optional(v.string()),phone:v.optional(v.string())};
+
+export const notes = query({
+  args: { tenantId: v.id("tenants"), clientId: v.id("clients") },
+  handler: async (ctx, { tenantId, clientId }) => {
+    await requireMember(ctx, tenantId, true);
+    const client = await ctx.db.get(clientId);
+    if (!client || client.tenantId !== tenantId) throw new ConvexError("FORBIDDEN");
+    return { text: client.privateNotes ?? "", revision: client.notesRevision ?? 0 };
+  },
+});
+
+export const saveNotes = mutation({
+  args: { tenantId: v.id("tenants"), clientId: v.id("clients"), text: v.string(), expectedRevision: v.number() },
+  handler: async (ctx, { tenantId, clientId, text, expectedRevision }) => {
+    await requireMember(ctx, tenantId, true);
+    const client = await ctx.db.get(clientId);
+    if (!client || client.tenantId !== tenantId) throw new ConvexError("FORBIDDEN");
+    validate.expectedRevision(expectedRevision);
+    if (text.length > 4000) throw new ConvexError("INVALID_NOTES");
+    const revision = client.notesRevision ?? 0;
+    // Identical retries are harmless; conflicting stale drafts cannot overwrite.
+    if (text === (client.privateNotes ?? "")) return { text, revision };
+    if (expectedRevision !== revision) throw new ConvexError("REVISION_CONFLICT");
+    await ctx.db.patch(clientId, { privateNotes: text, notesRevision: revision + 1 });
+    return { text, revision: revision + 1 };
+  },
+});
 export const create=mutation({
   args:{tenantId:v.id("tenants"),...fields,requestKey:v.string()},
   handler:async(ctx,args)=>{

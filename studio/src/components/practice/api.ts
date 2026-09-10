@@ -58,6 +58,12 @@ export type TodayBookingList =
       limit: number;
     };
 export const practiceApi = {
+  clientNotes: makeFunctionReference<
+    "query", { tenantId: TenantId; clientId: GenericId<"clients"> }, ClientNotesValue
+  >("clients:notes"),
+  saveClientNotes: makeFunctionReference<
+    "mutation", { tenantId: TenantId; clientId: GenericId<"clients">; text: string; expectedRevision: number }, ClientNotesValue
+  >("clients:saveNotes"),
   clientBookings: makeFunctionReference<
     "query",
     { tenantId: TenantId; clientId: GenericId<"clients">; paginationOpts: PaginationOptions },
@@ -363,6 +369,7 @@ export type Client = {
   phone?: string;
   createdAt: number;
 };
+export type ClientNotesValue = { text: string; revision: number };
 export type ServiceInput = {
   name: string;
   durationMinutes: number;
