@@ -16,7 +16,7 @@ const views = [
     title: "Enquiries",
     heading: "Give the first conversation a place.",
     description:
-      "Keep an enquiry in view while you decide what a helpful next step looks like. These are sample conversations; production Gmail authorisation is still pending.",
+      "Keep an enquiry in view, prepare a thoughtful reply and decide what a helpful next step looks like.",
     path: "/inbox",
   },
   {
@@ -24,7 +24,7 @@ const views = [
     title: "Clients",
     heading: "Pick up the relationship again.",
     description:
-      "Find a client and the context around their work with you. The demo directory is populated with fictional people and session histories.",
+      "Find a client and the context around their work with you, from the first conversation to their appointment history.",
     path: "/clients",
   },
   {
@@ -32,7 +32,7 @@ const views = [
     title: "Bookings",
     heading: "Put the person, service and time together.",
     description:
-      "Move from an overview of the day into the appointments themselves. Explore the fictional practice calendar and how its services fit into the week.",
+      "Move from an overview of the day into the appointments themselves, and see how your services fit into the week.",
     path: "/calendar",
   },
 ];

@@ -82,8 +82,7 @@ export default function Page() {
             />
           </picture>
           <figcaption>
-            This is the actual Precision interface. Demo names, appointments, messages and balances
-            are fictional. Payment figures and assistant actions shown here are simulated.
+            A day in Studio, illustrated with a fictional practice.
           </figcaption>
         </figure>
       </section>
@@ -148,9 +147,8 @@ export default function Page() {
             <h3>Start with the conversation.</h3>
             <p>
               A prospective client arrives with a question, a hope, or a little uncertainty. Keep
-              the enquiry visible while you decide what comes next. Enquiry management exists in the
-              current application; connecting a production Gmail account still requires OAuth
-              authorisation.
+              the enquiry visible, prepare a reply and keep the conversation connected to what
+              happens next.
             </p>
           </li>
           <li>
@@ -175,8 +173,7 @@ export default function Page() {
           <p>
             Clients, services, bookings, tasks, Today, enquiries and settings form the current
             foundation. An intake process, booking rule or client-facing form could be an area for
-            collaboration. These are examples to explore together, not ready-made features or a
-            promise that every request can be supported.
+            collaboration, shaped around the way your practice works.
           </p>
           <a className="studio-link" href={appUrl}>
             Studio sign-in
@@ -195,26 +192,22 @@ export default function Page() {
             <dt>The current application</dt>
             <dd>
               Clients, services, bookings, tasks, Today, enquiries and settings are part of the
-              implemented practice workspace, with core workflows verified in staging. Production
-              sign-in setup and the first account acceptance check are still pending. You can
-              explore the public demo now; account access at{" "}
-              <a href={appUrl}>studio.oceanheart.ai/app</a> is still being prepared.
+              practice workspace. Follow an enquiry, arrange an appointment and keep track of the
+              work between sessions, all in one place.
             </dd>
           </div>
           <div>
             <dt>The public browser demo</dt>
             <dd>
-              A fictional practice lets you explore the product without an account. Its balances,
-              messages and assistant suggestions illustrate the experience. They are not evidence of
-              payment processing or email delivery.
+              Explore a fictional practice without an account. Look through the working day,
+              open a conversation and see how the pieces fit together.
             </dd>
           </div>
           <div>
-            <dt>Connected services</dt>
+            <dt>On the horizon</dt>
             <dd>
-              Production Gmail OAuth remains pending. Payment processing, website publishing, a live
-              client portal and the broader assistant experience are planned capabilities. Their
-              presence in the demo navigation does not mean they are released integrations.
+              Payments, website publishing, a client portal and practical assistant tools are part
+              of the roadmap. Development will follow the needs of the practices we work with.
             </dd>
           </div>
         </dl>
