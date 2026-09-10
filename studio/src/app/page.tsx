@@ -1,192 +1,129 @@
-import { Box, Card, Container, Flex, Grid, Heading, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react";
-import { Leaf, MessageCircle, Heart, ArrowUpRight } from "lucide-react";
-import { Mark, ButtonLink, TextLink, Eyebrow } from "@/components/ui";
-import { PracticePreview } from "@/components/practice-preview";
+import type { Metadata } from "next";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { Mark } from "@/components/ui";
 import { StudioProvider } from "@/components/studio-provider";
+import "./precision-home.css";
 
-const email =
-  "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20oceanheart%20Studio";
+export const metadata: Metadata = {
+  title: "oceanheart Studio — Your practice, in one place",
+  description:
+    "A clear workspace for your enquiries, clients, bookings and follow-ups. Practice software shaped around the way you work.",
+  openGraph: {
+    title: "oceanheart Studio — Your practice, in one place",
+    description: "Practice software shaped around the way you work.",
+    images: ["/precision-today.webp"],
+  },
+};
+
 export default function Home() {
   return (
-    <StudioProvider>
-      <Link className="skip-link" href="#main">
-        Skip to content
-      </Link>
-        <Flex as="header" className="site-header" align="center" justify="space-between" gap={6}>
-          <Link className="brand" href="/" aria-label="oceanheart Studio home">
-            <Mark />
-            <span>oceanheart Studio</span>
-          </Link>
-          <Text className="brand-description">
-            Personal support for independent practitioners
-          </Text>
-          <HStack as="nav" aria-label="Main navigation" gap={{base:4,md:8}}>
-            <Link href="#studio">The studio</Link>
-            <Link href="#how-it-works">How it works</Link>
-            <Link href="#contact">Get in touch</Link>
-          </HStack>
-        </Flex>
-      <Box as="main" id="main" tabIndex={-1}>
-        <Box className="hero-scene">
-          <Box as="section" className="hero container" aria-labelledby="hero-title">
-            <Box className="hero-copy">
-              <Heading as="h1" id="hero-title">
-                Your practice,
-                <br />
-                beautifully put together.
-              </Heading>
-              <Text className="hero-description">
-                A thoughtful home for your business.
-                <br />
-                Set up with you. Looked after with you.
-              </Text>
-              <Box className="hero-actions">
-                <ButtonLink href="#contact">Let’s talk</ButtonLink>
-                <TextLink href="#how-it-works">See how it works</TextLink>
-              </Box>
-              <Box className="hero-note">
-                <span />
-                <Eyebrow>More space for what matters</Eyebrow>
-              </Box>
-            </Box>
-            <PracticePreview />
-          </Box>
-        </Box>
-      <Box as="section" id="studio" className="studio-section section-border">
-        <Grid className="studio-grid" templateColumns={{base:"1fr",md:"repeat(3,1fr)",xl:"1.4fr repeat(3,1fr)"}} gap={5}>
-          <Box className="studio-intro">
-            <Eyebrow>The studio</Eyebrow>
-            <Heading as="h2">
-              Thoughtful support for the day-to-day realities of running a
-              practice.
-            </Heading>
-          </Box>
-          <Box className="service">
-            <Leaf />
-            <Heading as="h3">
-              Your services, prices and
-              <br className="desktop-break" /> booking details, clearly
-              presented
-            </Heading>
-          </Box>
-          <Box className="service">
-            <MessageCircle />
-            <Heading as="h3">
-              Enquiries and bookings,
-              <br /> in one place
-            </Heading>
-          </Box>
-          <Box className="service">
-            <Heart />
-            <Heading as="h3">
-              Ongoing support from
-              <br /> a clinician and engineer
-            </Heading>
-          </Box>
-        </Grid>
-      </Box>
-      <Box as="section" id="how-it-works" className="process-section section-border">
-        <Container maxW="1280px" px={{base:6,md:10}}>
-          <Box className="section-heading">
-            <Box>
-              <Heading as="h2">
-                We put it together.
-                <br />
-                You make it your own.
-              </Heading>
-            </Box>
-            <Text>
-              You bring your practice, however it looks today. We work through
-              what you need, build a simpler way to run it, and keep helping as
-              things change.
-            </Text>
-          </Box>
-          <SimpleGrid columns={{base:1,md:3}} gap={6} className="steps">
-            {[
-              {
-                title: "Start with a conversation",
-                body: "Tell me about your work, your clients and the admin that keeps getting in the way. We’ll agree what would make the biggest difference.",
-              },
-              {
-                title: "Give everything a place",
-                body: "We bring your services, enquiries and booking process together. You get a clear website and a workspace organised around your day.",
-              },
-              {
-                title: "Have someone in your corner",
-                body: "We get you comfortable using it, then stay in touch. When something needs changing or stops making sense, you have someone to turn to.",
-              },
-            ].map((step, i) => (
-              <Card.Root className="step" key={step.title} bg="bg.panel" borderColor="border" rounded="2xl"><Card.Body p={{base:6,md:8}}>
-                <span className="step-number">0{i + 1}</span>
-                <Heading as="h3">{step.title}</Heading>
-                <Text>{step.body}</Text>
-              </Card.Body></Card.Root>
-            ))}
-          </SimpleGrid>
-        </Container>
-      </Box>
-      <Box as="section" className="personal-section section-border">
-        <Box className="container personal-grid">
-          <Box className="personal-symbol">
+    <StudioProvider application>
+      <div className="precision-home">
+        <a className="ph-skip" href="#main">
+          Skip to content
+        </a>
+        <header className="ph-header">
+          <a className="ph-brand" href="/" aria-label="oceanheart Studio home">
             <Mark />
             <span>
-              Built with care.
-              <br />
-              Looked after personally.
+              oceanheart <strong>Studio</strong>
             </span>
-          </Box>
-          <Box>
-            <Heading as="h2">
-              Hello, I’m Rick.
-              <br />A clinician who builds things.
-            </Heading>
-            <Text>
-              I’m a clinician and an engineer. oceanheart Studio brings those
-              two parts of my work together: understanding the care you put into
-              your practice, and making the practical side easier to manage.
-            </Text>
-            <Text>
-              We’ll work together directly, from the first conversation to the
-              everyday questions that come after.
-            </Text>
-            <TextLink href="#contact">Tell me about your practice</TextLink>
-          </Box>
-        </Box>
-      </Box>
-      <Box as="section" id="contact" className="contact-section section-border">
-        <Box className="container contact-inner">
-          <Heading as="h2">
-            A little more space
-            <br />
-            for the work you love.
-          </Heading>
-          <Text>
-            Tell me what you do, and what you wish took less of your time.
-            <br />
-            We can work out the next step together.
-          </Text>
-          <ButtonLink href={email}>Let’s talk</ButtonLink>
-          <Link className="email-link" href={email}>
-            rick@oceanheart.ai <ArrowUpRight size={14} />
-          </Link>
-        </Box>
-      </Box>
-      </Box>
-      <Flex as="footer" className="site-footer" align="center" gap={6} wrap="wrap" px={{base:6,md:12}} py={8}>
-        <Link className="brand" href="/">
-          <Mark />
+          </a>
+          <nav aria-label="Main navigation">
+            <a href="https://www.oceanheart.ai/studio">
+              About Studio <ArrowUpRight size={14} />
+            </a>
+            <a href="/app">
+              Open Studio <ArrowRight size={15} />
+            </a>
+          </nav>
+        </header>
+        <main id="main" tabIndex={-1}>
+          <section className="ph-intro" aria-labelledby="hero-title">
+            <div>
+              <h1 id="hero-title">
+                Your practice,
+                <br />
+                in one place.
+              </h1>
+              <p>
+                A clear home for the work around your work. Bring enquiries,
+                clients, bookings and follow-ups together, with room to make it
+                your own.
+              </p>
+              <div className="ph-actions">
+                <a className="ph-primary" href="/app">
+                  Open Studio <ArrowRight size={17} />
+                </a>
+                <a href="/app?demo=1">
+                  Explore the demo <ArrowRight size={17} />
+                </a>
+              </div>
+            </div>
+            <p className="ph-aside">
+              Built for independent practitioners.
+              <br />
+              Shaped through real conversations,
+              <br />
+              and the everyday details that matter.
+            </p>
+          </section>
+          <figure className="ph-preview">
+            <a
+              href="/app?demo=1"
+              aria-label="Explore the Studio workspace demo"
+            >
+              <picture>
+                <source
+                  media="(max-width: 600px)"
+                  srcSet="/precision-today-mobile.webp"
+                />
+                <img
+                  src="/precision-today.webp"
+                  width="1440"
+                  height="1000"
+                  alt="Studio's Today workspace, showing a sample day's appointments and follow-up tasks"
+                  fetchPriority="high"
+                />
+              </picture>
+            </a>
+            <figcaption>
+              A day in Studio · demo practice with fictional records
+            </figcaption>
+          </figure>
+          <section className="ph-story" aria-labelledby="ph-story-title">
+            <h2 id="ph-story-title">
+              Less keeping track.
+              <br />
+              More getting on.
+            </h2>
+            <div>
+              <p>
+                Follow an enquiry through to an appointment. Keep client details
+                close to their history. See what needs doing today, and find the
+                practice information you need without hunting through documents.
+              </p>
+              <p>
+                Studio is a maintained product, developed with the people who
+                use it. Tell us where your work gets awkward; we’ll work out
+                what would make it simpler.
+              </p>
+              <a href="https://www.oceanheart.ai/studio">
+                The thinking behind Studio <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </section>
+        </main>
+        <footer className="ph-footer">
           <span>oceanheart Studio</span>
-        </Link>
-        <Text>Your practice, beautifully put together.</Text>
-        <Link
-          href="https://oceanheart.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Part of oceanheart <ArrowUpRight size={13} />
-        </Link>
-        <small>© {new Date().getFullYear()} oceanheart</small>
-      </Flex>
+          <a href="mailto:rick@oceanheart.ai?subject=Studio">
+            Talk to Rick <ArrowUpRight size={14} />
+          </a>
+          <a href="https://www.oceanheart.ai">
+            oceanheart.ai <ArrowUpRight size={14} />
+          </a>
+        </footer>
+      </div>
     </StudioProvider>
   );
 }
