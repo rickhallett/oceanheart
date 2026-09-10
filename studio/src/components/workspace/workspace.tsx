@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Box,
   Breadcrumb,
@@ -106,8 +106,21 @@ export function Workspace() {
     </div>
   );
 }
-function Shell({ view }: { view: View }) {
-  const { state, go } = useStudio();
+export type LiveShell = {
+  practiceName: string;
+  ownerName: string;
+  role: string;
+  go: (view: View) => void;
+  href?: (view: View) => string;
+  picker?: ReactNode;
+  account?: ReactNode;
+  content: ReactNode;
+};
+export function Shell({ view, live }: { view: View; live?: LiveShell }) {
+  const studio = useStudio();
+  const go = live?.go ?? studio.go;
+  const practiceName = live?.practiceName ?? studio.state.practice.name;
+  const ownerName = live?.ownerName ?? studio.state.practice.owner;
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState("");
@@ -164,12 +177,13 @@ function Shell({ view }: { view: View }) {
         </span>
       </Link>
       <div className="ws-practice-identity">
-        <span className="ws-practice-monogram">{state.practice.name[0]}</span>
+        <span className="ws-practice-monogram">{practiceName[0]}</span>
         <div>
-          <strong>{state.practice.name}</strong>
+          <strong>{practiceName}</strong>
           <small>Practice workspace</small>
         </div>
       </div>
+      {live?.picker}
       <nav aria-label="Practice navigation">
         {[
           {
@@ -210,21 +224,34 @@ function Shell({ view }: { view: View }) {
                   key={id}
                 >
                   <Link
-                    onClick={() => setMenu(false)}
-                    href={id === "today" ? "/app" : `/app/${id}`}
+                    onClick={(event) => {
+                      setMenu(false);
+                      if (live) {
+                        event.preventDefault();
+                        go(id as View);
+                      }
+                    }}
+                    href={
+                      live?.href?.(id as View) ??
+                      (id === "today" ? "/app" : `/app/${id}`)
+                    }
                     aria-current={view === id ? "page" : undefined}
                   >
                     <Icon size={17} strokeWidth={1.5} />
                     <span>{modules.find((m) => m[0] === id)![1]}</span>
-                    {id === "inbox" && (
+                    {!live && id === "inbox" && (
                       <small>
-                        {state.inbox.filter((m) => m.status === "New").length}
+                        {
+                          studio.state.inbox.filter((m) => m.status === "New")
+                            .length
+                        }
                       </small>
                     )}
-                    {id === "assistant" &&
-                      state.approvals.some((a) => a.status === "Pending") && (
-                        <i />
-                      )}
+                    {!live &&
+                      id === "assistant" &&
+                      studio.state.approvals.some(
+                        (a) => a.status === "Pending",
+                      ) && <i />}
                   </Link>
                 </Button>
               );
@@ -238,12 +265,13 @@ function Shell({ view }: { view: View }) {
         className="ws-user"
         onClick={() => go("settings")}
       >
-        <Avatar name={state.practice.owner} />
+        <Avatar name={ownerName} />
         <div>
-          <strong>{state.practice.owner}</strong>
-          <small>Practice owner · sample</small>
+          <strong>{ownerName}</strong>
+          <small>{live ? live.role : "Practice owner · sample"}</small>
         </div>
       </Button>
+      {live?.account}
     </>
   );
   return (
@@ -475,7 +503,7 @@ function Shell({ view }: { view: View }) {
               <Text color="fg.muted">{title[2]}</Text>
             </Stack>
           )}
-          <Screen />
+          {live ? live.content : <Screen />}
         </main>
         <footer className="ws-footer">
           <span>oceanheart Studio</span>

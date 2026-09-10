@@ -1,0 +1,284 @@
+/* Live records inhabit the reviewed Precision workspace. */
+.ws-live-content.lp-root {
+  min-height: 0;
+  background: transparent;
+  font: inherit;
+}
+.ws-live-picker {
+  padding: 0 20px 16px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.ws-live-picker label {
+  font-size: 11px;
+  color: #657389;
+}
+.ws-live-picker select {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+  padding: 5px 8px;
+  background: white;
+  font-size: 13px;
+}
+.ws-live-picker button,
+.ws-live-account button {
+  font-size: 12px;
+  text-align: left;
+  color: #657389;
+  padding: 4px 0;
+}
+.ws-live-account {
+  padding: 0 24px 16px;
+}
+.ws-live-content .ws-welcome h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.7px;
+}
+.ws-live-content .ws-welcome p {
+  margin-top: 8px;
+}
+.ws-live-content .ws-date-label {
+  font-size: 12px;
+  color: #657389;
+}
+.ws-live-today-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+}
+.ws-live-content .ws-agenda-row {
+  min-width: 0;
+  white-space: normal;
+  text-align: left;
+}
+.ws-live-content .ws-agenda-row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .ws-agenda-row small {
+  display: block;
+}
+.ws-live-tasks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ws-live-tasks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 0;
+  min-width: 0;
+}
+.ws-live-tasks li > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ws-live-tasks input {
+  margin-top: 3px;
+  accent-color: #255bd7;
+  flex: none;
+}
+.ws-live-tasks button.ws-link {
+  display: block;
+  font-size: 12px;
+  color: #657389;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.ws-task-done {
+  text-decoration: line-through;
+  color: #657389;
+}
+.ws-live-stats button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ws-live-stats strong {
+  font-size: 26px;
+}
+.ws-live-stats small {
+  font-size: 12px;
+  font-weight: 400;
+  color: #657389;
+}
+.ws-live-content .lp-task-form {
+  max-width: 680px;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 10px 16px;
+  align-items: center;
+  margin: 24px 0;
+}
+.ws-live-content .lp-task-form .lp-inline {
+  margin: 0;
+}
+.ws-live-content .lp-task-form label {
+  margin: 0;
+}
+.ws-live-content .lp-task-list {
+  max-width: none;
+}
+.ws-live-content .lp-task-row {
+  padding: 16px 0;
+  gap: 12px;
+}
+.ws-live-content .lp-section-heading {
+  margin-bottom: 20px;
+}
+.ws-live-content .lp-section-heading h2 {
+  font-size: 16px;
+}
+.ws-live-content .lp-record-form,
+.ws-live-content .lp-task-editor {
+  background: white;
+  max-width: 640px;
+}
+.ws-live-content .lp-empty {
+  padding: 24px 0;
+}
+.ws-live-connections {
+  margin-top: 32px;
+}
+.ws-live-connections > h2,
+.ws-live-connections > summary {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ws-entry-signin {
+  display: inline-flex;
+  margin-top: 24px;
+  background: #255bd7;
+  color: white;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+@media (max-width: 800px) {
+  .ws-live-today-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-live-content .lp-task-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .ws-live-content .lp-task-form .lp-inline {
+    margin-bottom: 8px;
+  }
+  .ws-live-content .ws-welcome h1 {
+    font-size: 25px;
+  }
+  .ws-live-content .ws-welcome {
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .ws-live-stats {
+    flex-wrap: wrap;
+  }
+  .ws-live-tasks li {
+    gap: 8px;
+  }
+}
+.ws-live .ws-live-picker select,
+.ws-live-content.lp-root select {
+  appearance: auto;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 20px;
+  padding-block: 5px;
+}
+.ws-live-content.lp-root .ws-link {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  min-height: 34px;
+  padding: 0;
+  color: #255bd7;
+}
+.ws-live-content.lp-root .ws-live-tasks .ws-link {
+  color: #657389;
+  min-height: 0;
+  line-height: 20px;
+  font-weight: 400;
+}
+.ws-live-content.lp-root .ws-live-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: auto;
+  gap: 24px;
+}
+.ws-live-content.lp-root .ws-live-stats button {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 0;
+  height: auto;
+  padding: 20px;
+  gap: 8px;
+  border: 0;
+  white-space: normal;
+  text-align: left;
+}
+.ws-live-stats strong {
+  display: block;
+  line-height: 1.4;
+}
+.ws-live-content.lp-root .ws-welcome > button {
+  height: 34px;
+  min-height: 34px;
+  line-height: 20px;
+}
+@media (max-width: 600px) {
+  .ws-live-content.lp-root .ws-live-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .ws-live-content.lp-root .ws-live-stats button {
+    padding: 12px 16px;
+  }
+  .ws-live-content .ws-agenda-row {
+    padding-inline: 0;
+  }
+  .ws-live-tasks li {
+    flex-wrap: wrap;
+  }
+  .ws-live-tasks li > .lp-muted {
+    margin-left: 24px;
+  }
+}
+.ws-live-content .lp-tasks > .lp-section-heading > h2,
+.ws-live-content .lp-settings > .lp-section-heading > h2,
+.ws-live-content .lp-bookings-workspace > h2 {
+  display: none;
+}
+.ws-live-content .lp-tasks {
+  display: flex;
+  flex-direction: column;
+}
+.ws-live-content .lp-task-filters {
+  order: 0;
+}
+.ws-live-content .lp-task-list,
+.ws-live-content .lp-tasks > .lp-empty {
+  order: 1;
+}
+.ws-live-content .lp-task-form {
+  order: 2;
+  padding-top: 16px;
+}
+.ws-live-content .lp-tasks > .lp-notice,
+.ws-live-content .lp-tasks > [role="alert"] {
+  order: 3;
+}

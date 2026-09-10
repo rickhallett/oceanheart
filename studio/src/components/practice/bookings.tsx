@@ -23,8 +23,10 @@ import type { PageStatus } from "./records-ui";
 export function PracticeBookings({
   tenantId,
   timeZone,
+  initialAdding = false,
 }: {
   tenantId: TenantId;
+  initialAdding?: boolean;
   timeZone?: string;
 }) {
   const setZone = useMutation(practiceApi.setTimeZone);
@@ -48,6 +50,7 @@ export function PracticeBookings({
           key={agendaTimeZone}
           tenantId={tenantId}
           timeZone={agendaTimeZone}
+          initialAdding={initialAdding}
         />
       )}
     </section>
@@ -129,12 +132,14 @@ export function TimeZoneForm({
 function BookingAgenda({
   tenantId,
   timeZone,
+  initialAdding = false,
 }: {
   tenantId: TenantId;
   timeZone: string;
+  initialAdding?: boolean;
 }) {
   const [day, setDay] = useState(() => todayIn(timeZone)),
-    [adding, setAdding] = useState(false),
+    [adding, setAdding] = useState(initialAdding),
     [editing, setEditing] = useState<Booking>(),
     [notice, setNotice] = useState("");
   let range: ReturnType<typeof bookingDay> | undefined;

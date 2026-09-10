@@ -10,6 +10,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Workspace design
 
+The reviewed Precision `/app` workspace is the only application UI development target. Integrate authenticated data and commands there; do not build another application surface. `/practice` is a compatibility redirect. See [environment mapping](docs/ENVIRONMENTS.md).
+
 Before changing `/app` UI, read [the canonical style guide](docs/STYLE_GUIDE.md). It supersedes the initial Precision proposal and historical CSS defaults. Preserve the reviewed white, borderless workspace and compact control scale. Verify visible results at the affected viewport.
 
 ## Database readiness
