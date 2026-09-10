@@ -8,13 +8,23 @@ function validateIdentity(identity: string) {
     throw new ConvexError("INVALID_IDENTITY");
 }
 export const create = mutation({
-  args: { name: v.string() },
+  args: { name: v.string(), requestKey: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user) throw new ConvexError("UNAUTHENTICATED");
     const name = args.name.trim();
     if (!name || name.length > 100) throw new ConvexError("INVALID_NAME");
-    const tenantId = await ctx.db.insert("tenants", { name });
+    if (args.requestKey !== undefined && (!args.requestKey || args.requestKey.trim() !== args.requestKey || args.requestKey.length > 128))
+      throw new ConvexError("INVALID_REQUEST_KEY");
+    if (args.requestKey !== undefined) {
+      const existing = await ctx.db.query("tenants").withIndex("by_creator_request", q => q.eq("createdBy", user.tokenIdentifier).eq("requestKey", args.requestKey)).unique();
+      if (existing) {
+        if (existing.name !== name) throw new ConvexError("IDEMPOTENCY_MISMATCH");
+        await requireMember(ctx, existing._id, true);
+        return existing._id;
+      }
+    }
+    const tenantId = await ctx.db.insert("tenants", { name, createdBy: user.tokenIdentifier, ...(args.requestKey !== undefined ? {requestKey: args.requestKey} : {}) });
     await ctx.db.insert("memberships", {
       tenantId,
       identity: user.tokenIdentifier,
@@ -70,10 +80,23 @@ export const list = query({
       memberships.map(async (membership) => {
         const tenant = await ctx.db.get(membership.tenantId);
         return tenant
-          ? { _id: tenant._id, name: tenant.name, role: membership.role }
+          ? { _id: tenant._id, name: tenant.name, role: membership.role, ...(tenant.timeZone ? {timeZone:tenant.timeZone} : {}) }
           : null;
       }),
     );
     return practices.filter((practice) => practice !== null);
+  },
+});
+
+export const setTimeZone=mutation({
+  args:{tenantId:v.id("tenants"),timeZone:v.string(),expectedTimeZone:v.union(v.string(),v.null())},
+  handler:async(ctx,{tenantId,timeZone,expectedTimeZone})=>{
+    await requireMember(ctx,tenantId,true);
+    if(timeZone.trim()!==timeZone||timeZone.length>100||!timeZone||/^[+-]/.test(timeZone))throw new ConvexError("INVALID_TIME_ZONE");
+    try {new Intl.DateTimeFormat("en",{timeZone}).format(0);}catch{throw new ConvexError("INVALID_TIME_ZONE");}
+    const tenant=await ctx.db.get(tenantId);if(!tenant)throw new ConvexError("FORBIDDEN");
+    if(tenant.timeZone===timeZone)return tenantId;
+    if((tenant.timeZone??null)!==expectedTimeZone)throw new ConvexError("REVISION_CONFLICT");
+    await ctx.db.patch(tenantId,{timeZone});return tenantId;
   },
 });

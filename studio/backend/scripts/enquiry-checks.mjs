@@ -1,0 +1,60 @@
+import assert from "node:assert/strict";
+export async function enquiryChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity,clientForOwner,check,prefix,record=async()=>{},startsAt=Date.UTC(2050,0,10,9)}){
+  const paginationOpts={numItems:50,cursor:null};
+  const input={tenantId:tenantA,name:" Manual enquiry ",email:"manual@example.com",subject:" First session ",message:"Please let me know about appointments.",requestKey:`${prefix}-capture`};
+  const id=await alice.mutation("enquiries:create",input);await record("enquiries",id,tenantA);assert.equal(await alice.mutation("enquiries:create",input),id);
+  const ref={tenantId:tenantA,enquiryId:id};
+  const read=()=>alice.query("enquiries:get",ref);
+  const list=await alice.query("enquiries:list",{tenantId:tenantA,paginationOpts});const row=list.page.find(r=>r._id===id);assert.ok(row);for(const field of ["email","phone","message","draft","createdBy","requestKey","creationPayload"])assert.ok(!(field in row));
+  for(const caller of [anonymous,bob,viewer]){
+    await assert.rejects(caller.query("enquiries:list",{tenantId:tenantA,paginationOpts}));await assert.rejects(caller.query("enquiries:get",ref));await assert.rejects(caller.query("enquiries:history",{...ref,paginationOpts}));
+    await assert.rejects(caller.mutation("enquiries:create",input));await assert.rejects(caller.mutation("enquiries:saveDraft",{...ref,text:"Denied",expectedRevision:0}));await assert.rejects(caller.mutation("enquiries:setResolved",{...ref,resolved:true,expectedRevision:0}));
+  }
+  await assert.rejects(alice.mutation("enquiries:create",{...input,message:"x".repeat(5001)}),/INVALID_TEXT/);
+  await assert.rejects(alice.mutation("enquiries:create",{...input,subject:"line\nbreak"}),/INVALID_SUBJECT/);
+  await assert.rejects(alice.query("enquiries:list",{tenantId:tenantA,paginationOpts:{numItems:51,cursor:null}}),/INVALID_PAGE_SIZE/);
+  const draft={...ref,text:" An unsent reply draft ",expectedRevision:0};await alice.mutation("enquiries:saveDraft",draft);await alice.mutation("enquiries:saveDraft",draft);
+  assert.equal((await read()).draft,"An unsent reply draft");assert.equal((await read()).resolved,false);
+  await assert.rejects(alice.mutation("enquiries:saveDraft",{...draft,text:"Stale different"}),/REVISION_CONFLICT/);
+  const races=await Promise.allSettled((await Promise.all([clientForOwner(),clientForOwner()])).map((c,i)=>c.mutation("enquiries:saveDraft",{...ref,text:`Racing draft ${i}`,expectedRevision:1})));
+  assert.equal(races.filter(r=>r.status==="fulfilled").length,1);assert.ok(races.some(r=>r.status==="rejected"&&String(r.reason).includes("REVISION_CONFLICT")));
+  await alice.mutation("enquiries:saveDraft",{...ref,text:"",expectedRevision:2});assert.equal((await read()).draft,"");
+  await alice.mutation("enquiries:setResolved",{...ref,resolved:true,expectedRevision:3});await alice.mutation("enquiries:setResolved",{...ref,resolved:true,expectedRevision:3});
+  assert.ok((await alice.query("enquiries:list",{tenantId:tenantA,resolved:true,paginationOpts})).page.some(r=>r._id===id));
+  await alice.mutation("enquiries:setResolved",{...ref,resolved:false,expectedRevision:4});
+  const priorZone=(await alice.query("tenants:list",{})).find(t=>t._id===tenantA).timeZone??null;await alice.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"Europe/London",expectedTimeZone:priorZone});
+  const serviceId=await alice.mutation("services:create",{tenantId:tenantA,name:"Enquiry service",durationMinutes:60,priceMinor:4500,currency:"GBP",requestKey:`${prefix}-service`});await record("services",serviceId,tenantA);
+  const conversion={...ref,expectedRevision:5,requestKey:`${prefix}-convert`,client:{create:{name:"Converted client",email:"shared@example.com"}},booking:{create:{serviceId,startsAt}}};
+  const callers=await Promise.all(Array.from({length:6},()=>clientForOwner()));
+  const outcomes=await Promise.all(callers.map(c=>c.mutation("enquiries:convert",conversion)));assert.equal(new Set(outcomes.map(r=>r.clientId)).size,1);assert.equal(new Set(outcomes.map(r=>r.bookingId)).size,1);
+  const linked=outcomes[0];await record("clients",linked.clientId,tenantA);await record("bookings",linked.bookingId,tenantA);
+  const createdDetail=await read();assert.deepEqual(createdDetail.linkedClient,{_id:linked.clientId,name:"Converted client",archived:false});assert.equal(createdDetail.linkedBooking._id,linked.bookingId);assert.equal(createdDetail.linkedBooking.startsAt,startsAt);assert.equal(createdDetail.linkedBooking.status,"scheduled");assert.equal(createdDetail.linkedBooking.serviceName,"Enquiry service");
+  assert.deepEqual(await alice.mutation("enquiries:convert",conversion),linked);assert.equal((await read()).revision,6);assert.equal((await read()).resolved,false);
+  await assert.rejects(alice.mutation("enquiries:convert",{...conversion,booking:{create:{serviceId,startsAt:startsAt+3600000}}}),/IDEMPOTENCY_MISMATCH/);
+  for(const caller of [anonymous,bob,viewer])await assert.rejects(caller.mutation("enquiries:convert",conversion));
+  await alice.mutation("tenants:addViewer",{tenantId:tenantA,identity:viewerIdentity});try{await assert.rejects(viewer.query("enquiries:get",ref),/FORBIDDEN/);await assert.rejects(viewer.mutation("enquiries:convert",conversion),/FORBIDDEN/);}finally{await alice.mutation("tenants:removeViewer",{tenantId:tenantA,identity:viewerIdentity});}
+  await assert.rejects(viewer.query("enquiries:get",ref),/FORBIDDEN/);
+  const rollbackId=await alice.mutation("enquiries:create",{...input,requestKey:`${prefix}-rollback`});await record("enquiries",rollbackId,tenantA);
+  const unique=`rollback${prefix.replace(/[^a-z0-9]/gi,"").slice(0,15)}`;
+  await assert.rejects(alice.mutation("enquiries:convert",{tenantId:tenantA,enquiryId:rollbackId,expectedRevision:0,requestKey:`${prefix}-blocked`,client:{create:{name:unique}},booking:{create:{serviceId,startsAt}}}),/BOOKING_CONFLICT/);
+  assert.equal((await alice.query("clients:list",{tenantId:tenantA,search:unique,paginationOpts})).page.length,0);
+  const untouched=await alice.query("enquiries:get",{tenantId:tenantA,enquiryId:rollbackId});assert.equal(untouched.revision,0);assert.ok(!untouched.clientId&&!untouched.bookingId);
+  const added=await alice.mutation("enquiries:convert",{tenantId:tenantA,enquiryId:rollbackId,expectedRevision:0,requestKey:`${prefix}-client-only`,client:{existingId:linked.clientId}});assert.equal(added.clientId,linked.clientId);
+  const later=await alice.mutation("enquiries:convert",{tenantId:tenantA,enquiryId:rollbackId,expectedRevision:1,requestKey:`${prefix}-later-booking`,client:{existingId:linked.clientId},booking:{existingId:linked.bookingId}});assert.equal(later.bookingId,linked.bookingId);
+  const existingDetail=await alice.query("enquiries:get",{tenantId:tenantA,enquiryId:rollbackId});assert.deepEqual(existingDetail.linkedClient,createdDetail.linkedClient);assert.deepEqual(existingDetail.linkedBooking,createdDetail.linkedBooking);
+  const foreign=await bob.mutation("clients:create",{tenantId:tenantB,name:"Foreign client",requestKey:`${prefix}-foreign`});await record("clients",foreign,tenantB);
+  await assert.rejects(alice.mutation("enquiries:convert",{...ref,expectedRevision:6,requestKey:`${prefix}-foreign-link`,client:{existingId:foreign}}),/FORBIDDEN/);
+  const other=await alice.mutation("clients:create",{tenantId:tenantA,name:"Different client",requestKey:`${prefix}-different`});await record("clients",other,tenantA);
+  await assert.rejects(alice.mutation("enquiries:convert",{...ref,expectedRevision:6,requestKey:`${prefix}-reassign`,client:{existingId:other}}),/LINK_CONFLICT/);
+  const raceId=await alice.mutation("enquiries:create",{...input,requestKey:`${prefix}-distinct-race`});await record("enquiries",raceId,tenantA);
+  await assert.rejects(alice.mutation("enquiries:convert",{tenantId:tenantA,enquiryId:raceId,expectedRevision:0,requestKey:`${prefix}-wrong-booking-client`,client:{existingId:other},booking:{existingId:linked.bookingId}}),/LINK_CONFLICT/);
+  assert.equal((await alice.query("enquiries:get",{tenantId:tenantA,enquiryId:raceId})).revision,0);
+  const distinct=await Promise.allSettled(callers.slice(0,2).map((c,i)=>c.mutation("enquiries:convert",{tenantId:tenantA,enquiryId:raceId,expectedRevision:0,requestKey:`${prefix}-distinct-${i}`,client:{create:{name:`Deliberate concurrent ${i}`}}})));
+  assert.equal(distinct.filter(r=>r.status==="fulfilled").length,1);assert.ok(distinct.some(r=>r.status==="rejected"&&String(r.reason).includes("REVISION_CONFLICT")));
+  for(const r of distinct)if(r.status==="fulfilled")await record("clients",r.value.clientId,tenantA);
+  const history=await alice.query("enquiries:history",{...ref,paginationOpts});assert.equal(history.page.filter(e=>e.action==="converted").length,1);assert.ok(history.page.some(e=>e.action==="draft_saved"&&e.draft===""));
+  const firstPage=await alice.query("enquiries:list",{tenantId:tenantA,paginationOpts:{numItems:1,cursor:null}});assert.equal(firstPage.page.length,1);assert.equal(firstPage.isDone,false);
+  const secondPage=await alice.query("enquiries:list",{tenantId:tenantA,paginationOpts:{numItems:1,cursor:firstPage.continueCursor}});assert.notEqual(firstPage.page[0]._id,secondPage.page[0]._id);
+  check("manual enquiries persist unsent drafts/history, enforce owner/revision boundaries and paginate resolution state");
+  check("atomic concurrent conversion creates one linked result; booking conflict rolls back client/link; established links cannot change");
+}

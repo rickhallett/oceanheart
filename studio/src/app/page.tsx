@@ -1,105 +1,106 @@
+import { Box, Card, Container, Flex, Grid, Heading, HStack, Link, SimpleGrid, Text } from "@chakra-ui/react";
 import { Leaf, MessageCircle, Heart, ArrowUpRight } from "lucide-react";
 import { Mark, ButtonLink, TextLink, Eyebrow } from "@/components/ui";
 import { PracticePreview } from "@/components/practice-preview";
 
 const email =
-  "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20Oceanheart%20Studio";
+  "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20oceanheart%20Studio";
 export default function Home() {
   return (
     <>
-      <a className="skip-link" href="#main">
+      <Link className="skip-link" href="#main">
         Skip to content
-      </a>
-        <header className="site-header">
-          <a className="brand" href="/" aria-label="Oceanheart Studio home">
+      </Link>
+        <Flex as="header" className="site-header" align="center" justify="space-between" gap={6}>
+          <Link className="brand" href="/" aria-label="oceanheart Studio home">
             <Mark />
-            <span>Oceanheart Studio</span>
-          </a>
-          <p className="brand-description">
+            <span>oceanheart Studio</span>
+          </Link>
+          <Text className="brand-description">
             Personal support for independent practitioners
-          </p>
-          <nav aria-label="Main navigation">
-            <a href="#studio">The studio</a>
-            <a href="#how-it-works">How it works</a>
-            <a href="#contact">Get in touch</a>
-          </nav>
-        </header>
-      <main id="main" tabIndex={-1}>
-        <div className="hero-scene">
-          <section className="hero container" aria-labelledby="hero-title">
-            <div className="hero-copy">
-              <h1 id="hero-title">
+          </Text>
+          <HStack as="nav" aria-label="Main navigation" gap={{base:4,md:8}}>
+            <Link href="#studio">The studio</Link>
+            <Link href="#how-it-works">How it works</Link>
+            <Link href="#contact">Get in touch</Link>
+          </HStack>
+        </Flex>
+      <Box as="main" id="main" tabIndex={-1}>
+        <Box className="hero-scene">
+          <Box as="section" className="hero container" aria-labelledby="hero-title">
+            <Box className="hero-copy">
+              <Heading as="h1" id="hero-title">
                 Your practice,
                 <br />
                 beautifully put together.
-              </h1>
-              <p className="hero-description">
+              </Heading>
+              <Text className="hero-description">
                 A thoughtful home for your business.
                 <br />
                 Set up with you. Looked after with you.
-              </p>
-              <div className="hero-actions">
+              </Text>
+              <Box className="hero-actions">
                 <ButtonLink href="#contact">Let’s talk</ButtonLink>
                 <TextLink href="#how-it-works">See how it works</TextLink>
-              </div>
-              <div className="hero-note">
+              </Box>
+              <Box className="hero-note">
                 <span />
                 <Eyebrow>More space for what matters</Eyebrow>
-              </div>
-            </div>
+              </Box>
+            </Box>
             <PracticePreview />
-          </section>
-        </div>
-      <section id="studio" className="studio-section section-border">
-        <div className="container studio-grid">
-          <div className="studio-intro">
+          </Box>
+        </Box>
+      <Box as="section" id="studio" className="studio-section section-border">
+        <Grid className="studio-grid" templateColumns={{base:"1fr",md:"repeat(3,1fr)",xl:"1.4fr repeat(3,1fr)"}} gap={5}>
+          <Box className="studio-intro">
             <Eyebrow>The studio</Eyebrow>
-            <h2>
+            <Heading as="h2">
               Thoughtful support for the day-to-day realities of running a
               practice.
-            </h2>
-          </div>
-          <div className="service">
+            </Heading>
+          </Box>
+          <Box className="service">
             <Leaf />
-            <h3>
+            <Heading as="h3">
               Your services, prices and
               <br className="desktop-break" /> booking details, clearly
               presented
-            </h3>
-          </div>
-          <div className="service">
+            </Heading>
+          </Box>
+          <Box className="service">
             <MessageCircle />
-            <h3>
+            <Heading as="h3">
               Enquiries and bookings,
               <br /> in one place
-            </h3>
-          </div>
-          <div className="service">
+            </Heading>
+          </Box>
+          <Box className="service">
             <Heart />
-            <h3>
+            <Heading as="h3">
               Ongoing support from
               <br /> a clinician and engineer
-            </h3>
-          </div>
-        </div>
-      </section>
-      <section id="how-it-works" className="process-section section-border">
-        <div className="container">
-          <div className="section-heading">
-            <div>
-              <h2>
+            </Heading>
+          </Box>
+        </Grid>
+      </Box>
+      <Box as="section" id="how-it-works" className="process-section section-border">
+        <Container maxW="1280px" px={{base:6,md:10}}>
+          <Box className="section-heading">
+            <Box>
+              <Heading as="h2">
                 We put it together.
                 <br />
                 You make it your own.
-              </h2>
-            </div>
-            <p>
+              </Heading>
+            </Box>
+            <Text>
               You bring your practice, however it looks today. We work through
               what you need, build a simpler way to run it, and keep helping as
               things change.
-            </p>
-          </div>
-          <div className="steps">
+            </Text>
+          </Box>
+          <SimpleGrid columns={{base:1,md:3}} gap={6} className="steps">
             {[
               {
                 title: "Start with a conversation",
@@ -114,77 +115,77 @@ export default function Home() {
                 body: "We get you comfortable using it, then stay in touch. When something needs changing or stops making sense, you have someone to turn to.",
               },
             ].map((step, i) => (
-              <article className="step" key={step.title}>
+              <Card.Root className="step" key={step.title} bg="bg.panel" borderColor="border" rounded="2xl"><Card.Body p={{base:6,md:8}}>
                 <span className="step-number">0{i + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </article>
+                <Heading as="h3">{step.title}</Heading>
+                <Text>{step.body}</Text>
+              </Card.Body></Card.Root>
             ))}
-          </div>
-        </div>
-      </section>
-      <section className="personal-section section-border">
-        <div className="container personal-grid">
-          <div className="personal-symbol">
+          </SimpleGrid>
+        </Container>
+      </Box>
+      <Box as="section" className="personal-section section-border">
+        <Box className="container personal-grid">
+          <Box className="personal-symbol">
             <Mark />
             <span>
               Built with care.
               <br />
               Looked after personally.
             </span>
-          </div>
-          <div>
-            <h2>
+          </Box>
+          <Box>
+            <Heading as="h2">
               Hello, I’m Rick.
               <br />A clinician who builds things.
-            </h2>
-            <p>
-              I’m a clinician and an engineer. Oceanheart Studio brings those
+            </Heading>
+            <Text>
+              I’m a clinician and an engineer. oceanheart Studio brings those
               two parts of my work together: understanding the care you put into
               your practice, and making the practical side easier to manage.
-            </p>
-            <p>
+            </Text>
+            <Text>
               We’ll work together directly, from the first conversation to the
               everyday questions that come after.
-            </p>
+            </Text>
             <TextLink href="#contact">Tell me about your practice</TextLink>
-          </div>
-        </div>
-      </section>
-      <section id="contact" className="contact-section section-border">
-        <div className="container contact-inner">
-          <h2>
+          </Box>
+        </Box>
+      </Box>
+      <Box as="section" id="contact" className="contact-section section-border">
+        <Box className="container contact-inner">
+          <Heading as="h2">
             A little more space
             <br />
             for the work you love.
-          </h2>
-          <p>
+          </Heading>
+          <Text>
             Tell me what you do, and what you wish took less of your time.
             <br />
             We can work out the next step together.
-          </p>
+          </Text>
           <ButtonLink href={email}>Let’s talk</ButtonLink>
-          <a className="email-link" href={email}>
+          <Link className="email-link" href={email}>
             rick@oceanheart.ai <ArrowUpRight size={14} />
-          </a>
-        </div>
-      </section>
-      </main>
-      <footer className="site-footer container">
-        <a className="brand" href="/">
+          </Link>
+        </Box>
+      </Box>
+      </Box>
+      <Flex as="footer" className="site-footer" align="center" gap={6} wrap="wrap" px={{base:6,md:12}} py={8}>
+        <Link className="brand" href="/">
           <Mark />
-          <span>Oceanheart Studio</span>
-        </a>
-        <p>Your practice, beautifully put together.</p>
-        <a
+          <span>oceanheart Studio</span>
+        </Link>
+        <Text>Your practice, beautifully put together.</Text>
+        <Link
           href="https://oceanheart.ai"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Part of Oceanheart <ArrowUpRight size={13} />
-        </a>
-        <small>© {new Date().getFullYear()} Oceanheart</small>
-      </footer>
+          Part of oceanheart <ArrowUpRight size={13} />
+        </Link>
+        <small>© {new Date().getFullYear()} oceanheart</small>
+      </Flex>
     </>
   );
 }

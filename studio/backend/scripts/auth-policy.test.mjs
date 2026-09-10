@@ -45,3 +45,13 @@ test("local test provider requires all fields and retains JWT verification setti
     assert.throws(() => buildAuthConfig({ ...local, [name]: undefined }));
   assert.throws(() => buildAuthConfig({ ...local, audience: "convex" }));
 });
+test("WorkOS uses client-scoped verified RS256 providers", () => {
+  const clientId = "client_example123";
+  assert.deepEqual(buildAuthConfig({mode:"workos",workosClientId:clientId}), {providers:[
+    {type:"customJwt",issuer:"https://api.workos.com/",algorithm:"RS256",jwks:`https://api.workos.com/sso/jwks/${clientId}`,applicationID:clientId},
+    {type:"customJwt",issuer:`https://api.workos.com/user_management/${clientId}`,algorithm:"RS256",jwks:`https://api.workos.com/sso/jwks/${clientId}`},
+  ]});
+  for (const workosClientId of [undefined,""," client_abc","other","client_a/b"]) assert.throws(()=>buildAuthConfig({mode:"workos",workosClientId}));
+  for (const mode of ["disabled","clerk","local-jwt"]) assert.throws(()=>buildAuthConfig({...local,mode,workosClientId:clientId}));
+  assert.throws(()=>buildAuthConfig({...local,mode:"workos",workosClientId:clientId}));
+});

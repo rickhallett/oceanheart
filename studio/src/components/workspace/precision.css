@@ -1,0 +1,348 @@
+/* Precision: a compact, light operations workspace. All measurements are deliberate. */
+.ws-root {font-size:14px;line-height:1.5;background:#f6f7f9;color:#17212f;--app-shadow-panel:none;--ws-accent:#255bd7}
+.ws-root h1 {font-size:28px!important;letter-spacing:-.8px;font-weight:600}
+.ws-root h2 {font-size:16px;letter-spacing:-.25px}
+.ws-root h3 {font-size:14px;letter-spacing:0}
+.ws-root small {font-size:13px;line-height:1.5}
+.studio-sidebar {width:224px;background:#fff;border-right:1px solid #e1e6ed}
+.studio-sidebar .ws-brand {padding:24px 20px 20px;gap:10px}
+.ws-brand svg {width:28px;height:28px;color:#255bd7}
+.ws-brand >span {font-size:19px;letter-spacing:-.6px}
+.ws-brand small {font-size:9px;letter-spacing:2.8px;color:#748195}
+.studio-sidebar .ws-practice-identity {margin:0 12px 16px;padding:10px;border:1px solid #e1e6ed;border-radius:6px;background:#f9fafb}
+.ws-practice-monogram {background:#eaf0ff;color:#255bd7;border-radius:5px}
+.studio-sidebar nav {padding:0 10px 16px}
+.ws-nav-group {margin:0 0 20px;padding:0;border:0!important}
+.ws-nav-group >p {font-size:13px;letter-spacing:.09em;font-weight:600;padding:0 10px;margin:0 0 6px;color:#8792a3}
+.ws-nav-group a {min-height:34px!important;padding:7px 10px!important;border:0!important;border-radius:5px!important;color:#586576;font-size:14px;font-weight:450;gap:10px;box-shadow:none!important}
+.ws-nav-group a svg {width:16px;height:16px}
+.ws-nav-group a[aria-current=page] {background:#edf2fe!important;color:#255bd7!important;font-weight:600}
+.ws-nav-group a:hover {background:#f3f5f8}
+.studio-sidebar .ws-user {padding:12px 18px;border-top:1px solid #e1e6ed;font-size:13px;background:#fff}
+.ws-avatar {width:30px;height:30px;border:1px solid #e0e5ec;background:#f3f5f8;color:#526174;font-size:13px}
+.studio-topbar {min-height:56px;border-bottom:1px solid #e1e6ed;background:#fff;backdrop-filter:none}
+.studio-topbar button {min-height:30px;font-size:13px;border-width:1px;border-radius:5px}
+.studio-body .ws-main {max-width:1440px;padding:28px 36px 40px}
+.studio-body .ws-page-heading {padding-bottom:22px;margin-bottom:24px;border-bottom:0;gap:5px}
+.ws-page-heading p {font-size:14px;color:#748195}
+.ws-root .ws-panel {border:1px solid #e0e5ec;border-radius:8px;box-shadow:none;padding:20px;background:#fff}
+.ws-root .ws-panel-heading {margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eef1f5}
+.ws-root .ws-panel:has(>.ws-data-table) {padding:0;overflow:hidden}
+.ws-root .ws-panel:has(>.ws-data-table)>.ws-panel-heading {padding:16px 20px;margin:0}
+.ws-root .ws-data-table {font-size:14px}
+.ws-root .ws-data-table th {padding:11px 20px;background:#fafbfc;color:#8490a1;font-size:13px;letter-spacing:.07em;border-bottom:1px solid #e8edf3}
+.ws-root .ws-data-table td {padding:11px 20px;border-color:#edf0f4;background:#fff}
+.ws-root .ws-data-table tr:last-child td {border-bottom:0}
+.ws-root .ws-data-table tr:hover td {background:#fafbfe}
+.ws-root .ws-table-person {min-height:38px;gap:12px}
+.ws-root .ws-table-person small {font-size:13px;margin-top:2px}
+.ws-root .ws-pill {font-size:13px;min-height:21px;padding:2px 7px;border:0;border-radius:4px;font-weight:500}
+.ws-root .ws-button,.studio-dialog button {min-height:34px;font-size:13px;padding:7px 12px;border-radius:5px;border-width:1px;font-weight:500}
+.ws-root .ws-button-primary {background:#255bd7;color:white}
+.ws-root input,.ws-root textarea,.ws-root select,.studio-dialog input,.studio-dialog textarea,.studio-dialog select {font-size:14px;font-weight:400;border:1px solid #d8dfe8;border-radius:5px;background:white;padding:8px 11px;min-height:36px;box-shadow:none}
+.ws-root input:focus,.ws-root textarea:focus,.ws-root select:focus {border-color:#255bd7;outline:2px solid #255bd71a;outline-offset:1px}
+.ws-root select.chakra-native-select__field {height:36px;min-height:36px;padding-block:0}
+.ws-root .ws-field {margin-bottom:16px;gap:6px}
+.ws-root .ws-field label {font-size:13px;font-weight:500;color:#526174}
+.ws-root .ws-search {border:1px solid #d8dfe8;border-radius:5px;min-height:36px;background:#fff;padding:0 10px;gap:8px}
+.ws-root .ws-search input {border:0;padding:7px 2px;font-size:14px;background:transparent}
+.ws-root .ws-toolbar {gap:12px;margin-bottom:16px}
+.ws-root .ws-stat-strip {border:0;border-radius:8px;background:#fff;padding:18px 20px;margin-bottom:24px;box-shadow:0 0 0 1px #e1e6ed}
+.ws-root .ws-stat-strip >div {padding:0 20px;border-color:#edf0f4}
+.ws-root .ws-stat-strip [data-part=value-text] {font-size:24px;letter-spacing:-.6px;font-weight:600}
+.ws-root .ws-stat-strip .ws-stat-text {font-size:16px;letter-spacing:0}
+.ws-root .ws-agenda-row {padding:14px 0;border-color:#edf0f4;gap:14px}
+.ws-root .ws-tasks {gap:0}
+.ws-root .ws-tasks [data-scope=checkbox][data-part=root] {min-height:40px;padding:9px 0;font-size:14px}
+.ws-root .ws-today-secondary {border-top:1px solid #e1e6ed;padding-top:20px}
+.ws-root .ws-inbox {border:1px solid #e1e6ed;border-radius:8px;background:white;overflow:hidden}
+.ws-root .ws-inbox-list {background:#fafbfd;border-right:1px solid #e1e6ed;padding:12px}
+.ws-root .ws-inbox-list>button {padding:14px 12px;border:0;border-bottom:1px solid #edf0f4;border-radius:4px}
+.ws-root .ws-inbox-list>button.active {background:#edf2fe}
+.ws-root .ws-bubble {background:#f6f8fb;border:1px solid #e6eaf0;border-radius:6px;padding:18px}
+.ws-root .ws-portal {background:#f3f5f8;border:1px solid #e1e6ed;border-radius:8px;padding:24px}
+.ws-root .ws-portal .ws-panel {padding:20px;border:1px solid #e1e6ed;border-radius:8px}
+.ws-root .ws-chat .ws-bubble.outgoing {background:#edf2fe;border-radius:8px;font-size:14px;padding:12px 16px}
+.ws-root .ws-assistant-grid {max-width:800px}
+.ws-root .ws-chat-input {border:1px solid #cfd8e4;border-radius:7px;padding:8px;background:#fff}
+.ws-root .ws-conversation-empty h2 {font-size:25px;letter-spacing:-.6px}
+.ws-root .ws-answer-details {font-size:13px}
+.ws-root .ws-filter-control [data-part=item] {min-height:34px;padding:6px 12px;font-size:13px}
+.ws-root .ws-content-tabs button {min-height:40px;padding:9px 14px;font-size:13px}
+.ws-footer {min-height:40px;border-top:1px solid #e1e6ed;padding:12px 36px;background:transparent;font-size:13px;color:#95a0ae}
+.studio-dialog {border:1px solid #d8dfe8!important;border-radius:10px!important;box-shadow:0 24px 80px #17212f26!important;background:white!important;color:#17212f}
+.studio-dialog h2 {font-size:21px!important;letter-spacing:-.5px}
+@media(max-width:1023px){.studio-body .ws-main{padding:24px}.studio-drawer{background:#fff}.ws-nav-group a{min-height:40px!important}}
+@media(max-width:700px){.studio-body .ws-main{padding:20px 16px}.ws-root h1{font-size:25px!important}.ws-root .ws-panel{padding:16px}.ws-root .ws-page-heading{margin-bottom:18px;padding-bottom:0}.ws-root input,.ws-root textarea,.ws-root select{font-size:16px;min-height:40px}.ws-root .ws-stat-strip{padding:16px}.ws-root .ws-stat-strip>div{padding:0 10px}.ws-root .ws-portal{padding:12px}.ws-root .ws-portal .ws-panel{padding:16px}.ws-root .ws-button{min-height:38px}.ws-root .ws-record-card{border:1px solid #e1e6ed;border-radius:6px;padding:14px;background:white}.ws-footer{padding:12px 16px}}
+/* Shell density is explicit because legacy domain rules are more specific. */
+.ws-root .ws-nav-group {margin:0 0 18px;padding:0}
+.ws-root .ws-nav-group >p {font-size:13px;line-height:15px;letter-spacing:.08em;padding:0 10px;margin:0 0 5px;color:#8792a3}
+.ws-root .ws-nav-group a {min-height:34px!important;padding:6px 10px!important;font-size:14px;font-weight:450;gap:10px;margin:0 0 2px}
+.ws-root .ws-nav-group a[aria-current=page] {font-weight:600}
+.ws-root .ws-page-heading {gap:5px;margin-bottom:22px;padding-bottom:0}
+.ws-root .ws-page-heading p {font-size:14px;margin:0}
+.ws-root .ws-panel:has(.ws-data-table) {padding:0;overflow:hidden}
+.ws-root .ws-panel:has(.ws-data-table)>.ws-panel-heading {padding:16px 20px;margin:0}
+.ws-root .ws-table-person strong {font-size:14px;font-weight:600}
+.ws-root .ws-table-person h3 {font-size:14px}
+.ws-root .ws-toolbar .ws-search {min-height:36px;height:36px;max-width:300px}
+.ws-root .ws-toolbar .ws-search input {font-size:14px;min-height:32px;height:32px}
+@media(max-width:700px){.ws-root .ws-nav-group a{min-height:42px!important}.ws-root .ws-toolbar .ws-search input{font-size:16px}.ws-root .ws-toolbar .ws-search{min-height:40px;height:40px}}
+.ws-root .ws-link {color:#255bd7;font-size:13px;font-weight:500}
+.ws-root .ws-date-label {color:#7a8798!important;font-size:13px}
+.ws-root .ws-approval-banner {color:#255bd7;background:#eef3ff;border:1px solid #dbe5ff;border-radius:6px;font-size:14px;min-height:42px;padding:10px 16px}
+.ws-root .ws-dot {background:#6685be}
+.ws-root .ws-agenda-row {border:0;border-bottom:1px solid #edf0f4;border-radius:0;font-size:14px;background:transparent;padding:14px 0}
+.ws-root .ws-agenda-row>time {font-size:13px;color:#738194}
+.ws-root .ws-agenda-row strong {color:#17212f;font-size:14px;font-weight:600}
+.ws-root .ws-agenda-row small {font-size:13px;font-weight:400}
+.ws-root .ws-stat-strip>button {padding:0 20px;border-color:#e7ecf2}
+.ws-root .ws-stat-strip>button>span:first-child {font-size:13px}
+.ws-root .ws-stat-strip>button>span:last-child {font-size:26px}
+.ws-root .ws-stat-strip>button small {font-size:13px;font-weight:400}
+.ws-root .ws-conversation-preview {font-size:14px;gap:12px}
+.ws-root .ws-conversation-preview h3 {font-size:14px;color:#17212f}
+.ws-root .ws-conversation-preview p {font-size:14px;color:#738194;font-style:normal;font-weight:400}
+.ws-root .ws-tour-banner {display:none}
+.ws-root .ws-partner-panel {background:#fff}
+.ws-root .ws-tasks [data-part=label] {font-size:14px}
+.ws-root .ws-panel-footer {margin-top:14px;padding-top:12px}
+.ws-root .ws-prompt-card,.ws-root .ws-starting-questions button {border:1px solid #d8e0eb;background:white;border-radius:5px;font-size:13px}
+.ws-root .ws-bubble,.ws-root .ws-chat .ws-bubble,.ws-root .ws-chat .ws-bubble p {color:#354256}
+.ws-root .ws-chat .ws-bubble.outgoing {color:#17212f}
+.ws-root .ws-bubble small {color:#748195}
+.ws-root .ws-citation {color:#255bd7}
+.ws-root .ws-chat .ws-bubble>.ws-link {color:#255bd7}
+.ws-root .ws-partner-initial {display:none}
+@media(max-width:700px){.ws-root .ws-button,.studio-dialog button{min-height:44px}.ws-root .ws-filter-control [data-part=item]{min-height:44px}.ws-root .ws-view-source{min-height:44px}.ws-root .ws-nav-group a{min-height:44px!important}}
+.ws-root .ws-form,.studio-dialog .ws-form {gap:16px}
+.ws-root .ws-form .ws-field,.studio-dialog .ws-form .ws-field {margin:0;gap:6px}
+.ws-root .ws-stat-strip>button {border:0;border-right:1px solid #e7ecf2;border-radius:0}
+.ws-root .ws-stat-strip>button:last-child {border-right:0}
+.ws-root .ws-chat-input>button {background:#255bd7;color:#fff;border-radius:5px}
+.ws-root .ws-connection {padding:12px 0}
+.ws-root .ws-help {font-size:13px!important}
+.ws-root .ws-support-toolbar p {font-size:14px}
+.ws-root .ws-mobile-record {border:1px solid #dce3ec;border-radius:7px;background:#fff;padding:16px;box-shadow:none}
+.ws-root .ws-record-title {font-size:14px;font-weight:500}
+.ws-root .ws-record-title small {font-size:13px;font-weight:400}
+[data-scope=toast][data-part=root] {background:#fff!important;color:#243548!important;border:1px solid #d9e2eb!important;border-left:3px solid #258559!important;border-radius:7px!important;box-shadow:0 4px 18px #17212f12!important;font-size:14px}
+[data-scope=toast][data-part=description] {color:#243548!important}
+[data-scope=toast][data-part=indicator] {color:#258559!important}
+.ws-root .ws-stat-strip .chakra-stat__valueText {font-size:24px;line-height:1.25;letter-spacing:-.5px}
+.ws-root .ws-stat-strip .ws-stat-text {font-size:16px;letter-spacing:0}
+@media(max-width:700px){.ws-root .ws-stat-strip{grid-template-columns:1fr 1fr;gap:16px}.ws-root .ws-stat-strip>.chakra-stat__root{padding:0;min-height:0;border:0}.ws-root .ws-stat-strip>.chakra-stat__root:last-child{grid-column:1/-1;border-top:1px solid #edf0f4;padding-top:12px}.ws-root .ws-stat-strip .ws-stat-text{display:flex;gap:8px;align-items:center}}
+
+/* Typography study: everyday UI at 14px; captions at 12px; metadata at 13px. */
+.ws-root .ws-nav-group a {font-size:14px;line-height:20px;font-weight:400}
+.ws-root .ws-nav-group a[aria-current=page] {font-weight:600}
+.ws-root .ws-nav-group >p {font-size:12px;line-height:18px;letter-spacing:.035em;color:#657389}
+.ws-root .ws-data-table th {font-size:12px;line-height:18px;letter-spacing:.035em;color:#657389}
+.ws-root .ws-pill {font-size:12px;line-height:16px}
+.ws-root .ws-button,.studio-dialog button,.ws-root .ws-link,
+.ws-root .ws-content-tabs button,.ws-root .ws-filter-control [data-part=item],
+.ws-root .ws-answer-details {font-size:14px;line-height:20px}
+.ws-root .ws-field label,.studio-dialog label {font-size:14px;line-height:20px;font-weight:500}
+.ws-root .ws-chat .ws-bubble {font-size:14px;line-height:1.6}
+.ws-root .ws-avatar {font-size:12px}
+.ws-root .ws-brand small {font-size:9px}
+.ws-root .ws-page-heading p {font-size:14px;color:#657389}
+@media(max-width:700px){.studio-dialog input,.studio-dialog textarea,.studio-dialog select {font-size:16px}}
+.ws-root .ws-week >button {height:auto;min-height:56px}
+.ws-root .ws-user small {font-size:12px;line-height:18px}
+/* Size the native-select wrapper with its field so the arrow stays inside. */
+.ws-root .ws-roadmap-top {flex-wrap:wrap}
+.ws-root .ws-roadmap-top >div:first-child {flex:1;min-width:120px}
+.ws-root .ws-roadmap-top >.chakra-native-select__root {flex:0 0 144px;width:144px}
+.ws-root .ws-roadmap-top select {width:100%;max-width:none}
+@media(max-width:700px){
+ .ws-root .ws-priority-summary {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .ws-root .ws-priority-summary >button {min-width:0;min-height:44px;gap:8px;padding:8px}
+}
+/* Action widths follow their labels instead of stretching with form/card layout. */
+.ws-root .ws-onboarding .ws-panel >.ws-button,
+.ws-root .ws-form >.ws-button,
+.ws-root .ws-panel >.ws-button,
+.ws-root .ws-panel >form >.ws-button {
+ width:fit-content;max-width:100%;align-self:flex-start;justify-self:start;
+}
+.studio-dialog .ws-dialog-actions .ws-button {width:auto;flex:0 0 auto}
+.studio-dialog .ws-session-facts {margin:4px 0 8px;gap:20px 24px;font-size:14px;line-height:1.5}
+.studio-dialog .ws-session-facts >div {min-width:0}
+.studio-dialog .ws-session-facts dt {font-size:13px;font-weight:400;color:#657389;margin:0 0 5px}
+.studio-dialog .ws-session-facts dd {font-size:14px;font-weight:500;color:#17212f;margin:0;overflow-wrap:anywhere}
+@media(max-width:767px){.studio-dialog .ws-session-facts {grid-template-columns:1fr;gap:18px}}
+/* Compact mobile actions; readable labels without oversized button chrome. */
+@media(max-width:700px){
+ .ws-root .ws-button,.studio-dialog .ws-button,.studio-dialog .ws-dialog-actions >button {
+  min-height:38px;padding:7px 11px;font-size:14px;line-height:20px;
+ }
+ .ws-root .ws-filter-control [data-part=item],.ws-root .ws-view-source {min-height:36px;padding:6px 10px;font-size:14px}
+ .ws-root .ws-content-tabs button {min-height:38px;padding:8px 10px}
+ .studio-dialog .ws-actions {gap:8px}
+}
+.studio-dialog .ws-client-contact {display:flex;flex-direction:column;gap:3px;margin-top:5px;font-size:13px;line-height:1.5;color:#657389;overflow-wrap:anywhere}
+.studio-dialog .ws-client-session {align-items:center;padding:14px 0;gap:16px;margin:0}
+.studio-dialog .ws-client-session >span:first-child {min-width:0}
+.studio-dialog .ws-client-session-date {display:block;font-size:14px;line-height:1.5;color:#17212f}
+.studio-dialog .ws-client-session small {display:block;margin-top:5px;font-size:13px;line-height:1.5;color:#657389}
+.studio-dialog .ws-client-detail >.ws-button {width:fit-content;max-width:100%;align-self:flex-start}
+@media(max-width:700px){.studio-dialog .ws-client-session {flex-direction:column;align-items:flex-start;gap:10px}}
+/* Keep the mobile conversation readable as three distinct regions. */
+@media(max-width:700px){
+ .ws-root .ws-panel.ws-chat {padding:16px 0}
+ .ws-root .ws-chat-turn {margin-bottom:24px}
+ .ws-root .ws-chat .ws-bubble:not(.outgoing) {background:#fff;border:1px solid #e1e6ed;border-radius:7px;padding:16px;margin-top:16px}
+ .ws-root .ws-chat .ws-bubble >small {display:block;color:#17212f;margin-bottom:10px}
+ .ws-root .ws-chat .ws-bubble.outgoing {max-width:92%;margin-bottom:0}
+ .ws-root .ws-chat .ws-citation {white-space:normal;text-align:left;line-height:1.5}
+ .ws-root .ws-conversation-compose {background:#fff;border:1px solid #e1e6ed;border-radius:7px;padding:16px}
+ .ws-root .ws-conversation-compose .ws-field {max-width:none}
+ .ws-root .ws-conversation-compose select {font-size:16px}
+}
+/* Supported browsers render the picker in page coordinates, including device emulation. */
+@supports (appearance:base-select){
+ .ws-root select,.studio-dialog select,
+ .ws-root select::picker(select),.studio-dialog select::picker(select) {appearance:base-select}
+ .ws-root select,.studio-dialog select {align-items:center}
+ .ws-root select::picker-icon,.studio-dialog select::picker-icon {display:none}
+ .ws-root select::picker(select),.studio-dialog select::picker(select) {
+  background:#fff;color:#17212f;border:1px solid #cfd8e4;border-radius:6px;
+  box-shadow:0 6px 20px #17212f1a;padding:4px;max-height:260px;
+  font:400 14px/1.5 Arial,sans-serif;
+ }
+ .ws-root select option,.studio-dialog select option {padding:9px 12px;min-height:38px;border-radius:3px}
+ .ws-root select option:checked,.studio-dialog select option:checked {background:#edf2fe;color:#255bd7}
+ .ws-root select option:hover,.studio-dialog select option:hover {background:#f1f4f8}
+}
+/* Flat workspace surfaces: hierarchy comes from spacing, not card outlines. */
+.ws-root .ws-panel,
+.ws-root .ws-portal .ws-panel,
+.ws-root .ws-stat-strip,
+.ws-root .ws-record-card,
+.ws-root .ws-portal,
+.ws-root .ws-inbox,
+.ws-root .ws-conversation-compose,
+.ws-root .ws-chat .ws-bubble:not(.outgoing) {
+ background:transparent;border:0;box-shadow:none;
+}
+.ws-root .ws-panel-heading,
+.ws-root .ws-today-secondary {border:0}
+.ws-root .ws-stat-strip >div {border:0}
+.ws-root .ws-data-table td {background:transparent}
+/* One continuous white workspace, including navigation and content surfaces. */
+.ws-root {background:#fff;--ws-panel:#fff;--ws-raised:#fff;--app-bg:#fff;--app-surface:#fff}
+.ws-root .studio-body,.ws-root .ws-main,
+.ws-root .studio-sidebar,.ws-root .studio-topbar,
+.ws-root .ws-footer,.ws-root .ws-inbox-list {background:#fff;border-color:transparent}
+.ws-root .ws-panel,.ws-root .ws-portal,.ws-root .ws-stat-strip,
+.ws-root .ws-record-card,.ws-root .ws-inbox,
+.ws-root .ws-conversation-compose,.ws-root .ws-chat .ws-bubble:not(.outgoing),
+.ws-root .ws-today-secondary >* {background:transparent;border:0;box-shadow:none}
+.ws-root .ws-panel-heading,.ws-root .ws-agenda-row,
+.ws-root .ws-simple-row,.ws-root .ws-tasks >*,
+.ws-root .ws-today-secondary,.ws-root .ws-stat-strip >*,
+.ws-root .ws-data-table th,.ws-root .ws-data-table td,
+.ws-root .ws-panel >.ws-link,.ws-root .ws-panel >.ws-footnote,
+.ws-root .ws-practice-identity,.ws-root .ws-user {border-color:transparent;box-shadow:none}
+.ws-root .ws-data-table th,.ws-root .ws-data-table td,
+.ws-root .ws-practice-identity {background:transparent}
+.ws-root .ws-today-secondary .ws-secondary-panel,
+.ws-root .ws-tasks [data-scope=checkbox][data-part=root],
+.ws-root .ws-stat-strip >button,
+.ws-root .ws-agenda-footer,.ws-root .ws-panel-footer,
+.ws-root .ws-mobile-record {border:0!important;box-shadow:none;background:transparent}
+/* Quieter placeholder typography and compact action controls. */
+.ws-root input::placeholder,.ws-root textarea::placeholder,
+.studio-dialog input::placeholder,.studio-dialog textarea::placeholder {
+ font-size:13px;font-weight:400;line-height:1.5;color:#7b8798;opacity:1;
+}
+.ws-root .ws-button,.studio-dialog .ws-button,
+.studio-dialog .ws-dialog-actions >button {
+ min-height:32px;padding:5px 10px;font-size:13px;line-height:20px;
+}
+.ws-root .ws-button svg,.studio-dialog .ws-button svg {width:15px;height:15px}
+@media(max-width:700px){
+ .ws-root .ws-button,.studio-dialog .ws-button,.studio-dialog .ws-dialog-actions >button {
+  min-height:34px;padding:5px 10px;font-size:13px;line-height:20px;
+ }
+ .ws-root .ws-inline-form input {min-height:36px;padding-block:6px}
+}
+.ws-root button.ws-button,.studio-dialog button.ws-button {
+ height:auto!important;min-height:34px!important;padding:5px 10px!important;font-size:13px!important;line-height:20px!important;
+}
+/* Entered values follow the same scale as placeholders. */
+.ws-root input:not([type=checkbox]):not([type=radio]),.ws-root textarea,
+.studio-dialog input:not([type=checkbox]):not([type=radio]),.studio-dialog textarea {
+ font-size:13px!important;font-weight:400;line-height:1.5;
+}
+/* Assistant: a single reading column with an explicit next action. */
+.ws-root .ws-assistant-grid {max-width:680px}
+.ws-root .ws-panel.ws-chat {padding:8px 0}
+.ws-root .ws-chat-turn {margin:0 0 28px}
+.ws-root .ws-chat .ws-bubble.outgoing {width:100%;max-width:none;margin:0;padding:0 0 18px;background:transparent;border:0;border-radius:0}
+.ws-root .ws-chat .ws-bubble.outgoing p {font-size:16px;font-weight:500;color:#17212f;margin:0}
+.ws-root .ws-chat .ws-bubble:not(.outgoing) {padding:0;margin:0}
+.ws-root .ws-chat .ws-bubble >small {display:block;font-size:12px;font-weight:600;color:#657389;margin:0 0 6px}
+.ws-root .ws-chat .ws-bubble p {margin:0;line-height:1.65}
+.ws-root .ws-answer-actions {display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-top:12px}
+.ws-root .ws-chat .ws-answer-actions button {font-size:12px;min-height:28px;padding:3px 0;margin:0;white-space:normal;text-align:left}
+.ws-root .ws-chat .ws-answer-actions .ws-citation {flex-basis:100%;width:fit-content;border:0;justify-content:flex-start}
+.ws-root .ws-conversation-compose {display:flex;flex-direction:column;gap:8px;padding:12px 0 0;margin:0;max-width:560px}
+.ws-root .ws-composer-label {font-size:14px;font-weight:500;color:#17212f}
+.ws-root .ws-conversation-compose .ws-field {order:3;display:flex;flex-direction:row;align-items:center;gap:8px;margin:0;max-width:none}
+.ws-root .ws-conversation-compose .ws-field label {font-size:12px;white-space:nowrap;color:#657389}
+.ws-root .ws-conversation-compose .chakra-native-select__root {width:170px}
+.ws-root .ws-conversation-compose select {font-size:13px;min-height:30px;height:30px}
+.ws-root .ws-chat-input {margin:0;padding:3px 5px 3px 9px;border:1px solid #d8dfe8;border-radius:5px;min-height:38px;gap:8px}
+.ws-root .ws-chat-input input {height:30px;min-height:30px;padding:3px 0;min-width:0}
+.ws-root .ws-chat-input >button {height:28px;min-height:28px;font-size:13px;padding:3px 9px;gap:5px;width:auto;flex-shrink:0}
+/* Separate conversation sections while keeping each label with its content. */
+.ws-root .ws-chat .ws-bubble.outgoing {padding-bottom:28px}
+.ws-root .ws-chat .ws-bubble >small {margin-bottom:8px}
+.ws-root .ws-answer-actions {margin-top:18px;gap:8px 20px}
+.ws-root .ws-chat-turn {margin-bottom:36px}
+.ws-root .ws-conversation-compose {gap:10px}
+.ws-root .ws-conversation-compose .chakra-native-select__root {width:190px;flex:0 0 190px;min-width:0}
+.ws-root .ws-conversation-compose select {width:100%;max-width:none;white-space:nowrap;padding-right:28px}
+/* Composite inputs have one focus boundary around the complete control. */
+.ws-root .ws-search input,
+.ws-root .ws-search input:focus,
+.ws-root .ws-search input:focus-visible,
+.ws-root .ws-chat-input input,
+.ws-root .ws-chat-input input:focus,
+.ws-root .ws-chat-input input:focus-visible {
+ border:0!important;outline:none!important;box-shadow:none!important;
+}
+.ws-root .ws-search:focus-within,.ws-root .ws-chat-input:focus-within {
+ border-color:#255bd7;outline:2px solid #255bd71a;outline-offset:1px;
+}
+/* Tab underlines must not create a one-pixel vertical scrollbar. */
+.ws-root .ws-content-tabs {overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.ws-root .ws-content-tabs::-webkit-scrollbar {display:none}
+/* Decisions read as a list, with compact content and space between entries. */
+.ws-root .ws-approval {background:transparent;border:0;box-shadow:none;border-radius:0;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:8px;max-width:760px}
+.ws-root .ws-approval:last-child {margin-bottom:0}
+.ws-root .ws-approval h3,.ws-root .ws-approval p,.ws-root .ws-approval small {margin:0}
+.ws-root .ws-approval .ws-actions {margin:0;gap:8px}
+.ws-root .ws-approval p {font-size:14px;line-height:1.6}
+.ws-root .ws-approval small {font-size:12px;line-height:1.5;color:#657389}
+/* Chakra table sections and rows must also inherit the white workspace. */
+.ws-root .ws-data-table thead,.ws-root .ws-data-table tbody,
+.ws-root .ws-data-table tr,.ws-root .ws-data-table th,.ws-root .ws-data-table td {
+ background:transparent;box-shadow:none;
+}
+.ws-root .ws-inline-form >input {box-sizing:border-box;height:34px!important;min-height:34px!important;padding:5px 10px;line-height:20px}
+.ws-root .ws-inline-form {align-items:center}
+
+/* Mail-detail reading hierarchy, shared with the live enquiry refinement. */
+.ws-root .ws-thread > header { align-items: flex-start; gap: 16px; }
+.ws-root .ws-thread .ws-person { align-items: flex-start; min-width: 0; }
+.ws-root .ws-thread h2 { font-size: 22px; line-height: 1.35; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-person p { margin-top: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-bubble { padding: 0; margin: 28px 0; background: transparent; border: 0; box-shadow: none; max-width: 68ch; }
+.ws-root .ws-thread .ws-bubble p { line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ws-root .ws-thread .ws-bubble small { display: block; margin-bottom: 12px; color: #657389; }
+.ws-root .ws-thread-actions { gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+.ws-root .ws-thread form textarea { min-height: 180px; line-height: 1.65; }
+@media (max-width: 600px) { .ws-root .ws-thread > header { flex-wrap: wrap; } }

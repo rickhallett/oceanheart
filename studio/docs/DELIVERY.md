@@ -17,7 +17,7 @@ Start at three implementation worktrees. Shared files have one owner during a ba
 
 `src/components/workspace/context.tsx` is a demo state container. Its `update(draft)` callback lets the browser mutate an entire practice and is not a production API. Do not expose that callback as a generic server mutation, upload the whole localStorage state, or treat locally selected personas as authenticated actors.
 
-The public mock stays usable while backend foundations are developed. Backend verification does not establish that the mock has become a secure multi-user application. Replacing persistence is RIC-102, after RIC-101 authentication and authorisation.
+Unconfigured builds retain the sample workspace. Configured deployments mount authenticated live records within the same Precision shell at `/app`; `/practice` is only a compatibility redirect. Backend verification does not establish that the mock has become a secure multi-user application. Replacing persistence is RIC-102, after RIC-101 authentication and authorisation.
 
 ## Migration rules
 

@@ -1,3 +1,4 @@
+import { Button, Link, Text } from "@chakra-ui/react";
 import { ArrowRight } from "lucide-react";
 import type { ComponentProps } from "react";
 
@@ -29,10 +30,10 @@ export function ButtonLink({
   ...props
 }: ComponentProps<"a">) {
   return (
-    <a className={`button ${className}`} {...props}>
+    <Button asChild colorPalette="copper" color="copper.contrast" _hover={{ color: "copper.contrast" }} _focusVisible={{ color: "copper.contrast" }} _active={{ color: "copper.contrast" }} size="lg" rounded="full" className={`button ${className}`}><a {...props}>
       {children}
       <ArrowRight size={19} strokeWidth={1.2} />
-    </a>
+    </a></Button>
   );
 }
 export function TextLink({
@@ -41,12 +42,12 @@ export function TextLink({
   ...props
 }: ComponentProps<"a">) {
   return (
-    <a className={`text-link ${className}`} {...props}>
+    <Link className={`text-link ${className}`} {...props} color="copper.300" gap={3}>
       {children}
       <ArrowRight size={16} strokeWidth={1.2} />
-    </a>
+    </Link>
   );
 }
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="eyebrow">{children}</p>;
+  return <Text className="eyebrow" textTransform="uppercase" letterSpacing="0.18em" fontSize="xs" fontWeight="600" color="copper.300">{children}</Text>;
 }

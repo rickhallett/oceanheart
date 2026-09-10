@@ -1,5 +1,13 @@
 "use client";
 import { useState } from "react";
+import { Card, Table, Tabs, SimpleGrid } from "@chakra-ui/react";
+import {
+  StudioButton,
+  StudioInput,
+  StudioSelect,
+  StudioTextarea,
+} from "@/components/studio-controls";
+import "./content-chakra.css";
 import {
   ArrowRight,
   Plus,
@@ -37,29 +45,29 @@ function SourceForm() {
       }}
     >
       <Field label="Source title">
-        <input
+        <StudioInput
           name="title"
           required
           placeholder="e.g. Getting to the practice"
         />
       </Field>
-      <div className="ws-form-grid">
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} className="ws-form-grid">
         <Field label="Source type">
-          <select name="kind">
+          <StudioSelect name="kind">
             <option>Document</option>
             <option>Notion</option>
             <option>FAQ page</option>
-          </select>
+          </StudioSelect>
         </Field>
         <Field label="Audience">
-          <select name="audience">
+          <StudioSelect name="audience">
             <option>Public</option>
             <option>Team only</option>
-          </select>
+          </StudioSelect>
         </Field>
-      </div>
+      </SimpleGrid>
       <Field label="Sample document text">
-        <textarea
+        <StudioTextarea
           name="content"
           rows={7}
           required
@@ -87,14 +95,14 @@ export function SourceDetail({ id }: { id: string }) {
         <Pill tone={s.status === "Ready" ? "green" : "amber"}>{s.status}</Pill>
       </div>
       <Field label="Document content">
-        <textarea
+        <StudioTextarea
           rows={9}
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
       </Field>
       <Field label="Who can this source help?">
-        <select
+        <StudioSelect
           value={s.audience}
           onChange={(e) =>
             update((d) => {
@@ -106,7 +114,7 @@ export function SourceDetail({ id }: { id: string }) {
         >
           <option>Public</option>
           <option>Team only</option>
-        </select>
+        </StudioSelect>
       </Field>
       <div className="ws-actions">
         <Action
@@ -152,26 +160,14 @@ export function Knowledge() {
       <div className="ws-toolbar">
         <div className="ws-search">
           <Search size={17} />
-          <input
+          <StudioInput
             aria-label="Search knowledge"
             placeholder="Search your practice knowledge…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
         </div>
-        <Action onClick={() => open("Add practice knowledge", <SourceForm />)}>
-          <Plus size={16} /> Add source
-        </Action>
-      </div>
-      <div className="ws-info-strip">
-        <BookOpen size={21} />
-        <div>
-          <strong>Useful answers begin with what you know.</strong>
-          <p>
-            Policies, service details and the questions you answer again and
-            again.
-          </p>
-        </div>
+        <div className="ws-knowledge-actions">
         <Action
           secondary
           onClick={() =>
@@ -188,38 +184,87 @@ export function Knowledge() {
         >
           <RefreshCw size={14} /> Sync all
         </Action>
+        <Action onClick={() => open("Add practice knowledge", <SourceForm />, "editor")}>
+          <Plus size={16} /> Add source
+        </Action>
+        </div>
       </div>
       <Panel>
-        {state.sources
-          .filter((s) =>
-            (s.title + " " + s.content).toLowerCase().includes(q.toLowerCase()),
-          )
-          .map((s) => (
-            <button
-              className="ws-source-row"
-              key={s.id}
-              onClick={() => open(s.title, <SourceDetail id={s.id} />)}
-            >
-              <span className="ws-source-icon">
-                <FileText size={21} />
-              </span>
-              <div>
-                <h3>{s.title}</h3>
-                <p>
-                  {s.kind} · {s.audience} · Version {s.version}
-                </p>
-              </div>
-              <Pill tone={s.status === "Ready" ? "green" : "amber"}>
-                {s.status}
-              </Pill>
-              <ArrowRight size={16} />
-            </button>
-          ))}
+        <div className="ws-mobile-records">
+          {state.sources
+            .filter((s) =>
+              (s.title + " " + s.content)
+                .toLowerCase()
+                .includes(q.toLowerCase()),
+            )
+            .map((s) => (
+              <Card.Root as="article" key={s.id} className="ws-mobile-record">
+                <div className="ws-record-title">
+                  <FileText size={20} />
+                  <span>
+                    <strong>{s.title}</strong>
+                    <small>
+                      {s.kind} · Version {s.version}
+                    </small>
+                  </span>
+                </div>
+                <div className="ws-record-meta">
+                  <Pill>{s.audience}</Pill>
+                  <Pill tone={s.status === "Ready" ? "green" : "amber"}>
+                    {s.status}
+                  </Pill>
+                </div>
+                <StudioButton variant="outline" aria-label={`View source: ${s.title}`} onClick={() => open(s.title, <SourceDetail id={s.id} />, "editor")}>View source</StudioButton>
+              </Card.Root>
+            ))}
+        </div>
+        <Table.ScrollArea className="ws-desktop-records">
+          <Table.Root variant="line" size="lg" className="ws-data-table">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Source</Table.ColumnHeader>
+                <Table.ColumnHeader>Audience</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+                <Table.ColumnHeader>Action</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {state.sources
+                .filter((s) =>
+                  (s.title + " " + s.content)
+                    .toLowerCase()
+                    .includes(q.toLowerCase()),
+                )
+                .map((s) => (
+                  <Table.Row key={s.id}>
+                    <Table.Cell>
+                      <div className="ws-table-person">
+                        <span className="ws-source-icon">
+                          <FileText size={21} />
+                        </span>
+                        <span>
+                          <strong>{s.title}</strong>
+                          <small>
+                            {s.kind} · Version {s.version}
+                          </small>
+                        </span>
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Pill>{s.audience}</Pill>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Pill tone={s.status === "Ready" ? "green" : "amber"}>
+                        {s.status}
+                      </Pill>
+                    </Table.Cell>
+                    <Table.Cell><StudioButton variant="outline" className="ws-view-source" aria-label={`View source: ${s.title}`} onClick={() => open(s.title, <SourceDetail id={s.id} />, "editor")}>View source</StudioButton></Table.Cell>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
       </Panel>
-      <p className="ws-footnote">
-        Explore a stale-source journey: edit a document, save it, then sync it.
-        The status and version change in the demo.
-      </p>
     </>
   );
 }
@@ -238,20 +283,20 @@ export function Assistant() {
       "what is the cancellation policy": {
         sourceId: "k1",
         passage:
-          "Clients can reschedule or cancel without charge with at least 24 hours’ notice. Changes within 24 hours are reviewed personally by Amelia.",
+          "Fictional demo policy: cancel or reschedule with at least 24 hours' notice. Later changes are reviewed by Rick.",
       },
-      "how much is a reflexology session": {
+      "how much is the unoptimised hour": {
         sourceId: "k2",
-        passage: "A reflexology session lasts 60 minutes and costs £65.",
+        passage: "The Unoptimised Hour is 60 minutes and £65.",
       },
       "where is the practice": {
         sourceId: "k2",
-        passage: "The practice is in Bristol.",
+        passage: "The fictional practice is in Bristol and online.",
       },
       "where is the online session link": {
         sourceId: "k2",
         passage:
-          "Online session links are included in the booking confirmation.",
+          "Online joining links are in booking confirmations.",
       },
     };
     const example =
@@ -356,213 +401,199 @@ export function Assistant() {
     }, "Decision checked against the latest sample records. See History for the outcome.");
   }
   return (
-    <>
+    <Tabs.Root
+      value={tab}
+      onValueChange={(e) => setTab(e.value)}
+      colorPalette="copper"
+      variant="line"
+    >
       <div className="ws-toolbar">
-        <div className="ws-segment">
+        <Tabs.List className="ws-content-tabs">
           {["Conversation", "Needs your approval", "History"].map((t) => (
-            <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>
+            <Tabs.Trigger key={t} value={t}>
               {t}
               {t === "Needs your approval" && pending.length > 0 && (
                 <span className="ws-count">{pending.length}</span>
               )}
-            </button>
+            </Tabs.Trigger>
           ))}
-        </div>
-        <Pill>
-          <span className="ws-dot" /> Scripted demo
-        </Pill>
+        </Tabs.List>
       </div>
-      {tab === "Conversation" ? (
-        <div className="ws-assistant-grid">
-          <Panel className="ws-chat">
-            <div className="ws-assistant-intro">
-              <span className="ws-assistant-mark">
-                <ShieldCheck size={25} />
-              </span>
-              <h2>
-                A little help.
-                <br />
-                Your judgement, always.
-              </h2>
-              <p>
-                Explore four supported administrative questions and a human
-                handoff. All other questions abstain.
-              </p>
-            </div>
-            {conversation.map((c, i) => (
-              <div className="ws-chat-turn" key={i}>
-                <div className="ws-bubble outgoing">
-                  <p>{c.q}</p>
+      <Tabs.Content value={tab}>
+        {tab === "Conversation" ? (
+          <div className="ws-assistant-grid">
+            <Panel className="ws-chat">
+              {conversation.length === 0 && (
+                <div className="ws-conversation-empty">
+                  <h2>What do you need to know?</h2>
+                  <p>Ask about your practice’s policies, services or bookings.</p>
                 </div>
-                <div className="ws-bubble">
-                  <small>Studio assistant · example response</small>
-                  <p>{c.answer}</p>
-                  {c.citation ? (
-                    <button
-                      className="ws-citation"
+              )}
+              {conversation.map((c, i) => (
+                <div className="ws-chat-turn" key={i}>
+                  <Card.Root variant="subtle" className="ws-bubble outgoing">
+                    <small>You asked</small>
+                    <p>{c.q}</p>
+                  </Card.Root>
+                  <Card.Root variant="subtle" className="ws-bubble">
+                    <small>Answer</small>
+                    <p>{c.answer}</p>
+                    <div className="ws-answer-actions">
+                    {c.citation ? (
+                      <StudioButton
+                        className="ws-citation"
+                        onClick={() =>
+                          open(
+                            "Source evidence",
+                            <div className="ws-form">
+                              <Pill>Version {c.citation!.version}</Pill>
+                              <h3>{c.citation!.title}</h3>
+                              <p>{c.citation!.content}</p>
+                              <p className="ws-help">
+                                Saved source snapshot from this answer. Later
+                                edits and syncs do not change this evidence.
+                              </p>
+                            </div>, "reading",
+                          )
+                        }
+                      >
+                        <LinkIcon size={13} />
+                        {c.citation.title} · v{c.citation.version}
+                      </StudioButton>
+                    ) : c.sourceId ? (
+                      <p className="ws-help">
+                        Source snapshot unavailable for this older demo answer.
+                      </p>
+                    ) : null}
+                    <StudioButton
+                      className="ws-answer-details"
+                      onClick={() => open("Answer details", (
+                        <div className="ws-answer-evidence">
+                          <h3>{c.q}</h3>
+                          <p>How the answer was selected</p>
+                          <ol>{c.trace.map((step, index) => <li key={index}>{step}</li>)}</ol>
+                        </div>
+                      ), "reading")}
+                    >
+                      Answer details
+                    </StudioButton>
+                    <StudioButton
+                      className="ws-link"
                       onClick={() =>
-                        open(
-                          "Source evidence",
-                          <div className="ws-form">
-                            <Pill>Version {c.citation!.version}</Pill>
-                            <h3>{c.citation!.title}</h3>
-                            <p>{c.citation!.content}</p>
-                            <p className="ws-help">
-                              Saved source snapshot from this answer. Later
-                              edits and syncs do not change this evidence.
-                            </p>
-                          </div>,
-                        )
+                        update((d) => {
+                          d.tickets.push({
+                            id: "ST-" + uid().slice(0, 4),
+                            title: c.q,
+                            status: "Open",
+                            messages: [
+                              `Question: ${c.q}`,
+                              `Assistant context: ${c.answer}`,
+                            ],
+                          });
+                        }, "Question and context added to your support conversation.")
                       }
                     >
-                      <LinkIcon size={13} />
-                      {c.citation.title} · v{c.citation.version}
-                    </button>
-                  ) : c.sourceId ? (
-                    <p className="ws-help">
-                      Source snapshot unavailable for this older demo answer.
-                    </p>
-                  ) : null}
-                  <details>
-                    <summary>How this answer was selected</summary>
-                    {c.trace.map((t) => (
-                      <p key={t}>{t}</p>
+                      Contact support
+                    </StudioButton>
+                    </div>
+                  </Card.Root>
+                </div>
+              ))}
+              <section className="ws-conversation-compose" aria-label="Message composer">
+                <label htmlFor="assistant-question" className="ws-composer-label">{conversation.length ? "Ask another question" : "Ask a question"}</label>
+                {conversation.length === 0 && (
+                  <div className="ws-starting-questions">
+                    {["What is the cancellation policy?", "How much is the Unoptimised Hour?"].map(prompt => (
+                      <StudioButton key={prompt} onClick={() => ask(prompt)}>{prompt}</StudioButton>
                     ))}
-                  </details>
-                  <button
-                    className="ws-link"
-                    onClick={() =>
-                      update((d) => {
-                        d.tickets.push({
-                          id: "ST-" + uid().slice(0, 4),
-                          title: c.q,
-                          status: "Open",
-                          messages: [
-                            `Question: ${c.q}`,
-                            `Assistant context: ${c.answer}`,
-                          ],
-                        });
-                      }, "Question and context added to your support conversation.")
-                    }
-                  >
-                    Ask a person to help <ArrowRight size={13} />
-                  </button>
-                </div>
-              </div>
-            ))}
-            <form
-              className="ws-chat-input"
-              onSubmit={(e) => {
-                e.preventDefault();
-                ask(q);
-              }}
-            >
-              <input
-                aria-label="Ask the assistant"
-                placeholder="Ask about your practice…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                required
-              />
-              <button aria-label="Ask question" type="submit">
-                <ArrowRight size={20} />
-              </button>
-            </form>
-          </Panel>
-          <div>
-            <Panel title="Try a few real situations">
-              <div className="ws-prompt-list">
-                {[
-                  "What is the cancellation policy?",
-                  "How much is a reflexology session?",
-                  "Do you offer home visits?",
-                  "Can you diagnose my symptoms?",
-                ].map((p) => (
-                  <button key={p} onClick={() => ask(p)}>
-                    {p}
-                    <ArrowUpRightIcon />
-                  </button>
-                ))}
-              </div>
-              <Field label="Knowledge audience">
-                <select
-                  value={scope}
-                  onChange={(e) => setScope(e.target.value)}
-                >
-                  <option>Public answers</option>
-                  <option>Team knowledge</option>
-                </select>
-              </Field>
-            </Panel>
-            <div className="ws-explainer">
-              <h3>Before anything happens</h3>
-              <p>
-                Replies and refunds go through your approval queue. The live
-                service would validate identity, permission and action details
-                before execution.
-              </p>
-              <button
-                className="ws-link"
-                onClick={() => setTab("Needs your approval")}
-              >
-                Review {pending.length} pending action
-                {pending.length !== 1 ? "s" : ""} <ArrowRight size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <Panel
-          title={
-            tab === "History"
-              ? "Decisions you’ve made"
-              : "A person makes the call"
-          }
-        >
-          {state.approvals
-            .filter((a) =>
-              tab === "History"
-                ? a.status !== "Pending"
-                : a.status === "Pending",
-            )
-            .map((a) => (
-              <div className="ws-approval" key={a.id}>
-                <div className="ws-actions">
-                  <Pill tone={a.type === "refund" ? "amber" : ""}>
-                    {a.type === "refund" ? "Payment change" : "Outgoing reply"}
-                  </Pill>
-                  <Pill>{a.status}</Pill>
-                </div>
-                <h3>{a.title}</h3>
-                <p>{a.detail}</p>
-                <small>
-                  Validation preview: sample client identified · human approval
-                  required · no external action
-                </small>
-                {a.status === "Pending" && (
-                  <div className="ws-actions">
-                    <Action onClick={() => decision(a.id, true)}>
-                      <Check size={15} /> Approve in demo
-                    </Action>
-                    <Action secondary onClick={() => decision(a.id, false)}>
-                      Decline
-                    </Action>
                   </div>
                 )}
-              </div>
-            ))}
-          {(tab === "History"
-            ? state.approvals.filter((a) => a.status !== "Pending")
-            : pending
-          ).length === 0 && (
-            <Empty
-              title="All clear here"
-              body="Prepare a reply in Enquiries to try the approval journey."
-            />
-          )}
-        </Panel>
-      )}
-    </>
+                <Field label="Answer from">
+                  <StudioSelect
+                    value={scope}
+                    onChange={(e) => setScope(e.target.value)}
+                  >
+                    <option>Public answers</option>
+                    <option>Team knowledge</option>
+                  </StudioSelect>
+                </Field>
+              <form
+                className="ws-chat-input"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  ask(q);
+                }}
+              >
+                <StudioInput
+                  id="assistant-question"
+                  aria-label="Ask the assistant"
+                  placeholder="Ask about your practice…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  required
+                />
+                <StudioButton aria-label="Ask question" type="submit">
+                  Ask
+                </StudioButton>
+              </form>
+              </section>
+            </Panel>
+          </div>
+        ) : (
+          <Panel
+            title={
+              tab === "History"
+                ? "Decisions you’ve made"
+                : "A person makes the call"
+            }
+          >
+            {state.approvals
+              .filter((a) =>
+                tab === "History"
+                  ? a.status !== "Pending"
+                  : a.status === "Pending",
+              )
+              .map((a) => (
+                <Card.Root variant="subtle" className="ws-approval" key={a.id}>
+                  <div className="ws-actions">
+                    <Pill tone={a.type === "refund" ? "amber" : ""}>
+                      {a.type === "refund"
+                        ? "Payment change"
+                        : "Outgoing reply"}
+                    </Pill>
+                    <Pill>{a.status}</Pill>
+                  </div>
+                  <h3>{a.title}</h3>
+                  <p>{a.detail}</p>
+                  <small>
+                    Validation preview: sample client identified · human
+                    approval required · no external action
+                  </small>
+                  {a.status === "Pending" && (
+                    <div className="ws-actions">
+                      <Action onClick={() => decision(a.id, true)}>
+                        <Check size={15} /> Approve in demo
+                      </Action>
+                      <Action secondary onClick={() => decision(a.id, false)}>
+                        Decline
+                      </Action>
+                    </div>
+                  )}
+                </Card.Root>
+              ))}
+            {(tab === "History"
+              ? state.approvals.filter((a) => a.status !== "Pending")
+              : pending
+            ).length === 0 && (
+              <Empty
+                title="All clear here"
+                body="Prepare a reply in Enquiries to try the approval journey."
+              />
+            )}
+          </Panel>
+        )}
+      </Tabs.Content>
+    </Tabs.Root>
   );
 }
 function ArrowUpRightIcon() {
