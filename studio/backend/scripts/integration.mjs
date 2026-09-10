@@ -6,6 +6,7 @@ import { recordManagementChecks } from "./record-management-checks.mjs";
 import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 import { taskMaintenanceChecks } from "./task-maintenance-checks.mjs";
+import { todayChecks } from "./today-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -542,6 +543,36 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   check("overnight bookings remain visible the next day until their exclusive end instant");
   await gmailChecks({alice,bob,viewer,anonymous,tenantA,tenantB,issuer,command,runDir,check,signing:gmailSigning});
   await enquiryChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"enquiry-local"});
+  await todayChecks({
+    alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,
+    seedRows:async({tenantA:todayTenantA,tenantB:todayTenantB,day,from,to})=>{
+      const shift=(offset)=>{const date=new Date(`${day}T12:00:00Z`);date.setUTCDate(date.getUTCDate()+offset);return date.toISOString().slice(0,10);};
+      const createdAt=Date.now()+100000;
+      const tasks=[
+        ...Array.from({length:201},(_,index)=>({tenantId:todayTenantA,title:`Newer future task ${index}`,completed:false,dueDate:shift(1),createdAt:createdAt+index,createdBy:`${issuer}|alice`,requestKey:`today-future-${index}`,revision:0})),
+        {tenantId:todayTenantA,title:"Removed today task",completed:false,dueDate:day,removedAt:createdAt,createdAt:createdAt+202,createdBy:`${issuer}|alice`,requestKey:"today-removed",revision:1},
+        {tenantId:todayTenantA,title:"Previous day task",completed:false,dueDate:shift(-1),createdAt:createdAt+203,createdBy:`${issuer}|alice`,requestKey:"today-previous",revision:0},
+        {tenantId:todayTenantA,title:"Undated task",completed:false,createdAt:createdAt+204,createdBy:`${issuer}|alice`,requestKey:"today-undated",revision:0},
+        ...Array.from({length:201},(_,index)=>({tenantId:todayTenantB,title:`Today capped task ${index}`,completed:index%2===0,dueDate:day,createdAt:createdAt+300+index,createdBy:`${issuer}|bob`,requestKey:`today-cap-${index}`,revision:0})),
+      ];
+      await writeFile(resolve(runDir,"today-tasks.json"),JSON.stringify(tasks));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","today-tasks.json"]);
+      const hour=60*60*1000;
+      const booking=(tenantId,clientLabel,startsAt,endsAt,requestKey,status="scheduled")=>({tenantId,practitionerId:"practice",startsAt,endsAt,clientLabel,requestKey,status,revision:0,createdBy:tenantId===todayTenantA?`${issuer}|alice`:`${issuer}|bob`});
+      const bookings=[
+        booking(todayTenantA,"Prior overnight",from-hour,from+hour/2,"today-prior"),
+        booking(todayTenantA,"Exact start",from,from+hour/2,"today-exact"),
+        booking(todayTenantA,"Ends at start",from-hour,from,"today-ends-at-start"),
+        booking(todayTenantA,"Starts next day",to,to+hour,"today-starts-next"),
+        booking(todayTenantA,"Cancelled today",from+2*hour,from+3*hour,"today-cancelled","cancelled"),
+        {...booking(todayTenantA,"Legacy scheduled",from+4*hour,from+5*hour,"today-legacy"),status:undefined},
+        booking(todayTenantB,"Other tenant boundary",from+hour,from+2*hour,"today-other-tenant"),
+        ...Array.from({length:201},(_,index)=>booking(todayTenantB,`Today capped booking ${index}`,from+6*hour,from+7*hour,`today-booking-cap-${index}`)),
+      ];
+      await writeFile(resolve(runDir,"today-bookings.json"),JSON.stringify(bookings));
+      await command(["import","--env-file",".push.env","--table","bookings","--append","today-bookings.json"]);
+    },
+  });
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

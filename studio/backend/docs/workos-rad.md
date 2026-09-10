@@ -16,6 +16,7 @@ The providers follow the [official Convex AuthKit configuration](https://docs.co
 - `tasks.create({tenantId,title,requestKey})`: owner only; trimmed single-line title 1–200 characters with no control characters; unpadded nonempty key at most 128 characters. Same tenant/key/creator/title returns the existing task even after completion; changed payload fails `IDEMPOTENCY_MISMATCH`.
 - `tasks.setCompleted({tenantId,taskId,completed,expectedRevision?})`: owner only, checks the task belongs to the selected tenant and advances the revision. New clients send `expectedRevision`, so stale divergent changes fail `REVISION_CONFLICT`; same-state retries succeed. The optional field preserves the deployed legacy command signature. A legacy caller without it remains last-write-wins, but still advances the revision for revision-aware clients.
 - `tasks.update({tenantId,taskId,title,expectedRevision})` returns `{taskId,revision}` with the actual current revision, including an unchanged normalized title retry; `tasks.remove({tenantId,taskId,expectedRevision})` returns the task ID. Both are owner-only and revision-aware. Removal is a `removedAt` tombstone, not a destructive delete. A private immutable `creationTitle` records the original normalized create title (captured for revision-zero legacy rows at their first edit/removal), so the original create request returns its original ID after a rename or removal and cannot resurrect a task.
+- `tasks.today({tenantId,refreshKey})`: owner/viewer read. The backend ignores the refresh key as authority and derives the current `YYYY-MM-DD` plus `[from,to)` from server time and the tenant's stored IANA zone. It returns explicit `setup_required`/`invalid_time_zone` states or a bounded ready result. Active tasks are selected by tenant, absent tombstone and exact due date before the 201-row take, so newer tasks on other dates cannot crowd them out. Owner client links resolve only same-tenant records; every link field remains redacted for viewers.
 
 All protected task commands reread membership. A tenant selector never authorizes access. A viewer is a staff reader, not a patient. Tasks are general practice operations: do not enter clinical notes in titles.
 
@@ -107,9 +108,26 @@ Every creation route, including retained legacy `bookings.create`, and every res
 
 `bookings.list({tenantId,from,to,practitionerId?})` is now owner-only and projects only ID, instants, client label/optional IDs, optional snapshot/time zone, status, revision and `legacy`. It never returns creation identity, request key or fingerprint. It includes intervals overlapping `[from,to)` (maximum 31 days) and returns `{items,hasMore,limit:200}`. The indexed lower bound is `from - 24 hours`, followed by `endsAt > from`, so overnight sessions remain visible on the following day until their exclusive end instant.
 
+`bookings.today({tenantId,refreshKey})` is owner-only and derives the same
+practice-local window from the stored zone and server time. It includes only
+scheduled or legacy-unspecified bookings overlapping `[from,to)`, excludes
+cancelled rows, and returns the authoritative date/zone/window plus
+`{items,hasMore,limit:200}`. The caller cannot supply bounds. Viewers use only
+`tasks.today` and never invoke this owner-contact projection.
+
 `bookings.history({tenantId,bookingId})` is owner-only and returns newest-first `{items,hasMore,limit:200}` transitions with action, timestamp, revision, resulting instants and previous instants on reschedule. The additive `bookingEvents` table captures the authenticated actor internally with every successful create/reschedule/cancel transaction; no-op retries add no duplicate events. There is no public history mutation or deletion. Existing legacy records have only transitions recorded from this version onward, not fabricated earlier history.
 
-Database changes are additive optional booking fields, an optional tenant time zone, a tenant/start index and the events table. No backfill, import, hosted deployment or historical-record mutation is required by this code change. Preserve the existing client-search backfill readiness requirement from the prior increment. Native acceptance covers snapshot persistence, linked/legacy collision interoperability, owner-only contacts and history, archived/foreign references, concurrent identical/different creates, concurrent divergent reschedules, cancellation and original-create retries, and audit transition order.
+The Today database change is one additive task index on
+`tenantId,removedAt,dueDate`; existing rows need no backfill and no stored record
+is rewritten. The earlier booking changes remain additive optional booking
+fields, an optional tenant time zone, a tenant/start index and the events table.
+No import, hosted deployment or historical-record mutation is required by this
+code change. Preserve the existing client-search backfill readiness requirement
+from the prior increment. Native acceptance covers snapshot persistence,
+linked/legacy collision interoperability, owner-only contacts and history,
+archived/foreign references, concurrent identical/different creates,
+concurrent divergent reschedules, cancellation and original-create retries,
+Today boundaries/caps/redaction, and audit transition order.
 
 Standalone root-operated hosted booking acceptance is `node scripts/hosted-booking-acceptance.mjs`, with the existing explicit staging gates/private credentials path and `STUDIO_BOOKING_TEST_START_MS` set to an exact future UTC millisecond instant. It authenticates existing synthetic users, creates two isolated practice fixtures with recorded request keys/IDs, and runs only the new booking workflow checks. It records prior fixture time-zone/membership state before changing those fields; existing practices are not modified. New fixture records/time zones are intentionally retained for inspection, with no claim that unset time zones can be restored by the current setter. There is no account creation, catalogue-management regression loop, import, migration, reset or automatic deletion. Tokens remain memory-only and the private report contains exact created record IDs.
 

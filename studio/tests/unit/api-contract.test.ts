@@ -35,6 +35,30 @@ type TaskResult = Assert<
     FunctionReturnType<typeof practiceApi.tasks>
   >
 >;
+type TodayTaskArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.tasks.today>,
+    FunctionArgs<typeof practiceApi.todayTasks>
+  >
+>;
+type TodayTaskResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.tasks.today>,
+    FunctionReturnType<typeof practiceApi.todayTasks>
+  >
+>;
+type TodayBookingArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.bookings.today>,
+    FunctionArgs<typeof practiceApi.todayBookings>
+  >
+>;
+type TodayBookingResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.bookings.today>,
+    FunctionReturnType<typeof practiceApi.todayBookings>
+  >
+>;
 type CompleteArgs = Assert<
   Equal<
     FunctionArgs<typeof api.tasks.setCompleted>,
@@ -57,6 +81,8 @@ it("uses deployed command names", () => {
   expect(getFunctionName(practiceApi.tenants)).toBe("tenants:list");
   expect(getFunctionName(practiceApi.createTenant)).toBe("tenants:create");
   expect(getFunctionName(practiceApi.tasks)).toBe("tasks:list");
+  expect(getFunctionName(practiceApi.todayTasks)).toBe("tasks:today");
+  expect(getFunctionName(practiceApi.todayBookings)).toBe("bookings:today");
   expect(getFunctionName(practiceApi.createTask)).toBe("tasks:create");
   expect(getFunctionName(practiceApi.setCompleted)).toBe("tasks:setCompleted");
   expect(getFunctionName(practiceApi.updateTask)).toBe("tasks:update");

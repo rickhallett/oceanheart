@@ -11,6 +11,7 @@ import { formatPrice, poundsToMinor } from "./money";
 export type PageStatus =
   "LoadingFirstPage" | "CanLoadMore" | "LoadingMore" | "Exhausted";
 export type PracticeSection =
+  | "today"
   | "tasks"
   | "services"
   | "settings"
@@ -31,6 +32,7 @@ export function PracticeNavigation({
     <nav aria-label="Practice sections" className="lp-section-nav">
       {(
         [
+          "today",
           "tasks",
           "services",
           "settings",

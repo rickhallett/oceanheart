@@ -33,6 +33,30 @@ export type LinkedClient = { name: string; archived: boolean };
 export type TaskFilter = "all" | "open" | "completed";
 export type TaskUpdateResult = { taskId: GenericId<"tasks">; revision: number };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
+export type TodayStatus = { status: "setup_required" | "invalid_time_zone" };
+export type TodayTaskList =
+  | TodayStatus
+  | ({
+      status: "ready";
+      day: string;
+      timeZone: string;
+      from: number;
+      to: number;
+      refreshAfterMs: number;
+    } & TaskList);
+export type TodayBookingList =
+  | TodayStatus
+  | {
+      status: "ready";
+      day: string;
+      timeZone: string;
+      from: number;
+      to: number;
+      refreshAfterMs: number;
+      items: Booking[];
+      hasMore: boolean;
+      limit: number;
+    };
 export const practiceApi = {
   setTimeZone: makeFunctionReference<
     "mutation",
@@ -44,6 +68,16 @@ export const practiceApi = {
     { tenantId: TenantId; from: number; to: number; practitionerId?: string },
     { items: Booking[]; hasMore: boolean; limit: number }
   >("bookings:list"),
+  todayTasks: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; refreshKey: number },
+    TodayTaskList
+  >("tasks:today"),
+  todayBookings: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; refreshKey: number },
+    TodayBookingList
+  >("bookings:today"),
   createBooking: makeFunctionReference<
     "mutation",
     {
