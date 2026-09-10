@@ -2,13 +2,13 @@
 .possibilities-page section[id] { scroll-margin-top: 32px; }
 .possibilities-page .p-small { font-size: 14px; line-height: 1.65; }
 .p-nav-plus { color: var(--p-muted); font-size: 17px; }
-.p-hero { padding-block: 84px 76px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 7%; align-items: center; }
+.p-hero { padding-block: 84px 76px; display: grid; grid-template-columns: 1.15fr 1.3fr; gap: 4%; align-items: center; }
 .p-hero h1 { font-size: clamp(48px,5.5vw,78px); line-height: 1.04; margin-top: 24px; }
 .p-hero h1 span { color: var(--p-blue); }
 .p-hero .studio-lead { font-size: 23px !important; margin-top: 28px !important; max-width: 580px; }
 .p-hero-description { margin-top: 20px !important; max-width: 600px; }
 .possibilities-page .p-hero-note { margin-top: 24px; color: var(--p-muted); }
-.p-hero-art { max-width: 490px; justify-self: end; width: 100%; }
+.p-hero-art { max-width: 637px; justify-self: end; width: 100%; }
 .p-hero-art img { display: block; width: 100%; height: auto; box-shadow: 0 12px 40px #0d1a2e15; }
 .possibilities-page .studio-button { gap: 20px; }
 .p-section { padding-block: 104px; }

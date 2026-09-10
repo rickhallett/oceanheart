@@ -41,7 +41,7 @@ export default function PossibilitiesPage() {
         <div className="studio-actions"><a className="studio-button" href="#everyday">Free your mind... <SmallArrow down /></a><a className="studio-link" href={demo}>Explore Studio</a></div>
         <p className="p-small p-hero-note">For independent therapists, coaches, bodyworkers and small practices.</p>
       </div>
-      <figure className="p-hero-art"><img src="/images/studio-possibilities/hero-study-5.png" width="1254" height="1254" alt="Enterprise-grade. Human-sized. A hand holding a miniature technological structure, recreated from the approved Oceanheart artwork in a light palette." fetchPriority="high" /></figure>
+      <figure className="p-hero-art"><img src="/images/studio-possibilities/hero-selected-refined.png" width="1254" height="1254" alt="Enterprise-grade. Human-sized. A hand holding a miniature technological structure, recreated from the approved Oceanheart artwork in a light palette." fetchPriority="high" /></figure>
     </section>
 
     <section className="p-foundation studio-wide" aria-labelledby="foundation-title">
