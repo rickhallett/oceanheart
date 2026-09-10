@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import "@/styles/application-tokens.css";
+import { EmotionRegistry } from "@/components/emotion-registry";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -25,7 +26,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-GB" className={`light ${serif.variable} ${sans.variable}`}>
-      <body>{children}</body>
+      <body><EmotionRegistry>{children}</EmotionRegistry></body>
     </html>
   );
 }
