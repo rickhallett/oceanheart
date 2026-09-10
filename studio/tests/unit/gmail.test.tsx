@@ -50,7 +50,7 @@ it("does not browse or import automatically; preview is text and import is expli
   await user.click(
     screen.getByRole("button", { name: "Browse Gmail messages" }),
   );
-  await user.click(screen.getByRole("button", { name: "Appointment enquiry" }));
+  await user.click(screen.getByRole("button", { name: /Alex.*Today.*Appointment enquiry/ }));
   expect(preview).toHaveBeenCalledWith("one");
   expect(screen.getByText(message.text)).toBeVisible();
   expect(document.querySelector("script")).toBeNull();
@@ -82,7 +82,7 @@ it("explicit next page preserves selection and imports retries safely with same 
   );
   await user.click(screen.getByRole("button", { name: "Load more messages" }));
   expect(list).toHaveBeenLastCalledWith("next");
-  await user.click(screen.getByRole("button", { name: "Appointment enquiry" }));
+  await user.click(screen.getByRole("button", { name: /Alex.*Today.*Appointment enquiry/ }));
   await user.click(
     screen.getByRole("button", { name: "Import selected message" }),
   );
@@ -141,7 +141,7 @@ it("HTML-only messages cannot be imported", async () => {
   await user.click(
     screen.getByRole("button", { name: "Browse Gmail messages" }),
   );
-  await user.click(screen.getByRole("button", { name: "Appointment enquiry" }));
+  await user.click(screen.getByRole("button", { name: /Alex.*Today.*Appointment enquiry/ }));
   expect(
     screen.getByRole("button", { name: "Import selected message" }),
   ).toBeDisabled();

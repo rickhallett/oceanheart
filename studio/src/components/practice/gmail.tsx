@@ -222,7 +222,6 @@ export function GmailPanel({
                   <li key={item.id}>
                     <button
                       className="lp-gmail-message"
-                      aria-label={item.subject || `Message ${item.id}`}
                       aria-pressed={selected?.id === item.id}
                       type="button"
                       disabled={pending}

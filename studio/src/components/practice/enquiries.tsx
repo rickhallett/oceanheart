@@ -106,7 +106,6 @@ export function PracticeEnquiries({
             <li key={item._id} data-enquiry-id={item._id}>
               <button
                 className="lp-enquiry-open"
-                aria-label={item.subject}
                 type="button"
                 onClick={() => setSelected(item._id)}
               >
