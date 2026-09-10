@@ -115,6 +115,11 @@ cancelled rows, and returns the authoritative date/zone/window plus
 `{items,hasMore,limit:200}`. The caller cannot supply bounds. Viewers use only
 `tasks.today` and never invoke this owner-contact projection.
 
+Before the ready result, an unset tenant zone returns only
+`{status:"setup_required"}`; a saved zone that cannot be resolved returns only
+`{status:"invalid_time_zone"}`. These non-ready variants intentionally omit the
+ready date, zone, window, refresh delay, items and pagination fields.
+
 `bookings.history({tenantId,bookingId})` is owner-only and returns newest-first `{items,hasMore,limit:200}` transitions with action, timestamp, revision, resulting instants and previous instants on reschedule. The additive `bookingEvents` table captures the authenticated actor internally with every successful create/reschedule/cancel transaction; no-op retries add no duplicate events. There is no public history mutation or deletion. Existing legacy records have only transitions recorded from this version onward, not fabricated earlier history.
 
 The Today database change is one additive task index on
