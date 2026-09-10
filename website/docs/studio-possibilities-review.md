@@ -25,14 +25,14 @@ Current product screenshots and the public fictional demo are separate from prop
 
 ## Original assets
 
-The user supplied 42 approved images in `/Users/oai/work/oceanheart/assets/studio-concepts/`. A thumbnail contact sheet was inspected. The page uses unchanged file copies:
+The user supplied 42 approved images in `/Users/oai/work/oceanheart/assets/studio-concepts/`. A thumbnail contact sheet was inspected. The initial version used these unchanged file copies:
 
 | Source filename | Website asset | SHA-256 |
 | --- | --- | --- |
 | `IMG_9803.PNG` | `public/images/studio-possibilities/street-level.png` | `9469048b2ed5be92b1dded0bf77df415fa2ed952e1856407e05f3a785f41f2ad` |
 | `C1CA2282-B600-4752-B217-C907581B63A3.png` | `public/images/studio-possibilities/tide-turning.png` | `fa9892d7e971052aa245fded07b9e802c9fffe6948673d5d5f416a761a554899` |
 
-Both images are 1054 × 1492. The originals remain in the asset collection. No generated replacement is referenced by the page. Existing product screenshots and the existing Rick portrait are reused.
+Both images are 1054 × 1492. The originals remain in the asset collection. The revised hero uses a faithful light-theme ImageGen edit of approved original `EB6FBE44-1F44-4456-9466-F5709EC55FCE.png`, saved as `public/images/studio-possibilities/enterprise-human-light.png`. The original is preserved. The tide poster remains unchanged. The portrait now reuses the about page asset `rick-portrait-looking-left-v2.png` with CSS edge fading.
 
 ## Run and review
 
@@ -58,3 +58,11 @@ Dependencies currently use an ignored symlink to the installed `website-studio/w
 - No database impact: marketing route, explanatory local component state and static assets only. No identity, database, payment, inbox or booking API is called by the new interactions.
 
 Future implementation or publication should verify the relevant integrations, account permissions and product claims at that time. The current preview demonstrates communication and interaction design only.
+
+## Browser feedback revision — 2026-09-10
+
+Applied the 19 annotated comments: stronger opening about agency; faithful light edition of the enterprise poster; no eyebrows; overlapping Studio/Oceanheart composition; compact SVG link arrows and no scenario arrows; removed explanatory caveats, connection footnote, portrait caption and variant footer; coloured Google and Microsoft marks; about-page portrait with fading. Preserved the Studio + Oceanheart name and the praised tide section copy and placement. Future edits should preserve the explicit no-eyebrows preference.
+
+Mobbin MCP layout reference: [Ploy overlapping forms](https://mobbin.com/sites/sections/c3a0c0ec-ad38-47e0-81b6-4db0654fee47). Used as composition guidance, with original implementation.
+
+This revision passed production build and TypeScript. Browser inspection covered desktop hero, connected foundation, coloured selectors and faded portrait, plus 390px and 320px layout checks. Zero `.p-kicker` elements remain. Microsoft selector state verified. The earlier full interaction coverage remains applicable; interaction logic was unchanged.

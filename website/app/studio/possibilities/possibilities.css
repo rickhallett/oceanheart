@@ -1,6 +1,5 @@
 .possibilities-page { --p-blue: #255bd7; --p-ink: #17212f; --p-muted: #526074; --p-tint: #f3f6fc; }
 .possibilities-page section[id] { scroll-margin-top: 32px; }
-.possibilities-page .p-kicker { display: block; font-size: 12px; line-height: 1.5; letter-spacing: .095em; text-transform: uppercase; font-weight: 600; color: var(--p-blue); }
 .possibilities-page .p-small { font-size: 14px; line-height: 1.65; }
 .p-nav-plus { color: var(--p-muted); font-size: 17px; }
 .p-hero { padding-block: 84px 76px; display: grid; grid-template-columns: 1.45fr .8fr; gap: 7%; align-items: center; }
@@ -11,12 +10,7 @@
 .possibilities-page .p-hero-note { margin-top: 24px; color: var(--p-muted); }
 .p-hero-art { max-width: 420px; justify-self: end; width: 100%; }
 .p-hero-art img { display: block; width: 100%; height: auto; box-shadow: 0 12px 40px #0d1a2e15; }
-.p-hero-art figcaption { font-size: 13px; margin-top: 14px; color: var(--p-muted); }
 .possibilities-page .studio-button { gap: 20px; }
-.p-foundation { display: grid; grid-template-columns: repeat(3,1fr); gap: 48px; border-block: 1px solid #d8dfe8; padding-block: 38px; }
-.p-foundation h2 { font-size: 26px; letter-spacing: -.035em; margin: 14px 0 12px; }
-.p-foundation p { font-size: 16px; line-height: 1.7; }
-.p-foundation a { display: inline-block; font-size: 14px; color: var(--p-blue); margin-top: 18px; text-underline-offset: 4px; }
 .p-section { padding-block: 104px; }
 .p-section-intro { max-width: 790px; margin-bottom: 42px; }
 .p-section-intro h2 { margin-top: 18px; }
@@ -44,7 +38,6 @@
 .journey-steps button[aria-pressed="true"] > span { background: var(--p-blue); border-color: var(--p-blue); color: white; }
 .journey-step-content > p { font-size: 15px; line-height: 1.65; min-height: 75px; }
 .journey-example-note { background: #fff; padding: 22px; margin-top: 20px; border-left: 3px solid #7095e9; }
-.example-owner { color: var(--p-muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 .journey-example-note h4 { margin: 12px 0; font-size: 20px; letter-spacing: -.03em; font-weight: 500; }
 .journey-example-note p { font-size: 15px; line-height: 1.65; min-height: 50px; }
 .example-action { display: flex; gap: 9px; align-items: center; color: var(--p-blue); font-size: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #e5eaf2; }
@@ -70,8 +63,6 @@
 .connection-dot { border-radius: 50%; width: 40px; height: 40px; flex-shrink: 0; border: 1px solid #bccbe4; background: #fff; display: grid; place-items: center; color: var(--p-blue); font-size: 13px; }
 .connection-flow li:nth-child(2) .connection-dot { background: #255bd7; color: #fff; border-color: #255bd7; }
 .possibilities-page .connection-need { margin-top: 26px; font-size: 22px; color: #255bd7; }
-.p-connection-footnote { display: grid; grid-template-columns: 160px 1fr; gap: 28px; border-top: 1px solid #d8dfe8; margin-top: 32px; padding-top: 24px; }
-.p-connection-footnote p { font-size: 14px; max-width: 750px; }
 .p-workspace-heading { display: flex; justify-content: space-between; align-items: end; gap: 48px; }
 .p-workspace-heading h2 { margin-top: 18px; }
 .p-workspace-heading > p { max-width: 530px; }
@@ -83,7 +74,6 @@
 .p-status-dot.pale { background: #8a9bbd; }
 .p-vision { background: #061017; padding-block: 80px; color: #eee7d6; }
 .p-vision-grid { display: grid; grid-template-columns: 1.25fr .8fr; gap: 11%; align-items: center; }
-.p-vision .p-kicker { color: #a3c6cf; }
 .p-vision h2 { font-size: clamp(40px,4.5vw,65px); margin: 24px 0 28px; letter-spacing: -.045em; }
 .p-vision h2 span { color: #a3c6cf; }
 .p-vision p:not(.p-kicker) { color: #c5cdd0; font-size: 18px; margin-top: 20px; }
@@ -104,7 +94,6 @@
 .p-expanded p { font-size: 17px; }
 .p-together { padding-block: 20px 95px; display: grid; grid-template-columns: .75fr 1.3fr; gap: 12%; align-items: start; }
 .p-portrait img { display: block; width: 100%; aspect-ratio: 4 / 5; height: auto; object-fit: cover; border-radius: 4px; }
-.p-portrait figcaption { margin-top: 16px; font-size: 13px; color: var(--p-muted); line-height: 1.5; }
 .p-together h2 { margin: 18px 0 28px; }
 .p-together p + p { margin-top: 20px; }
 .p-collaboration { list-style: none; counter-reset: collaboration; margin: 28px 0 0; padding: 0; }
@@ -117,15 +106,12 @@
 .p-closing h2 span { color: #255bd7; }
 .p-closing > p:not(.p-kicker) { max-width: 690px; font-size: 20px; }
 .p-email { display: inline-block; color: var(--p-muted) !important; margin-top: 25px; font-size: 15px; text-underline-offset: 4px; }
-.p-variant-link { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; border-top: 1px solid #d8dfe8; padding-block: 25px 5px; color: var(--p-muted); font-size: 12px; }
-.p-variant-link a { text-underline-offset: 4px; }
 @media (min-width: 1100px) { .possibilities-scenarios { position: sticky; top: 28px; } }
 @media (max-width: 1000px) {
   .p-hero { gap: 5%; grid-template-columns: 1.3fr .8fr; }
   .p-hero h1 { font-size: 55px; }
   .p-hero .studio-lead { font-size: 20px !important; }
   .p-hero-description { font-size: 16px !important; }
-  .p-foundation { gap: 25px; }
   .possibilities-explorer { grid-template-columns: 1fr; gap: 32px; }
   .possibilities-scenarios { display: flex; flex-direction: column; gap: 0; }
   .journey-step-content > p { min-height: 0; }
@@ -137,10 +123,6 @@
   .p-hero h1 { font-size: clamp(42px,10.5vw,62px); }
   .p-hero .studio-lead { font-size: 21px !important; }
   .p-hero-art { max-width: 100%; display: grid; grid-template-columns: minmax(0,1fr) 90px; align-items: end; gap: 20px; }
-  .p-hero-art figcaption { font-size: 14px; line-height: 1.6; }
-  .p-foundation { grid-template-columns: 1fr; gap: 0; padding-block: 0; border-bottom: 0; }
-  .p-foundation > div { padding-block: 26px; border-bottom: 1px solid #d8dfe8; }
-  .p-foundation h2 { margin-top: 12px; }
   .p-section { padding-block: 66px; }
   .p-section-intro { margin-bottom: 30px; }
   .possibilities-scenarios { grid-template-columns: 1fr; }
@@ -158,7 +140,6 @@
   .connection-choices button { padding: 10px 12px; font-size: 13px; }
   .connection-content { grid-template-columns: 1fr; gap: 30px; }
   .connection-content h3 { font-size: 25px; }
-  .p-connection-footnote { grid-template-columns: 1fr; gap: 10px; }
   .p-workspace-heading { display: block; }
   .p-workspace-heading > p { margin-top: 22px; }
   .p-status { grid-template-columns: 1fr; gap: 28px; }
@@ -177,3 +158,38 @@
   .p-nav-plus { font-size: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .possibilities-page *, .possibilities-page *::before, .possibilities-page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+
+/* Product + personal engineering, combined rather than three separate tiles. */
+.p-foundation { display: grid; grid-template-columns: 1fr 1.2fr; gap: 7%; align-items: center; padding-block: 65px; border-block: 1px solid #d8dfe8; }
+.p-foundation-statement h2 { font-size: clamp(30px,3vw,43px); line-height: 1.17; }
+.p-foundation-statement h2 span { color: #255bd7; }
+.p-foundation-statement > p { font-size: 17px; margin-top: 24px; max-width: 440px; }
+.p-foundation-inputs { position: relative; display: flex; align-items: center; justify-content: center; }
+.p-foundation-inputs > div { width: 53%; aspect-ratio: 1; border: 1px solid #adc3ef; border-radius: 50%; padding: 35px 30px; display: flex; flex-direction: column; justify-content: center; background: #f4f7fd; }
+.p-foundation-inputs > div:last-child { margin-left: -6%; padding-left: 48px; background: #edf3ffb3; }
+.p-foundation-inputs h3 { font-size: 25px; margin-bottom: 13px; }
+.p-foundation-inputs p { font-size: 15px; line-height: 1.6; }
+.p-foundation-inputs a { display: inline-block; margin-top: 18px; font-size: 13px; color: #255bd7; text-underline-offset: 4px; }
+.p-foundation-plus { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 24px; color: #255bd7; width: 32px; height: 32px; border-radius: 50%; background: #fff; display: grid; place-items: center; z-index: 1; }
+.possibilities-page .p-foundation-result { margin-top: 24px; text-align: center; font-size: 19px; color: #255bd7; }
+.p-hero h1 { margin-top: 0; }
+.p-hero-art img { box-shadow: none; }
+.p-section-intro h2, .p-workspace-heading h2, .p-together h2, .p-closing h2, .p-vision h2 { margin-top: 0; }
+.possibilities-scenarios button { grid-template-columns: 24px 1fr; }
+.possibilities-journey .journey-quote { margin-top: 0; }
+.journey-demo-header { font-size: 16px; color: #17212f; }
+.p-small-arrow { flex-shrink: 0; }
+.connection-choices button { display: inline-flex; align-items: center; gap: 9px; }
+.p-brand-mark { flex-shrink: 0; background: #fff; border-radius: 3px; padding: 3px; box-sizing: content-box; }
+.p-portrait img { width: 100%; height: auto; max-height: 620px; aspect-ratio: auto; object-fit: contain; border-radius: 0; -webkit-mask-image: radial-gradient(ellipse 65% 57% at 50% 45%, black 45%, transparent 91%); mask-image: radial-gradient(ellipse 65% 57% at 50% 45%, black 45%, transparent 91%); }
+@media (max-width: 1000px) { .p-foundation { grid-template-columns: 1fr; gap: 38px; } .p-foundation-combination { max-width: 590px; width: 100%; margin-inline: auto; } .p-foundation-statement > p { max-width: 680px; } }
+@media (max-width: 600px) {
+  .p-foundation { padding-block: 42px; }
+  .p-foundation-inputs > div { padding: 24px 18px; border-radius: 100px; aspect-ratio: auto; min-height: 240px; }
+  .p-foundation-inputs > div:last-child { padding-left: 29px; }
+  .p-foundation-inputs h3 { font-size: 20px; }
+  .p-foundation-inputs p { font-size: 14px; }
+  .p-foundation-inputs a { font-size: 12px; }
+  .p-foundation-plus { width: 25px; height: 25px; font-size: 20px; }
+  .p-hero-art { display: block; max-width: 340px; margin-inline: auto !important; }
+}
