@@ -7,7 +7,6 @@
 
 from __future__ import annotations
 
-import argparse
 from dataclasses import dataclass, field
 import html
 import re
@@ -16,7 +15,7 @@ import tempfile
 from pathlib import Path
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
@@ -24,9 +23,11 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     Image,
+    Flowable,
+    PageBreak,
+    KeepTogether,
     ListFlowable,
     ListItem,
-    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -42,12 +43,15 @@ FULL_COMPLEMENT_SOURCE_DIR = SOURCE_DIR / "full-complement"
 PRIMARY_OUTPUT_DIR = ROOT / "output" / "pdf"
 UPLOAD_DIR = PRIMARY_OUTPUT_DIR / "upload"
 MIRROR_DIRS = (ROOT / "static" / "cv",)
-PORTRAIT = SOURCE_DIR / "assets" / "richard-hallett-portrait.jpg"
+PORTRAIT = SOURCE_DIR / "assets" / "richard-hallett-about-cv.png"
 
 MONO_REGULAR_PATH = (
     Path.home() / "Library" / "Fonts" / "JetBrainsMonoNerdFont-Regular.ttf"
 )
 MONO_BOLD_PATH = Path.home() / "Library" / "Fonts" / "JetBrainsMonoNerdFont-Bold.ttf"
+if not (MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists()):
+    MONO_REGULAR_PATH = Path("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf")
+    MONO_BOLD_PATH = Path("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Bold.ttf")
 MONO = "Courier"
 MONO_BOLD = "Courier-Bold"
 if MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists():
@@ -57,34 +61,12 @@ if MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists():
     MONO_BOLD = "CvMonoBold"
 
 VARIANTS = {
-    "customer-facing-engineer": {
-        "source": SOURCE_DIR / "customer-facing-engineer.md",
-        "label": "Customer-facing Software Engineer",
-        "body_font_size": 8.2,
-        "renderer": "site",
-        "descriptor": "Applied AI, Integrations & Automation",
-        "upload_name": "Richard-Hallett-CV",
-        "selection_note": "Fixed CV for customer-facing-engineering-2026-09-10-v1. Use across this focused cohort; other lanes do not override this choice.",
-        "page_break_before": (),
-        "public_mirror": False,
-        "facts": (("BASED / TRAVEL", "United Kingdom<br/>Willing to relocate"), ("ENGINEERING", "More than six years<br/>Product and client delivery"), ("APPROACH", "Discover, build, verify<br/>Clear communication")),
-    },
-    "ai-enablement-engineer": {
-        "source": SOURCE_DIR / "ai-enablement-engineer.md",
-        "label": "AI Automation & Enablement Engineer",
-        "descriptor": "Process discovery | workflow automation | applied AI | handoff",
-        "upload_name": "Richard Hallett",
-        "selection_note": (
-            "Primary lane. Internal AI, automation, enablement, and "
-            "forward-deployed roles."
-        ),
-        "page_break_before": ("Experience",),
-        "public_mirror": True,
-    },
     "forward-deployed-engineer": {
         "source": SOURCE_DIR / "forward-deployed-engineer.md",
         "label": "Forward Deployed Engineer",
+        "page_break_before": "Experience",
         "descriptor": "Product engineering | applied AI | client delivery",
+        "upload_name": "Richard Hallett",
         "selection_note": (
             "Primary lane. Forward deployed, solutions, and product "
             "engineering roles."
@@ -94,6 +76,7 @@ VARIANTS = {
     "applied-ai-engineer": {
         "source": SOURCE_DIR / "applied-ai-engineer.md",
         "label": "Applied AI Engineer",
+        "page_break_before": "Experience",
         "descriptor": "Production LLM systems | evaluation | safety",
         "upload_name": "Richard James Hallett",
         "selection_note": (
@@ -141,13 +124,14 @@ VARIANTS = {
     },
 }
 
-DEFAULT_VARIANT = "ai-enablement-engineer"
-
-ACCENT = colors.HexColor("#2D5B8E")
-INK = colors.HexColor("#16191D")
-MUTED = colors.HexColor("#586271")
-RULE = colors.HexColor("#D5D9DD")
-PAPER = colors.white
+# Canonical CV styling approved 2026-09-07, from the website light pages.
+ACCENT = colors.HexColor("#637c83")
+INK = colors.HexColor("#151817")
+MUTED = colors.HexColor("#4f514d")
+RULE = colors.HexColor("#c5c2b9")
+PAPER = colors.HexColor("#eee9df")
+MONO = MONO_BOLD = "Helvetica"
+SITE_STYLE = True
 
 LINK_DESCRIPTIONS = {
     "mailto:kai@oceanheart.ai": "Email Richard Hallett",
@@ -188,7 +172,7 @@ def inline_markup(value: str) -> str:
     escaped = html.escape(value, quote=False)
     escaped = re.sub(
         r"\[([^\]]+)\]\((https?://[^)]+)\)",
-        r'<a href="\2" color="#2D5B8E"><u>\1</u></a>',
+        r'<a href="\2" color="#637c83"><u>\1</u></a>',
         escaped,
     )
     escaped = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escaped)
@@ -210,7 +194,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=25,
             leading=27,
             textColor=INK,
-            alignment=TA_CENTER,
+            alignment=TA_LEFT,
             spaceAfter=4,
         ),
         "role": ParagraphStyle(
@@ -220,7 +204,6 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=12,
             leading=14,
             textColor=ACCENT,
-            alignment=TA_CENTER,
             spaceAfter=2,
         ),
         "descriptor": ParagraphStyle(
@@ -230,7 +213,6 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=7.3,
             leading=9,
             textColor=MUTED,
-            alignment=TA_CENTER,
             spaceAfter=5,
         ),
         "contact": ParagraphStyle(
@@ -240,7 +222,6 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=6.9,
             leading=8.5,
             textColor=MUTED,
-            alignment=TA_CENTER,
         ),
         "fact_label": ParagraphStyle(
             "CvFactLabel",
@@ -249,7 +230,6 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=6.2,
             leading=7.5,
             textColor=ACCENT,
-            alignment=TA_CENTER,
             spaceAfter=2,
         ),
         "fact_value": ParagraphStyle(
@@ -259,7 +239,6 @@ def make_styles() -> dict[str, ParagraphStyle]:
             fontSize=7.25,
             leading=8.8,
             textColor=INK,
-            alignment=TA_CENTER,
         ),
         "intro": ParagraphStyle(
             "CvIntro",
@@ -337,7 +316,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
 
 def parse_markdown(source: Path) -> CvContent:
     lines = source.read_text(encoding="utf-8").splitlines()
-    title = "Richard Hallett"
+    title = "Richard (Kai) Hallett"
     intro: list[str] = []
     sections: list[CvSection] = []
     current: CvSection | None = None
@@ -380,6 +359,7 @@ def parse_markdown(source: Path) -> CvContent:
 
 
 def contact_paragraph(styles: dict[str, ParagraphStyle]) -> Paragraph:
+    link_colour = ACCENT.hexval().replace("0x", "#")
     value = (
         '<a href="mailto:kai@oceanheart.ai" color="#2D5B8E">'
         "<u>kai@oceanheart.ai</u></a>"
@@ -393,7 +373,40 @@ def contact_paragraph(styles: dict[str, ParagraphStyle]) -> Paragraph:
         '<a href="https://oceanheart.ai" color="#2D5B8E">'
         "<u>oceanheart.ai</u></a>"
     )
-    return Paragraph(value, styles["contact"])
+    return Paragraph(value.replace("#2D5B8E", link_colour), styles["contact"])
+
+
+class SoftPortrait(Flowable):
+    """Round and feather the PDF image frame without altering the photo."""
+
+    def __init__(self, path: Path, width: float, height: float):
+        super().__init__()
+        self.path, self.width, self.height = path, width, height
+
+    def draw(self):
+        canvas = self.canv
+        canvas.saveState()
+        radius = 3 * mm
+        clip = canvas.beginPath()
+        clip.roundRect(0, 0, self.width, self.height, radius)
+        canvas.clipPath(clip, stroke=0, fill=0)
+        if SITE_STYLE:
+            canvas.setBlendMode("Multiply")
+        canvas.drawImage(str(self.path), 0, 0, self.width, self.height,
+                         preserveAspectRatio=True, anchor="c", mask="auto")
+        canvas.setBlendMode("Normal")
+        canvas.setStrokeColor(PAPER)
+        # Overlapping translucent contours feather the image into the white page.
+        steps = 24
+        feather = 1.2 * mm
+        for index in range(steps):
+            inset = feather * index / steps
+            canvas.setStrokeAlpha((1 - index / steps) ** 1.5)
+            canvas.setLineWidth(2 * feather / steps)
+            canvas.roundRect(inset, inset, self.width - 2 * inset,
+                             self.height - 2 * inset, max(radius - inset, 0),
+                             stroke=1, fill=0)
+        canvas.restoreState()
 
 
 def header_story(
@@ -402,19 +415,23 @@ def header_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
-    facts: tuple[tuple[str, str], ...] | None = None,
+    portrait: Path = PORTRAIT,
+    compact: bool = False,
 ) -> list:
-    if not PORTRAIT.exists():
-        raise FileNotFoundError(f"Missing portrait: {PORTRAIT}")
+    if not portrait.exists():
+        raise FileNotFoundError(f"Missing portrait: {portrait}")
 
-    photo_w = 33.9 * mm
-    photo_h = 45.2 * mm
-    photo = Image(str(PORTRAIT), width=photo_w, height=photo_h)
+    photo_w = (29.5 if compact else 33.9) * mm
+    photo_h = (39.333333 if compact else 45.2) * mm
+    photo = (
+        SoftPortrait(portrait, photo_w, photo_h) if compact else
+        Image(str(portrait), width=photo_w, height=photo_h, kind="proportional")
+    )
     photo_box = Table([[photo]], colWidths=[photo_w], rowHeights=[photo_h])
     photo_box.setStyle(
         TableStyle(
             [
-                ("BOX", (0, 0), (-1, -1), 0.65, RULE),
+                *(([("BOX", (0, 0), (-1, -1), 0.65, RULE)]) if not compact else []),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                 ("TOPPADDING", (0, 0), (-1, -1), 0),
@@ -451,15 +468,11 @@ def header_story(
         "CvDescriptorGrouped", parent=styles["descriptor"], spaceAfter=0
     )
 
-    if facts is None:
-        facts = (
-            (
-                "BASED / TRAVEL",
-                "United Kingdom<br/>Remote, hybrid, willing to relocate",
-            ),
-            ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
-            ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
-        )
+    facts = (
+        ("BASED / TRAVEL", "United Kingdom<br/>Remote, hybrid, willing to relocate"),
+        ("ENGINEERING", "More than six years<br/>Product and client delivery"),
+        ("APPROACH", "Discover, build, verify<br/>Clear communication"),
+    )
     fact_cells = [
         [
             Paragraph(fact_label, styles["fact_label"]),
@@ -529,6 +542,17 @@ def header_story(
 def section_heading(
     heading: str, styles: dict[str, ParagraphStyle], width: float
 ) -> Table:
+    if SITE_STYLE:
+        heading_table = Table([[Paragraph(html.escape(heading.upper()), styles["section"])]],
+                              colWidths=[width], hAlign="LEFT")
+        heading_table.setStyle(TableStyle([
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ]))
+        heading_table.keepWithNext = True
+        return heading_table
     marker = Table([[""]], colWidths=[4 * mm], rowHeights=[1.4 * mm])
     marker.setStyle(
         TableStyle(
@@ -557,6 +581,7 @@ def section_heading(
             ]
         )
     )
+    table.keepWithNext = True
     return table
 
 
@@ -621,12 +646,12 @@ def compact_sections(
             ]
         )
     )
-    return [
+    return [KeepTogether([
         Spacer(1, 2.5 * mm),
         section_heading("Education and technical", styles, width),
         Spacer(1, 3 * mm),
         columns,
-    ]
+    ])]
 
 
 def markdown_story(
@@ -635,11 +660,14 @@ def markdown_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
-    facts: tuple[tuple[str, str], ...] | None = None,
-    page_break_before: frozenset[str] = frozenset(),
+    portrait: Path = PORTRAIT,
+    compact: bool = False,
+    page_break_before: str | None = None,
 ) -> list:
     content = parse_markdown(source)
-    story: list = header_story(content, label, descriptor, styles, width, facts)
+    if SITE_STYLE:
+        content.title = "Richard Hallett"
+    story: list = header_story(content, label, descriptor, styles, width, portrait, compact)
 
     for paragraph in content.intro:
         story.append(Paragraph(inline_markup(paragraph), styles["intro"]))
@@ -647,10 +675,10 @@ def markdown_story(
     section_map = {section.heading: section for section in content.sections}
     skip: set[str] = set()
     for section in content.sections:
+        if section.heading == page_break_before:
+            story.append(PageBreak())
         if section.heading in skip:
             continue
-        if section.heading in page_break_before:
-            story.append(PageBreak())
         if section.heading == "Education" and "Technical" in section_map:
             story.extend(
                 compact_sections(
@@ -665,9 +693,9 @@ def markdown_story(
 
         story.extend(
             [
-                Spacer(1, 2.5 * mm),
+                Spacer(1, (1.0 if compact else 2.5) * mm),
                 section_heading(section.heading, styles, width),
-                Spacer(1, 2.6 * mm),
+                Spacer(1, (1.1 if compact else 2.6) * mm),
             ]
         )
         story.extend(block_flowables(section.blocks, styles))
@@ -677,11 +705,14 @@ def markdown_story(
 
 def draw_page(canvas, doc, label: str, styles: dict[str, ParagraphStyle]) -> None:
     canvas.saveState()
-    canvas.setFillColor(ACCENT)
-    canvas.rect(0, A4[1] - 3.2 * mm, A4[0], 3.2 * mm, stroke=0, fill=1)
+    canvas.setFillColor(PAPER)
+    canvas.rect(0, 0, A4[0], A4[1], stroke=0, fill=1)
+    if not SITE_STYLE:
+        canvas.setFillColor(ACCENT)
+        canvas.rect(0, A4[1] - 3.2 * mm, A4[0], 3.2 * mm, stroke=0, fill=1)
     canvas.setFillColor(MUTED)
     canvas.setFont(MONO, 6.2)
-    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD HALLETT")
+    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD HALLETT" if SITE_STYLE else "RICHARD (KAI) HALLETT")
     canvas.drawRightString(
         A4[0] - doc.rightMargin,
         7 * mm,
@@ -728,21 +759,11 @@ def add_accessible_pdf_metadata(path: Path) -> None:
 
 
 def build_variant(slug: str, config: dict[str, object]) -> Path:
-    if config.get("renderer") == "site":
-        from cv_site_style import build_variant as build_site_variant
-        site_config = dict(config)
-        breaks = config.get("page_break_before", ())
-        site_config["page_break_before"] = next(iter(breaks), None)
-        return build_site_variant(slug, site_config)
     source = config["source"]
     label = str(config["label"])
     descriptor = str(config["descriptor"])
     upload_name = config.get("upload_name")
     public_mirror = bool(config.get("public_mirror", False))
-    facts = config.get("facts")
-    if facts is not None and not isinstance(facts, tuple):
-        raise TypeError(f"Invalid facts for {slug}: expected tuple")
-    page_break_before = frozenset(config.get("page_break_before", ()))
     if not isinstance(source, Path) or not source.exists():
         raise FileNotFoundError(f"Missing canonical CV source: {source}")
 
@@ -750,12 +771,29 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
     filename = f"richard-hallett-{slug}.pdf"
     destination = PRIMARY_OUTPUT_DIR / filename
     styles = make_styles()
-    if "body_font_size" in config:
-        size = float(config["body_font_size"])
+    if SITE_STYLE:
+        styles["name"].fontName = "Helvetica"
+        styles["name"].fontSize = 27
+        styles["name"].leading = 29
+        styles["role"].fontName = "Helvetica"
+        styles["role"].textColor = MUTED
+        styles["section"].textColor = ACCENT
+        styles["section"].fontSize = 8.4
+    for key in ("intro", "entry", "body", "bullet"):
+        styles[key].alignment = TA_JUSTIFY
+    compact = bool(config.get("compact", True))
+    portrait = Path(config.get("portrait", PORTRAIT))
+    if compact:
         for key in ("intro", "entry", "body", "bullet"):
-            styles[key].fontSize = size
-            styles[key].leading = size * 1.35
-            styles[key].spaceAfter = 8
+            styles[key].fontSize = 8.7
+            styles[key].leading = 10.4
+            styles[key].spaceAfter = 4.2 if key != "bullet" else 1.3
+
+    if "body_font_size" in config:
+        for key in ("intro", "entry", "body", "bullet"):
+            styles[key].fontSize = float(config["body_font_size"])
+            styles[key].leading = float(config["body_font_size"]) * 1.18
+            styles[key].spaceAfter = 2.5
 
     with tempfile.NamedTemporaryFile(
         prefix=f"{slug}-", suffix=".pdf", dir=PRIMARY_OUTPUT_DIR, delete=False
@@ -774,15 +812,7 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             author="Richard Hallett",
             subject="Curriculum vitae",
         )
-        story = markdown_story(
-            source,
-            label,
-            descriptor,
-            styles,
-            document.width,
-            facts=facts,
-            page_break_before=page_break_before,
-        )
+        story = markdown_story(source, label, descriptor, styles, document.width, portrait, compact, config.get("page_break_before"))
         document.build(
             story,
             onFirstPage=lambda canvas, doc: draw_page(canvas, doc, label, styles),
@@ -803,80 +833,3 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
         shutil.copy2(destination, UPLOAD_DIR / f"{upload_name}.pdf")
 
     return destination
-
-
-def write_upload_map() -> Path:
-    """Write the file-to-role map for the role-neutral upload PDFs.
-
-    The upload filenames are deliberately role-neutral name variants, so this
-    map is the only place the file-to-role link is recorded. It is generated
-    from VARIANTS so it can never drift from what the build produces."""
-    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    rows = []
-    for config in VARIANTS.values():
-        upload_name = config.get("upload_name")
-        if not upload_name:
-            continue
-        source = Path(str(config["source"])).relative_to(ROOT)
-        rows.append(
-            f"| `{upload_name}.pdf` | {config['label']} | `{source}` | "
-            f"{config.get('selection_note', '')} |"
-        )
-    body = [
-        "# CV File Name Map",
-        "",
-        "GENERATED by `exports/build-cv.py`. Do not hand-edit; change the",
-        "`VARIANTS` table in that script and rebuild.",
-        "",
-        "## Read this before uploading a CV",
-        "",
-        "Upload the PDFs in this folder (`output/pdf/upload/`) to job "
-        "applications and ATS systems. Do not upload the role-named files in "
-        "`output/pdf/`: an ATS shows the filename to the recruiter, and a role "
-        "in the name (or a number) reads as scattergun applying.",
-        "",
-        "Each lane therefore uses a different personal-name variant. The role a "
-        "file targets is recorded only in the table below, never in the "
-        "filename. Do not rename these files to make them look consistent.",
-        "",
-        "| Upload file | Targets role | Source | When to use |",
-        "| --- | --- | --- | --- |",
-        *rows,
-        "",
-    ]
-    path = UPLOAD_DIR / "FILE-NAME-MAP.md"
-    path.write_text("\n".join(body), encoding="utf-8")
-    return path
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--variant",
-        choices=VARIANTS,
-        help="Build one CV variant without rebuilding the full set.",
-    )
-    args = parser.parse_args()
-
-    if args.variant:
-        path = build_variant(args.variant, VARIANTS[args.variant])
-        if args.variant == DEFAULT_VARIANT:
-            shutil.copy2(path, ROOT / "static" / "richard-hallett-cv.pdf")
-        print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
-        return
-
-    built = [
-        build_variant(slug, config)
-        for slug, config in VARIANTS.items()
-        if not config.get("preview_only")
-    ]
-    default_cv = PRIMARY_OUTPUT_DIR / f"richard-hallett-{DEFAULT_VARIANT}.pdf"
-    shutil.copy2(default_cv, ROOT / "static" / "richard-hallett-cv.pdf")
-    map_path = write_upload_map()
-    for path in built:
-        print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
-    print(f"wrote {map_path.relative_to(ROOT)}")
-
-
-if __name__ == "__main__":
-    main()

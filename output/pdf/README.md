@@ -16,3 +16,7 @@ drift.
 The source files live in `career/cv/`. Rebuild everything (PDFs, the upload
 copies, and the map) with `uv run exports/build-cv.py`; never edit a generated
 PDF directly.
+
+## Focused cohort - 10 September 2026
+
+Use `upload/Richard-Hallett-CV.pdf` for customer-facing-engineering-2026-09-10-v1. The frozen copy and SHA-256 live in `/home/mrkai/vault/career/application-campaigns/2026-09-10-customer-facing-engineering/campaign-manifest-v1.json`. Rebuilds can change PDF metadata and hash; use the frozen campaign bytes throughout this cohort. Other lane mappings do not override this selection.

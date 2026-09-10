@@ -11,6 +11,7 @@ Each lane therefore uses a different personal-name variant. The role a file targ
 
 | Upload file | Targets role | Source | When to use |
 | --- | --- | --- | --- |
+| `Richard-Hallett-CV.pdf` | Customer-facing Software Engineer | `career/cv/customer-facing-engineer.md` | Fixed CV for customer-facing-engineering-2026-09-10-v1. Use across this focused cohort; other lanes do not override this choice. |
 | `Richard Hallett.pdf` | AI Automation & Enablement Engineer | `career/cv/ai-enablement-engineer.md` | Primary lane. Internal AI, automation, enablement, and forward-deployed roles. |
 | `Richard James Hallett.pdf` | Applied AI Engineer | `career/cv/applied-ai-engineer.md` | Primary lane. Applied AI and production LLM roles, regulated and safety angle. |
 | `Rick Hallett.pdf` | Frontend Developer | `career/cv/full-complement/frontend-developer.md` | Full complement. Frontend, React, and UI roles. |
