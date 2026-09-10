@@ -256,16 +256,7 @@ export const create = mutation({
   handler: (ctx, args) => createTask(ctx, args),
 });
 
-export const setCompleted = mutation({
-  args: {
-    tenantId: v.id("tenants"),
-    taskId: v.id("tasks"),
-    completed: v.boolean(),
-    // Existing clients did not send this. They remain valid, but use the
-    // former last-write-wins rule; the write still advances revision.
-    expectedRevision: v.optional(v.number()),
-  },
-  handler: async (ctx, { tenantId, taskId, completed, expectedRevision: expected }) => {
+export async function setTaskCompleted(ctx: MutationCtx, { tenantId, taskId, completed, expectedRevision: expected }: {tenantId:Id<"tenants">;taskId:Id<"tasks">;completed:boolean;expectedRevision?:number}) {
     await requireMember(ctx, tenantId, true);
     if (expected !== undefined) expectedRevision(expected);
     const task = await ctx.db.get(taskId);
@@ -279,7 +270,18 @@ export const setCompleted = mutation({
       revision: (task.revision ?? 0) + 1,
     });
     return taskId;
+}
+
+export const setCompleted = mutation({
+  args: {
+    tenantId: v.id("tenants"),
+    taskId: v.id("tasks"),
+    completed: v.boolean(),
+    // Existing clients did not send this. They remain valid, but use the
+    // former last-write-wins rule; the write still advances revision.
+    expectedRevision: v.optional(v.number()),
   },
+  handler: (ctx, args) => setTaskCompleted(ctx, args),
 });
 
 export const update = mutation({
