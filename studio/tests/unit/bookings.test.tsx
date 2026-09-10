@@ -22,6 +22,8 @@ import type {
   Service,
   TenantId,
 } from "../../src/components/practice/api";
+import { practiceApi } from "../../src/components/practice/api";
+import { useAction, useQuery } from "convex/react";
 vi.mock("convex/react", () => ({
   useAction: vi.fn(() => vi.fn()),
   useMutation: vi.fn(() => vi.fn()),
@@ -294,6 +296,24 @@ it("offers test Checkout only for an eligible booking and renders durable paymen
   );
   expect(document.querySelector("[data-payment-status='paid']")).toHaveTextContent(
     "Payment · Paid · £62.50 · Reconciliation required",
+  );
+  expect(
+    screen.queryByRole("button", { name: /test payment|test checkout/i }),
+  ).not.toBeInTheDocument();
+});
+
+it("does not expose test Checkout when the server reports payments disabled", () => {
+  vi.mocked(useQuery).mockImplementation((...args) =>
+    args[0] === practiceApi.paymentAvailability
+      ? ({ enabled: false } as never)
+      : ({ items: [booking], hasMore: false, limit: 200 } as never),
+  );
+  vi.mocked(useAction).mockReturnValue(vi.fn() as never);
+  render(
+    <PracticeBookings
+      tenantId={"practice" as TenantId}
+      timeZone="Europe/London"
+    />,
   );
   expect(
     screen.queryByRole("button", { name: /test payment|test checkout/i }),

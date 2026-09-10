@@ -160,6 +160,9 @@ function BookingAgenda({
     practiceApi.bookings,
     range ? { tenantId, ...range } : "skip",
   );
+  const paymentAvailability = useQuery(practiceApi.paymentAvailability, {
+    tenantId,
+  });
   const create = useMutation(practiceApi.createBooking),
     reschedule = useMutation(practiceApi.rescheduleBooking),
     cancel = useMutation(practiceApi.cancelBooking),
@@ -260,12 +263,15 @@ function BookingAgenda({
                   expectedRevision: booking.revision,
                 })
               }
-              startPayment={(requestKey) =>
-                startCheckout({
-                  tenantId,
-                  bookingId: booking._id,
-                  requestKey,
-                })
+              startPayment={
+                paymentAvailability?.enabled
+                  ? (requestKey) =>
+                      startCheckout({
+                        tenantId,
+                        bookingId: booking._id,
+                        requestKey,
+                      })
+                  : undefined
               }
             />
           ))}

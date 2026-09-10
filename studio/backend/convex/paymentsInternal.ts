@@ -131,6 +131,13 @@ export const reserve = internalMutation({
   },
 });
 
+export const authorizeStart = internalQuery({
+  args: { tenantId: v.id("tenants") },
+  handler: async (ctx, args) => {
+    await requireMember(ctx, args.tenantId, true);
+  },
+});
+
 export const current = internalQuery({
   args: {
     tenantId: v.id("tenants"),

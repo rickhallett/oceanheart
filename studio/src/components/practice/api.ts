@@ -93,6 +93,11 @@ export const practiceApi = {
     },
     StartCheckoutResult
   >("payments:startCheckout"),
+  paymentAvailability: makeFunctionReference<
+    "query",
+    { tenantId: TenantId },
+    { enabled: boolean }
+  >("payments:availability"),
   todayTasks: makeFunctionReference<
     "query",
     { tenantId: TenantId; refreshKey: number },
