@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useSoftTransition, useTransitionDelay } from "./use-soft-transition";
 
 const views = [
   {
@@ -37,10 +38,12 @@ const views = [
   },
 ];
 
-export function ProductExplorer() {
+export function ProductExplorer({ gentleMotion = false }: { gentleMotion?: boolean }) {
   const [selected, setSelected] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const transition = useTransitionDelay(gentleMotion);
   const view = views[selected];
+  const panelMotion = useSoftTransition(selected, gentleMotion);
   return (
     <div className="studio-explorer">
       <div className="studio-view-tabs" role="tablist" aria-label="Explore Studio views">
@@ -55,7 +58,7 @@ export function ProductExplorer() {
             aria-selected={selected === index}
             aria-controls={`view-${item.id}`}
             tabIndex={selected === index ? 0 : -1}
-            onClick={() => setSelected(index)}
+            onClick={() => transition(() => setSelected(index))}
             onKeyDown={(event) => {
               const key = event.key;
               if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(key)) return;
@@ -66,7 +69,7 @@ export function ProductExplorer() {
                   : key === "End"
                     ? views.length - 1
                     : (index + (key === "ArrowRight" ? 1 : -1) + views.length) % views.length;
-              setSelected(next);
+              transition(() => setSelected(next), true);
               tabs.current[next]?.focus();
             }}
           >
@@ -75,6 +78,7 @@ export function ProductExplorer() {
         ))}
       </div>
       <div
+        ref={panelMotion}
         role="tabpanel"
         id={`view-${view.id}`}
         aria-labelledby={`tab-${view.id}`}

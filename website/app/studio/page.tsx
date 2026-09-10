@@ -1,284 +1,88 @@
 import type { Metadata } from "next";
 import { Footer, SiteNav } from "../components/editorial";
 import { ProductExplorer } from "./product-explorer";
+import { SmallArrow } from "./possibilities/brand-marks";
+import { ConnectionExplorer, WorkflowExplorer } from "./possibilities/workflow-explorer";
 import "./studio.css";
+import "./possibilities/possibilities.css";
 
 export const metadata: Metadata = {
-  title: "Oceanheart Studio — practice software shaped around your work",
-  description:
-    "Practice management for independent practitioners, with direct collaboration to shape useful workflows, integrations and client experiences. Explore the public demo.",
+  title: "Studio + Oceanheart | More room for the work that matters",
+  description: "Practice software, practical AI and a real person to shape it with you. Explore how your whole working setup could become more human.",
   alternates: { canonical: "https://www.oceanheart.ai/studio" },
-  openGraph: {
-    title: "Oceanheart Studio — practice software shaped around your work",
-    description:
-      "A shared practice-management foundation and direct collaboration to make the working day more manageable.",
-    url: "https://www.oceanheart.ai/studio",
-    images: [
-      {
-        url: "/images/studio/precision-today.webp",
-        width: 1440,
-        height: 1000,
-        alt: "Oceanheart Studio Today, with fictional demo practice data",
-      },
-    ],
-  },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Studio + Oceanheart | More room for the work that matters", url: "https://www.oceanheart.ai/studio" },
 };
-const demoUrl = "https://studio.oceanheart.ai/app?demo=1";
-const appUrl = "https://studio.oceanheart.ai/app";
-const contact = "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20Studio";
 
-export default function Page() {
-  return (
-    <main id="top" className="studio-page">
-      <SiteNav />
-      <nav className="studio-product-nav" aria-label="Studio page">
-        <a href="#top" className="studio-product-name">
-          Studio
-        </a>
-        <div>
-          <a href="#product">Explore</a>
-          <a href="#working-day">A working day</a>
-          <a href="#direction">Working together</a>
-          <a href={appUrl}>Studio sign-in</a>
-        </div>
-      </nav>
+const contact = "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20my%20practice";
+const demo = "https://studio.oceanheart.ai/app?demo=1";
+const possibilities = [
+  { title: "Turn a workaround into a useful little tool", need: "“I keep a spreadsheet because nothing else quite does this.”", text: "Show Rick what the spreadsheet helps you do. It might become a small screen, a shared view or a workflow around Studio, shaped around the real need and maintained as your practice changes." },
+  { title: "Give people more ways to participate", need: "“The form is simple to me. It’s a barrier for them.”", text: "Explore a shorter journey, clearer language, larger text, audio or a supported route through the process. Build with the people who need the alternative and check whether it helps them take the next step." },
+  { title: "Remember the small things you promised", need: "“I said I’d send it. Then the day happened.”", text: "An assistant could help surface unfinished administrative commitments from the records you authorise it to use. Each suggestion would show where it came from, with a useful next action and room to correct it." },
+  { title: "Rehearse a change before people depend on it", need: "“What happens if someone joins late, or a payment fails?”", text: "Try a new service or workflow with fictional cases. Walk through the awkward exceptions together, see confusing messages and repair the gaps before inviting real participants." },
+  { title: "Help a small team hold the work together", need: "“It only works because I know where everything is.”", text: "Create a practice-specific guide, clear handoffs and shared administrative views. Your knowledge becomes something a colleague can use, with access appropriate to their role." },
+  { title: "Keep changing as life changes", need: "“The setup made sense last year. My work is different now.”", text: "Review the way the tools serve you as your services, capacity or team change. Adapt the parts that have become awkward and keep useful foundations in place. A working relationship can continue after the first build." },
+  { title: "Find support beyond your own practice", need: "“I’d like to work with other people, but organising it becomes another job.”", text: "Explore shared resources, practical mutual support or a referral process with a trusted circle of practitioners. Build around the relationships and agree what can be shared. Useful ideas can travel between practices while client information stays private." },
+];
 
-      <section className="studio-hero studio-wide" aria-labelledby="studio-title">
-        <h1 id="studio-title">
-          Practice software
-          <br />
-          <span>shaped around the way you work.</span>
-        </h1>
-        <p className="studio-lead">
-          Bring enquiries, appointments and follow-ups into one place. Work directly with the maker
-          to shape the parts that matter to your practice.
-        </p>
-        <div className="studio-actions">
-          <a className="studio-button" href={demoUrl}>
-            Explore the demo
-          </a>
-          <a className="studio-link" href={contact}>
-            Talk to Rick
-          </a>
-        </div>
-        <p className="studio-hero-context">
-          Studio is being developed as a maintained practice-management product for independent
-          practitioners and small practices. Explore the fictional demo without signing in.
-        </p>
-        <figure className="studio-hero-screen">
-          <picture>
-            <source
-              media="(max-width: 600px)"
-              srcSet="/images/studio/precision-today-mobile.webp"
-              width="390"
-              height="900"
-            />
-            <img
-              src="/images/studio/precision-today.webp"
-              width="1440"
-              height="1000"
-              alt="Studio Today showing fictional appointments, tasks and practice activity"
-              loading="eager"
-            />
-          </picture>
-          <figcaption>
-            A day in Studio, illustrated with a fictional practice.
-          </figcaption>
-        </figure>
-      </section>
+export default function PossibilitiesPage() {
+  return <main className="studio-page possibilities-page" id="possibilities-top">
+    <SiteNav />
+    <nav className="studio-product-nav" aria-label="Studio possibilities">
+      <a className="studio-product-name" href="#possibilities-top">Studio <span className="p-nav-plus">+ Oceanheart</span></a>
+      <div><a href="#everyday">Everyday possibilities</a><a href="#connections">Your tools</a><a href="#vision">The bigger picture</a><a href={contact}>Talk to Rick</a></div>
+    </nav>
 
-      <section
-        className="studio-introduction studio-wide"
-        aria-labelledby="studio-introduction-title"
-      >
-        <h2 id="studio-introduction-title">
-          For the person doing the work.
-          <br />
-          And running the practice.
-        </h2>
-        <div className="studio-reading studio-reading-offset">
-          <p>
-            A new enquiry needs a reply. An appointment changes. Someone is waiting to hear what
-            happens next. When the details are spread across inboxes, calendars and notes, keeping
-            the practice moving becomes another job.
-          </p>
-          <p>
-            Studio’s purpose is less fragmented admin, fewer dropped enquiries and clearer handoffs.
-            A place to see what needs attention and keep the thread of a client relationship, so the
-            working day feels more manageable.
-          </p>
-          <p>
-            The approach combines a shared product with direct collaboration. For independent
-            therapists, coaches, bodyworkers and small practices, that means a route to discuss the
-            workflows, integrations and client experiences that need a better fit. Each proposed
-            change starts with understanding the work and agreeing a useful, maintainable scope.
-          </p>
-        </div>
-      </section>
+    <section className="p-hero studio-wide" aria-labelledby="possibilities-title">
+      <div className="p-hero-copy">
 
-      <section
-        id="product"
-        className="studio-product studio-wide"
-        aria-labelledby="studio-product-title"
-      >
-        <h2 id="studio-product-title">Look around the workspace.</h2>
-        <p className="studio-reading">
-          Choose a view to see how the practice fits together. These screenshots come from the
-          browser demo; the links beneath them open the same area for you to explore.
-        </p>
-        <ProductExplorer />
-      </section>
+        <h1 id="possibilities-title">Put the power<br />to change things<br /><span>in your hands.</span></h1>
+        <p className="studio-lead">Keep the thread with clients. Make that new group happen. Leave more room for life.</p>
+        <p className="p-hero-description">Studio brings clients, enquiries, appointments and tasks together. Work with Rick at Oceanheart to adapt it, connect your everyday tools and build the things your particular practice needs.</p>
+        <div className="studio-actions"><a className="studio-button" href="#everyday">Free your mind... <SmallArrow down /></a><a className="studio-link" href={demo}>Explore Studio</a></div>
+        <p className="p-small p-hero-note">For independent therapists, coaches, bodyworkers and small practices.</p>
+      </div>
+      <figure className="p-hero-art"><img src="/images/studio-possibilities/hero-selected-refined.png" width="1254" height="1254" alt="Enterprise-grade. Human-sized. A hand holding a miniature technological structure, recreated from the approved Oceanheart artwork in a light palette." fetchPriority="high" /></figure>
+    </section>
 
-      <section
-        id="working-day"
-        className="studio-working-day studio-wide"
-        aria-labelledby="studio-working-day-title"
-      >
-        <div className="studio-story-heading">
-          <h2 id="studio-working-day-title">
-            An enquiry becomes an appointment.
-            <br />
-            The relationship continues.
-          </h2>
-          <p>Follow the work through Studio.</p>
-        </div>
-        <ol className="studio-story">
-          <li>
-            <h3>Start with the conversation.</h3>
-            <p>
-              A prospective client arrives with a question, a hope, or a little uncertainty. Keep
-              the enquiry visible, prepare a reply and keep the conversation connected to what
-              happens next.
-            </p>
-          </li>
-          <li>
-            <h3>Make the appointment around the person.</h3>
-            <p>
-              A client record gives the relationship a stable place. Services describe the work you
-              offer, including duration and price. A booking brings that client, service and time
-              together, so an appointment belongs to the same workspace as the rest of the practice.
-            </p>
-          </li>
-          <li>
-            <h3>Remember what follows.</h3>
-            <p>
-              Capture a task, give it a due date, and connect it to a client. Complete it when the
-              work is done. Today brings appointments and tasks back into view, so the small
-              commitments between sessions remain part of the working day.
-            </p>
-          </li>
-        </ol>
-        <div className="studio-detail-note">
-          <h3>A shared foundation, with room to adapt.</h3>
-          <p>
-            Clients, services, bookings, tasks, Today, enquiries and settings form the current
-            foundation. An intake process, booking rule or client-facing form could be an area for
-            collaboration, shaped around the way your practice works.
-          </p>
-          <a className="studio-link" href={appUrl}>
-            Studio sign-in
-          </a>
-        </div>
-      </section>
+    <section className="p-foundation studio-wide" aria-labelledby="foundation-title">
+      <div className="p-foundation-statement"><h2 id="foundation-title">Good software.<br />Someone on your side.<br /><span>A way to make it yours.</span></h2><p>Studio gives your practice a shared foundation. Oceanheart brings the engineering and personal support to shape what happens around it.</p></div>
+      <div className="p-foundation-combination"><img className="p-foundation-art" src="/images/studio-possibilities/studio-oceanheart.png" alt="Studio: clients, enquiries, appointments and tasks, brought together. Plus Oceanheart: work directly with Rick to adapt, connect and build." width="1536" height="1024" loading="lazy" /></div>
+    </section>
 
-      <section className="studio-release studio-wide" aria-labelledby="studio-release-title">
-        <h2 id="studio-release-title">
-          Where Studio stands.
-          <br />
-          What comes next.
-        </h2>
-        <dl className="studio-release-list">
-          <div>
-            <dt>The current application</dt>
-            <dd>
-              Clients, services, bookings, tasks, Today, enquiries and settings are part of the
-              practice workspace. Follow an enquiry, arrange an appointment and keep track of the
-              work between sessions, all in one place.
-            </dd>
-          </div>
-          <div>
-            <dt>The public browser demo</dt>
-            <dd>
-              Explore a fictional practice without an account. Look through the working day,
-              open a conversation and see how the pieces fit together.
-            </dd>
-          </div>
-          <div>
-            <dt>On the horizon</dt>
-            <dd>
-              Payments, website publishing, a client portal and practical assistant tools are part
-              of the roadmap. Development will follow the needs of the practices we work with.
-            </dd>
-          </div>
-        </dl>
-      </section>
+    <section id="everyday" className="p-section studio-wide" aria-labelledby="everyday-title">
+      <div className="p-section-intro"><h2 id="everyday-title">Recognise any of this?</h2><p>Choose a familiar difficulty. Walk through how we could change the work around it.</p></div>
+      <WorkflowExplorer />
+    </section>
 
-      <section
-        id="direction"
-        className="studio-direction studio-wide"
-        aria-labelledby="studio-direction-title"
-      >
-        <h2 id="studio-direction-title">
-          Your work shapes the change.
-          <br />
-          <span>We follow it through.</span>
-        </h2>
-        <div className="studio-direction-prose studio-reading">
-          <p>
-            Work directly with Rick Hallett, who brings clinical experience, hands-on engineering
-            and customer-facing delivery. That background helps connect the human context of a
-            practice with the decisions needed to build useful software. Understanding your
-            particular practice still starts with listening, rather than assuming it works like
-            someone else’s.
-          </p>
-          <p>
-            Show a recent awkward enquiry, booking or handoff, including the tools and workarounds
-            around it. Together, identify what would make it better and agree a useful change. The
-            answer might be a setting, a shared product improvement or a scoped adaptation.
-          </p>
-          <h3>Build with feedback. Check the whole journey.</h3>
-          <p>
-            Use real working examples and early versions to shape the result. Before calling it
-            finished, verify the intended journey in its working environment and check that you can
-            use it. Agree how the change will be maintained, its dependencies and the support it
-            needs through future updates.
-          </p>
-          <h3>Responsive development, with clear responsibility.</h3>
-          <p>
-            AI development tools help Rick investigate problems, explore alternatives and build
-            improvements. Responsibility for the result stays with Oceanheart. You do not need to
-            adopt AI in your client relationships to benefit from this way of developing software.
-          </p>
-          <p>
-            The ambition is a dependable common foundation that can adapt where it matters: enquiry
-            journeys, communications, booking arrangements and the experience clients see. Each
-            opportunity needs its own scope and maintenance agreement. Useful lessons can improve
-            the shared product while preserving differences that serve a practice well.
-          </p>
-        </div>
-      </section>
+    <section id="connections" className="p-connections" aria-labelledby="connections-title"><div className="studio-wide">
+      <div className="p-section-intro"><h2 id="connections-title">Your practice lives<br />across more than one app.</h2><p>Keep the tools that serve you. We can build the connections that help them work together, and small additions for the bits they leave you doing by hand.</p></div>
+      <ConnectionExplorer />
+    </div></section>
 
-      <section className="studio-closing studio-wide" aria-labelledby="studio-closing-title">
-        <h2 id="studio-closing-title">
-          What gets in the way
-          <br />
-          of your working day?
-        </h2>
-        <p>
-          Explore the demo, then bring a recurring difficulty to a conversation with Rick. An
-          enquiry that loses its thread, a booking that takes too many steps, a handoff that depends
-          on memory. Start with the work you would like to make easier.
-        </p>
-        <div className="studio-actions">
-          <a className="studio-button" href={demoUrl}>
-            Explore the demo
-          </a>
-          <a className="studio-link" href={contact}>
-            Talk to Rick about Studio
-          </a>
-        </div>
-      </section>
-      <Footer />
-    </main>
-  );
+    <section id="workspace" className="p-section studio-wide" aria-labelledby="workspace-title">
+      <div className="p-workspace-heading"><div><h2 id="workspace-title">Meet Studio.</h2></div><p>See the current workspace through a fictional practice. Open the demo to try it without an account.</p></div>
+      <ProductExplorer gentleMotion />
+      <div className="p-status"><div><span className="p-status-dot" /><h3>Explore now</h3><p>Today, clients, services, bookings, enquiries and tasks in the public browser demo.</p></div><div><span className="p-status-dot outlined" /><h3>Shape with Rick</h3><p>Discuss a workflow, integration or small tool. Agree what can be built, how it works and how it will be maintained.</p></div><div><span className="p-status-dot pale" /><h3>Develop together</h3><p>Assistant tools, client experiences and deeper adaptations, guided by the needs of the practices involved.</p></div></div>
+    </section>
+
+    <section id="vision" className="p-vision" aria-labelledby="vision-title"><div className="studio-wide p-vision-grid">
+      <div><h2 id="vision-title">The tide is turning.<br /><span>You deserve<br />a hand in it.</span></h2><p>Software is becoming easier to create and reshape. An idea that once needed a large budget or a whole development team can become something we explore together.</p><p>That opens up a different question: what would help you live and work better?</p><p>A resource someone can actually use. A group you finally have the support to run. A working week that leaves something of you at the end of it.</p><p>Oceanheart brings practical AI engineering into that conversation. We can start with a need that is specific to you, try a small working answer and develop it with the people it affects.</p><div className="p-vision-line">More say in your tools.<br />More room for your work.</div></div>
+      <figure><a href="/images/studio-possibilities/tide-turning.png" aria-label="Open The tide is turning campaign artwork"><img src="/images/studio-possibilities/tide-turning.png" width="1054" height="1492" loading="lazy" alt="The tide is turning: an engraved wave of digital threads above a small independent coastal business." /></a></figure>
+    </div></section>
+
+    <section className="p-section studio-wide" aria-labelledby="more-title">
+      <div className="p-section-intro"><h2 id="more-title">What have you wished<br />your tools could do?</h2><p>A need can be particular, personal or hard to put into technical words. Bring the example. We can work out the shape together.</p></div>
+      <div className="p-possibility-list">{possibilities.map((item, index) => <details key={item.title}><summary><span className="p-list-number">0{index + 1}</span><h3>{item.title}</h3><span className="p-expand" aria-hidden="true">+</span></summary><div className="p-expanded"><p className="p-need-quote">{item.need}</p><p>{item.text}</p></div></details>)}</div>
+    </section>
+
+    <section id="together" className="p-together studio-wide" aria-labelledby="together-title">
+      <figure className="p-portrait"><img src="/images/rick-portrait-looking-left-v2.png" alt="Rick Hallett" width="1128" height="1938" loading="lazy" /></figure>
+      <div><h2 id="together-title">Show me where<br />it gets difficult.</h2><p>I’m Rick. My background brings together fifteen years in clinical practice, software engineering, and a life spent around contemplative and wellness communities.</p><p>I work with AI every day to investigate, prototype and build. That means we can explore ideas in working software, then refine them around what you learn by using them.</p><p>You work with the person who can understand the difficulty, make the change and help keep it working.</p><ol className="p-collaboration"><li><strong>Bring one real example.</strong><span>Include the workarounds and the tools you already use.</span></li><li><strong>Try a useful change.</strong><span>Agree the scope. Explore an early version.</span></li><li><strong>Make it part of the working day.</strong><span>Check the whole journey and agree ongoing support as things evolve.</span></li></ol></div>
+    </section>
+
+    <section className="p-closing studio-wide" aria-labelledby="closing-title"><h2 id="closing-title">You don’t have to<br /><span>figure it all out alone.</span></h2><p>Start with something that takes too much effort, an idea you haven’t been able to try. I can help you think bigger.</p><div className="studio-actions"><a className="studio-button" href={contact}>Have a free first conversation <SmallArrow /></a><a className="studio-link" href={demo}>Try the Studio demo</a></div><a className="p-email" href="mailto:rick@oceanheart.ai">rick@oceanheart.ai</a></section>
+    <Footer />
+  </main>;
 }
