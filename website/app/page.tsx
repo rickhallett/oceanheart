@@ -22,16 +22,16 @@ export default function Home() {
    <div className="connected-practices"><CardArt kind="currents" /><h2>A life of inquiry. A practice with people.</h2><p>I’m Rick. My background is in psychology and CBT, alongside a longstanding contemplative practice. My own inquiry into identity, experience and freedom continues to shape how I work.</p><p>You may have valued therapy and be curious about working more with the body. Or you may be looking for a different way in, with someone whose background includes NHS and private therapeutic practice.</p><Link href="/about" className="text-link">Meet Rick <ArrowIcon /></Link></div>
   </section>
   <section className="studio-section" aria-labelledby="studio-title">
-   <p className="eyebrow">Oceanheart Studio · In development</p>
+   <p className="eyebrow">Oceanheart Studio · Explore the product</p>
    <h2 id="studio-title">A little more room for the work.</h2>
    <p>Studio is a workspace being built for independent practitioners, bringing enquiries, bookings, clients, services and tasks together in one quiet place.</p>
    <figure className="studio-figure">
-    <img src="/images/studio/today-prototype.png" alt="Prototype of the Studio workspace Today view, showing a sample practice day with fictional bookings and tasks" width="1440" height="1148" loading="lazy" />
-    <figcaption>Development prototype · fictional sample data</figcaption>
+    <img src="/images/studio/precision-today.webp" alt="Precision Studio Today screen showing a fictional practice with appointments and tasks" width="1440" height="1000" loading="lazy" />
+    <figcaption>Precision Studio browser demo · fictional sample data</figcaption>
    </figure>
    <div className="studio-actions">
-    <a className="studio-button" href="https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app/app">View the development demo <ArrowIcon direction="right" /></a>
-    <Link className="text-link" href="/studio">More about Studio <ArrowIcon direction="right" /></Link>
+    <a className="studio-button" href="https://studio.oceanheart.ai/app?demo=1">Explore the demo <ArrowIcon direction="right" /></a>
+    <Link className="text-link" href="/studio">Meet Oceanheart Studio <ArrowIcon direction="right" /></Link>
    </div>
    <p className="studio-note">The demo runs with fictional sample data. Email and payments inside the demo are simulated.</p>
   </section>
