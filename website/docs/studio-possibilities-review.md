@@ -76,3 +76,7 @@ Replaced the foundation circles with ImageGen artwork using the page palette (#2
 Six ImageGen edits of the approved light poster isolate the palm, building and flame effects and explore text placement: image only, title above, caption below, text alongside, split title and opposite corners. Originals are preserved; no main-page hero selection changed. Comparison route: `/studio/possibilities/artwork`, marked noindex. All six assets verified loaded in the local browser; build passed. Files: `public/images/studio-possibilities/hero-study-1.png` through `hero-study-6.png`.
 
 Selected hero: Kai chose study 5 (split title, generated source `exec-bdbb89f3-5d13-4766-b711-c3fe3e27de23.png`). Applied the exact asset to the main variant, retaining the requested 90% opacity, with intrinsic square dimensions. Verified in the local browser.
+
+## Gentle motion
+
+Scenario, step, connection and product changes use a cancellable 240ms fade/4px lift without remounting controls or live regions. Reduced-motion preference suppresses these effects. Buttons and links gently transition their visual states; expandable sections animate opening, with height transitions in supporting browsers. Product motion is opt-in for this variant. TypeScript and production build passed. Live browser motion verification was unavailable in this tool session.

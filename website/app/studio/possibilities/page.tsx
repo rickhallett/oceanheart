@@ -61,7 +61,7 @@ export default function PossibilitiesPage() {
 
     <section id="workspace" className="p-section studio-wide" aria-labelledby="workspace-title">
       <div className="p-workspace-heading"><div><h2 id="workspace-title">Meet Studio.</h2></div><p>See the current workspace through a fictional practice. Open the demo to try it without an account.</p></div>
-      <ProductExplorer />
+      <ProductExplorer gentleMotion />
       <div className="p-status"><div><span className="p-status-dot" /><h3>Explore now</h3><p>Today, clients, services, bookings, enquiries and tasks in the public browser demo.</p></div><div><span className="p-status-dot outlined" /><h3>Shape with Rick</h3><p>Discuss a workflow, integration or small tool. Agree what can be built, how it works and how it will be maintained.</p></div><div><span className="p-status-dot pale" /><h3>Develop together</h3><p>Assistant tools, client experiences and deeper adaptations, guided by the needs of the practices involved.</p></div></div>
     </section>
 

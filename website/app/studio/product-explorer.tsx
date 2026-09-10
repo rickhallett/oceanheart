@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useSoftTransition } from "./use-soft-transition";
 
 const views = [
   {
@@ -37,10 +38,11 @@ const views = [
   },
 ];
 
-export function ProductExplorer() {
+export function ProductExplorer({ gentleMotion = false }: { gentleMotion?: boolean }) {
   const [selected, setSelected] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const view = views[selected];
+  const panelMotion = useSoftTransition(selected, gentleMotion);
   return (
     <div className="studio-explorer">
       <div className="studio-view-tabs" role="tablist" aria-label="Explore Studio views">
@@ -75,6 +77,7 @@ export function ProductExplorer() {
         ))}
       </div>
       <div
+        ref={panelMotion}
         role="tabpanel"
         id={`view-${view.id}`}
         aria-labelledby={`tab-${view.id}`}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useSoftTransition } from "../use-soft-transition";
 import { BrandMark } from "./brand-marks";
 import { journeys } from "./journeys";
 
@@ -8,6 +9,8 @@ export function WorkflowExplorer() {
   const [selected, setSelected] = useState(0);
   const [step, setStep] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const scenarioMotion = useSoftTransition(selected);
+  const stepMotion = useSoftTransition(step);
   const journey = journeys[selected];
   const current = journey.steps[step];
   function select(index: number) { setSelected(index); setStep(0); }
@@ -25,7 +28,7 @@ export function WorkflowExplorer() {
         <span className="scenario-number">0{index + 1}</span><span>{item.label}</span>
       </button>)}
     </div>
-    <div className="possibilities-journey" role="tabpanel" tabIndex={0} id="selected-journey" aria-labelledby={`scenario-${journey.id}`}>
+    <div ref={scenarioMotion} className="possibilities-journey" role="tabpanel" tabIndex={0} id="selected-journey" aria-labelledby={`scenario-${journey.id}`}>
 
       <h3 className="journey-quote">“{journey.quote}”</h3>
       <div className="journey-comparison">
@@ -37,7 +40,7 @@ export function WorkflowExplorer() {
         <ol className="journey-steps" aria-label="Example steps">
           {journey.steps.map((item, index) => <li key={item.title}><button aria-pressed={step === index} onClick={() => setStep(index)}><span>{index + 1}</span>{item.title}</button></li>)}
         </ol>
-        <div className="journey-step-content" aria-live="polite" aria-atomic="true">
+        <div ref={stepMotion} className="journey-step-content" aria-live="polite" aria-atomic="true">
           <p>{current.detail}</p>
           <div className="journey-example-note"><h4>{current.screen}</h4><p>{current.note}</p><div className="example-action"><span aria-hidden="true">◌</span>{current.action}</div></div>
         </div>
@@ -61,9 +64,10 @@ const connections = [
 export function ConnectionExplorer() {
   const [selected, setSelected] = useState(0);
   const current = connections[selected];
+  const connectionMotion = useSoftTransition(selected);
   return <div className="connection-explorer">
     <div className="connection-choices" role="group" aria-label="Explore tools you already use">{connections.map((item, index) => <button key={item.id} aria-pressed={selected === index} onClick={() => setSelected(index)}><BrandMark brand={item.id} />{item.label}</button>)}</div>
-    <div className="connection-content" aria-live="polite" aria-atomic="true">
+    <div ref={connectionMotion} className="connection-content" aria-live="polite" aria-atomic="true">
       <div><div className="connection-apps">{current.apps.map(app => <span key={app}>{app}</span>)}</div><h3>{current.title}</h3><p>{current.text}</p></div>
       <ol className="connection-flow" aria-label="Example connected workflow">{current.flow.map((label, index) => <li key={label}><span className="connection-dot">{index + 1}</span><span>{label}</span></li>)}</ol>
     </div>
