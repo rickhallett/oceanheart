@@ -1,0 +1,139 @@
+.workflow-guide {
+  max-width: 960px;
+}
+.workflow-intro {
+  max-width: 620px;
+  margin: 8px 0 36px;
+}
+.workflow-intro > svg,
+.workflow-upcoming > svg {
+  color: #255bd7;
+  margin-bottom: 16px;
+}
+.ws-live-content .workflow-guide h2,
+.ws-live-content .workflow-upcoming h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+.workflow-guide p,
+.workflow-upcoming p {
+  font-size: 14px;
+  color: #657389;
+  line-height: 1.7;
+  max-width: 600px;
+}
+.workflow-guide-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px 48px;
+  margin: 36px 0 52px;
+}
+.workflow-guide-list article {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.workflow-guide-list article > svg {
+  flex-shrink: 0;
+  color: #657389;
+  margin-top: 2px;
+}
+.workflow-guide h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.workflow-guide-list button {
+  margin-top: 16px;
+}
+.workflow-help {
+  max-width: 720px;
+}
+.workflow-help details {
+  padding: 16px 0;
+}
+.workflow-help summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: #354256;
+  font-weight: 500;
+}
+.workflow-help details p {
+  margin-top: 12px;
+}
+.workflow-contact {
+  margin: 40px 0;
+}
+.workflow-contact a,
+.workflow-upcoming a {
+  display: inline-block;
+  color: #255bd7;
+  font-size: 14px;
+  text-underline-offset: 4px;
+  margin-top: 16px;
+}
+.workflow-upcoming {
+  max-width: 600px;
+  padding: 32px 0;
+}
+.workflow-upcoming h2 {
+  font-size: 24px;
+}
+.ws-live-content .workflow-upcoming button {
+  display: block;
+  background: #255bd7 !important;
+  color: white !important;
+  border-color: #255bd7 !important;
+  margin-top: 28px;
+}
+.workflow-guide :is(a, button, summary):focus-visible,
+.workflow-upcoming :is(a, button):focus-visible {
+  outline: 2px solid #255bd7;
+  outline-offset: 4px;
+}
+@media (max-width: 600px) {
+  .workflow-guide-list {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .workflow-upcoming {
+    padding: 16px 0;
+  }
+  .workflow-upcoming h2 {
+    font-size: 21px;
+  }
+}
+.ws-live-content .lp-settings-form .lp-hours-enforcement {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 20px 0 24px;
+}
+.ws-live-content .lp-hours-enforcement input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-top: 3px;
+}
+.ws-live-content .lp-hours-enforcement > span {
+  display: block;
+  min-width: 0;
+}
+.ws-live-content .lp-hours-enforcement strong {
+  display: block;
+  font-size: 14px;
+  color: #354256;
+  margin-bottom: 6px;
+}
+.ws-live-content .lp-hours-enforcement .lp-muted {
+  display: block;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ws-live-content .lp-task-form .lp-inline + .lp-inline {
+  margin-top: 10px;
+}

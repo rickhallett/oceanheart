@@ -30,7 +30,7 @@ class AnswerBoundary extends Component<
     return this.state.failed ? (
       <p role="alert">
         These sources changed or owner access is no longer available. Choose
-        current approved sources and try again.
+        documents currently used in answers and try again.
       </p>
     ) : (
       this.props.children
@@ -104,7 +104,7 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
         setError(
           String(e).includes("PROVIDER_NOT_CONFIGURED")
             ? "Answers are not enabled for this practice. You can still find passages."
-            : "Could not answer. Check that your selected sources are still approved and try again.",
+            : "Could not answer. Check that your documents are still available for answers and try again.",
         );
     } finally {
       inFlight.current = false;
@@ -115,11 +115,14 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
     <section className="cited-answers" aria-label="Answers from sources">
       <h2>Ask your library</h2>
       <p>
-        Choose up to five approved sources. Find matching passages, or ask for
-        exact excerpts that answer your question.
+        Find an answer in your policies, guides and notes. Choose up to five
+        documents to look through.
       </p>
       <fieldset disabled={busy}>
-        <legend>Approved sources</legend>
+        <legend>
+          Look in these documents{" "}
+          <span className="knowledge-hint">{selected.length}/5 selected</span>
+        </legend>
         {sources.results
           .filter(
             (s) =>
@@ -150,7 +153,12 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
             (s) =>
               !!s.currentVersionId &&
               s.approvedVersionId === s.currentVersionId,
-          ) && <p>Approve a source to include it here.</p>}
+          ) && (
+            <p>
+              Open a document in your library and choose “Use in answers” to
+              include it here.
+            </p>
+          )}
         {sources.status === "CanLoadMore" && (
           <button onClick={() => sources.loadMore(20)}>
             Load more sources
@@ -158,8 +166,9 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
         )}
       </fieldset>
       <label className="answer-question">
-        Question
+        What would you like to know?
         <textarea
+          placeholder="e.g. How much notice do clients need to cancel?"
           maxLength={400}
           value={question}
           onChange={(e) => {
@@ -173,7 +182,7 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
           disabled={busy || !selected.length || !question.trim()}
           onClick={() => void run(false)}
         >
-          Find passages
+          Find matching text
         </button>
         <button
           disabled={
@@ -181,18 +190,18 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
           }
           onClick={() => void run(true)}
         >
-          Ask with citations
+          Find an answer
         </button>
       </div>
       {available?.enabled ? (
         <p>
-          Asking sends your question and selected excerpts to OpenAI. Answers
-          quote sources directly and may abstain. No actions are performed.
+          Your question and selected excerpts are processed by OpenAI. Each
+          answer links to the text it comes from.
         </p>
       ) : (
         <p>
-          AI answers are not enabled for this practice. Passage search stays
-          within your library.
+          You can search your documents here. AI-assisted answers are not
+          enabled for this practice yet.
         </p>
       )}
       {busy && <p role="status">Checking selected sources…</p>}
@@ -226,7 +235,7 @@ export function CurrentAnswer({
         {result.status === "answer"
           ? "Answer from your sources"
           : result.status === "abstain"
-            ? "Not enough consistent evidence"
+            ? "No clear answer in these documents"
             : "Matching passages"}
       </h3>
       {result.status === "abstain" ? (
@@ -237,7 +246,7 @@ export function CurrentAnswer({
       ) : !citations.length ? (
         <p>
           No matching passages. Try a more specific question or different
-          approved sources.
+          documents.
         </p>
       ) : (
         <ol>
@@ -248,10 +257,8 @@ export function CurrentAnswer({
                 <summary>
                   Source {i + 1}: {c.title} · version {c.number}
                 </summary>
-                <p>{c.provenance || "No provenance supplied"}</p>
-                <p>
-                  Text span {c.start}–{c.end} · exact approved version
-                </p>
+                <p>{c.provenance || "From your practice library"}</p>
+                <p>Saved version {c.number}</p>
                 <pre>{c.text}</pre>
               </details>
             </li>
@@ -266,13 +273,6 @@ export function CurrentAnswer({
             citations: result.citations,
           }}
         />
-      )}
-      {result.usage && (
-        <p className="answer-usage">
-          {result.usage.model} · {result.usage.inputTokens} input /{" "}
-          {result.usage.outputTokens} output tokens ·{" "}
-          {((result.elapsedMs ?? 0) / 1000).toFixed(1)}s
-        </p>
       )}
     </div>
   );

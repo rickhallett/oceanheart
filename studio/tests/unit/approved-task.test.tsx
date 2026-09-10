@@ -32,14 +32,10 @@ it("prepares only exact editable task fields and evidence, without approving; fa
   fireEvent.change(screen.getByLabelText("Task title"), {
     target: { value: "Review synthetic policy" },
   });
-  fireEvent.click(
-    screen.getByRole("button", { name: "Prepare task proposal" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Review task" }));
   await screen.findByText(/Could not prepare/);
-  fireEvent.click(
-    screen.getByRole("button", { name: "Prepare task proposal" }),
-  );
-  await screen.findByText(/Proposal prepared/);
+  fireEvent.click(screen.getByRole("button", { name: "Review task" }));
+  await screen.findByText(/Ready to review/);
   expect(mutate).toHaveBeenCalledTimes(2);
   expect(mutate.mock.calls[0][0]).toEqual(mutate.mock.calls[1][0]);
   expect(mutate.mock.calls[0][0].task).toEqual({
@@ -113,7 +109,9 @@ it("stale evidence disables approval and an executed receipt never offers a seco
   expect(
     screen.queryByRole("button", { name: "Approve and create task" }),
   ).toBeNull();
-  expect(screen.getByRole("status")).toHaveTextContent("Task created");
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "Task added to your practice",
+  );
 });
 it("completion review shows the exact target and effect and only approves explicitly", async () => {
   const decide = vi.fn().mockResolvedValue("existing-task");
@@ -134,7 +132,7 @@ it("completion review shows the exact target and effect and only approves explic
       clear={() => {}}
     />,
   );
-  expect(screen.getByText("Task ID: existing-task")).toBeVisible();
+  expect(screen.getByText("Exact existing task")).toBeVisible();
   expect(screen.getByText(/Mark this existing task complete/)).toBeVisible();
   expect(decide).not.toHaveBeenCalled();
   fireEvent.click(
@@ -158,14 +156,10 @@ it("completion preparation binds selected ID/revision and retries the same reque
   fireEvent.change(screen.getByLabelText("Open task"), {
     target: { value: "existing-task" },
   });
-  fireEvent.click(
-    screen.getByRole("button", { name: "Prepare completion proposal" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Review completion" }));
   await screen.findByText(/Could not prepare completion/);
-  fireEvent.click(
-    screen.getByRole("button", { name: "Prepare completion proposal" }),
-  );
-  await screen.findByText(/Proposal prepared/);
+  fireEvent.click(screen.getByRole("button", { name: "Review completion" }));
+  await screen.findByText(/Ready to review/);
   expect(mutate.mock.calls[0][0]).toEqual(mutate.mock.calls[1][0]);
   expect(mutate.mock.calls[0][0]).toEqual({
     tenantId,
@@ -207,7 +201,5 @@ it("stale completion is disabled and executed completion reports a durable recei
   expect(
     screen.queryByRole("button", { name: "Approve and complete task" }),
   ).toBeNull();
-  expect(screen.getByRole("status")).toHaveTextContent(
-    "Task completion recorded",
-  );
+  expect(screen.getByRole("status")).toHaveTextContent("Task marked complete");
 });
