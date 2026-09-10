@@ -18,6 +18,7 @@ import { PracticeGmail } from "../practice/gmail";
 import { PracticeEnquiries } from "../practice/enquiries";
 import type { EnquiryId } from "../practice/enquiry-api";
 import { LiveToday } from "./live-today";
+import { WorkspaceLoading } from "./workspace-loading";
 import { signOutPractice } from "@/app/practice/actions";
 import "../practice/practice.css";
 import "../practice/task-maintenance.css";
@@ -56,7 +57,7 @@ export function LiveWorkspace() {
     "Your account";
   const canWrite = tenant?.role === "owner";
   let content;
-  if (!tenants) content = <p role="status">Loading practices…</p>;
+  if (!tenants) content = <WorkspaceLoading label="Loading practices…" fullScreen={false} />;
   else if (creating || !tenant)
     content = (
       <CreatePractice
