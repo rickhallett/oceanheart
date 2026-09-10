@@ -84,6 +84,15 @@ export const practiceApi = {
     { tenantId: TenantId; from: number; to: number; practitionerId?: string },
     { items: Booking[]; hasMore: boolean; limit: number }
   >("bookings:list"),
+  startBookingCheckout: makeFunctionReference<
+    "action",
+    {
+      tenantId: TenantId;
+      bookingId: GenericId<"bookings">;
+      requestKey: string;
+    },
+    StartCheckoutResult
+  >("payments:startCheckout"),
   todayTasks: makeFunctionReference<
     "query",
     { tenantId: TenantId; refreshKey: number },
@@ -305,6 +314,18 @@ export function readableError(error: unknown): string {
     return "This older booking cannot be rescheduled. Cancel it and create a linked booking.";
   if (message.includes("BOOKING_CANCELLED"))
     return "This booking has been cancelled. Reload the practice to review its current state.";
+  if (message.includes("PAYMENTS_NOT_CONFIGURED"))
+    return "Test payments are not configured for this environment.";
+  if (message.includes("PAYMENT_RECONCILIATION_REQUIRED"))
+    return "This booking changed after payment started. Reconcile the existing payment before collecting again.";
+  if (message.includes("PAYMENT_LINKED_BOOKING_REQUIRED"))
+    return "Payment collection requires a linked client and service booking.";
+  if (message.includes("PAYMENT_AMOUNT_REQUIRED"))
+    return "This booking has no positive booked amount to collect.";
+  if (message.includes("PAYMENT_ATTEMPT_FAILED"))
+    return "The previous payment attempt failed. Retry from the current payment state.";
+  if (message.includes("PAYMENT_"))
+    return "Stripe could not confirm this test payment. Retry safely or review the payment state.";
   if (message.includes("INVALID_TIME_ZONE"))
     return "Enter a valid IANA time zone, such as Europe/London.";
   if (message.includes("ARCHIVED_RECORD") || message.includes("INACTIVE_"))
@@ -400,6 +421,19 @@ export type Booking = {
   status: "scheduled" | "cancelled";
   revision: number;
   legacy: boolean;
+  payment?: {
+    attemptId: GenericId<"paymentAttempts">;
+    status: "creating" | "pending" | "failed" | "paid";
+    amountMinor: number;
+    currency: "GBP";
+    reconciliationRequired: boolean;
+  };
+};
+
+export type StartCheckoutResult = {
+  attemptId: GenericId<"paymentAttempts">;
+  status: "creating" | "pending" | "failed" | "paid";
+  checkoutUrl?: string;
 };
 
 export type ClientBooking = Pick<Booking, "_id" | "startsAt" | "endsAt" | "status" | "revision" | "serviceSnapshot" | "timeZone">;

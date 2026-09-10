@@ -23,6 +23,7 @@ import type {
   TenantId,
 } from "../../src/components/practice/api";
 vi.mock("convex/react", () => ({
+  useAction: vi.fn(() => vi.fn()),
   useMutation: vi.fn(() => vi.fn()),
   useQuery: vi.fn(),
   usePaginatedQuery: vi.fn(),
@@ -46,6 +47,8 @@ const service = {
 } as Service;
 const booking = {
   _id: "booking" as Booking["_id"],
+  clientId: "client" as Booking["clientId"],
+  serviceId: "service" as Booking["serviceId"],
   clientLabel: "Alex",
   startsAt: Date.parse("2027-01-15T23:30Z"),
   endsAt: Date.parse("2027-01-16T01:00Z"),
@@ -241,6 +244,60 @@ it("overnight rows display both dates and saved terms, legacy rows only allow ca
     screen.queryByRole("button", { name: "Reschedule" }),
   ).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Cancel booking" })).toBeVisible();
+});
+
+it("offers test Checkout only for an eligible booking and renders durable payment truth", async () => {
+  const startPayment = vi.fn().mockResolvedValue({
+    attemptId: "attempt",
+    status: "paid",
+  });
+  const user = userEvent.setup();
+  const view = render(
+    <ul>
+      <BookingRow
+        booking={booking}
+        timeZone="Europe/London"
+        edit={vi.fn()}
+        cancel={vi.fn()}
+        startPayment={startPayment}
+      />
+    </ul>,
+  );
+  await user.click(screen.getByRole("button", { name: "Collect test payment" }));
+  expect(startPayment).toHaveBeenCalledOnce();
+  expect(startPayment.mock.calls[0][0]).toMatch(/^[0-9a-f-]{36}$/);
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "Payment is already confirmed",
+  );
+  await user.click(screen.getByRole("button", { name: "Collect test payment" }));
+  expect(startPayment).toHaveBeenCalledTimes(2);
+  expect(startPayment.mock.calls[1][0]).toBe(startPayment.mock.calls[0][0]);
+  view.rerender(
+    <ul>
+      <BookingRow
+        booking={{
+          ...booking,
+          payment: {
+            attemptId: "attempt" as NonNullable<Booking["payment"]>["attemptId"],
+            status: "paid",
+            amountMinor: 6250,
+            currency: "GBP",
+            reconciliationRequired: true,
+          },
+        }}
+        timeZone="Europe/London"
+        edit={vi.fn()}
+        cancel={vi.fn()}
+        startPayment={startPayment}
+      />
+    </ul>,
+  );
+  expect(document.querySelector("[data-payment-status='paid']")).toHaveTextContent(
+    "Payment · Paid · £62.50 · Reconciliation required",
+  );
+  expect(
+    screen.queryByRole("button", { name: /test payment|test checkout/i }),
+  ).not.toBeInTheDocument();
 });
 
 it.each([

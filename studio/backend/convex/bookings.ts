@@ -1,7 +1,7 @@
 import { MAX_DURATION, interval, free, original, event, createLinkedBooking } from "./lib/bookingCommands";
 import { mutation, query } from "./_generated/server";
-import type { MutationCtx } from "./_generated/server";
-import type { Id, Doc } from "./_generated/dataModel";
+import type { QueryCtx } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 import { expectedRevision, requestKey } from "./lib/catalog";
@@ -9,6 +9,13 @@ import { practiceDayAt } from "./lib/practiceDay";
 import { paginationOptsValidator } from "convex/server";
 import { pageSize } from "./lib/catalog";
 import { requireBookingHours } from "./lib/bookingHours";
+
+async function projectBooking(ctx:QueryCtx,r:Doc<"bookings">) {
+  const paid=await ctx.db.query("paymentAttempts").withIndex("by_tenant_booking_status",q=>q.eq("tenantId",r.tenantId).eq("bookingId",r._id).eq("status","paid")).order("desc").take(2);
+  const latest=await ctx.db.query("paymentAttempts").withIndex("by_tenant_booking",q=>q.eq("tenantId",r.tenantId).eq("bookingId",r._id)).order("desc").first();
+  const attempt=paid[0]??latest;
+  return {_id:r._id,startsAt:r.startsAt,endsAt:r.endsAt,clientLabel:r.clientLabel,...(r.clientId?{clientId:r.clientId}:{}),...(r.serviceId?{serviceId:r.serviceId}:{}),...(r.serviceSnapshot?{serviceSnapshot:r.serviceSnapshot}:{}),...(r.timeZone?{timeZone:r.timeZone}:{}),status:r.status??"scheduled",revision:r.revision??0,legacy:!r.serviceSnapshot,...(attempt?{payment:{attemptId:attempt._id,status:attempt.status,amountMinor:attempt.amountMinor,currency:attempt.currency,reconciliationRequired:(r.status??"scheduled")!=="scheduled"||(r.revision??0)!==attempt.bookingRevision||paid.length>1||(paid.length===1&&latest?._id!==paid[0]._id)}}:{})};
+}
 
 export const forClient = query({
   args: { tenantId: v.id("tenants"), clientId: v.id("clients"), paginationOpts: paginationOptsValidator },
@@ -80,7 +87,7 @@ export const list=query({
     await requireMember(ctx,args.tenantId,true);
     if(!Number.isSafeInteger(args.from)||!Number.isSafeInteger(args.to)||args.to<=args.from||args.to-args.from>31*MAX_DURATION)throw new ConvexError("INVALID_WINDOW");
     const rows=await ctx.db.query("bookings").withIndex("by_tenant_start",q=>q.eq("tenantId",args.tenantId).gt("startsAt",args.from-MAX_DURATION).lt("startsAt",args.to)).filter(q=>q.and(q.gt(q.field("endsAt"),args.from),args.practitionerId?q.eq(q.field("practitionerId"),args.practitionerId):q.eq(1,1))).take(201);
-    return {items:rows.slice(0,200).map(r=>({_id:r._id,startsAt:r.startsAt,endsAt:r.endsAt,clientLabel:r.clientLabel,...(r.clientId?{clientId:r.clientId}:{}),...(r.serviceId?{serviceId:r.serviceId}:{}),...(r.serviceSnapshot?{serviceSnapshot:r.serviceSnapshot}:{}),...(r.timeZone?{timeZone:r.timeZone}:{}),status:r.status??"scheduled",revision:r.revision??0,legacy:!r.serviceSnapshot})),hasMore:rows.length>200,limit:200};
+    return {items:await Promise.all(rows.slice(0,200).map(r=>projectBooking(ctx,r))),hasMore:rows.length>200,limit:200};
   },
 });
 
