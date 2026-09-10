@@ -1,0 +1,169 @@
+.source-library {
+  max-width: 840px;
+}
+.source-library h1 {
+  font-size: 28px;
+}
+.source-library h2 {
+  font-size: 16px;
+  margin: 24px 0 12px;
+}
+.source-library p {
+  line-height: 1.6;
+}
+.source-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 16px 0;
+}
+.source-list {
+  list-style: none;
+  padding: 0;
+}
+.source-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 20px 0;
+}
+.source-list small {
+  overflow-wrap: anywhere;
+}
+.source-editor fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.source-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 16px 0;
+}
+.source-editor input,
+.source-editor textarea,
+.source-editor select {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.source-editor textarea {
+  padding: 10px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+  font: inherit;
+  resize: vertical;
+}
+.source-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  line-height: 1.65;
+}
+.source-library button {
+  max-width: 100%;
+  white-space: normal;
+}
+@media (max-width: 480px) {
+  .source-library h1 {
+    font-size: 25px;
+  }
+}
+
+.cited-answers {
+  margin: 28px 0 36px;
+  max-width: 840px;
+}
+.cited-answers h2,
+.cited-result h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.cited-answers fieldset {
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+  min-width: 0;
+}
+.cited-answers fieldset label {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.cited-answers input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+.answer-question {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.answer-question textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 76px;
+  font: inherit;
+  font-size: 13px;
+  padding: 8px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+}
+.cited-result {
+  margin-top: 24px;
+}
+.cited-result ol {
+  padding-left: 24px;
+}
+.cited-result li {
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+}
+.cited-result blockquote {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+.cited-result summary {
+  cursor: pointer;
+  color: #255bd7;
+}
+.cited-result pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+}
+.answer-usage {
+  font-size: 13px;
+  color: #657389;
+  overflow-wrap: anywhere;
+}
+
+.approved-task {
+  margin: 28px 0;
+  max-width: 840px;
+}
+.approved-task label {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0;
+}
+.approved-task p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.approved-task h3 {
+  font-size: 16px;
+}
+
+.approved-task select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}

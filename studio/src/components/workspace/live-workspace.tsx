@@ -17,6 +17,7 @@ import { PracticeSettings } from "../practice/settings";
 import { PracticeGmail } from "../practice/gmail";
 import { PracticeEnquiries } from "../practice/enquiries";
 import type { EnquiryId } from "../practice/enquiry-api";
+import { SourceLibrary } from "../practice/source-library";
 import { LiveToday } from "./live-today";
 import { WorkspaceLoading } from "./workspace-loading";
 import { signOutPractice } from "@/app/practice/actions";
@@ -167,6 +168,7 @@ function LiveScreen({
         go={go}
       />
     );
+  if (view === "knowledge") return <SourceLibrary tenantId={tenantId} canWrite={canWrite} />;
   if (view === "tasks")
     return (
       <PracticeTasks

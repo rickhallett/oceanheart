@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, type FormEvent } from "react";
-import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
+import { useAction, useMutation, useQuery, usePaginatedQuery } from "convex/react";
 import {
   practiceApi,
   readableError,
@@ -9,6 +9,7 @@ import {
   type Booking,
   type Client,
   type Service,
+  type StartCheckoutResult,
 } from "./api";
 import {
   bookingTimeChoices,
@@ -159,9 +160,13 @@ function BookingAgenda({
     practiceApi.bookings,
     range ? { tenantId, ...range } : "skip",
   );
+  const paymentAvailability = useQuery(practiceApi.paymentAvailability, {
+    tenantId,
+  });
   const create = useMutation(practiceApi.createBooking),
     reschedule = useMutation(practiceApi.rescheduleBooking),
-    cancel = useMutation(practiceApi.cancelBooking);
+    cancel = useMutation(practiceApi.cancelBooking),
+    startCheckout = useAction(practiceApi.startBookingCheckout);
   return (
     <>
       <div className="lp-booking-toolbar">
@@ -257,6 +262,16 @@ function BookingAgenda({
                   bookingId: booking._id,
                   expectedRevision: booking.revision,
                 })
+              }
+              startPayment={
+                paymentAvailability?.enabled
+                  ? (requestKey) =>
+                      startCheckout({
+                        tenantId,
+                        bookingId: booking._id,
+                        requestKey,
+                      })
+                  : undefined
               }
             />
           ))}
@@ -640,16 +655,22 @@ export function BookingRow({
   timeZone,
   edit,
   cancel,
+  startPayment,
 }: {
   booking: Booking;
   timeZone: string;
   edit: () => void;
   cancel: () => Promise<unknown>;
+  startPayment?: (requestKey: string) => Promise<StartCheckoutResult>;
 }) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(""),
-    [conflict, setConflict] = useState(false);
+    [conflict, setConflict] = useState(false),
+    [paymentNotice, setPaymentNotice] = useState("");
   const busy = useRef(false);
+  const paymentRequest = useRef<{ basis: string; key: string } | undefined>(
+    undefined,
+  );
   async function cancelBooking() {
     if (busy.current || conflict) return;
     busy.current = true;
@@ -665,6 +686,58 @@ export function BookingRow({
       setPending(false);
     }
   }
+  async function collectPayment() {
+    if (busy.current || !startPayment) return;
+    busy.current = true;
+    setPending(true);
+    setError("");
+    setPaymentNotice("");
+    try {
+      const basis =
+        booking.payment?.status === "failed"
+          ? `retry:${booking.payment.attemptId}`
+          : "initial";
+      if (!paymentRequest.current || paymentRequest.current.basis !== basis)
+        paymentRequest.current = { basis, key: crypto.randomUUID() };
+      const response = await startPayment(paymentRequest.current.key);
+      if (response.checkoutUrl) {
+        window.location.assign(response.checkoutUrl);
+      } else if (response.status === "paid") {
+        setPaymentNotice("Payment is already confirmed.");
+      } else {
+        setPaymentNotice("Payment is still reconciling. Retry shortly.");
+      }
+    } catch (cause) {
+      setError(readableError(cause));
+    } finally {
+      busy.current = false;
+      setPending(false);
+    }
+  }
+  const paymentLabel =
+    booking.payment?.status === "paid"
+      ? "Paid"
+      : booking.payment?.status === "failed"
+        ? "Failed"
+        : "Pending";
+  const paymentButton =
+    booking.payment?.status === "failed"
+      ? "Retry test payment"
+      : booking.payment?.status === "pending"
+        ? "Continue test checkout"
+        : booking.payment?.status === "creating"
+          ? "Resume test checkout"
+          : "Collect test payment";
+  const canCollect =
+    !!startPayment &&
+    booking.status === "scheduled" &&
+    !booking.legacy &&
+    !!booking.clientId &&
+    !!booking.serviceId &&
+    !!booking.serviceSnapshot &&
+    booking.serviceSnapshot.priceMinor > 0 &&
+    booking.payment?.status !== "paid" &&
+    !booking.payment?.reconciliationRequired;
   return (
     <li data-booking-id={booking._id} className="lp-booking-record">
       <div className="lp-booking-when">
@@ -708,9 +781,30 @@ export function BookingRow({
         {booking.timeZone && booking.timeZone !== timeZone && (
           <p className="lp-muted">Originally booked in {booking.timeZone}</p>
         )}
+        {booking.payment && (
+          <p
+            className="lp-payment-status"
+            data-payment-status={booking.payment.status}
+          >
+            <strong>Payment · {paymentLabel}</strong> ·{" "}
+            {formatPrice(booking.payment.amountMinor)}
+            {booking.payment.reconciliationRequired && (
+              <> · Reconciliation required</>
+            )}
+          </p>
+        )}
       </div>
       {booking.status === "scheduled" && (
         <div className="lp-actions">
+          {canCollect && (
+            <button
+              type="button"
+              disabled={pending || conflict}
+              onClick={() => void collectPayment()}
+            >
+              {pending ? "Opening test checkout…" : paymentButton}
+            </button>
+          )}
           {!booking.legacy && (
             <button type="button" disabled={pending || conflict} onClick={edit}>
               Reschedule
@@ -725,6 +819,7 @@ export function BookingRow({
           </button>
         </div>
       )}
+      {paymentNotice && <p role="status">{paymentNotice}</p>}
       {error && <p role="alert">{error}</p>}
       {conflict && (
         <button type="button" onClick={() => window.location.reload()}>

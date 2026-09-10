@@ -118,7 +118,14 @@ it("an unrepresentable agenda date skips the backend query and keeps the practic
     target: { value: "2011-12-30" },
   });
   expect(screen.getByRole("alert")).toHaveTextContent("does not exist");
-  expect(vi.mocked(useQuery).mock.calls.at(-1)?.[1]).toBe("skip");
+  expect(
+    vi
+      .mocked(useQuery)
+      .mock.calls.filter(
+        (call) => getFunctionName(call[0]) === "bookings:list",
+      )
+      .at(-1)?.[1],
+  ).toBe("skip");
   expect(screen.getByRole("button", { name: "New booking" })).toBeDisabled();
   fireEvent.change(screen.getByLabelText("Booking date"), {
     target: { value: "2027-01-15" },

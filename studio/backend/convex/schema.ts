@@ -1,7 +1,11 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { proposalEvidence, proposalReference, proposalTask } from "./lib/actionContract";
 import { availabilityObject } from "./lib/settings";
 export default defineSchema({
+  actionProposals: defineTable({tenantId:v.id("tenants"),actor:v.string(),action:v.union(v.literal("task.create"),v.literal("task.complete")),version:v.literal(1),task:proposalTask,target:v.optional(v.object({taskId:v.id("tasks"),revision:v.number()})),references:v.array(proposalReference),citations:v.array(proposalEvidence),sourceRevisions:v.array(v.number()),createdAt:v.number(),expiresAt:v.number(),requestKey:v.string(),creationPayload:v.string(),status:v.union(v.literal("pending"),v.literal("executed"),v.literal("rejected")),taskId:v.optional(v.id("tasks")),decidedAt:v.optional(v.number())}).index("by_tenant_request",["tenantId","requestKey"]),
+  knowledgeSources: defineTable({tenantId:v.id("tenants"),title:v.string(),provenance:v.string(),format:v.union(v.literal("text"),v.literal("markdown")),audience:v.literal("owner"),archived:v.boolean(),revision:v.number(),currentVersionId:v.optional(v.id("knowledgeVersions")),approvedVersionId:v.optional(v.id("knowledgeVersions")),createdBy:v.string(),requestKey:v.string(),creationPayload:v.string(),lastAction:v.optional(v.string())}).index("by_tenant_archived",["tenantId","archived"]).index("by_tenant_request",["tenantId","requestKey"]),
+  knowledgeVersions: defineTable({tenantId:v.id("tenants"),sourceId:v.id("knowledgeSources"),title:v.string(),provenance:v.string(),format:v.union(v.literal("text"),v.literal("markdown")),content:v.string(),hash:v.string(),number:v.number(),createdBy:v.string(),requestKey:v.string(),payload:v.string()}).index("by_source",["sourceId"]).index("by_source_request",["sourceId","requestKey"]),
   gmailConnections: defineTable({tenantId:v.id("tenants"),mailbox:v.optional(v.string()),status:v.union(v.literal("connected"),v.literal("disconnected"),v.literal("reauth_required")),generation:v.number(),refreshCipher:v.optional(v.string())}).index("by_tenant",["tenantId"]),
   gmailOAuthStates: defineTable({tenantId:v.id("tenants"),stateHash:v.string(),bindingHash:v.string(),sessionHash:v.string(),verifierCipher:v.string(),actor:v.string(),generation:v.number(),expiresAt:v.number(),used:v.boolean(),completed:v.boolean()}).index("by_state",["stateHash"]),
   gmailImports: defineTable({tenantId:v.id("tenants"),mailbox:v.string(),messageId:v.string(),threadId:v.string(),enquiryId:v.id("enquiries"),truncated:v.boolean()}).index("by_message",["tenantId","mailbox","messageId"]).index("by_enquiry",["enquiryId"]),
@@ -29,6 +33,22 @@ export default defineSchema({
     .index("by_tenant_identity", ["tenantId", "identity"])
     .index("by_identity", ["identity"]),
   bookingEvents: defineTable({tenantId:v.id("tenants"),bookingId:v.id("bookings"),action:v.union(v.literal("created"),v.literal("rescheduled"),v.literal("cancelled")),at:v.number(),actor:v.string(),revision:v.number(),startsAt:v.number(),endsAt:v.number(),previousStartsAt:v.optional(v.number()),previousEndsAt:v.optional(v.number())}).index("by_booking",["bookingId"]),
+  paymentAttempts: defineTable({
+    tenantId:v.id("tenants"),bookingId:v.id("bookings"),requestKey:v.string(),actor:v.string(),
+    bookingRevision:v.number(),amountMinor:v.number(),currency:v.literal("GBP"),serviceName:v.string(),
+    status:v.union(v.literal("creating"),v.literal("pending"),v.literal("failed"),v.literal("paid")),
+    providerIdempotencyKey:v.string(),providerSessionId:v.optional(v.string()),providerPaymentIntentId:v.optional(v.string()),
+    checkoutUrl:v.optional(v.string()),providerStatus:v.optional(v.string()),failureCode:v.optional(v.string()),
+    createdAt:v.number(),updatedAt:v.number(),
+  })
+    .index("by_tenant_booking",["tenantId","bookingId"])
+    .index("by_tenant_booking_status",["tenantId","bookingId","status"])
+    .index("by_tenant_request",["tenantId","requestKey"])
+    .index("by_provider_session",["providerSessionId"]),
+  paymentEvents: defineTable({
+    providerEventId:v.string(),tenantId:v.id("tenants"),attemptId:v.id("paymentAttempts"),
+    providerCreated:v.number(),providerType:v.string(),processedAt:v.number(),
+  }).index("by_provider_event",["providerEventId"]),
   bookings: defineTable({
     clientId:v.optional(v.id("clients")),serviceId:v.optional(v.id("services")),
     serviceSnapshot:v.optional(v.object({name:v.string(),durationMinutes:v.number(),priceMinor:v.number(),currency:v.literal("GBP")})),

@@ -1,0 +1,9 @@
+# RIC-133: explicitly approved task completion
+
+An owner selects one existing open task in Knowledge and prepares its completion. Preparation records an immutable `task.complete` proposal: tenant, actor, task ID/revision, server-read title/date, ten-minute expiry and request receipt. The review shows the exact task ID, wording and effect. This action needs no source retrieval or provider call; the existing task is its state evidence.
+
+Only explicit approval completes the task. The same Convex mutation checks current owner/actor/tenant access, active/open state and exact task revision/snapshot, invokes the existing task completion command, and records execution. Concurrent approvals return one task ID and advance its revision once. Rejected or changed/expired proposals cannot execute; rename, date/link edit, manual completion, reopen and removal require a new proposal. A prior successful receipt is returned after current authorization but before mutable task/expiry checks: retrying after reopening does not complete the task again.
+
+Existing manual task commands and task-create proposal receipts retain their semantics. Public task-create proposal namespace protection remains intact. No external tool, provider expansion, arbitrary action, automatic completion, real-data fixture or live payment is included.
+
+Database impact: widen actionProposals action allowlist and add optional target {taskId, revision}; existing creation proposals remain valid. No new table/index, migration/backfill or existing-record rewrite. Focused native task-complete slice covers exact payload, races, original receipt, stale state and permission refusal; approved-actions slice verifies creation compatibility. Independent Gates review and hosted synthetic acceptance are required before release. Deployment ownership is serialized with Gates.

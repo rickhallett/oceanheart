@@ -1,8 +1,13 @@
+import { taskCompleteChecks } from "./task-complete-checks.mjs";
+import { approvedActionChecks } from "./approved-action-checks.mjs";
+import { citedAnswerChecks } from "./cited-answer-checks.mjs";
+import { sourceLibraryChecks } from "./source-library-checks.mjs";
 import {gmailChecks} from "./gmail-checks.mjs";
 import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
 import { bookingHoursChecks } from "./booking-hours-checks.mjs";
+import { paymentChecks } from "./payment-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
@@ -109,11 +114,25 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
+  await writeFile(resolve(runDir,"convex/approvedActionTest.ts"), `import {internalMutation} from "./_generated/server";
+import {v} from "convex/values";
+export const alter=internalMutation({args:{proposalId:v.optional(v.id("actionProposals")),expiresAt:v.optional(v.number()),tenantId:v.optional(v.id("tenants")),demoteOwner:v.optional(v.boolean()),makeSecondOwner:v.optional(v.boolean()),precreateTask:v.optional(v.boolean())},handler:async(ctx,args)=>{if(args.makeSecondOwner&&args.tenantId)await ctx.db.insert("memberships",{tenantId:args.tenantId,identity:"${issuer}|bob",role:"owner"});if(args.precreateTask&&args.proposalId){const p=await ctx.db.get(args.proposalId);if(!p)throw new Error("Missing proposal");await ctx.db.insert("tasks",{tenantId:p.tenantId,...p.task,creationTitle:p.task.title,creationDueDate:p.task.dueDate,completed:false,revision:0,createdAt:Date.now(),createdBy:p.actor,requestKey:"proposal:"+p._id});}if(args.proposalId&&args.expiresAt!==undefined)await ctx.db.patch(args.proposalId,{expiresAt:args.expiresAt});if(args.demoteOwner&&args.tenantId){const members=await ctx.db.query("memberships").withIndex("by_tenant_identity",q=>q.eq("tenantId",args.tenantId!)).collect();for(const m of members)if(m.role==="owner")await ctx.db.patch(m._id,{role:"viewer"});}}});
+`);
+  // Malformed pointer fixture is installed only in this disposable local backend.
+  await writeFile(resolve(runDir,"convex/sourceLibraryTest.ts"), `import {internalMutation} from "./_generated/server";
+import {v} from "convex/values";
+export const point=internalMutation({args:{sourceId:v.id("knowledgeSources"),versionId:v.optional(v.id("knowledgeVersions"))},handler:async(ctx,args)=>{await ctx.db.patch(args.sourceId,{currentVersionId:args.versionId});}});
+`);
   // This allowlisted adapter exists ONLY in the isolated local copy, never hosted source.
   await writeFile(resolve(runDir,"convex/gmailTest.ts"), `import {action} from "./_generated/server";
 import {internal} from "./_generated/api";
 import {v} from "convex/values";
 export const transition=action({args:{name:v.union(v.literal("consume"),v.literal("finish"),v.literal("importMessage"),v.literal("disconnect"),v.literal("expireState")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>ctx.runMutation(internal.gmailInternal[name],args)});
+`);
+  await writeFile(resolve(runDir,"convex/paymentTest.ts"), `import {action} from "./_generated/server";
+import {internal} from "./_generated/api";
+import {v} from "convex/values";
+export const transition=action({args:{name:v.union(v.literal("reserve"),v.literal("current"),v.literal("guard"),v.literal("attach"),v.literal("reconcile")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>name==="current"?ctx.runQuery(internal.paymentsInternal.current,args):ctx.runMutation(internal.paymentsInternal[name==="attach"?"attachSession":name==="guard"?"guardCheckout":name],args)});
 `);
   for (const file of ["package.json", "tsconfig.json", "auth-policy.ts"])
     await cp(resolve(root, file), resolve(runDir, file));
@@ -212,7 +231,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     { recursive: true },
   );
   assert.equal(
-    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest")).join("\n"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest") && !line.includes("sourceLibraryTest") && !line.includes("paymentTest") && !line.includes("approvedActionTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -236,6 +255,17 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
+  if (process.env.STUDIO_INTEGRATION_SLICE === "task-complete") {
+    await taskCompleteChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "approved-actions") {
+    await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "cited-answers") {
+    await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "source-library") {
+    await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "payments") {
+    await paymentChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"payment-local"});
+  } else {
   const tenantA = await alice.mutation("tenants:create", {
       name: "Practice A",
     }),
@@ -543,6 +573,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   check("list truncation explicitly reported with hasMore and limit");
   const bookingFixtures=await bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"booking-local"});
   await bookingHoursChecks({alice,bob,viewer,check,prefix:"hours-local"});
+  await paymentChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"payment-local"});
   const oldStart=Date.UTC(2041,0,10,9),oldArgs={tenantId:tenantA,practitionerId:"pre-upgrade",startsAt:oldStart,endsAt:oldStart+3600000,clientLabel:"Pre-upgrade booking",requestKey:"pre-upgrade"};
   await writeFile(resolve(runDir,"legacy-bookings.json"),JSON.stringify([{...oldArgs,createdBy:`${issuer}|alice`}]));
   await command(["import","--env-file",".push.env","--table","bookings","--append","legacy-bookings.json"]);
@@ -591,6 +622,11 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
       await command(["import","--env-file",".push.env","--table","bookings","--append","today-bookings.json"]);
     },
   });
+  await sourceLibraryChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check, corruptCurrent:async(sourceId,versionId)=>command(["run","--env-file",".push.env","sourceLibraryTest:point",JSON.stringify({sourceId,...(versionId?{versionId}:{})})])});
+  }
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await taskCompleteChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(
