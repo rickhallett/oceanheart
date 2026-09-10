@@ -58,6 +58,16 @@ export type TodayBookingList =
       limit: number;
     };
 export const practiceApi = {
+  clientBookings: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; clientId: GenericId<"clients">; paginationOpts: PaginationOptions },
+    PaginationResult<ClientBooking>
+  >("bookings:forClient"),
+  bookingHistory: makeFunctionReference<
+    "query",
+    { tenantId: TenantId; bookingId: GenericId<"bookings"> },
+    { items: BookingEvent[]; hasMore: boolean; limit: number }
+  >("bookings:history"),
   setTimeZone: makeFunctionReference<
     "mutation",
     { tenantId: TenantId; timeZone: string; expectedTimeZone: string | null },
@@ -379,4 +389,15 @@ export type Booking = {
   status: "scheduled" | "cancelled";
   revision: number;
   legacy: boolean;
+};
+
+export type ClientBooking = Pick<Booking, "_id" | "startsAt" | "endsAt" | "status" | "revision" | "serviceSnapshot" | "timeZone">;
+export type BookingEvent = {
+  action: "created" | "rescheduled" | "cancelled";
+  at: number;
+  revision: number;
+  startsAt: number;
+  endsAt: number;
+  previousStartsAt?: number;
+  previousEndsAt?: number;
 };

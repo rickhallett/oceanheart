@@ -6,6 +6,7 @@ import { PracticeGmail } from "./gmail";
 import type { EnquiryId } from "./enquiry-api";
 import { PracticeEnquiries } from "./enquiries";
 import { PracticeBookings } from "./bookings";
+import { ClientHistory } from "./client-history";
 import { TaskPanel } from "./practice-ui";
 import { PracticeSettings } from "./settings";
 import { PracticeToday } from "./today";
@@ -317,6 +318,7 @@ export function PracticeClients({
       <RecordFilter archived={archived} change={setArchived} noun="Client" />
       <ClientSearch search={search} change={setSearch} />
       <ClientsPanel
+        history={(client) => <ClientHistory key={client._id} tenantId={tenantId} client={client} />}
         key={`${archived}:${search}`}
         items={results}
         status={status}

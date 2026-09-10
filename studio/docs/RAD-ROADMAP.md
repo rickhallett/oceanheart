@@ -34,11 +34,18 @@ The existing `backend/` implements tenant membership and atomic booking create/l
 
 WorkOS AuthKit and the persisted Convex task foundation are accepted. Service and client create/list, revision-safe editing, reversible archives and client name/email search are accepted. Manual owner scheduling with active client/service linkage, immutable booked terms, explicit practice timezone and conflict-safe reschedule/cancel is accepted. This batch adds manual enquiries, unsent reply drafts and deliberate atomic client/booking conversion. Clients are owner-only; services are readable by practice members. Keep external sends, charges and refunds separate from UI simulation.
 
-The next compact `/practice` increment adds a default Today view over the real
-task and booking records. Server time plus the saved practice IANA zone is
-authoritative; the client only triggers rollover refresh. Task selection occurs
-before the 200-row cap, owner booking summaries use half-open overlap semantics,
-and viewers never query bookings or receive client-link identity.
+The Precision `/app` workspace now hosts the accepted live modules. `/practice`
+is only a compatibility redirect. Today uses server time and the saved practice
+IANA zone; task selection precedes the 200-row cap and viewers receive no booking
+queries or client-link identity.
+
+The next bounded records increment is owner-only client booking history
+(RIC-105): paginated linked appointments, retained booked terms, reschedule and
+cancellation activity, and history for archived clients. See
+[the history contract](CLIENT-HISTORY.md). This completes the history portion;
+private notes remain separate. Website publishing follows the roadmap sequence
+after outstanding booking rules are scoped; the public marketing introduction
+is a separate visual-approval hold.
 
 ## RAD delivery loop
 

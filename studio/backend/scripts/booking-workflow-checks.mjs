@@ -57,5 +57,26 @@ export async function bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,
   await assert.rejects(alice.mutation("bookings:reschedule",{tenantId:tenantA,bookingId:id,startsAt:start+10*hour,expectedRevision:2}),/BOOKING_CANCELLED/);
   await alice.mutation("tenants:setTimeZone",{tenantId:tenantA,timeZone:"UTC",expectedTimeZone:"Europe/London"});assert.equal((await read()).timeZone,"Europe/London");
   check("manual bookings enforce a tenant-wide lane, snapshot service terms, preserve retry IDs/history and cancellation frees time");
+  const historyArgs={tenantId:tenantA,clientId,paginationOpts:{numItems:2,cursor:null}};
+  const first=await alice.query("bookings:forClient",historyArgs);
+  assert.equal(first.page.length,2);assert.equal(first.isDone,false);
+  const second=await alice.query("bookings:forClient",{...historyArgs,paginationOpts:{numItems:2,cursor:first.continueCursor}});
+  const linked=[...first.page,...second.page];
+  assert.equal(second.isDone,true);assert.equal(new Set(linked.map(r=>r._id)).size,3);
+  assert.ok(linked.every((r,i)=>i===0||linked[i-1].startsAt>=r.startsAt));
+  const retained=linked.find(r=>r._id===id);assert.equal(retained.status,"cancelled");assert.equal(retained.startsAt,start+hour);assert.equal(retained.serviceSnapshot.priceMinor,5000);assert.equal(retained.timeZone,"Europe/London");
+  for(const row of linked)for(const field of ["requestKey","createdBy","creationPayload","tenantId","clientLabel","practitionerId"])assert.ok(!(field in row));
+  const duplicate=await alice.mutation("clients:create",{tenantId:tenantA,name:"Booking fixture",requestKey:`${prefix}-same-name`});await record("clients",duplicate,tenantA);
+  assert.deepEqual((await alice.query("bookings:forClient",{...historyArgs,clientId:duplicate})).page,[]);
+  await alice.mutation("clients:setArchived",{tenantId:tenantA,clientId,archived:true,expectedRevision:2});
+  assert.deepEqual((await alice.query("bookings:forClient",historyArgs)).page,first.page);
+  await alice.mutation("clients:setArchived",{tenantId:tenantA,clientId,archived:false,expectedRevision:3});
+  for(const caller of [anonymous,bob,viewer])await assert.rejects(caller.query("bookings:forClient",historyArgs));
+  await assert.rejects(bob.query("bookings:forClient",{...historyArgs,tenantId:tenantB}),/FORBIDDEN/);
+  await alice.mutation("tenants:addViewer",{tenantId:tenantA,identity:viewerIdentity});
+  try { await assert.rejects(viewer.query("bookings:forClient",historyArgs),/FORBIDDEN/); }
+  finally { await alice.mutation("tenants:removeViewer",{tenantId:tenantA,identity:viewerIdentity}); }
+  await assert.rejects(alice.query("bookings:forClient",{...historyArgs,paginationOpts:{numItems:101,cursor:null}}),/INVALID_PAGE_SIZE/);
+  check("client booking history paginates by scoped client ID, retains cancelled snapshots and archived history, excludes duplicate-name clients and denies viewer/foreign access");
   return {clientId,serviceId};
 }

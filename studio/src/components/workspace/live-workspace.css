@@ -1,4 +1,20 @@
 /* Live records inhabit the reviewed Precision workspace. */
+.ws-live-content .lp-client-history { margin-top: 12px; }
+.ws-live-content .lp-client-history section { margin-top: 20px; max-width: 680px; }
+.ws-live-content .lp-client-history h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.ws-live-content .lp-client-history h5 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.ws-live-content .lp-client-bookings,
+.ws-live-content .lp-booking-activity { list-style: none; padding: 0; margin: 20px 0; }
+.ws-live-content .lp-client-bookings > li { display: block; padding: 0; margin-bottom: 28px; overflow-wrap: anywhere; }
+.ws-live-content .lp-client-bookings dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+.ws-live-content .lp-client-bookings dl > div { display: block; }
+.ws-live-content .lp-client-bookings dt { font-size: 12px; color: #657389; margin-bottom: 5px; }
+.ws-live-content .lp-client-bookings dd { margin: 0; }
+.ws-live-content .lp-client-bookings p { margin: 8px 0 12px; }
+.ws-live-content .lp-booking-activity > li { display: block; padding: 0; margin: 20px 0; }
+@media (max-width: 600px) {
+  .ws-live-content .lp-client-bookings dl { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+}
 .ws-live-content.lp-root {
   min-height: 0;
   background: transparent;

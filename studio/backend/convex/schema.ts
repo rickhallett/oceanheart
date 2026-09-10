@@ -42,6 +42,7 @@ export default defineSchema({
     createdBy: v.string(),
   })
     .index("by_tenant_start",["tenantId","startsAt"])
+    .index("by_tenant_client_start",["tenantId","clientId","startsAt"])
     .index("by_tenant_practitioner_start", [
       "tenantId",
       "practitionerId",
