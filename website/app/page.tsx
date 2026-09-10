@@ -23,8 +23,8 @@ export default function Home() {
   </section>
   <section className="studio-section" aria-labelledby="studio-title">
    <p className="eyebrow">Oceanheart Studio · Explore the product</p>
-   <h2 id="studio-title">A little more room for the work.</h2>
-   <p>Studio is a workspace being built for independent practitioners, bringing enquiries, bookings, clients, services and tasks together in one quiet place.</p>
+   <h2 id="studio-title">Practice software shaped around the way you work.</h2>
+   <p>Studio brings enquiries, bookings, clients and follow-ups into one place, with direct collaboration to shape meaningful improvements around your practice.</p>
    <figure className="studio-figure">
     <img src="/images/studio/precision-today.webp" alt="Precision Studio Today screen showing a fictional practice with appointments and tasks" width="1440" height="1000" loading="lazy" />
     <figcaption>Precision Studio browser demo · fictional sample data</figcaption>

@@ -1,7 +1,9 @@
-# Studio landing page: second-pass review
+# Studio landing page: content review
 
 Website PR35, `feat/website-studio`, targeting `main`. Website only; Captain visual
-review remains required before merge or production release.
+review remains required before merge or production release. The second-pass layout
+was accepted at `1e6f5e4`; this revision preserves its CSS, screenshot viewer and
+responsive behaviour.
 
 ## Composition research
 
@@ -37,3 +39,24 @@ available. Local evidence is untracked under
 
 Local review: http://127.0.0.1:4173/studio . Preview deployment and Captain visual
 acceptance are separate gates. No Studio app, backend, credentials or auth edits.
+
+## Customer positioning revision
+
+The page now leads with “Practice software shaped around the way you work.”
+It presents the maintained-product direction and direct collaboration around
+practitioner outcomes: less fragmented admin, fewer dropped enquiries, clearer
+handoffs, continuity and a manageable day. Rick's clinical experience, engineering
+and customer-facing delivery support the explanation of how collaboration works.
+
+Observe real work, agree a useful scope, build with feedback, verify the intended
+journey and agree maintenance are described concretely. Proposed adaptations
+remain examples to discuss. AI is an enabling development tool, not a required
+customer-facing feature. No pricing, unlimited support, customer outcomes or
+production-auth completion claims were added. The homepage entry and metadata
+use the same positioning.
+
+Copy validation: website build passes. Desktop1440/mobile390/mobile320 render
+without overflow or image/browser errors; copy wrapping reviewed. Demo/application
+and contact links retain their intended targets. Evidence:
+`_archive/delivery-evidence/website-studio-copy-2026-09-10/`.
+Captain content review remains pending.

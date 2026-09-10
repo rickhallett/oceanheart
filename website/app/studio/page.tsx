@@ -4,14 +4,14 @@ import { ProductExplorer } from "./product-explorer";
 import "./studio.css";
 
 export const metadata: Metadata = {
-  title: "Oceanheart Studio — your practice, in working order",
+  title: "Oceanheart Studio — practice software shaped around your work",
   description:
-    "A workspace for independent practitioners. Bring clients, services, appointments and follow-ups together, and explore the real Studio interface in a fictional practice demo.",
+    "Practice management for independent practitioners, with direct collaboration to shape useful workflows, integrations and client experiences. Explore the public demo.",
   alternates: { canonical: "https://www.oceanheart.ai/studio" },
   openGraph: {
-    title: "Oceanheart Studio — your practice, in working order",
+    title: "Oceanheart Studio — practice software shaped around your work",
     description:
-      "Clients, appointments and the work between them. A considered workspace for independent practice.",
+      "A shared practice-management foundation and direct collaboration to make the working day more manageable.",
     url: "https://www.oceanheart.ai/studio",
     images: [
       {
@@ -38,20 +38,20 @@ export default function Page() {
         <div>
           <a href="#product">Explore</a>
           <a href="#working-day">A working day</a>
-          <a href="#direction">What’s next</a>
+          <a href="#direction">Working together</a>
           <a href={appUrl}>Studio sign-in</a>
         </div>
       </nav>
 
       <section className="studio-hero studio-wide" aria-labelledby="studio-title">
         <h1 id="studio-title">
-          Your practice,
+          Practice software
           <br />
-          <span>in working order.</span>
+          <span>shaped around the way you work.</span>
         </h1>
         <p className="studio-lead">
-          A place for the people you work with, the appointments you make, and the things you need
-          to follow up.
+          Bring enquiries, appointments and follow-ups into one place. Work directly with the maker
+          to shape the parts that matter to your practice.
         </p>
         <div className="studio-actions">
           <a className="studio-button" href={demoUrl}>
@@ -62,8 +62,8 @@ export default function Page() {
           </a>
         </div>
         <p className="studio-hero-context">
-          Studio is being built for independent practitioners. The public demo opens a fictional
-          Rick Hallett practice without a sign-in.
+          Studio is being developed as a maintained practice-management product for independent
+          practitioners and small practices. Explore the fictional demo without signing in.
         </p>
         <figure className="studio-hero-screen">
           <picture>
@@ -99,18 +99,20 @@ export default function Page() {
         </h2>
         <div className="studio-reading studio-reading-offset">
           <p>
-            An independent practice has a lot happening around each appointment. A new enquiry needs
-            a reply. A returning client needs a time. A service has changed, and there is something
-            you promised to follow up.
+            A new enquiry needs a reply. An appointment changes. Someone is waiting to hear what
+            happens next. When the details are spread across inboxes, calendars and notes, keeping
+            the practice moving becomes another job.
           </p>
           <p>
-            When those pieces live across a calendar, an inbox and a collection of notes, the day
-            begins with finding the work. Studio’s purpose is to give them a shared home.
+            Studio’s purpose is less fragmented admin, fewer dropped enquiries and clearer handoffs.
+            A place to see what needs attention and keep the thread of a client relationship, so the
+            working day feels more manageable.
           </p>
           <p>
-            It is designed for independent therapists, coaches, bodyworkers and other practitioners
-            whose work depends on attention and continuity. The ambition is a useful system for a
-            small practice, with room to grow as the work changes.
+            The approach combines a shared product with direct collaboration. For independent
+            therapists, coaches, bodyworkers and small practices, that means a route to discuss the
+            workflows, integrations and client experiences that need a better fit. Each proposed
+            change starts with understanding the work and agreeing a useful, maintainable scope.
           </p>
         </div>
       </section>
@@ -169,11 +171,12 @@ export default function Page() {
           </li>
         </ol>
         <div className="studio-detail-note">
-          <h3>Services and settings keep the foundation consistent.</h3>
+          <h3>A shared foundation, with room to adapt.</h3>
           <p>
-            Manage the offer behind the bookings and configure the practice workspace. Together with
-            clients, enquiries, bookings, tasks and Today, these form the current signed-in
-            application.
+            Clients, services, bookings, tasks, Today, enquiries and settings form the current
+            foundation. An intake process, booking rule or client-facing form could be an area for
+            collaboration. These are examples to explore together, not ready-made features or a
+            promise that every request can be supported.
           </p>
           <a className="studio-link" href={appUrl}>
             Studio sign-in
@@ -183,9 +186,9 @@ export default function Page() {
 
       <section className="studio-release studio-wide" aria-labelledby="studio-release-title">
         <h2 id="studio-release-title">
-          What you can use.
+          Where Studio stands.
           <br />
-          What you can explore.
+          What comes next.
         </h2>
         <dl className="studio-release-list">
           <div>
@@ -223,50 +226,55 @@ export default function Page() {
         aria-labelledby="studio-direction-title"
       >
         <h2 id="studio-direction-title">
-          Build the daily work well.
+          Your work shapes the change.
           <br />
-          <span>Then connect the rest.</span>
+          <span>We follow it through.</span>
         </h2>
         <div className="studio-direction-prose studio-reading">
           <p>
-            Studio is a product and engineering project by Rick Hallett, shaped around independent
-            practice. The first responsibility is to make the core workflow coherent: people,
-            services, appointments and follow-ups should belong to the same working picture.
+            Work directly with Rick Hallett, who brings clinical experience, hands-on engineering
+            and customer-facing delivery. That background helps connect the human context of a
+            practice with the decisions needed to build useful software. Understanding your
+            particular practice still starts with listening, rather than assuming it works like
+            someone else’s.
           </p>
           <p>
-            The Precision interface follows that idea. A continuous white surface, familiar controls
-            and restrained blue actions keep attention on the work. Information should remain
-            readable as the practice moves between a desktop and a phone.
+            Show a recent awkward enquiry, booking or handoff, including the tools and workarounds
+            around it. Together, identify what would make it better and agree a useful change. The
+            answer might be a setting, a shared product improvement or a scoped adaptation.
           </p>
-          <h3>The next connection is email.</h3>
+          <h3>Build with feedback. Check the whole journey.</h3>
           <p>
-            Completing production Gmail authorisation is the next step toward connecting
-            conversations with the practice workspace. A useful integration needs reliable behaviour
-            and clear responsibility for what happens outside the app.
+            Use real working examples and early versions to shape the result. Before calling it
+            finished, verify the intended journey in its working environment and check that you can
+            use it. Agree how the change will be maintained, its dependencies and the support it
+            needs through future updates.
           </p>
-          <h3>The longer view is the whole practice.</h3>
+          <h3>Responsive development, with clear responsibility.</h3>
           <p>
-            A public website that reflects your services. A portal where clients can see their side
-            of the practice. Payments connected to the work itself. Assistance that helps with the
-            administrative load.
+            AI development tools help Rick investigate problems, explore alternatives and build
+            improvements. Responsibility for the result stays with Oceanheart. You do not need to
+            adopt AI in your client relationships to benefit from this way of developing software.
           </p>
           <p>
-            These remain roadmap intentions, with scope shaped by what proves useful. The demo can
-            illustrate them before they are ready for the live application. The aim is a connected
-            experience that earns its place in a practitioner’s day.
+            The ambition is a dependable common foundation that can adapt where it matters: enquiry
+            journeys, communications, booking arrangements and the experience clients see. Each
+            opportunity needs its own scope and maintenance agreement. Useful lessons can improve
+            the shared product while preserving differences that serve a practice well.
           </p>
         </div>
       </section>
 
       <section className="studio-closing studio-wide" aria-labelledby="studio-closing-title">
         <h2 id="studio-closing-title">
-          Spend a little time
+          What gets in the way
           <br />
-          in the practice.
+          of your working day?
         </h2>
         <p>
-          Explore the fictional workspace, follow an enquiry, and look at the week ahead. If you can
-          see a place for Studio in your work, Rick would like to hear what matters to you.
+          Explore the demo, then bring a recurring difficulty to a conversation with Rick. An
+          enquiry that loses its thread, a booking that takes too many steps, a handoff that depends
+          on memory. Start with the work you would like to make easier.
         </p>
         <div className="studio-actions">
           <a className="studio-button" href={demoUrl}>
