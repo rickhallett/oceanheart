@@ -86,3 +86,7 @@ Motion refinement: removed translation and reduced opacity change to 72–100% o
 ## Explicit AI possibilities
 
 Strengthened four existing journeys and two cloud-tool examples: source-linked conversation understanding, voice-note-to-group prototyping and rehearsal, multimodal adaptations of practitioner material, natural-language planning backed by scheduling checks, grounded replies from selected Drive sources and cross-tool preparation briefs. Copy describes proposed capabilities with concrete human benefits and engineering mechanisms rather than claiming shipped integrations. TypeScript and diff checks passed.
+
+## Authorized canonical release
+
+Captain authorized staging/preview and production release, superseding the local-only hold. The exact approved content from 6b59e64 now renders at canonical `/studio`; `/studio/possibilities` permanently redirects there. Canonical `/studio` is indexable; the artwork study retains noindex. Only route imports and metadata changed; approved content, artwork and interactions are preserved. Local 4183 remains running, including access through the old URL. No app/backend/database changes.

@@ -21,6 +21,16 @@
   ],
   "redirects": [
     {
+      "source": "/studio/possibilities",
+      "destination": "/studio",
+      "permanent": true
+    },
+    {
+      "source": "/studio/possibilities/",
+      "destination": "/studio",
+      "permanent": true
+    },
+    {
       "source": "/agent-boot",
       "destination": "/blog/2026-03-01-the-elephant/",
       "permanent": true
