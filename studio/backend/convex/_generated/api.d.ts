@@ -17,6 +17,7 @@ import type * as gmailConnections from "../gmailConnections.js";
 import type * as gmailInternal from "../gmailInternal.js";
 import type * as lib_access from "../lib/access.js";
 import type * as lib_bookingCommands from "../lib/bookingCommands.js";
+import type * as lib_bookingHours from "../lib/bookingHours.js";
 import type * as lib_catalog from "../lib/catalog.js";
 import type * as lib_createClient from "../lib/createClient.js";
 import type * as lib_demoData from "../lib/demoData.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   gmailInternal: typeof gmailInternal;
   "lib/access": typeof lib_access;
   "lib/bookingCommands": typeof lib_bookingCommands;
+  "lib/bookingHours": typeof lib_bookingHours;
   "lib/catalog": typeof lib_catalog;
   "lib/createClient": typeof lib_createClient;
   "lib/demoData": typeof lib_demoData;

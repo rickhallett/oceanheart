@@ -188,6 +188,7 @@ it("settings mount for owners and remain available read-only to viewers", async 
       saturday: null,
       sunday: null,
     },
+    enforceBookingHours: false,
   };
   vi.mocked(useQuery).mockImplementation((...args) =>
     getFunctionName(args[0]) === "settings:get"

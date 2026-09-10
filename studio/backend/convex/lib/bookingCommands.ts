@@ -3,6 +3,7 @@ import type { Id, Doc } from "../_generated/dataModel";
 import { ConvexError } from "convex/values";
 import { requireMember } from "./access";
 import { requestKey } from "./catalog";
+import { requireBookingHours } from "./bookingHours";
 export const MAX_DURATION=86400000;
 export function interval(startsAt:number,endsAt:number){if(!Number.isSafeInteger(startsAt)||!Number.isSafeInteger(endsAt)||startsAt<0||endsAt>8640000000000000||endsAt<=startsAt||endsAt-startsAt>MAX_DURATION)throw new ConvexError("INVALID_INTERVAL");}
 export async function free(ctx:MutationCtx,tenantId:Id<"tenants">,startsAt:number,endsAt:number,ignore?:Id<"bookings">){
@@ -22,7 +23,7 @@ export async function createLinkedBooking(ctx:MutationCtx,args:{tenantId:Id<"ten
     const client=await ctx.db.get(args.clientId),service=await ctx.db.get(args.serviceId);
     if(!client||!service||client.tenantId!==args.tenantId||service.tenantId!==args.tenantId)throw new ConvexError("FORBIDDEN");
     if(client.archived||!service.active)throw new ConvexError("ARCHIVED_RECORD");
-    const endsAt=args.startsAt+service.durationMinutes*60000;interval(args.startsAt,endsAt);await free(ctx,args.tenantId,args.startsAt,endsAt);
+    const endsAt=args.startsAt+service.durationMinutes*60000;interval(args.startsAt,endsAt);requireBookingHours(tenant,args.startsAt,endsAt);await free(ctx,args.tenantId,args.startsAt,endsAt);
     const serviceSnapshot={name:service.name,durationMinutes:service.durationMinutes,priceMinor:service.priceMinor,currency:service.currency};
     const id=await ctx.db.insert("bookings",{...args,endsAt,practitionerId:"practice",clientLabel:client.name,serviceSnapshot,timeZone:tenant.timeZone,creationPayload,status:"scheduled",revision:0,createdBy:user.tokenIdentifier});
     await event(ctx,(await ctx.db.get(id))!,user.tokenIdentifier,"created",0);return id;

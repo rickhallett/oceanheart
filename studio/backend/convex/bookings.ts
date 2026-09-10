@@ -8,6 +8,7 @@ import { expectedRevision, requestKey } from "./lib/catalog";
 import { practiceDayAt } from "./lib/practiceDay";
 import { paginationOptsValidator } from "convex/server";
 import { pageSize } from "./lib/catalog";
+import { requireBookingHours } from "./lib/bookingHours";
 
 export const forClient = query({
   args: { tenantId: v.id("tenants"), clientId: v.id("clients"), paginationOpts: paginationOptsValidator },
@@ -35,6 +36,7 @@ export const create=mutation({
     const creationPayload=JSON.stringify({practitionerId:args.practitionerId,startsAt:args.startsAt,endsAt:args.endsAt,clientLabel:args.clientLabel});
     const previous=await ctx.db.query("bookings").withIndex("by_tenant_request",q=>q.eq("tenantId",args.tenantId).eq("requestKey",args.requestKey)).unique();
     if(previous){if(previous.clientId||original(previous)!==creationPayload||previous.createdBy!==user.tokenIdentifier)throw new ConvexError("IDEMPOTENCY_MISMATCH");return previous._id;}
+    const tenant=await ctx.db.get(args.tenantId);if(!tenant)throw new ConvexError("FORBIDDEN");requireBookingHours(tenant,args.startsAt,args.endsAt);
     await free(ctx,args.tenantId,args.startsAt,args.endsAt);
     const id=await ctx.db.insert("bookings",{...args,creationPayload,status:"scheduled",revision:0,createdBy:user.tokenIdentifier});
     await event(ctx,(await ctx.db.get(id))!,user.tokenIdentifier,"created",0);return id;
@@ -56,6 +58,7 @@ export const reschedule=mutation({
     const endsAt=args.startsAt+record.serviceSnapshot.durationMinutes*60000;interval(args.startsAt,endsAt);
     if(record.startsAt===args.startsAt)return record._id;
     if((record.revision??0)!==args.expectedRevision)throw new ConvexError("REVISION_CONFLICT");
+    const tenant=await ctx.db.get(args.tenantId);if(!tenant)throw new ConvexError("FORBIDDEN");requireBookingHours(tenant,args.startsAt,endsAt);
     await free(ctx,args.tenantId,args.startsAt,endsAt,record._id);
     const revision=(record.revision??0)+1;await ctx.db.patch(record._id,{startsAt:args.startsAt,endsAt,revision});
     await event(ctx,record,user.tokenIdentifier,"rescheduled",revision,args.startsAt,endsAt);return record._id;

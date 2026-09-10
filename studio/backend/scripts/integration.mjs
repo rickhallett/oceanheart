@@ -2,6 +2,7 @@ import {gmailChecks} from "./gmail-checks.mjs";
 import {randomBytes} from "node:crypto";
 import { enquiryChecks } from "./enquiry-checks.mjs";
 import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
+import { bookingHoursChecks } from "./booking-hours-checks.mjs";
 import { recordManagementChecks } from "./record-management-checks.mjs";
 import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
@@ -541,6 +542,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   assert.equal(limited.limit, 200);
   check("list truncation explicitly reported with hasMore and limit");
   const bookingFixtures=await bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"booking-local"});
+  await bookingHoursChecks({alice,bob,viewer,check,prefix:"hours-local"});
   const oldStart=Date.UTC(2041,0,10,9),oldArgs={tenantId:tenantA,practitionerId:"pre-upgrade",startsAt:oldStart,endsAt:oldStart+3600000,clientLabel:"Pre-upgrade booking",requestKey:"pre-upgrade"};
   await writeFile(resolve(runDir,"legacy-bookings.json"),JSON.stringify([{...oldArgs,createdBy:`${issuer}|alice`}]));
   await command(["import","--env-file",".push.env","--table","bookings","--append","legacy-bookings.json"]);

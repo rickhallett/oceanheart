@@ -510,6 +510,33 @@
 .lp-availability-note {
   margin: 0 0 4px !important;
 }
+.lp-hours-enforcement {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin: 16px 0 8px;
+  color: #17212f;
+}
+.lp-hours-enforcement input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #255bd7;
+}
+.lp-hours-enforcement strong,
+.lp-hours-enforcement span {
+  display: block;
+}
+.lp-hours-enforcement strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.lp-hours-enforcement .lp-muted {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
 .lp-day-row {
   display: flex;
   align-items: center;
