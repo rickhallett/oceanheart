@@ -17,6 +17,7 @@ import { PracticeSettings } from "../practice/settings";
 import { PracticeGmail } from "../practice/gmail";
 import { PracticeEnquiries } from "../practice/enquiries";
 import type { EnquiryId } from "../practice/enquiry-api";
+import { WorkspaceGuide, UpcomingWorkspace } from "./workspace-guide";
 import { SourceLibrary } from "../practice/source-library";
 import { LiveToday } from "./live-today";
 import { WorkspaceLoading } from "./workspace-loading";
@@ -168,7 +169,17 @@ function LiveScreen({
         go={go}
       />
     );
-  if (view === "knowledge") return <SourceLibrary tenantId={tenantId} canWrite={canWrite} />;
+  if (view === "assistant")
+    return (
+      <SourceLibrary
+        tenantId={tenantId}
+        canWrite={canWrite}
+        initialSection="answers"
+      />
+    );
+  if (view === "support") return <WorkspaceGuide go={go} />;
+  if (view === "knowledge")
+    return <SourceLibrary tenantId={tenantId} canWrite={canWrite} />;
   if (view === "tasks")
     return (
       <PracticeTasks
@@ -252,13 +263,7 @@ function LiveScreen({
         </details>
       </>
     );
-  return (
-    <div className="lp-empty">
-      <h2>{modules.find(([id]) => id === view)?.[1]}</h2>
-      <p>This part of your workspace is not connected yet.</p>
-      <button onClick={() => go("today")}>Back to Today</button>
-    </div>
-  );
+  return <UpcomingWorkspace view={view} go={go} />;
 }
 
 function WorkspaceTimeZone({

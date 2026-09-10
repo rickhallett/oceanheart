@@ -234,11 +234,11 @@ it("discards a late provider result when the question changes", async () => {
   );
   render(<CitedAnswers tenantId={"t" as TenantId} canWrite={true} />);
   fireEvent.click(screen.getByRole("checkbox"));
-  fireEvent.change(screen.getByLabelText("Question"), {
+  fireEvent.change(screen.getByLabelText("What would you like to know?"), {
     target: { value: "Cancellation notice?" },
   });
-  fireEvent.click(screen.getByRole("button", { name: "Ask with citations" }));
-  fireEvent.change(screen.getByLabelText("Question"), {
+  fireEvent.click(screen.getByRole("button", { name: "Find an answer" }));
+  fireEvent.change(screen.getByLabelText("What would you like to know?"), {
     target: { value: "Parking?" },
   });
   await act(async () =>

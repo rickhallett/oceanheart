@@ -41,7 +41,7 @@ export function PrepareTask({
       const id = await prepare({ ...args, requestKey: receipt.current.key });
       remember(tenantId, id);
       setMessage(
-        "Proposal prepared. Review it in the task approval section before creating the task.",
+        "Ready to review. Review your task, then confirm to create it.",
       );
     } catch {
       setMessage(
@@ -54,11 +54,11 @@ export function PrepareTask({
   }
   return (
     <section className="approved-task">
-      <h3>Prepare a task from this evidence</h3>
+      <h3>Turn this answer into a task</h3>
       <p>
-        You choose the task wording. Preparing a proposal creates no task.
-        Approved task text is visible to practice members; source citations
-        remain owner-only.
+        Write the task in your own words, then review it before adding it. Tasks
+        are shared with your practice; supporting documents stay private to
+        owners.
       </p>
       <label>
         Task title
@@ -79,7 +79,7 @@ export function PrepareTask({
         />
       </label>
       <button disabled={busy || !title.trim()} onClick={() => void submit()}>
-        Prepare task proposal
+        Review task
       </button>
       {message && <p role="status">{message}</p>}
     </section>
@@ -111,7 +111,7 @@ export function PrepareCompletion({ tenantId }: { tenantId: TenantId }) {
       const id = await prepare({ ...args, requestKey: receipt.current.key });
       remember(tenantId, id);
       setMessage(
-        "Proposal prepared. Review the exact task before marking it complete.",
+        "Ready to review. Check the task below, then confirm completion.",
       );
     } catch {
       setMessage(
@@ -124,11 +124,8 @@ export function PrepareCompletion({ tenantId }: { tenantId: TenantId }) {
   }
   return (
     <section className="approved-task">
-      <h3>Complete an existing task with approval</h3>
-      <p>
-        Select an open task. Preparing a proposal leaves it open until you
-        approve the exact change.
-      </p>
+      <h3>Finish a task</h3>
+      <p>Choose an open task and review it before marking it complete.</p>
       <label>
         Open task
         <select
@@ -139,7 +136,7 @@ export function PrepareCompletion({ tenantId }: { tenantId: TenantId }) {
           <option value="">Choose a task</option>
           {tasks?.items.map((t) => (
             <option key={t._id} value={t._id}>
-              {t.title} · {t._id}
+              {t.title}
             </option>
           ))}
         </select>
@@ -147,7 +144,7 @@ export function PrepareCompletion({ tenantId }: { tenantId: TenantId }) {
       {tasks && !tasks.items.length && <p>No open tasks are available.</p>}
       {tasks?.hasMore && <p>Showing the latest 200 open tasks.</p>}
       <button disabled={busy || !task} onClick={() => void submit()}>
-        Prepare completion proposal
+        Review completion
       </button>
       {message && <p role="status">{message}</p>}
     </section>
@@ -165,7 +162,7 @@ class ProposalBoundary extends Component<
     return this.state.failed ? (
       <div role="alert">
         <p>This proposal is unavailable with your current owner access.</p>
-        <button onClick={this.props.clear}>Dismiss proposal</button>
+        <button onClick={this.props.clear}>Dismiss</button>
       </div>
     ) : (
       this.props.children
@@ -241,7 +238,7 @@ export function ProposalReview({
   const completing = proposal.action === "task.complete";
   return (
     <section className="approved-task" aria-label="Task approval">
-      <h2>Review exact task</h2>
+      <h2>Review your task</h2>
       <p>
         <strong>{proposal.task.title}</strong>
       </p>
@@ -252,7 +249,6 @@ export function ProposalReview({
             Mark this existing task complete. Its title, due date and client
             link stay the same.
           </p>
-          <p>Task ID: {proposal.target?.taskId}</p>
         </>
       ) : (
         <p>
@@ -277,7 +273,7 @@ export function ProposalReview({
                 : "Approve and create task"}
             </button>
             <button disabled={busy} onClick={() => void decide(false)}>
-              Reject proposal
+              Cancel this change
             </button>
           </div>
         </>
@@ -285,15 +281,15 @@ export function ProposalReview({
         <p role="status">
           {proposal.status === "executed"
             ? completing
-              ? "Task completion recorded. Repeated approval returns the same receipt without changing the task again."
-              : "Task created. Repeated approval returns this same task."
+              ? "Task marked complete."
+              : "Task added to your practice."
             : completing
-              ? "Proposal rejected. The task was not changed."
-              : "Proposal rejected. No task was created."}
+              ? "Change cancelled. Your task is unchanged."
+              : "Change cancelled. No task was added."}
         </p>
       )}
       {error && <p role="alert">{error}</p>}
-      <button onClick={clear}>Dismiss proposal</button>
+      <button onClick={clear}>Dismiss</button>
     </section>
   );
 }
