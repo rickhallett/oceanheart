@@ -161,3 +161,9 @@
 .approved-task h3 {
   font-size: 16px;
 }
+
+.approved-task select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}

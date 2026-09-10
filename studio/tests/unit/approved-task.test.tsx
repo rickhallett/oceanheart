@@ -3,6 +3,7 @@ import { it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import {
   PrepareTask,
+  PrepareCompletion,
   ProposalReview,
 } from "../../src/components/practice/approved-task";
 import type { TenantId } from "../../src/components/practice/api";
@@ -113,4 +114,100 @@ it("stale evidence disables approval and an executed receipt never offers a seco
     screen.queryByRole("button", { name: "Approve and create task" }),
   ).toBeNull();
   expect(screen.getByRole("status")).toHaveTextContent("Task created");
+});
+it("completion review shows the exact target and effect and only approves explicitly", async () => {
+  const decide = vi.fn().mockResolvedValue("existing-task");
+  vi.mocked(useMutation).mockReturnValue(decide as never);
+  vi.mocked(useQuery).mockReturnValue({
+    action: "task.complete",
+    target: { taskId: "existing-task", revision: 3 },
+    task: { title: "Exact existing task" },
+    status: "pending",
+    eligible: true,
+    expiresAt: Date.now() + 60000,
+    reason: "",
+  });
+  render(
+    <ProposalReview
+      tenantId={tenantId}
+      proposalId={proposalId}
+      clear={() => {}}
+    />,
+  );
+  expect(screen.getByText("Task ID: existing-task")).toBeVisible();
+  expect(screen.getByText(/Mark this existing task complete/)).toBeVisible();
+  expect(decide).not.toHaveBeenCalled();
+  fireEvent.click(
+    screen.getByRole("button", { name: "Approve and complete task" }),
+  );
+  await waitFor(() =>
+    expect(decide).toHaveBeenCalledWith({ tenantId, proposalId }),
+  );
+});
+it("completion preparation binds selected ID/revision and retries the same request without changing the task", async () => {
+  const mutate = vi
+    .fn()
+    .mockRejectedValueOnce(Error("lost response"))
+    .mockResolvedValue(proposalId);
+  vi.mocked(useMutation).mockReturnValue(mutate as never);
+  vi.mocked(useQuery).mockReturnValue({
+    items: [{ _id: "existing-task", title: "Existing", revision: 3 }],
+    hasMore: false,
+  });
+  render(<PrepareCompletion tenantId={tenantId} />);
+  fireEvent.change(screen.getByLabelText("Open task"), {
+    target: { value: "existing-task" },
+  });
+  fireEvent.click(
+    screen.getByRole("button", { name: "Prepare completion proposal" }),
+  );
+  await screen.findByText(/Could not prepare completion/);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Prepare completion proposal" }),
+  );
+  await screen.findByText(/Proposal prepared/);
+  expect(mutate.mock.calls[0][0]).toEqual(mutate.mock.calls[1][0]);
+  expect(mutate.mock.calls[0][0]).toEqual({
+    tenantId,
+    taskId: "existing-task",
+    expectedRevision: 3,
+    requestKey: expect.any(String),
+  });
+});
+it("stale completion is disabled and executed completion reports a durable receipt", () => {
+  vi.mocked(useMutation).mockReturnValue(vi.fn() as never);
+  const proposal = {
+    action: "task.complete",
+    target: { taskId: "existing-task", revision: 3 },
+    task: { title: "Existing" },
+    status: "pending",
+    eligible: false,
+    expiresAt: Date.now() + 60000,
+    reason: "Task changed",
+  };
+  vi.mocked(useQuery).mockReturnValue(proposal);
+  const view = render(
+    <ProposalReview
+      tenantId={tenantId}
+      proposalId={proposalId}
+      clear={() => {}}
+    />,
+  );
+  expect(
+    screen.getByRole("button", { name: "Approve and complete task" }),
+  ).toBeDisabled();
+  vi.mocked(useQuery).mockReturnValue({ ...proposal, status: "executed" });
+  view.rerender(
+    <ProposalReview
+      tenantId={tenantId}
+      proposalId={proposalId}
+      clear={() => {}}
+    />,
+  );
+  expect(
+    screen.queryByRole("button", { name: "Approve and complete task" }),
+  ).toBeNull();
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "Task completion recorded",
+  );
 });
