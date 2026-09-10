@@ -692,7 +692,9 @@ it("the shared editor saves title, date and client together and None clears the 
       openClient={openClient}
     />,
   );
-  await user.click(screen.getByRole("button", { name: "View Ava Stone in Clients" }));
+  const clientLink = screen.getByRole("button", { name: "View Ava Stone in Clients" });
+  expect(clientLink).toHaveClass("lp-task-client");
+  await user.click(clientLink);
   expect(openClient).toHaveBeenCalledWith({ name: "Ava Stone", archived: false });
   await user.click(screen.getByRole("button", { name: /Edit Original/ }));
   const editorClient = () => screen.getAllByLabelText("Client")[1];
