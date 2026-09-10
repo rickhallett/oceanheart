@@ -5,6 +5,7 @@ import type { Doc, Id } from "../../../backend/convex/_generated/dataModel";
 import { api } from "../../../backend/convex/_generated/api";
 import type { TenantId } from "./api";
 import "./source-library.css";
+import { CitedAnswers } from "./cited-answers";
 
 type SourceId = Id<"knowledgeSources">;
 type Fields = {
@@ -84,6 +85,9 @@ function Library({ tenantId }: { tenantId: TenantId }) {
         Keep approved practice information here. Sources are owner-only. Paste
         text or import a UTF-8 .txt or .md file, up to 32 KiB.
       </p>
+      {!adding && !selected && (
+        <CitedAnswers tenantId={tenantId} canWrite={true} />
+      )}
       {adding ? (
         <SourceEditor
           save={async (fields, key) => {
