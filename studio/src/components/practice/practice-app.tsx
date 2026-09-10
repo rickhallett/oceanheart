@@ -15,15 +15,9 @@ import {
   ConvexProviderWithAuth,
   ConvexReactClient,
   useConvexAuth,
-  useMutation,
-  useQuery,
 } from "convex/react";
-import { signOutPractice } from "@/app/practice/actions";
-import { practiceApi, type TenantId } from "./api";
-import { CreatePractice, PracticeShell } from "./practice-ui";
-import { PracticeViews } from "./practice-views";
+import { LiveWorkspace } from "../workspace/live-workspace";
 
-type GmailReturn = { status: string; tenantId?: string };
 function useWorkOSAuth() {
   const { user, loading } = useAuth();
   const { getAccessToken, refresh } = useAccessToken();
@@ -45,27 +39,17 @@ function useWorkOSAuth() {
 export function PracticeApp({
   convexUrl,
   initialAuth,
-  gmailReturn,
 }: {
   convexUrl: string;
-  gmailReturn?: GmailReturn;
   initialAuth: ComponentProps<typeof AuthKitProvider>["initialAuth"];
 }) {
   const [client] = useState(() => new ConvexReactClient(convexUrl));
   return (
     <AuthKitProvider initialAuth={initialAuth}>
       <ConvexProviderWithAuth client={client} useAuth={useWorkOSAuth}>
-        <PracticeShell
-          account={
-            <form action={signOutPractice}>
-              <button type="submit">Sign out</button>
-            </form>
-          }
-        >
-          <DataBoundary>
-            <AuthenticatedPractice gmailReturn={gmailReturn} />
-          </DataBoundary>
-        </PracticeShell>
+        <DataBoundary>
+          <AuthenticatedPractice />
+        </DataBoundary>
       </ConvexProviderWithAuth>
     </AuthKitProvider>
   );
@@ -96,7 +80,7 @@ class DataBoundary extends Component<
     );
   }
 }
-function AuthenticatedPractice({ gmailReturn }: { gmailReturn?: GmailReturn }) {
+function AuthenticatedPractice() {
   const { isLoading, isAuthenticated } = useConvexAuth();
   if (isLoading) return <p role="status">Connecting to your practice…</p>;
   if (!isAuthenticated)
@@ -109,61 +93,5 @@ function AuthenticatedPractice({ gmailReturn }: { gmailReturn?: GmailReturn }) {
         </a>
       </section>
     );
-  return <PracticeWorkspace gmailReturn={gmailReturn} />;
-}
-function PracticeWorkspace({ gmailReturn }: { gmailReturn?: GmailReturn }) {
-  const tenants = useQuery(practiceApi.tenants, {});
-  const createTenant = useMutation(practiceApi.createTenant);
-  const [selected, setSelected] = useState<TenantId | null>(
-    (gmailReturn?.tenantId as TenantId) ?? null,
-  );
-  const [creating, setCreating] = useState(false);
-  if (!tenants) return <p role="status">Loading practices…</p>;
-  const tenant = tenants.find((t) => t._id === selected) ?? tenants[0];
-  if (creating || !tenant)
-    return (
-      <CreatePractice
-        create={async (name, requestKey) => {
-          setSelected(await createTenant({ name, requestKey }));
-          setCreating(false);
-        }}
-        onCancel={tenants.length ? () => setCreating(false) : undefined}
-      />
-    );
-  return (
-    <>
-      <div className="lp-workspace-heading">
-        <div>
-          <span className="lp-eyebrow">Practice</span>
-          <h1>{tenant.name}</h1>
-        </div>
-        <div className="lp-picker">
-          <label htmlFor="practice-selector">Current practice</label>
-          <select
-            id="practice-selector"
-            value={tenant._id}
-            onChange={(e) => setSelected(e.target.value as TenantId)}
-          >
-            {tenants.map((t) => (
-              <option key={t._id} value={t._id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-          <button onClick={() => setCreating(true)}>Add a practice</button>
-        </div>
-      </div>
-      <PracticeViews
-        key={`${tenant._id}:${tenant.role}`}
-        tenantId={tenant._id}
-        canWrite={tenant.role === "owner"}
-        timeZone={tenant.timeZone}
-        gmailStatus={
-          !gmailReturn?.tenantId || gmailReturn.tenantId === tenant._id
-            ? gmailReturn?.status
-            : undefined
-        }
-      />
-    </>
-  );
+  return <LiveWorkspace />;
 }

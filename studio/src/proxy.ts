@@ -12,5 +12,5 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
   return authkit(request, event);
 }
 export const config = {
-  matcher: ["/practice/:path*", "/callback", "/sign-in"],
+  matcher: ["/app/:path*", "/practice/:path*", "/callback", "/sign-in"],
 };

@@ -2,7 +2,7 @@
 
 Canonical direction: Precision, revised with user review on 9 September 2026.
 
-This guide governs future editions of the practice workspace (`/app`). It supersedes the original Precision design proposal and older visual defaults. Public marketing pages and `/practice` are separate surfaces. Preserve the existing information architecture unless a task explicitly changes it.
+This guide governs future editions of the practice workspace (`/app`). It supersedes the original Precision design proposal and older visual defaults. Public marketing pages are a separate surface. Authenticated application functionality belongs within this same `/app` workspace; `/practice` redirects there. Preserve the existing information architecture unless a task explicitly changes it.
 
 ## Design intent
 

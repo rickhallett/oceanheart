@@ -27,7 +27,7 @@ export function PracticeViews(props: {
     <PracticeContent key={`${props.tenantId}:${props.canWrite}`} {...props} />
   );
 }
-function PracticeTasks({
+export function PracticeTasks({
   tenantId,
   canWrite,
   openClient,
@@ -246,7 +246,7 @@ function PracticeContent({
   );
 }
 
-function PracticeServices({
+export function PracticeServices({
   tenantId,
   canWrite,
 }: {
@@ -295,7 +295,7 @@ function PracticeServices({
     </>
   );
 }
-function PracticeClients({
+export function PracticeClients({
   tenantId,
   focus,
 }: {

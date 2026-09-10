@@ -20,7 +20,7 @@ it.each([
   "passes configured %s to SDK callback instead of the internal request hostname",
   async (origin) => {
     vi.stubEnv("NEXT_PUBLIC_WORKOS_REDIRECT_URI", `${origin}/callback`);
-    const response = NextResponse.redirect(`${origin}/practice`);
+    const response = NextResponse.redirect(`${origin}/app`);
     const sdkHandler = vi.fn().mockResolvedValue(response);
     vi.mocked(handleAuth).mockReturnValue(sdkHandler);
     const request = new NextRequest(
@@ -28,7 +28,7 @@ it.each([
     );
     expect(await GET(request)).toBe(response);
     expect(handleAuth).toHaveBeenCalledWith(
-      expect.objectContaining({ baseURL: origin, returnPathname: "/practice" }),
+      expect.objectContaining({ baseURL: origin, returnPathname: "/app" }),
     );
     expect(sdkHandler).toHaveBeenCalledWith(request);
     const options = vi.mocked(handleAuth).mock.calls[0][0]!;
@@ -37,7 +37,7 @@ it.each([
       request,
     });
     expect(failed.headers.get("location")).toBe(
-      `${origin}/practice?authError=1`,
+      `${origin}/app?authError=1`,
     );
   },
 );
@@ -46,6 +46,6 @@ it("never invokes callback SDK without configuration", async () => {
   const response = await GET(
     new NextRequest("http://127.0.0.1:4341/callback?code=test"),
   );
-  expect(new URL(response.headers.get("location")!).pathname).toBe("/practice");
+  expect(new URL(response.headers.get("location")!).pathname).toBe("/app");
   expect(handleAuth).not.toHaveBeenCalled();
 });
