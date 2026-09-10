@@ -1,7 +1,7 @@
 import { v, ConvexError } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { mutation, query, type QueryCtx } from "./_generated/server";
-import type { Id } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { requireMember } from "./lib/access";
 import { requestKey, expectedRevision } from "./lib/catalog";
 
@@ -61,6 +61,18 @@ async function owned(
     throw new ConvexError("FORBIDDEN");
   return { actor, source };
 }
+async function currentVersion(ctx: QueryCtx, source: Doc<"knowledgeSources">) {
+  const version = source.currentVersionId
+    ? await ctx.db.get(source.currentVersionId)
+    : null;
+  if (
+    !version ||
+    version.tenantId !== source.tenantId ||
+    version.sourceId !== source._id
+  )
+    throw new ConvexError("INVALID_SOURCE_VERSION");
+  return version;
+}
 export const list = query({
   args: {
     tenantId: v.id("tenants"),
@@ -89,9 +101,7 @@ export const get = query({
   args: { tenantId: v.id("tenants"), sourceId: v.id("knowledgeSources") },
   handler: async (ctx, args) => {
     const { source } = await owned(ctx, args.tenantId, args.sourceId);
-    const version = source.currentVersionId
-      ? await ctx.db.get(source.currentVersionId)
-      : null;
+    const version = await currentVersion(ctx, source);
     return { source, version };
   },
 });
@@ -191,6 +201,7 @@ export const save = mutation({
   },
   handler: async (ctx, args) => {
     const { source, actor } = await owned(ctx, args.tenantId, args.sourceId);
+    const current = await currentVersion(ctx, source);
     expectedRevision(args.expectedRevision);
     requestKey(args.requestKey);
     const data = await validated(args),
@@ -215,14 +226,11 @@ export const save = mutation({
     if (source.archived) throw new ConvexError("SOURCE_ARCHIVED");
     if (source.revision !== args.expectedRevision)
       throw new ConvexError("REVISION_CONFLICT");
-    const current = source.currentVersionId
-      ? await ctx.db.get(source.currentVersionId)
-      : null;
     const versionId = await ctx.db.insert("knowledgeVersions", {
       tenantId: args.tenantId,
       sourceId: args.sourceId,
       ...data,
-      number: (current?.number ?? 0) + 1,
+      number: current.number + 1,
       createdBy: actor.tokenIdentifier,
       requestKey: args.requestKey,
       payload,
@@ -253,6 +261,7 @@ export const changeStatus = mutation({
   },
   handler: async (ctx, args) => {
     const { source } = await owned(ctx, args.tenantId, args.sourceId);
+    await currentVersion(ctx, source);
     expectedRevision(args.expectedRevision);
     const actionKey = JSON.stringify({
       action: args.action,

@@ -91,3 +91,64 @@ it("does not mount private queries for viewers", () => {
   expect(screen.getByText("Owner access required")).toBeVisible();
   expect(screen.queryByText("Add source")).not.toBeInTheDocument();
 });
+
+it("picks only editable fields from Convex documents at initialization and latest recovery", async () => {
+  const metadata = {
+    ...initial,
+    _id: "version1",
+    _creationTime: 1,
+    tenantId: "tenant",
+    sourceId: "source",
+    hash: "hash",
+    number: 1,
+    payload: "receipt",
+    createdBy: "owner",
+  };
+  const save = vi.fn().mockResolvedValue(undefined);
+  const view = render(
+    <SourceEditor
+      initial={metadata}
+      revision={0}
+      save={save}
+      cancel={() => {}}
+    />,
+  );
+  fireEvent.change(screen.getByLabelText("Title"), {
+    target: { value: "Edited title" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
+  expect(save.mock.calls[0][0]).toEqual({ ...initial, title: "Edited title" });
+  expect(Object.keys(save.mock.calls[0][0]).sort()).toEqual([
+    "content",
+    "format",
+    "provenance",
+    "title",
+  ]);
+  view.rerender(
+    <SourceEditor
+      initial={{
+        ...metadata,
+        _id: "version2",
+        number: 2,
+        content: "New document",
+      }}
+      revision={1}
+      save={save}
+      cancel={() => {}}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Load latest version" }));
+  fireEvent.click(screen.getByRole("button", { name: "Save source" }));
+  await waitFor(() => expect(save).toHaveBeenCalledTimes(2));
+  expect(save.mock.calls[1][0]).toEqual({
+    ...initial,
+    content: "New document",
+  });
+  expect(Object.keys(save.mock.calls[1][0]).sort()).toEqual([
+    "content",
+    "format",
+    "provenance",
+    "title",
+  ]);
+});

@@ -312,6 +312,14 @@ function VersionHistory({
     </>
   );
 }
+function editorFields(value?: Fields): Fields {
+  return {
+    title: value?.title ?? "",
+    provenance: value?.provenance ?? "",
+    format: value?.format ?? "text",
+    content: value?.content ?? "",
+  };
+}
 export function SourceEditor({
   initial,
   revision,
@@ -325,9 +333,7 @@ export function SourceEditor({
   save: (fields: Fields, key: string, revision?: number) => Promise<void>;
   cancel: () => void;
 }) {
-  const [fields, setFields] = useState<Fields>(
-    initial ?? { title: "", provenance: "", format: "text", content: "" },
-  );
+  const [fields, setFields] = useState<Fields>(() => editorFields(initial));
   const [baseline, setBaseline] = useState(revision);
   const [pending, setPending] = useState(false),
     [error, setError] = useState("");
@@ -344,7 +350,7 @@ export function SourceEditor({
     if (receipt.current.payload !== payload)
       receipt.current = { payload, key: crypto.randomUUID() };
     try {
-      await save(fields, receipt.current.key, baseline);
+      await save(editorFields(fields), receipt.current.key, baseline);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -382,7 +388,7 @@ export function SourceEditor({
             <button
               type="button"
               onClick={() => {
-                setFields(initial!);
+                setFields(editorFields(initial));
                 setBaseline(revision);
                 setError("");
               }}

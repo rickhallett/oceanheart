@@ -6,6 +6,7 @@ export async function sourceLibraryChecks({
   viewer,
   anonymous,
   viewerIdentity,
+  corruptCurrent,
   check,
 }) {
   const tenantId = await alice.mutation("tenants:create", {
@@ -264,5 +265,63 @@ export async function sourceLibraryChecks({
   );
   check(
     "invalid writes leave no partial source/version; foreign IDs denied; archived index and bounded history remain scoped",
+  );
+  const malformedId = await alice.mutation("sourceLibrary:create", {
+    ...args,
+    requestKey: "malformed",
+  });
+  const malformed = await alice.query("sourceLibrary:get", {
+    tenantId,
+    sourceId: malformedId,
+  });
+  for (const target of [foreignData.version._id, original, undefined]) {
+    await corruptCurrent(malformedId, target);
+    await assert.rejects(
+      alice.query("sourceLibrary:get", { tenantId, sourceId: malformedId }),
+      /INVALID_SOURCE_VERSION/,
+    );
+    await assert.rejects(
+      alice.mutation("sourceLibrary:save", {
+        ...fields,
+        tenantId,
+        sourceId: malformedId,
+        expectedRevision: 0,
+        requestKey: "malformed-save",
+      }),
+      /INVALID_SOURCE_VERSION/,
+    );
+    await assert.rejects(
+      alice.mutation("sourceLibrary:changeStatus", {
+        tenantId,
+        sourceId: malformedId,
+        versionId: target ?? malformed.version._id,
+        expectedRevision: 0,
+        action: "approve",
+      }),
+      /INVALID_SOURCE_VERSION/,
+    );
+  }
+  await corruptCurrent(malformedId, malformed.version._id);
+  assert.equal(
+    (
+      await alice.query("sourceLibrary:get", {
+        tenantId,
+        sourceId: malformedId,
+      })
+    ).source.revision,
+    0,
+  );
+  assert.equal(
+    (
+      await alice.query("sourceLibrary:versions", {
+        tenantId,
+        sourceId: malformedId,
+        paginationOpts: { numItems: 10, cursor: null },
+      })
+    ).page.length,
+    1,
+  );
+  check(
+    "malformed foreign-tenant, wrong-source and absent current pointers fail closed for get/save/approval without writes",
   );
 }

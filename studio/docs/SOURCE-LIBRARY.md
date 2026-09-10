@@ -53,3 +53,11 @@ No existing tables or records are rewritten. Merge alongside payment tables,
 API declarations and the payment integration slice by unioning additions.
 No production writes. Gates independent review and hosted staging acceptance
 remain separate gates before this child can be marked Done.
+
+Review correction: editor payloads explicitly pick title/provenance/format/content
+from Convex documents on initial load, recovery and submission. Backend current
+version resolution fails closed for absent, foreign-tenant or wrong-source
+pointers before read/save/approval. A malformed-pointer adapter exists only in
+the disposable native-test checkout and is excluded from generated API checks;
+it is never part of the deployed backend source. Focused regression totals:
+6 UI tests, 7 grouped native outcomes.
