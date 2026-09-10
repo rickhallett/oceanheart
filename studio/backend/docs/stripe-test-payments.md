@@ -38,3 +38,6 @@ Register `https://<staging-deployment>.convex.site/stripe-webhook` for
 Provider readiness is unverified until the selected Stripe test account,
 endpoint secret and pinned version are confirmed together through the hosted
 Checkout → signed webhook → reload journey.
+
+When this configuration is absent, the Studio UI does not offer Checkout and
+the action fails before creating a durable payment attempt.

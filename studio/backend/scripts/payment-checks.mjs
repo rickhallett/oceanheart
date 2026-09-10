@@ -48,6 +48,23 @@ export async function paymentChecks({
     bookingId,
     requestKey: `${prefix}-attempt`,
   };
+  assert.deepEqual(
+    await alice.query("payments:availability", { tenantId }),
+    { enabled: false },
+  );
+  await assert.rejects(
+    alice.action("payments:startCheckout", reserveArgs),
+    /PAYMENTS_NOT_CONFIGURED/,
+  );
+  assert.equal(
+    (await alice.query("bookings:list", {
+      tenantId,
+      from: startsAt,
+      to: startsAt + 86_400_000,
+    })).items[0].payment,
+    undefined,
+  );
+  check("disabled payment environments reject before creating a durable attempt");
   for (const [caller, code] of [
     [anonymous, "UNAUTHENTICATED"],
     [viewer, "FORBIDDEN"],

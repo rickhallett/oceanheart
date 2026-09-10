@@ -1,4 +1,4 @@
-import { action } from "./_generated/server";
+import { action, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v, ConvexError } from "convex/values";
@@ -11,6 +11,20 @@ import {
   stripeConfig,
   type StripeCheckoutSession,
 } from "./lib/stripeProvider";
+import { requireMember } from "./lib/access";
+
+export const availability = query({
+  args: { tenantId: v.id("tenants") },
+  handler: async (ctx, args) => {
+    await requireMember(ctx, args.tenantId, true);
+    try {
+      stripeConfig();
+      return { enabled: true };
+    } catch {
+      return { enabled: false };
+    }
+  },
+});
 
 function assertSession(
   session: StripeCheckoutSession,
@@ -52,6 +66,12 @@ export const startCheckout = action({
     checkoutUrl?: string;
   }> => {
     try {
+      await ctx.runQuery(internal.paymentsInternal.authorizeStart, {
+        tenantId: args.tenantId,
+      });
+      // Configuration is checked before reserving a durable attempt. A disabled
+      // environment must expose neither Checkout nor payment-shaped writes.
+      const config = stripeConfig();
       let attempt = await ctx.runMutation(internal.paymentsInternal.reserve, args);
       const guarded = await ctx.runMutation(
         internal.paymentsInternal.guardCheckout,
@@ -61,7 +81,6 @@ export const startCheckout = action({
       if (attempt.status === "paid") return result(attempt);
       if (guarded.reconciliationRequired) {
         if (attempt.providerSessionId) {
-          const config = stripeConfig();
           await assertStripeAccount(config);
           const settled = await settleSupersededCheckout(
             config,
@@ -95,7 +114,6 @@ export const startCheckout = action({
       if (attempt.status === "failed")
         throw new ConvexError("PAYMENT_ATTEMPT_FAILED");
       if (attempt.checkoutUrl) return result(attempt);
-      const config = stripeConfig();
       await assertStripeAccount(config);
       let session: StripeCheckoutSession;
       if (attempt.providerSessionId) {

@@ -225,6 +225,18 @@ type startBookingCheckoutResult = Assert<
     FunctionReturnType<typeof practiceApi.startBookingCheckout>
   >
 >;
+type paymentAvailabilityArgs = Assert<
+  Equal<
+    FunctionArgs<typeof api.payments.availability>,
+    FunctionArgs<typeof practiceApi.paymentAvailability>
+  >
+>;
+type paymentAvailabilityResult = Assert<
+  Equal<
+    FunctionReturnType<typeof api.payments.availability>,
+    FunctionReturnType<typeof practiceApi.paymentAvailability>
+  >
+>;
 type createBookingArgs = Assert<
   Equal<
     FunctionArgs<typeof api.bookings.createLinked>,
@@ -266,6 +278,9 @@ it("uses deployed booking and timezone command names", () => {
   expect(getFunctionName(practiceApi.bookings)).toBe("bookings:list");
   expect(getFunctionName(practiceApi.startBookingCheckout)).toBe(
     "payments:startCheckout",
+  );
+  expect(getFunctionName(practiceApi.paymentAvailability)).toBe(
+    "payments:availability",
   );
   expect(getFunctionName(practiceApi.createBooking)).toBe(
     "bookings:createLinked",
