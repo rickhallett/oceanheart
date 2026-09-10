@@ -1,0 +1,91 @@
+.lp-task-filters,
+.lp-task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lp-task-filters {
+  margin: 0 0 16px;
+}
+
+.lp-task-filters button[aria-pressed="true"] {
+  color: #255bd7;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lp-task-actions button,
+.lp-task-filters button {
+  min-height: 34px;
+  padding: 5px 10px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.lp-task-actions {
+  margin-left: auto;
+}
+
+.lp-task-row {
+  width: 100%;
+}
+
+.lp-root .lp-task-client {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.lp-task-editor,
+.lp-task-remove {
+  margin: 4px 0 12px 28px;
+  max-width: 560px;
+}
+
+.lp-task-editor label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.lp-task-editor input {
+  box-sizing: border-box;
+  min-height: 34px;
+}
+
+.lp-task-editor .lp-task-actions,
+.lp-task-remove .lp-task-actions {
+  margin: 8px 0 0;
+}
+
+.lp-task-conflict,
+.lp-task-remove p {
+  margin: 8px 0 0;
+  color: #657389;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .lp-task-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding-block: 6px;
+  }
+
+  .lp-task-state {
+    margin-left: 0;
+  }
+
+  .lp-task-actions {
+    width: 100%;
+    margin-left: 28px;
+  }
+
+  .lp-task-editor,
+  .lp-task-remove {
+    margin-left: 28px;
+  }
+}

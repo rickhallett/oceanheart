@@ -2,14 +2,15 @@ name: Studio verification
 
 on:
   pull_request:
-    paths:
-      - "studio/**"
-      - ".github/workflows/studio-verify.yml"
+    # Always report the required checks, including documentation-only PRs.
+    # Path-filtered PR workflows can leave branch protection waiting forever.
   push:
-    branches: [main]
+    branches: [main, studio/dev]
     paths:
       - "studio/**"
       - ".github/workflows/studio-verify.yml"
+      - ".github/workflows/studio-release-policy.yml"
+      - ".coderabbit.yaml"
   workflow_dispatch:
 
 permissions:
@@ -40,6 +41,11 @@ jobs:
           cache: npm
           cache-dependency-path: studio/package-lock.json
       - run: npm ci
+      - name: Disable preinstalled Google Chrome apt source
+        run: |
+          sudo rm -f \
+            /etc/apt/sources.list.d/google-chrome.list \
+            /etc/apt/sources.list.d/google-chrome.sources
       - run: npx playwright install --with-deps chromium
       - run: npm run verify
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

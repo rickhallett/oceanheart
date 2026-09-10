@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+reviews:
+  auto_review:
+    base_branches:
+      - "^studio/dev$"
+    # Open completed batches for review; routine follow-up pushes stay quiet.
+    auto_incremental_review: false

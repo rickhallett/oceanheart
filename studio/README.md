@@ -1,6 +1,10 @@
+# Studio development baseline
+
+The accepted application lives on `studio/dev`. Start with [development and release](docs/DEVELOPMENT.md), [the canonical style guide](docs/STYLE_GUIDE.md), and [the RAD roadmap](docs/RAD-ROADMAP.md). Older implementation notes below may describe the pre-promotion prototype.
+
 # Oceanheart Studio
 
-Next.js 16 App Router + TypeScript landing page for Oceanheart Studio.
+Next.js 16 App Router + TypeScript + Chakra UI for Oceanheart Studio's public site and practice workspace.
 
 ## Local development
 
@@ -13,7 +17,9 @@ npm run typecheck
 
 ## Design system
 
-`src/app/globals.css` owns shared colour, typography, surface and spacing styles. `src/components/ui.tsx` exports the brand mark, primary link, text link and eyebrow. Website and future portal routes can share these components within the same Next.js application. `practice-preview.tsx` is a client component with fictional, in-memory demonstration data; it does not store personal or clinical information or connect to business systems.
+Chakra UI's free, open-source components provide the shared interface foundation. `src/theme.ts` owns semantic colours and component recipes; `StudioProvider` applies them across the public site, `/app` and `/practice`. Brand typography and domain layouts remain in scoped CSS. See [the component map and development conventions](docs/CHAKRA-UI.md).
+
+`src/components/ui.tsx` exports the brand mark, primary link, text link and eyebrow. `practice-preview.tsx` is a client component with fictional, in-memory demonstration data; it does not store personal or clinical information or connect to business systems.
 
 The contact links open an email draft addressed to rick@oceanheart.ai. There is no server-side enquiry collection or claim of successful delivery.
 
@@ -38,3 +44,7 @@ The `/app` workspace expands the homepage preview into a connected, browser-pers
 The independent [backend package](backend/README.md) contains the first Convex tenant, membership and atomic booking slice. Its integration suite uses a real local backend and signed test tokens. The public mock is not yet connected to this backend; hosted identity and persistence are separate delivery steps.
 
 See [verification commands](VERIFICATION.md), [worktree and migration boundaries](docs/DELIVERY.md), and the [backend decision](backend/docs/ADR-001-backend-choice.md). Track implementation and human gates in [Linear](https://linear.app/tinyrick/project/oceanheart-studio-8ed48b4b1722).
+
+The authenticated `/practice` uses WorkOS AuthKit and Convex for practice creation,
+selection and persisted tasks. See [configuration and acceptance](docs/WORKOS-PRACTICE.md).
+The public `/app` remains an independent browser-local prototype.

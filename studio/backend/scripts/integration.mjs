@@ -1,3 +1,13 @@
+import {gmailChecks} from "./gmail-checks.mjs";
+import {randomBytes} from "node:crypto";
+import { enquiryChecks } from "./enquiry-checks.mjs";
+import { bookingWorkflowChecks } from "./booking-workflow-checks.mjs";
+import { recordManagementChecks } from "./record-management-checks.mjs";
+import { settingsChecks } from "./settings-checks.mjs";
+import { catalogChecks } from "./catalog-checks.mjs";
+import { taskMaintenanceChecks } from "./task-maintenance-checks.mjs";
+import { todayChecks } from "./today-checks.mjs";
+import { clientNotesChecks } from "./client-notes-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -26,7 +36,7 @@ const audience = "studio-local-verification";
 const report = {
   runtime: "real local Convex backend over HTTP",
   authentication:
-    "RS256 bearer JWT verified by backend; no admin identity injection",
+    "RS256 bearer JWT verified by backend; Gmail transitions use an allowlisted local-only test adapter, never hosted source.",
   checks: [],
 };
 const check = (name) => {
@@ -98,6 +108,12 @@ try {
   await cp(resolve(root, "convex"), resolve(runDir, "convex"), {
     recursive: true,
   });
+  // This allowlisted adapter exists ONLY in the isolated local copy, never hosted source.
+  await writeFile(resolve(runDir,"convex/gmailTest.ts"), `import {action} from "./_generated/server";
+import {internal} from "./_generated/api";
+import {v} from "convex/values";
+export const transition=action({args:{name:v.union(v.literal("consume"),v.literal("finish"),v.literal("importMessage"),v.literal("disconnect"),v.literal("expireState")),args:v.any()},handler:async(ctx,{name,args}):Promise<any>=>ctx.runMutation(internal.gmailInternal[name],args)});
+`);
   for (const file of ["package.json", "tsconfig.json", "auth-policy.ts"])
     await cp(resolve(root, file), resolve(runDir, file));
   await symlink(
@@ -166,12 +182,13 @@ try {
     alg: "RS256",
     use: "sig",
   };
+  const gmailSigning=randomBytes(32).toString("base64"),gmailEncryption=randomBytes(32).toString("base64");
   const jwks =
     "data:text/plain;charset=utf-8;base64," +
     Buffer.from(JSON.stringify({ keys: [jwk] })).toString("base64");
   await writeFile(
     resolve(runDir, ".auth.env"),
-    `STUDIO_AUTH_MODE=local-jwt\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\n`,
+    `STUDIO_AUTH_MODE=local-jwt\nWORKOS_CLIENT_ID=\nCLERK_JWT_ISSUER_DOMAIN=\nSTUDIO_AUTH_ISSUER=${issuer}\nSTUDIO_AUTH_AUDIENCE=${audience}\nSTUDIO_AUTH_JWKS=${jwks}\nGOOGLE_CLIENT_ID=synthetic-client\nGOOGLE_CLIENT_SECRET=synthetic-secret\nGOOGLE_REDIRECT_URI=https://studio.invalid/practice/integrations/gmail/callback\nGMAIL_TOKEN_ENCRYPTION_KEY=${gmailEncryption}\nGMAIL_ROUTE_SIGNING_KEY=${gmailSigning}\n`,
   );
   await command(["env", "set", "--from-file", ".auth.env"]);
   const localConfig = JSON.parse(
@@ -194,7 +211,7 @@ try {
     { recursive: true },
   );
   assert.equal(
-    await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8"),
+    (await readFile(resolve(runDir, "convex/_generated/api.d.ts"), "utf8")).split("\n").filter(line=>!line.includes("gmailTest")).join("\n"),
     await readFile(resolve(root, "convex/_generated/api.d.ts"), "utf8"),
     "Generated API drift: inspect .local/generated and update the committed types",
   );
@@ -231,6 +248,97 @@ try {
   ]);
   assert.deepEqual(await viewer.query("tenants:list", {}), []);
   check("practice discovery derives only the authenticated user's memberships");
+  await assert.rejects(anonymous.mutation("tenants:create", {name:"Denied"}), /UNAUTHENTICATED/);
+  await assert.rejects(alice.mutation("tenants:create", {name:" "}), /INVALID_NAME/);
+  const practiceRequest = {name:"Explicit retry practice", requestKey:"practice-retry"};
+  const practiceRetries = await Promise.all([alice.mutation("tenants:create", practiceRequest), alice.mutation("tenants:create", practiceRequest)]);
+  assert.equal(practiceRetries[0], practiceRetries[1]);
+  await assert.rejects(alice.mutation("tenants:create", {...practiceRequest,name:"Different"}), /IDEMPOTENCY_MISMATCH/);
+  check("practice creation validates input and repeated requests create one practice");
+  const seedArgs={sourceTenantId:tenantA,ownerIdentity:`${issuer}|alice`};
+  await assert.rejects(command(["run","--env-file",".push.env","demoSeed:seedRick",JSON.stringify({...seedArgs,ownerIdentity:`${issuer}|bob`})]),/OWNER_REQUIRED/);
+  await assert.rejects(alice.mutation("demoSeed:seedRick",seedArgs));
+  const seeded=JSON.parse(await command(["run","--env-file",".push.env","demoSeed:seedRick",JSON.stringify(seedArgs)]));
+  assert.equal(seeded.created,true);assert.equal(seeded.clients,24);assert.equal(seeded.bookings,48);
+  const demoPage=await alice.query("clients:list",{tenantId:seeded.tenantId,paginationOpts:{numItems:50,cursor:null}});
+  assert.equal(demoPage.page.length,23);
+  const demoClient=demoPage.page[0];
+  await alice.mutation("clients:saveNotes",{tenantId:seeded.tenantId,clientId:demoClient._id,text:"An edit to keep",expectedRevision:0});
+  const retried=JSON.parse(await command(["run","--env-file",".push.env","demoSeed:seedRick",JSON.stringify(seedArgs)]));
+  assert.equal(retried.created,false);assert.equal(retried.tenantId,seeded.tenantId);
+  assert.equal((await alice.query("clients:notes",{tenantId:seeded.tenantId,clientId:demoClient._id})).text,"An edit to keep");
+  await assert.rejects(bob.query("clients:list",{tenantId:seeded.tenantId,paginationOpts:{numItems:50,cursor:null}}),/FORBIDDEN/);
+  check("demo seed is internal, owner-bound, isolated and retry-safe without overwriting edits");
+  const taskArgs = {tenantId:tenantA,title:"First live task",requestKey:"task-one"};
+  const taskClients = await Promise.all(Array.from({length:8},()=>client("alice")));
+  const taskIds = await Promise.all(taskClients.map(c=>c.mutation("tasks:create",taskArgs)));
+  assert.equal(new Set(taskIds).size,1);
+  const taskId = taskIds[0];
+  assert.equal(await alice.mutation("tasks:create",taskArgs),taskId);
+  await assert.rejects(alice.mutation("tasks:create",{...taskArgs,title:"Different"}),/IDEMPOTENCY_MISMATCH/);
+  for (const caller of [anonymous,bob]) {
+    const error = caller === anonymous ? /UNAUTHENTICATED/ : /FORBIDDEN/;
+    await assert.rejects(caller.query("tasks:list",{tenantId:tenantA}),error);
+    await assert.rejects(caller.mutation("tasks:create",taskArgs),error);
+    await assert.rejects(caller.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true}),error);
+  }
+  await assert.rejects(bob.mutation("tasks:setCompleted",{tenantId:tenantB,taskId,completed:true}),/FORBIDDEN/);
+  for (const title of [" ","x".repeat(201),"line\nbreak"]) await assert.rejects(alice.mutation("tasks:create",{...taskArgs,title,requestKey:"invalid"}),/INVALID_TITLE/);
+  for (const requestKey of [""," padded","x".repeat(129)]) await assert.rejects(alice.mutation("tasks:create",{...taskArgs,requestKey}),/INVALID_REQUEST_KEY/);
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true});
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:true});
+  const freshAlice = await client("alice");
+  assert.equal((await freshAlice.query("tasks:list",{tenantId:tenantA})).items[0].completed,true);
+  await alice.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false});
+  assert.equal((await freshAlice.query("tasks:list",{tenantId:tenantA})).items[0].completed,false);
+  const secondTask = await alice.mutation("tasks:create",{...taskArgs,title:"Second task",requestKey:"task-two"});
+  assert.equal((await alice.query("tasks:list",{tenantId:tenantA})).items[0]._id,secondTask);
+  check("tasks persist across clients; anonymous, cross-tenant and invalid commands denied; eight concurrent retries create one task; completion and reopening persist; newest-first ordering");
+  await taskMaintenanceChecks({
+    alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,
+    seedForeignLinkedTask:async(foreignClientId)=>{
+      const malformed={tenantId:tenantA,title:"Malformed foreign-linked task",completed:false,createdAt:Date.now(),createdBy:`${issuer}|alice`,requestKey:"malformed-foreign-linked-task",clientId:foreignClientId};
+      await writeFile(resolve(runDir,"malformed-foreign-linked-task.json"),JSON.stringify([malformed]));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","malformed-foreign-linked-task.json"]);
+      const task=(await alice.query("tasks:list",{tenantId:tenantA})).items.find(item=>item.title===malformed.title);
+      assert.ok(task,"malformed foreign-linked task import was not visible to native task query");
+      return task._id;
+    },
+    seedBoundaryTasks:async()=>{
+      const legacy={tenantId:tenantA,title:"Legacy task",completed:false,createdAt:1,createdBy:`${issuer}|alice`,requestKey:"legacy-task"};
+      await writeFile(resolve(runDir,"legacy-task.json"),JSON.stringify([legacy]));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","legacy-task.json"]);
+      const legacyTask=(await alice.query("tasks:list",{tenantId:tenantA,filter:"open"})).items.find(task=>task.title==="Legacy task");
+      assert.ok(legacyTask,"legacy task import was not visible to native task query");
+      const rows=[
+        ...Array.from({length:201},(_,index)=>({tenantId:tenantA,title:`Open boundary task ${index}`,completed:false,createdAt:index+2,createdBy:`${issuer}|alice`,requestKey:`open-boundary-${index}`})),
+        ...Array.from({length:201},(_,index)=>({tenantId:tenantA,title:`Completed boundary task ${index}`,completed:true,createdAt:index+203,createdBy:`${issuer}|alice`,requestKey:`completed-boundary-${index}`})),
+        ...Array.from({length:250},(_,index)=>({tenantId:tenantA,title:`Removed boundary task ${index}`,completed:false,removedAt:index+1,createdAt:index+404,createdBy:`${issuer}|alice`,requestKey:`removed-boundary-${index}`})),
+      ];
+      await writeFile(resolve(runDir,"task-boundary.json"),JSON.stringify(rows));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","task-boundary.json"]);
+      return legacyTask._id;
+    },
+  });
+  await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
+  await recordManagementChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"managementlocal"});
+  await clientNotesChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check});
+  await settingsChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"settings-local"});
+  await writeFile(resolve(runDir,"legacy-clients.json"),JSON.stringify(Array.from({length:101},(_,i)=>({tenantId:tenantA,name:i===0?"Legacy backfill fixture":`Migration auxiliary ${i}`,email:"legacy@example.com",createdAt:123,createdBy:`${issuer}|alice`,requestKey:`legacy-fixture-${i}`}))));
+  await command(["import","--env-file",".push.env","--table","clients","--append", "legacy-clients.json"]);
+  let backfillCursor=null,backfillUpdated=0,backfillPages=0;
+  do {
+    const batch=JSON.parse(await command(["run","--env-file",".push.env","migrations:backfillClientSearch",JSON.stringify({cursor:backfillCursor})]));
+    assert.ok(batch.scanned<=100);backfillUpdated+=batch.updated;backfillPages++;
+    if(batch.isDone)break;backfillCursor=batch.continueCursor;assert.ok(backfillPages<10);
+  }while(true);
+  assert.equal(backfillUpdated,101);assert.ok(backfillPages>=2);
+  const migrated=await alice.query("clients:list",{tenantId:tenantA,search:"backfill",paginationOpts:{numItems:50,cursor:null}});
+  assert.equal(migrated.page.length,1);assert.equal(migrated.page[0].name,"Legacy backfill fixture");assert.equal(migrated.page[0].email,"legacy@example.com");assert.equal(migrated.page[0].createdAt,123);assert.equal(migrated.page[0].revision,0);
+  const migrationId=migrated.page[0]._id;
+  await command(["run","--env-file",".push.env","migrations:backfillClientSearch",JSON.stringify({cursor:null})]);
+  assert.equal((await alice.query("clients:list",{tenantId:tenantA,search:"backfill",paginationOpts:{numItems:50,cursor:null}})).page[0]._id,migrationId);
+  check("internal bounded backfill makes legacy contacts searchable, preserves fields/ID and is repeatable");
   const start = Date.UTC(2030, 0, 10, 9);
   const hour = 3600000;
   const booking = {
@@ -328,12 +436,8 @@ try {
   });
   check("half-open adjacent bookings accepted");
   await bob.mutation("bookings:create", { ...booking, tenantId: tenantB });
-  await alice.mutation("bookings:create", {
-    ...booking,
-    practitionerId: "other",
-    requestKey: "other",
-  });
-  check("same interval isolated by tenant and practitioner");
+  await denied(alice.mutation("bookings:create", {...booking,practitionerId:"other",requestKey:"other"}),"BOOKING_CONFLICT");
+  check("same interval isolated by tenant; alternate practitioner keys cannot bypass single lane");
   await denied(
     alice.mutation("bookings:create", {
       ...booking,
@@ -375,7 +479,7 @@ try {
   assert.deepEqual(await viewer.query("tenants:list", {}), [
     { _id: tenantA, name: "Practice A", role: "viewer" },
   ]);
-  assert.equal((await viewer.query("bookings:list", window)).items.length, 3);
+  await denied(viewer.query("bookings:list", window),"FORBIDDEN");
   await denied(
     viewer.mutation("bookings:create", { ...booking, requestKey: "viewer" }),
     "FORBIDDEN",
@@ -387,14 +491,20 @@ try {
     }),
     "FORBIDDEN",
   );
-  check("viewer can read, cannot book or grant membership");
+  assert.equal((await viewer.query("tasks:list",{tenantId:tenantA})).items.length,200);
+  await denied(viewer.mutation("tasks:create",{...taskArgs,requestKey:"viewer"}),"FORBIDDEN");
+  await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
+  check("viewer can read tasks, cannot create or complete them");
+  check("viewer cannot read booking contacts, book or grant membership");
   await alice.mutation("tenants:removeViewer", {
     tenantId: tenantA,
     identity: `${issuer}|viewer`,
   });
   await denied(viewer.query("bookings:list", window), "FORBIDDEN");
   assert.deepEqual(await viewer.query("tenants:list", {}), []);
-  check("membership revocation applies with the same still-valid JWT");
+  await denied(viewer.query("tasks:list",{tenantId:tenantA}),"FORBIDDEN");
+  await denied(viewer.mutation("tasks:setCompleted",{tenantId:tenantA,taskId,completed:false}),"FORBIDDEN");
+  check("membership revocation applies with the same still-valid JWT to tasks and bookings");
   const wrongKeys = await generateKeyPair("RS256");
   for (const [name, opts] of [
     ["wrong signature", { key: wrongKeys.privateKey }],
@@ -411,15 +521,15 @@ try {
     from: start + 1,
     to: start + hour,
   });
-  assert.equal(boundaryWindow.items.length, 0);
+  assert.equal(boundaryWindow.items.length, 1);
   assert.equal(boundaryWindow.hasMore, false);
-  check("list uses starts-within half-open window semantics");
+  check("list includes overlapping intervals using half-open window semantics");
   for (let i = 0; i < 201; i++)
     await alice.mutation("bookings:create", {
       ...booking,
       practitionerId: "pagination",
-      startsAt: start + i * 60000,
-      endsAt: start + (i + 1) * 60000,
+      startsAt: start + 10 * hour + i * 60000,
+      endsAt: start + 10 * hour + (i + 1) * 60000,
       requestKey: `page-${i}`,
     });
   const limited = await alice.query("bookings:list", {
@@ -430,6 +540,55 @@ try {
   assert.equal(limited.hasMore, true);
   assert.equal(limited.limit, 200);
   check("list truncation explicitly reported with hasMore and limit");
+  const bookingFixtures=await bookingWorkflowChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"booking-local"});
+  const oldStart=Date.UTC(2041,0,10,9),oldArgs={tenantId:tenantA,practitionerId:"pre-upgrade",startsAt:oldStart,endsAt:oldStart+3600000,clientLabel:"Pre-upgrade booking",requestKey:"pre-upgrade"};
+  await writeFile(resolve(runDir,"legacy-bookings.json"),JSON.stringify([{...oldArgs,createdBy:`${issuer}|alice`}]));
+  await command(["import","--env-file",".push.env","--table","bookings","--append","legacy-bookings.json"]);
+  const oldRow=(await alice.query("bookings:list",{tenantId:tenantA,from:oldStart,to:oldStart+86400000})).items[0];
+  assert.equal(oldRow.status,"scheduled");assert.equal(oldRow.revision,0);assert.equal(oldRow.legacy,true);
+  await denied(alice.mutation("bookings:createLinked",{tenantId:tenantA,...bookingFixtures,startsAt:oldStart,requestKey:"against-pre-upgrade"}),"BOOKING_CONFLICT");
+  await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:oldRow._id,expectedRevision:0});
+  await alice.mutation("bookings:cancel",{tenantId:tenantA,bookingId:oldRow._id,expectedRevision:0});
+  assert.equal(await alice.mutation("bookings:create",oldArgs),oldRow._id);
+  assert.deepEqual((await alice.query("bookings:history",{tenantId:tenantA,bookingId:oldRow._id})).items.map(e=>e.action),["cancelled"]);
+  check("pre-upgrade booking without optional fields blocks overlap, lists safely and cancels/retries with its original ID");
+  const overnight=await alice.mutation("bookings:createLinked",{tenantId:tenantA,...bookingFixtures,startsAt:oldStart+14.5*3600000,requestKey:"overnight"});
+  const midnight=Date.UTC(2041,0,11);
+  assert.ok((await alice.query("bookings:list",{tenantId:tenantA,from:midnight,to:midnight+86400000})).items.some(r=>r._id===overnight));
+  assert.ok(!(await alice.query("bookings:list",{tenantId:tenantA,from:midnight+3600000,to:midnight+86400000})).items.some(r=>r._id===overnight));
+  check("overnight bookings remain visible the next day until their exclusive end instant");
+  await gmailChecks({alice,bob,viewer,anonymous,tenantA,tenantB,issuer,command,runDir,check,signing:gmailSigning});
+  await enquiryChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"enquiry-local"});
+  await todayChecks({
+    alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,
+    seedRows:async({tenantA:todayTenantA,tenantB:todayTenantB,day,from,to})=>{
+      const shift=(offset)=>{const date=new Date(`${day}T12:00:00Z`);date.setUTCDate(date.getUTCDate()+offset);return date.toISOString().slice(0,10);};
+      const createdAt=Date.now()+100000;
+      const tasks=[
+        ...Array.from({length:201},(_,index)=>({tenantId:todayTenantA,title:`Newer future task ${index}`,completed:false,dueDate:shift(1),createdAt:createdAt+index,createdBy:`${issuer}|alice`,requestKey:`today-future-${index}`,revision:0})),
+        {tenantId:todayTenantA,title:"Removed today task",completed:false,dueDate:day,removedAt:createdAt,createdAt:createdAt+202,createdBy:`${issuer}|alice`,requestKey:"today-removed",revision:1},
+        {tenantId:todayTenantA,title:"Previous day task",completed:false,dueDate:shift(-1),createdAt:createdAt+203,createdBy:`${issuer}|alice`,requestKey:"today-previous",revision:0},
+        {tenantId:todayTenantA,title:"Undated task",completed:false,createdAt:createdAt+204,createdBy:`${issuer}|alice`,requestKey:"today-undated",revision:0},
+        ...Array.from({length:201},(_,index)=>({tenantId:todayTenantB,title:`Today capped task ${index}`,completed:index%2===0,dueDate:day,createdAt:createdAt+300+index,createdBy:`${issuer}|bob`,requestKey:`today-cap-${index}`,revision:0})),
+      ];
+      await writeFile(resolve(runDir,"today-tasks.json"),JSON.stringify(tasks));
+      await command(["import","--env-file",".push.env","--table","tasks","--append","today-tasks.json"]);
+      const hour=60*60*1000;
+      const booking=(tenantId,clientLabel,startsAt,endsAt,requestKey,status="scheduled")=>({tenantId,practitionerId:"practice",startsAt,endsAt,clientLabel,requestKey,status,revision:0,createdBy:tenantId===todayTenantA?`${issuer}|alice`:`${issuer}|bob`});
+      const bookings=[
+        booking(todayTenantA,"Prior overnight",from-hour,from+hour/2,"today-prior"),
+        booking(todayTenantA,"Exact start",from,from+hour/2,"today-exact"),
+        booking(todayTenantA,"Ends at start",from-hour,from,"today-ends-at-start"),
+        booking(todayTenantA,"Starts next day",to,to+hour,"today-starts-next"),
+        booking(todayTenantA,"Cancelled today",from+2*hour,from+3*hour,"today-cancelled","cancelled"),
+        {...booking(todayTenantA,"Legacy scheduled",from+4*hour,from+5*hour,"today-legacy"),status:undefined},
+        booking(todayTenantB,"Other tenant boundary",from+hour,from+2*hour,"today-other-tenant"),
+        ...Array.from({length:201},(_,index)=>booking(todayTenantB,`Today capped booking ${index}`,from+6*hour,from+7*hour,`today-booking-cap-${index}`)),
+      ];
+      await writeFile(resolve(runDir,"today-bookings.json"),JSON.stringify(bookings));
+      await command(["import","--env-file",".push.env","--table","bookings","--append","today-bookings.json"]);
+    },
+  });
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { initialState } from "../src/components/workspace/model";
 import { restoreState } from "../src/components/workspace/persisted-state";
 
-const storageKey = "oceanheart-studio-workspace-v1";
+const storageKey = "oceanheart-studio-rick-demo-v1";
 
 test("saved state rejects malformed entities and broken references", () => {
   expect(restoreState(initialState)).toEqual(initialState);
@@ -55,7 +55,7 @@ test("corrupt saved practice recovers without hydration errors and preserves rej
   );
   await page.goto("/app");
   await expect(
-    page.getByRole("heading", { name: "Good morning, Amelia." }),
+    page.getByRole("heading", { name: "Good morning, Rick Hallett." }),
   ).toBeVisible();
   await expect(page.getByRole("status")).toContainText(
     "Saved practice data could not be restored",
@@ -115,13 +115,15 @@ test("modal retains control focus through context updates and restores opener", 
 }) => {
   await page.goto("/app/support");
   const opener = page.getByRole("button", {
-    name: /Help me tidy up my booking page/,
+    name: /The fern would like dark mode/,
   });
   await opener.click();
   const dialog = page.getByRole("dialog");
   const input = dialog.getByRole("textbox");
   await input.fill("Keyboard focus should stay in this conversation.");
   await input.press("Tab");
+  await expect(dialog.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   const submit = dialog.getByRole("button", { name: "Add sample message" });
   await expect(submit).toBeFocused();
   await page.keyboard.press("Enter");

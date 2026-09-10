@@ -1,6 +1,23 @@
 "use client";
 import { useState } from "react";
 import {
+  Card,
+  Checkbox,
+  SegmentGroup,
+  Switch,
+  Table,
+  Tabs,
+  SimpleGrid,
+  Stat,
+} from "@chakra-ui/react";
+import {
+  StudioButton,
+  StudioInput,
+  StudioSelect,
+  StudioTextarea,
+} from "@/components/studio-controls";
+import "./content-chakra.css";
+import {
   ArrowRight,
   Plus,
   Check,
@@ -43,17 +60,15 @@ export function Website() {
         <Pill tone={state.published ? "green" : "amber"}>
           {state.published ? "Published in demo" : "Draft changes"}
         </Pill>
-        <div className="ws-segment">
-          {["Desktop", "Mobile"].map((v) => (
-            <button
-              key={v}
-              aria-pressed={device === v}
-              onClick={() => setDevice(v)}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
+        <SegmentGroup.Root
+          value={device}
+          onValueChange={(e) => setDevice(e.value!)}
+          colorPalette="copper"
+          className="ws-filter-control"
+        >
+          <SegmentGroup.Indicator />
+          <SegmentGroup.Items items={["Desktop", "Mobile"]} />
+        </SegmentGroup.Root>
         <Action
           onClick={() =>
             update((d) => {
@@ -70,7 +85,7 @@ export function Website() {
       <div className="ws-editor-grid">
         <Panel title="Make it yours">
           <Field label="Practice name">
-            <input
+            <StudioInput
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -81,7 +96,7 @@ export function Website() {
             />
           </Field>
           <Field label="Welcome headline">
-            <textarea
+            <StudioTextarea
               value={welcome}
               onChange={(e) => {
                 setWelcome(e.target.value);
@@ -96,20 +111,21 @@ export function Website() {
             wording to your practice.
           </p>
           <div className="ws-website-check">
-            <Check size={15} /> Clear service descriptions
-            <br />
-            <Check size={15} /> Prices and duration
-            <br />
-            <Check size={15} /> A direct way to book
+            <p>Included in this template</p>
+            <ul>
+              <li>Service descriptions</li>
+              <li>Prices and duration</li>
+              <li>Booking button</li>
+            </ul>
           </div>
         </Panel>
         <div
           className={`ws-site-preview ${device === "Mobile" ? "mobile" : ""}`}
         >
           <div className="ws-browser-bar">
-            <span />
-            <span />
-            <span />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
             <small>your-practice.example · preview</small>
           </div>
           <div className="ws-client-site">
@@ -123,11 +139,11 @@ export function Website() {
               {state.practice.modality}. Personal, unhurried care in{" "}
               {state.practice.location.toLowerCase()}.
             </p>
-            <button
+            <StudioButton
               onClick={() => open("Example client booking", <BookingForm />)}
             >
               Find a time for you <ArrowRight size={16} />
-            </button>
+            </StudioButton>
             <h3>Room for you</h3>
             {state.services
               .filter((s) => s.active)
@@ -149,124 +165,174 @@ export function Website() {
     </>
   );
 }
+function PaymentAction({ id }: { id: string }) {
+  const { state, update } = useStudio();
+  const p = state.payments.find((payment) => payment.id === id)!;
+  return (
+    <>
+      {p.status === "Pending" ? (
+        <Action
+          secondary
+          onClick={() =>
+            update((d) => {
+              d.payments.find((x) => x.id === p.id)!.status = "Paid";
+              d.activity.unshift(
+                `Payment · ${p.description} marked paid in demo`,
+              );
+            }, "Sample payment received. No card was charged.")
+          }
+        >
+          Simulate payment
+        </Action>
+      ) : p.status === "Paid" ? (
+        <StudioButton
+          className="ws-link"
+          disabled={state.approvals.some(
+            (a) =>
+              a.type === "refund" &&
+              a.paymentId === p.id &&
+              a.status !== "Declined",
+          )}
+          onClick={() =>
+            update((d) => {
+              if (
+                d.approvals.some(
+                  (a) =>
+                    a.type === "refund" &&
+                    a.paymentId === p.id &&
+                    a.status !== "Declined",
+                )
+              )
+                return;
+              d.approvals.push({
+                id: uid(),
+                title: `Refund ${p.description}`,
+                detail: `Request to refund ${money(p.amount)} to ${d.clients.find((c) => c.id === p.clientId)?.name}. Original payment ${p.id}.`,
+                type: "refund",
+                paymentId: p.id,
+                amount: p.amount,
+                status: "Pending",
+              });
+            }, "Refund request queued for human approval.")
+          }
+        >
+          Request refund
+        </StudioButton>
+      ) : (
+        <span>Complete</span>
+      )}
+    </>
+  );
+}
 export function Payments() {
   const { state, update } = useStudio();
   const [filter, setFilter] = useState("All");
   return (
     <>
       <div className="ws-stat-strip">
-        <div>
-          <span>Received</span>
-          <strong>
+        <Stat.Root as="div">
+          <Stat.Label as="span">Received</Stat.Label>
+          <Stat.ValueText as="span">
             {money(
               state.payments
                 .filter((p) => p.status === "Paid")
                 .reduce((a, p) => a + p.amount, 0),
             )}
-          </strong>
-        </div>
-        <div>
-          <span>Awaiting payment</span>
-          <strong>
+          </Stat.ValueText>
+        </Stat.Root>
+        <Stat.Root as="div">
+          <Stat.Label as="span">Awaiting payment</Stat.Label>
+          <Stat.ValueText as="span">
             {money(
               state.payments
                 .filter((p) => p.status === "Pending")
                 .reduce((a, p) => a + p.amount, 0),
             )}
-          </strong>
-        </div>
-        <div>
-          <span>Connection</span>
-          <strong className="ws-stat-text">
+          </Stat.ValueText>
+        </Stat.Root>
+        <Stat.Root as="div">
+          <Stat.Label as="span">Connection</Stat.Label>
+          <Stat.ValueText as="span" className="ws-stat-text">
             Stripe <small>sample account</small>
-          </strong>
-        </div>
+          </Stat.ValueText>
+        </Stat.Root>
       </div>
       <div className="ws-toolbar">
-        <div className="ws-segment">
-          {["All", "Paid", "Pending", "Refunded"].map((v) => (
-            <button
-              key={v}
-              aria-pressed={filter === v}
-              onClick={() => setFilter(v)}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
+        <SegmentGroup.Root
+          value={filter}
+          onValueChange={(e) => setFilter(e.value!)}
+          colorPalette="copper"
+          className="ws-filter-control"
+        >
+          <SegmentGroup.Indicator />
+          <SegmentGroup.Items items={["All", "Paid", "Pending", "Refunded"]} />
+        </SegmentGroup.Root>
         <Pill>Test data only</Pill>
       </div>
       <Panel>
-        {state.payments
-          .filter((p) => filter === "All" || p.status === filter)
-          .map((p) => (
-            <div className="ws-payment-row" key={p.id}>
-              <div>
-                <h3>{state.clients.find((c) => c.id === p.clientId)?.name}</h3>
+        <div className="ws-mobile-records">
+          {state.payments
+            .filter((p) => filter === "All" || p.status === filter)
+            .map((p) => (
+              <Card.Root as="article" key={p.id} className="ws-mobile-record">
+                <div className="ws-record-heading">
+                  <h3>
+                    {state.clients.find((c) => c.id === p.clientId)?.name}
+                  </h3>
+                  <strong className="ws-record-amount">
+                    {money(p.amount)}
+                  </strong>
+                </div>
                 <p>{p.description}</p>
-              </div>
-              <strong>{money(p.amount)}</strong>
-              <Pill tone={p.status === "Paid" ? "green" : "amber"}>
-                {p.status}
-              </Pill>
-              {p.status === "Pending" ? (
-                <Action
-                  secondary
-                  onClick={() =>
-                    update((d) => {
-                      d.payments.find((x) => x.id === p.id)!.status = "Paid";
-                      d.activity.unshift(
-                        `Payment · ${p.description} marked paid in demo`,
-                      );
-                    }, "Sample payment received. No card was charged.")
-                  }
-                >
-                  Simulate payment
-                </Action>
-              ) : p.status === "Paid" ? (
-                <button
-                  className="ws-link"
-                  disabled={state.approvals.some(
-                    (a) =>
-                      a.type === "refund" &&
-                      a.paymentId === p.id &&
-                      a.status !== "Declined",
-                  )}
-                  onClick={() =>
-                    update((d) => {
-                      if (
-                        d.approvals.some(
-                          (a) =>
-                            a.type === "refund" &&
-                            a.paymentId === p.id &&
-                            a.status !== "Declined",
-                        )
-                      )
-                        return;
-                      d.approvals.push({
-                        id: uid(),
-                        title: `Refund ${p.description}`,
-                        detail: `Request to refund ${money(p.amount)} to ${d.clients.find((c) => c.id === p.clientId)?.name}. Original payment ${p.id}.`,
-                        type: "refund",
-                        paymentId: p.id,
-                        amount: p.amount,
-                        status: "Pending",
-                      });
-                    }, "Refund request queued for human approval.")
-                  }
-                >
-                  Request refund
-                </button>
-              ) : (
-                <span>Complete</span>
-              )}
-            </div>
-          ))}
+                <div className="ws-record-meta">
+                  <Pill tone={p.status === "Paid" ? "green" : "amber"}>
+                    {p.status}
+                  </Pill>
+                </div>
+                <div className="ws-record-action">
+                  <PaymentAction id={p.id} />
+                </div>
+              </Card.Root>
+            ))}
+        </div>
+        <Table.ScrollArea className="ws-desktop-records">
+          <Table.Root variant="line" size="lg" className="ws-data-table">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Client</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="end">Amount</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+                <Table.ColumnHeader>Action</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {state.payments
+                .filter((p) => filter === "All" || p.status === filter)
+                .map((p) => (
+                  <Table.Row key={p.id}>
+                    <Table.Cell>
+                      <h3>
+                        {state.clients.find((c) => c.id === p.clientId)?.name}
+                      </h3>
+                      <p>{p.description}</p>
+                    </Table.Cell>
+                    <Table.Cell fontWeight="semibold" textAlign="end">
+                      {money(p.amount)}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Pill tone={p.status === "Paid" ? "green" : "amber"}>
+                        {p.status}
+                      </Pill>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <PaymentAction id={p.id} />
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
       </Panel>
-      <p className="ws-footnote">
-        Stripe is represented by local sample transactions. No checkout,
-        payment, refund or reminder reaches an external service.
-      </p>
     </>
   );
 }
@@ -274,35 +340,13 @@ export function Shop() {
   const { state, update, open } = useStudio();
   return (
     <>
-      <div className="ws-info-strip">
-        <Package size={24} />
-        <div>
-          <strong>A small shop, if it belongs in your practice.</strong>
-          <p>
-            Explore products, stock and order status before deciding whether
-            commerce belongs in the MVP.
-          </p>
-        </div>
-        <Pill>
-          {state.connections.Shopify
-            ? "Shopify · sample connected"
-            : "Shopify · sample disconnected"}
-        </Pill>
-      </div>
-      <div className="ws-service-grid">
+      <div className="ws-shop-connection"><Pill>{state.connections.Shopify ? "Shopify · sample connected" : "Shopify · sample disconnected"}</Pill></div>
+      <Panel title="Products" className="ws-products">
         {state.products.map((p) => (
-          <Panel key={p.id}>
-            <div className="ws-product-art">
-              <span>
-                {p.name.includes("journal")
-                  ? "A MOMENT\nOF CALM"
-                  : "A LITTLE\nTIME FOR YOU"}
-              </span>
-            </div>
-            <h2>{p.name}</h2>
-            <p>
-              {money(p.price)} · {p.stock} available
-            </p>
+          <div className="ws-product-row" key={p.id}>
+            <h3>{p.name}</h3>
+            <span>{money(p.price)}</span>
+            <span className="ws-product-stock">{p.stock} available</span>
             <Action
               secondary
               disabled={p.stock === 0}
@@ -320,34 +364,80 @@ export function Shop() {
             >
               Create sample order
             </Action>
-          </Panel>
-        ))}
-      </div>
-      <Panel title="Orders">
-        {state.orders.map((o) => (
-          <div className="ws-simple-row" key={o.id}>
-            <div>
-              <strong>
-                {o.id} · {o.item}
-              </strong>
-              <small>
-                {state.clients.find((c) => c.id === o.clientId)?.name}
-              </small>
-            </div>
-            <Pill>{o.status}</Pill>
-            <Action
-              secondary
-              disabled={o.status === "Dispatched"}
-              onClick={() =>
-                update((d) => {
-                  d.orders.find((x) => x.id === o.id)!.status = "Dispatched";
-                }, "Sample order marked dispatched.")
-              }
-            >
-              Mark dispatched
-            </Action>
           </div>
         ))}
+      </Panel>
+      <Panel title="Orders">
+        <div className="ws-mobile-records">
+          {state.orders.map((o) => (
+            <Card.Root as="article" key={o.id} className="ws-mobile-record">
+              <h3>{o.item}</h3>
+              <p>
+                {o.id} · {state.clients.find((c) => c.id === o.clientId)?.name}
+              </p>
+              <div className="ws-record-meta">
+                <Pill>{o.status}</Pill>
+              </div>
+              <div className="ws-record-action">
+                {" "}
+                <Action
+                  secondary
+                  disabled={o.status === "Dispatched"}
+                  onClick={() =>
+                    update((d) => {
+                      d.orders.find((x) => x.id === o.id)!.status =
+                        "Dispatched";
+                    }, "Sample order marked dispatched.")
+                  }
+                >
+                  Mark dispatched
+                </Action>
+              </div>
+            </Card.Root>
+          ))}
+        </div>
+        <Table.ScrollArea className="ws-desktop-records">
+          <Table.Root size="lg" className="ws-data-table">
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>Order</Table.ColumnHeader>
+                <Table.ColumnHeader>Status</Table.ColumnHeader>
+                <Table.ColumnHeader>Action</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {state.orders.map((o) => (
+                <Table.Row key={o.id}>
+                  <Table.Cell>
+                    <strong>
+                      {o.id} · {o.item}
+                    </strong>
+                    <small>
+                      {state.clients.find((c) => c.id === o.clientId)?.name}
+                    </small>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Pill>{o.status}</Pill>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Action
+                      secondary
+                      disabled={o.status === "Dispatched"}
+                      onClick={() =>
+                        update((d) => {
+                          d.orders.find((x) => x.id === o.id)!.status =
+                            "Dispatched";
+                        }, "Sample order marked dispatched.")
+                      }
+                    >
+                      Mark dispatched
+                    </Action>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollArea>
       </Panel>
     </>
   );
@@ -360,9 +450,9 @@ function TicketThread({ id }: { id: string }) {
     <div className="ws-form">
       <Pill>{t.status}</Pill>
       {t.messages.map((m, i) => (
-        <div className="ws-bubble" key={i}>
+        <Card.Root variant="subtle" className="ws-bubble" key={i}>
           <p>{m}</p>
-        </div>
+        </Card.Root>
       ))}
       <form
         onSubmit={(e) => {
@@ -377,7 +467,7 @@ function TicketThread({ id }: { id: string }) {
         }}
       >
         <Field label="Add to the conversation">
-          <textarea
+          <StudioTextarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             required
@@ -419,10 +509,10 @@ function TicketForm() {
       }}
     >
       <Field label="What would you like a hand with?">
-        <input name="title" required />
+        <StudioInput name="title" required />
       </Field>
-      <Field label="A little more detail">
-        <textarea name="body" rows={5} required />
+      <Field label="Details">
+        <StudioTextarea name="body" rows={5} required />
       </Field>
       <Action type="submit">Create sample request</Action>
     </form>
@@ -432,29 +522,19 @@ export function Support() {
   const { state, open } = useStudio();
   return (
     <>
-      <div className="ws-support-intro">
-        <span className="ws-partner-initial">R</span>
-        <div>
-          <h1>You don’t have to figure it out alone.</h1>
-          <p>
-            A website change, a confusing booking, or something you wish worked
-            differently. This is where the conversation with Rick lives.
-          </p>
-        </div>
+      <div className="ws-toolbar ws-support-toolbar">
+        <span>Support requests</span>
         <Action onClick={() => open("Ask your studio partner", <TicketForm />)}>
           <Plus size={15} /> Start a request
         </Action>
       </div>
-      <Panel title="Your conversations">
+      <Panel className="ws-support-list">
         {state.tickets.map((t) => (
-          <button
-            className="ws-source-row"
+          <StudioButton
+            className="ws-source-row ws-support-row"
             key={t.id}
-            onClick={() => open(t.title, <TicketThread id={t.id} />)}
+            onClick={() => open(t.title, <TicketThread id={t.id} />, "reading")}
           >
-            <span className="ws-source-icon">
-              <Heart size={19} />
-            </span>
             <div>
               <h3>{t.title}</h3>
               <p>
@@ -465,7 +545,7 @@ export function Support() {
               {t.status}
             </Pill>
             <ArrowRight size={16} />
-          </button>
+          </StudioButton>
         ))}
       </Panel>
     </>
@@ -493,14 +573,14 @@ export function Setup() {
           "Your structure",
           "Make it yours",
         ].map((v, i) => (
-          <button
+          <StudioButton
             key={v}
             className={step === i ? "active" : ""}
             onClick={() => setStep(i)}
           >
             <span>{i < step ? <Check size={13} /> : i + 1}</span>
             {v}
-          </button>
+          </StudioButton>
         ))}
       </div>
       <Panel>
@@ -512,7 +592,7 @@ export function Setup() {
               half-finished notes are welcome.
             </p>
             <Field label="About your practice">
-              <textarea
+              <StudioTextarea
                 rows={6}
                 value={description}
                 onChange={(e) => {
@@ -533,7 +613,7 @@ export function Setup() {
           </>
         ) : step === 1 ? (
           <>
-            <h1>Where would a little order help?</h1>
+            <h1>What would you like to set up?</h1>
             <p>
               Choose the areas you would like included in your first version.
             </p>
@@ -550,23 +630,26 @@ export function Setup() {
                   ].includes(f.id),
                 )
                 .map((f) => (
-                  <label key={f.id}>
-                    <input
-                      type="checkbox"
-                      checked={state.priorities[f.id] === "Essential"}
-                      onChange={(e) =>
-                        update((d) => {
-                          d.priorities[f.id] = e.target.checked
-                            ? "Essential"
-                            : "Later";
-                        })
-                      }
-                    />
-                    <span>
+                  <Checkbox.Root
+                    key={f.id}
+                    colorPalette="copper"
+                    checked={state.priorities[f.id] === "Essential"}
+                    onCheckedChange={(e) =>
+                      update((d) => {
+                        d.priorities[f.id] =
+                          e.checked === true ? "Essential" : "Later";
+                      })
+                    }
+                  >
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control>
+                      <Checkbox.Indicator />
+                    </Checkbox.Control>
+                    <Checkbox.Label>
                       <strong>{f.title}</strong>
                       <small>{f.description}</small>
-                    </span>
-                  </label>
+                    </Checkbox.Label>
+                  </Checkbox.Root>
                 ))}
             </div>
             <Action onClick={next}>Review the shape of your practice</Action>
@@ -599,15 +682,21 @@ export function Setup() {
           </>
         ) : (
           <>
-            <h1>A home with your name on it.</h1>
+            <h1>Practice details</h1>
             <Field label="Practice name">
-              <input value={name} onChange={(e) => setName(e.target.value)} />
+              <StudioInput
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </Field>
             <Field label="Your first name">
-              <input value={owner} onChange={(e) => setOwner(e.target.value)} />
+              <StudioInput
+                value={owner}
+                onChange={(e) => setOwner(e.target.value)}
+              />
             </Field>
             <Field label="Your work">
-              <input
+              <StudioInput
                 value={modality}
                 onChange={(e) => setModality(e.target.value)}
               />
@@ -636,7 +725,7 @@ export function Settings() {
   const { state, update, open, close, reset } = useStudio();
   const [resetRevision, setResetRevision] = useState(0);
   return (
-    <div className="ws-two-column">
+    <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} className="ws-two-column">
       <Panel title="Practice details">
         <form
           key={`${resetRevision}:${JSON.stringify(state.practice)}`}
@@ -661,7 +750,7 @@ export function Settings() {
             ["hours", "Usual availability"],
           ].map(([k, label]) => (
             <Field key={k} label={label}>
-              <input
+              <StudioInput
                 name={k}
                 type={k === "email" ? "email" : "text"}
                 required
@@ -689,12 +778,10 @@ export function Settings() {
                     : "Not connected in sample"}
                 </small>
               </div>
-              <button
-                role="switch"
-                aria-checked={connected}
-                aria-label={`${name} sample connection`}
-                className={`ws-switch ${connected ? "on" : ""}`}
-                onClick={() =>
+              <Switch.Root
+                colorPalette="copper"
+                checked={connected}
+                onCheckedChange={() =>
                   update(
                     (d) => {
                       d.connections[name] = !connected;
@@ -703,8 +790,11 @@ export function Settings() {
                   )
                 }
               >
-                <span />
-              </button>
+                <Switch.HiddenInput aria-label={`${name} sample connection`} />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+              </Switch.Root>
             </div>
           ))}
           <p className="ws-help">
@@ -712,7 +802,7 @@ export function Settings() {
             or API requests take place.
           </p>
         </Panel>
-        <Panel title="Your prototype">
+        <Panel title="Sample data" className="ws-sample-settings">
           <p>
             Changes are saved in this browser. Use fictional information. Export
             roadmap decisions before resetting.
@@ -742,7 +832,7 @@ export function Settings() {
                       Keep my changes
                     </Action>
                   </div>
-                </div>,
+                </div>, "compact",
               )
             }
           >
@@ -750,7 +840,7 @@ export function Settings() {
           </Action>
         </Panel>
       </div>
-    </div>
+    </SimpleGrid>
   );
 }
 export function Roadmap() {
@@ -759,7 +849,7 @@ export function Roadmap() {
   function exportPlan() {
     const text = JSON.stringify(
       {
-        project: "Oceanheart Studio",
+        project: "oceanheart Studio",
         exportedAt: new Date().toISOString(),
         features: features.map((f) => ({
           ...f,
@@ -795,8 +885,9 @@ export function Roadmap() {
       </div>
       <div className="ws-priority-summary">
         {priorities.map((p) => (
-          <button
+          <StudioButton
             className={filter === p ? "selected" : ""}
+            aria-pressed={filter === p}
             onClick={() => setFilter(filter === p ? "All" : p)}
             key={p}
           >
@@ -808,7 +899,7 @@ export function Roadmap() {
               }
             </strong>
             <span>{p}</span>
-          </button>
+          </StudioButton>
         ))}
       </div>
       <div className="ws-roadmap-list">
@@ -825,7 +916,7 @@ export function Roadmap() {
                   <h2>{f.title}</h2>
                   <p>{f.description}</p>
                 </div>
-                <select
+                <StudioSelect
                   aria-label={`${f.title} priority`}
                   value={state.priorities[f.id] || "Unsorted"}
                   onChange={(e) =>
@@ -837,9 +928,11 @@ export function Roadmap() {
                   {priorities.map((p) => (
                     <option key={p}>{p}</option>
                   ))}
-                </select>
+                </StudioSelect>
               </div>
-              <div className="ws-roadmap-journey">{f.journey}</div>
+              <Card.Root variant="subtle" className="ws-roadmap-journey">
+                {f.journey}
+              </Card.Root>
               {f.dependencies.length > 0 && (
                 <p className="ws-dependencies">
                   Depends on:{" "}
@@ -849,7 +942,7 @@ export function Roadmap() {
                 </p>
               )}
               <div className="ws-roadmap-bottom">
-                <input
+                <StudioInput
                   aria-label={`${f.title} roadmap note`}
                   placeholder="What would make this useful? What can wait?"
                   value={state.featureNotes[f.id] || ""}
@@ -859,149 +952,15 @@ export function Roadmap() {
                     })
                   }
                 />
-                <button className="ws-link" onClick={() => go(f.id)}>
+                <StudioButton className="ws-link" onClick={() => go(f.id)}>
                   Try this feature <ArrowRight size={14} />
-                </button>
+                </StudioButton>
               </div>
             </Panel>
           ))}
       </div>
     </>
   );
-}
-export function Operations() {
-  const { state, update } = useStudio();
-  const [tab, setTab] = useState("Activity");
-  const [env, setEnv] = useState("Staging");
-  return (
-    <>
-      <div className="ws-info-strip">
-        <ShieldIcon />
-        <div>
-          <strong>Behind the service, for the studio operator.</strong>
-          <p>
-            A product view of the proposed engineering roadmap. All traces,
-            environments and releases below are simulated.
-          </p>
-        </div>
-      </div>
-      <div className="ws-toolbar">
-        <div className="ws-segment">
-          {["Activity", "Retrieval", "Delivery"].map((t) => (
-            <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
-      {tab === "Activity" ? (
-        <Panel title="What happened, and why">
-          {state.activity.map((a, i) => (
-            <div className="ws-log-row" key={i}>
-              <span className="ws-dot" />
-              <span>{a}</span>
-              <Pill>Demo</Pill>
-            </div>
-          ))}
-          <div className="ws-explainer">
-            <h3>Tracing & handoff</h3>
-            <p>
-              Live LangSmith traces would connect evidence, validation, approval
-              and action results. Support requests here represent the intended
-              Linear handoff.
-            </p>
-          </div>
-        </Panel>
-      ) : tab === "Retrieval" ? (
-        <>
-          <Panel title="From source to supported answer">
-            <div className="ws-pipeline">
-              {[
-                "Audience & version filter",
-                "Lexical + vector retrieval",
-                "Rank fusion",
-                "Rerank evidence",
-                "Citations & abstention",
-              ].map((s, i) => (
-                <div key={s}>
-                  <span>0{i + 1}</span>
-                  <h3>{s}</h3>
-                  <p>
-                    {i === 0
-                      ? `${state.sources.filter((s) => s.status === "Ready").length} ready sample sources`
-                      : "Planned capability · visual mock"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Panel>
-          <Panel title="Evaluation scenarios">
-            {[
-              "Missing answer → abstain",
-              "Private source → exclude from public answer",
-              "Policy edit → sync before use",
-              "Clinical question → hand off",
-              "Duplicate action → execute once",
-            ].map((s) => (
-              <div className="ws-simple-row" key={s}>
-                <span>{s}</span>
-                <Pill>Planned test case</Pill>
-              </div>
-            ))}
-          </Panel>
-        </>
-      ) : (
-        <Panel title="A deliberate path to production">
-          <div className="ws-environments">
-            {["Development", "Staging", "Production"].map((e) => (
-              <button
-                className={env === e ? "selected" : ""}
-                key={e}
-                onClick={() => setEnv(e)}
-              >
-                <span className="ws-dot" />
-                <h3>{e}</h3>
-                <small>{state.release} · sample release</small>
-              </button>
-            ))}
-          </div>
-          <div className="ws-detail-grid">
-            <div>
-              <small>Selected environment</small>
-              {env}
-            </div>
-            <div>
-              <small>Release components</small>Next.js · API · retrieval ·
-              worker
-            </div>
-            <div>
-              <small>Infrastructure roadmap</small>AWS IAM · ECS · ECR · S3 ·
-              SQS
-            </div>
-            <div>
-              <small>Delivery roadmap</small>Linear → GitHub PR → review →
-              promotion
-            </div>
-          </div>
-          <Action
-            secondary
-            onClick={() =>
-              update((d) => {
-                d.activity.unshift(
-                  `Delivery rehearsal · ${env} · ${d.release}`,
-                );
-              }, "Release rehearsal recorded. No infrastructure or deployment changed.")
-            }
-          >
-            Rehearse promotion
-          </Action>
-        </Panel>
-      )}
-    </>
-  );
-}
-function ShieldIcon() {
-  return <Check size={22} />;
 }
 export function Portal() {
   const { state, update, open } = useStudio();
@@ -1014,7 +973,7 @@ export function Portal() {
         <p>
           Experience the practice as a client. All information is fictional.
         </p>
-        <select
+        <StudioSelect
           aria-label="Preview as client"
           value={clientId}
           onChange={(e) => setClientId(e.target.value)}
@@ -1024,7 +983,7 @@ export function Portal() {
               {c.name}
             </option>
           ))}
-        </select>
+        </StudioSelect>
       </div>
       <div className="ws-portal">
         <header>
@@ -1033,9 +992,13 @@ export function Portal() {
         </header>
         <h1>Hello, {client.name.split(" ")[0]}.</h1>
         <p>
-          A little space for your appointments, messages and practical details.
+          View your appointments, messages and practice details.
         </p>
-        <div className="ws-two-column">
+        <SimpleGrid
+          columns={{ base: 1, md: 2 }}
+          gap={6}
+          className="ws-two-column"
+        >
           <Panel title="Your next sessions">
             {state.bookings
               .filter(
@@ -1055,7 +1018,7 @@ export function Portal() {
                       {b.day} · {b.time}
                     </small>
                   </div>
-                  <button
+                  <StudioButton
                     className="ws-link"
                     onClick={() =>
                       open(
@@ -1065,7 +1028,7 @@ export function Portal() {
                     }
                   >
                     Change time
-                  </button>
+                  </StudioButton>
                 </div>
               ))}
             <Action
@@ -1100,7 +1063,7 @@ export function Portal() {
               }}
             >
               <Field label="Your message">
-                <textarea
+                <StudioTextarea
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={4}
@@ -1142,7 +1105,7 @@ export function Portal() {
           <Panel title="Before your visit">
             <p>{state.sources.find((s) => s.id === "k2")?.content}</p>
           </Panel>
-        </div>
+        </SimpleGrid>
       </div>
     </>
   );

@@ -1,0 +1,683 @@
+/* Live records inhabit the reviewed Precision workspace. */
+.ws-live-content .lp-client-notes {
+  margin-top: 12px;
+}
+.ws-live-content .lp-notes-form {
+  max-width: 680px;
+  margin: 20px 0 28px;
+}
+.ws-live-content .lp-notes-form label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ws-live-content .lp-notes-form .lp-muted {
+  margin: 8px 0;
+}
+.ws-live-content .lp-notes-form textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  margin: 8px 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ws-live-content .lp-client-history {
+  margin-top: 12px;
+}
+.ws-live-content .lp-client-history section {
+  margin-top: 20px;
+  max-width: 680px;
+}
+.ws-live-content .lp-client-history h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.ws-live-content .lp-client-history h5 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.ws-live-content .lp-client-bookings,
+.ws-live-content .lp-booking-activity {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.ws-live-content .lp-client-bookings > li {
+  display: block;
+  padding: 0;
+  margin-bottom: 28px;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .lp-client-bookings dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+.ws-live-content .lp-client-bookings dl > div {
+  display: block;
+}
+.ws-live-content .lp-client-bookings dt {
+  font-size: 12px;
+  color: #657389;
+  margin-bottom: 5px;
+}
+.ws-live-content .lp-client-bookings dd {
+  margin: 0;
+}
+.ws-live-content .lp-client-bookings p {
+  margin: 8px 0 12px;
+}
+.ws-live-content .lp-booking-activity > li {
+  display: block;
+  padding: 0;
+  margin: 20px 0;
+}
+@media (max-width: 600px) {
+  .ws-live-content .lp-client-bookings dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+.ws-live-content.lp-root {
+  min-height: 0;
+  background: transparent;
+  font: inherit;
+}
+.ws-live-picker {
+  padding: 0 20px 16px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.ws-live-picker label {
+  font-size: 11px;
+  color: #657389;
+}
+.ws-live-picker select {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+  padding: 5px 8px;
+  background: white;
+  font-size: 13px;
+}
+.ws-live-picker button,
+.ws-live-account button {
+  font-size: 12px;
+  text-align: left;
+  color: #657389;
+  padding: 4px 0;
+}
+.ws-live-account {
+  padding: 0 24px 16px;
+}
+.ws-live-content .ws-welcome h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.7px;
+}
+.ws-live-content .ws-welcome p {
+  margin-top: 8px;
+}
+.ws-live-content .ws-date-label {
+  font-size: 12px;
+  color: #657389;
+}
+.ws-live-today-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+}
+.ws-live-content .ws-agenda-row {
+  min-width: 0;
+  white-space: normal;
+  text-align: left;
+}
+.ws-live-content .ws-agenda-row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .ws-agenda-row small {
+  display: block;
+}
+.ws-live-tasks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ws-live-tasks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 0;
+  min-width: 0;
+}
+.ws-live-tasks li > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ws-live-tasks input {
+  margin-top: 3px;
+  accent-color: #255bd7;
+  flex: none;
+}
+.ws-live-tasks button.ws-link {
+  display: block;
+  font-size: 12px;
+  color: #657389;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.ws-task-done {
+  text-decoration: line-through;
+  color: #657389;
+}
+.ws-live-stats button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ws-live-stats strong {
+  font-size: 26px;
+}
+.ws-live-stats small {
+  font-size: 12px;
+  font-weight: 400;
+  color: #657389;
+}
+.ws-live-content .lp-task-form {
+  max-width: 680px;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 10px 16px;
+  align-items: center;
+  margin: 24px 0;
+}
+.ws-live-content .lp-task-form .lp-inline {
+  margin: 0;
+}
+.ws-live-content .lp-task-form label {
+  margin: 0;
+}
+.ws-live-content .lp-task-list {
+  max-width: none;
+}
+.ws-live-content .lp-task-row {
+  padding: 16px 0;
+  gap: 12px;
+}
+.ws-live-content .lp-section-heading {
+  margin-bottom: 20px;
+}
+.ws-live-content .lp-section-heading h2 {
+  font-size: 16px;
+}
+.ws-live-content .lp-record-form,
+.ws-live-content .lp-task-editor {
+  background: white;
+  max-width: 640px;
+}
+.ws-live-content .lp-empty {
+  padding: 24px 0;
+}
+.ws-live-connections {
+  margin-top: 32px;
+}
+.ws-live-connections > h2,
+.ws-live-connections > summary {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ws-entry-signin {
+  display: inline-flex;
+  margin-top: 24px;
+  background: #255bd7;
+  color: white;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+@media (max-width: 800px) {
+  .ws-live-today-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-live-content .lp-task-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .ws-live-content .lp-task-form .lp-inline {
+    margin-bottom: 8px;
+  }
+  .ws-live-content .ws-welcome h1 {
+    font-size: 25px;
+  }
+  .ws-live-content .ws-welcome {
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .ws-live-stats {
+    flex-wrap: wrap;
+  }
+  .ws-live-tasks li {
+    gap: 8px;
+  }
+}
+.ws-live .ws-live-picker select,
+.ws-live-content.lp-root select {
+  appearance: auto;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 20px;
+  padding-block: 5px;
+}
+.ws-live-content.lp-root .ws-link {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  min-height: 34px;
+  padding: 0;
+  color: #255bd7;
+}
+.ws-live-content.lp-root .ws-live-tasks .ws-link {
+  color: #657389;
+  min-height: 0;
+  line-height: 20px;
+  font-weight: 400;
+}
+.ws-live-content.lp-root .ws-live-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: auto;
+  gap: 24px;
+}
+.ws-live-content.lp-root .ws-live-stats button {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 0;
+  height: auto;
+  padding: 20px;
+  gap: 8px;
+  border: 0;
+  white-space: normal;
+  text-align: left;
+}
+.ws-live-stats strong {
+  display: block;
+  line-height: 1.4;
+}
+.ws-live-content.lp-root .ws-welcome > button {
+  height: 34px;
+  min-height: 34px;
+  line-height: 20px;
+}
+@media (max-width: 600px) {
+  .ws-live-content.lp-root .ws-live-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .ws-live-content.lp-root .ws-live-stats button {
+    padding: 12px 16px;
+  }
+  .ws-live-content .ws-agenda-row {
+    padding-inline: 0;
+  }
+  .ws-live-tasks li {
+    flex-wrap: wrap;
+  }
+  .ws-live-tasks li > .lp-muted {
+    margin-left: 24px;
+  }
+}
+.ws-live-content .lp-tasks > .lp-section-heading > h2,
+.ws-live-content .lp-settings > .lp-section-heading > h2,
+.ws-live-content .lp-bookings-workspace > h2 {
+  display: none;
+}
+.ws-live-content .lp-tasks {
+  display: flex;
+  flex-direction: column;
+}
+.ws-live-content .lp-task-filters {
+  order: 0;
+}
+.ws-live-content .lp-task-list,
+.ws-live-content .lp-tasks > .lp-empty {
+  order: 1;
+}
+.ws-live-content .lp-task-form {
+  order: 2;
+  padding-top: 16px;
+}
+.ws-live-content .lp-tasks > .lp-notice,
+.ws-live-content .lp-tasks > [role="alert"] {
+  order: 3;
+}
+
+/* Correspondence: clear reading hierarchy on the Precision canvas. */
+.ws-live-content .lp-actions {
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-block: 16px;
+}
+.ws-live-content .lp-enquiries,
+.ws-live-content .lp-gmail {
+  max-width: 1080px;
+}
+.ws-live-content .lp-enquiries > h2 {
+  margin-top: 0;
+}
+.ws-live-content .lp-enquiry-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 28px;
+}
+.ws-live-content .lp-enquiry-toolbar .lp-actions {
+  margin: 0;
+}
+.ws-live-content .lp-enquiry-tabs button {
+  border-color: transparent;
+  color: #657389;
+  padding-inline: 16px;
+}
+.ws-live-content .lp-enquiry-tabs button[aria-pressed="true"] {
+  background: #edf2fe;
+  color: #255bd7;
+}
+.ws-live-content .lp-enquiry-toolbar > button {
+  background: #255bd7;
+  border-color: #255bd7;
+  color: white;
+}
+.ws-live-content .lp-enquiries .lp-records {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ws-live-content .lp-enquiries .lp-records > li {
+  padding: 0;
+  margin: 0 0 12px;
+}
+.ws-live-content .lp-enquiry-open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  border: 0;
+  padding: 16px 12px;
+  text-align: left;
+}
+.ws-live-content .lp-enquiry-open:hover,
+.ws-live-content .lp-gmail-message:hover {
+  background: #f8faff;
+}
+.ws-live-content .lp-enquiry-row-main {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.ws-live-content .lp-enquiry-sender {
+  color: #657389;
+  font-size: 13px;
+  font-weight: 400;
+}
+.ws-live-content .lp-enquiry-subject {
+  color: #17212f;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ws-live-content .lp-enquiry-draft {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #657389;
+}
+.ws-live-content .lp-enquiry-draft-saved {
+  color: #255bd7;
+}
+.ws-live-content .lp-enquiry-contact {
+  display: grid;
+  gap: 5px;
+  margin: 16px 0 24px;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .lp-enquiry-contact span {
+  color: #657389;
+  font-size: 13px;
+}
+.ws-live-content .lp-enquiries > .lp-enquiry-message {
+  line-height: 1.65;
+  max-width: 680px;
+  margin-block: 20px 28px;
+}
+.ws-live-content .lp-enquiries > button + button {
+  margin-left: 12px;
+}
+.ws-live-content .lp-mail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.ws-live-content .lp-mail-heading h2 {
+  margin-top: 4px;
+}
+.ws-live-content .lp-mail-heading .lp-eyebrow,
+.ws-live-content .lp-mail-preview-toolbar .lp-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.ws-live-content .lp-mail-access {
+  font-size: 12px;
+  color: #657389;
+}
+.ws-live-content .lp-gmail > p {
+  max-width: 640px;
+  line-height: 1.6;
+}
+.ws-live-content .lp-gmail > button {
+  margin-top: 4px;
+}
+.ws-live-content .lp-mail-workspace {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+}
+.ws-live-content .lp-mail-workspace-selected {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+.ws-live-content .lp-mail-list-pane {
+  min-width: 0;
+}
+.ws-live-content .lp-mail-list-label {
+  font-size: 12px;
+  color: #657389;
+  margin: 0 0 16px 12px;
+}
+.ws-live-content .lp-mail-list {
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.ws-live-content .lp-mail-list > li {
+  margin: 0 0 8px;
+}
+.ws-live-content .lp-gmail-message {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 0;
+  padding: 16px 12px;
+  line-height: 1.5;
+}
+.ws-live-content .lp-gmail-message[aria-pressed="true"] {
+  background: #edf2fe;
+}
+.ws-live-content .lp-mail-avatar {
+  flex: 0 0 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #255bd7;
+  background: #edf2fe;
+  font-size: 13px;
+}
+.ws-live-content .lp-mail-row-copy {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 5px;
+}
+.ws-live-content .lp-mail-row-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+.ws-live-content .lp-mail-sender {
+  font-size: 12px;
+  font-weight: 400;
+  color: #657389;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ws-live-content .lp-mail-date {
+  font-size: 12px;
+  font-weight: 400;
+  color: #657389;
+  flex-shrink: 0;
+}
+.ws-live-content .lp-mail-subject {
+  font-size: 14px;
+  font-weight: 600;
+  color: #17212f;
+}
+.ws-live-content .lp-mail-snippet {
+  color: #657389;
+  font-size: 13px;
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ws-live-content .lp-gmail-preview {
+  margin: 0;
+  min-width: 0;
+}
+.ws-live-content .lp-mail-preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.ws-live-content .lp-mail-preview-toolbar button {
+  border: 0;
+  font-size: 12px;
+}
+.ws-live-content .lp-gmail-preview h3 {
+  font-size: 20px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .lp-mail-envelope {
+  margin: 20px 0 28px;
+  display: grid;
+  gap: 8px;
+}
+.ws-live-content .lp-mail-envelope > div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 13px;
+}
+.ws-live-content .lp-mail-envelope dt {
+  color: #657389;
+}
+.ws-live-content .lp-mail-envelope dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ws-live-content .lp-gmail-preview .lp-enquiry-message {
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.ws-live-content .lp-gmail-preview > .lp-muted {
+  margin-block: 12px;
+}
+.ws-live-content .lp-mail-empty {
+  padding: 36px 0 12px;
+}
+.ws-live-content .lp-mail-empty p {
+  margin-top: 8px;
+  color: #657389;
+}
+@media (max-width: 1000px) {
+  .ws-live-content .lp-mail-workspace-selected {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-live-content .lp-mail-workspace-selected .lp-gmail-preview {
+    grid-row: 1;
+  }
+}
+@media (max-width: 600px) {
+  .ws-live-content .lp-enquiry-open {
+    flex-direction: column;
+    gap: 12px;
+    padding-inline: 0;
+  }
+  .ws-live-content .lp-enquiry-draft {
+    flex-shrink: 1;
+  }
+  .ws-live-content .lp-gmail-message {
+    padding-inline: 8px;
+    gap: 8px;
+  }
+  .ws-live-content .lp-mail-row-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ws-live-content .lp-mail-sender {
+    max-width: 100%;
+  }
+  .ws-live-content .lp-mail-date {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+.ws-live-content .lp-mail-actions > button:first-child {
+  background: #255bd7;
+  border-color: #255bd7;
+  color: white;
+}
+.ws-live-content .lp-mail-actions > button + button {
+  border-color: transparent;
+  color: #657389;
+}
+.ws-live-content .lp-enquiries:not([data-enquiry-detail-id]) > h2 {
+  display: none;
+}
+.ws-live-content .lp-enquiries[data-enquiry-detail-id] > h2 {
+  margin-top: 24px;
+}

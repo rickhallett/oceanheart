@@ -56,3 +56,21 @@ test("task changes survive navigation and reload and stay isolated to one browse
     await other.close();
   }
 });
+
+test("explicit fictional demo remains isolated across navigation and reload", async ({ page }) => {
+  const dataRequests: string[] = [];
+  page.on("request", request => {
+    if (new URL(request.url()).hostname.endsWith("convex.cloud")) dataRequests.push(request.url());
+  });
+  await page.goto("/app?demo=1");
+  await expect(page.getByRole("heading", { name: "Good morning, Rick Hallett." })).toBeVisible();
+  if (page.viewportSize()!.width < 768) await page.getByRole("button", { name: "Open navigation" }).click();
+  await page.getByRole("link", { name: "Clients", exact: true }).click();
+  await expect(page).toHaveURL(/\/app\/clients\?demo=1$/);
+  await expect(page.getByRole("heading", { name: "Clients", exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Clients", exact: true })).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/app\?demo=1$/);
+  expect(dataRequests).toEqual([]);
+});
