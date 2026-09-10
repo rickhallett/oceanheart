@@ -67,14 +67,13 @@ export async function selectEvidence(
   if (!response.ok) throw Error("PROVIDER_UNAVAILABLE");
   const data = await response.json();
   if (data.status !== "completed") throw Error("PROVIDER_UNAVAILABLE");
-  const output = data.output
-    ?.flatMap(
-      (item: { type: string; content?: { type: string; text?: string }[] }) =>
-        item.type === "message" ? (item.content ?? []) : [],
-    )
-    .filter((part: { type: string }) => part.type === "output_text");
+  const output = data.output?.flatMap(
+    (item: { type: string; content?: { type: string; text?: string }[] }) =>
+      item.type === "message" ? (item.content ?? []) : [],
+  );
   if (
     output?.length !== 1 ||
+    output[0]?.type !== "output_text" ||
     typeof output[0].text !== "string" ||
     output[0].text.length > 4000
   )

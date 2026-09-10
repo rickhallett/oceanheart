@@ -124,6 +124,34 @@ describe("provider isolation", () => {
     expect(body.instructions).not.toContain(injection);
     expect(result.selection.status).toBe("abstain");
   });
+  it("rejects mixed valid output and refusal or unexpected message content", async () => {
+    for (const type of ["refusal", "unexpected_content"]) {
+      const data = {
+        status: "completed",
+        output: [
+          {
+            type: "message",
+            content: [
+              {
+                type: "output_text",
+                text: '{"status":"abstain","passages":[]}',
+              },
+              { type },
+            ],
+          },
+        ],
+        usage: { input_tokens: 10, output_tokens: 10 },
+      };
+      await expect(
+        selectEvidence(
+          { key: "fake", model: "gpt-5-mini", tenantId: "s" },
+          "q",
+          [],
+          vi.fn().mockResolvedValue({ ok: true, json: async () => data }),
+        ),
+      ).rejects.toThrow("INVALID_ANSWER");
+    }
+  });
   it("rejects provider refusal/incomplete output and invalid shape", async () => {
     for (const data of [
       { status: "incomplete" },
