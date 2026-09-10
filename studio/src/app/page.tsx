@@ -2,12 +2,13 @@ import { Box, Card, Container, Flex, Grid, Heading, HStack, Link, SimpleGrid, Te
 import { Leaf, MessageCircle, Heart, ArrowUpRight } from "lucide-react";
 import { Mark, ButtonLink, TextLink, Eyebrow } from "@/components/ui";
 import { PracticePreview } from "@/components/practice-preview";
+import { StudioProvider } from "@/components/studio-provider";
 
 const email =
   "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20oceanheart%20Studio";
 export default function Home() {
   return (
-    <>
+    <StudioProvider>
       <Link className="skip-link" href="#main">
         Skip to content
       </Link>
@@ -186,6 +187,6 @@ export default function Home() {
         </Link>
         <small>© {new Date().getFullYear()} oceanheart</small>
       </Flex>
-    </>
+    </StudioProvider>
   );
 }

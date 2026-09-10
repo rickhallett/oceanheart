@@ -1,3 +1,4 @@
+import { taskCompleteChecks } from "./task-complete-checks.mjs";
 import { approvedActionChecks } from "./approved-action-checks.mjs";
 import { citedAnswerChecks } from "./cited-answer-checks.mjs";
 import { sourceLibraryChecks } from "./source-library-checks.mjs";
@@ -254,7 +255,9 @@ export const transition=action({args:{name:v.union(v.literal("reserve"),v.litera
     bob = await client("bob"),
     viewer = await client("viewer"),
     anonymous = await client();
-  if (process.env.STUDIO_INTEGRATION_SLICE === "approved-actions") {
+  if (process.env.STUDIO_INTEGRATION_SLICE === "task-complete") {
+    await taskCompleteChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  } else if (process.env.STUDIO_INTEGRATION_SLICE === "approved-actions") {
     await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
   } else if (process.env.STUDIO_INTEGRATION_SLICE === "cited-answers") {
     await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
@@ -623,6 +626,7 @@ export const transition=action({args:{name:v.union(v.literal("reserve"),v.litera
   }
   if (!process.env.STUDIO_INTEGRATION_SLICE) await citedAnswerChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check});
   if (!process.env.STUDIO_INTEGRATION_SLICE) await approvedActionChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
+  if (!process.env.STUDIO_INTEGRATION_SLICE) await taskCompleteChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,check,alter:args=>command(["run","--env-file",".push.env","approvedActionTest:alter",JSON.stringify(args)])});
   check("type-generated tenant-scoped API deployed successfully");
   await mkdir(resolve(root, ".local"), { recursive: true });
   await writeFile(
