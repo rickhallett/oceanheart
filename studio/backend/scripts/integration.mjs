@@ -7,6 +7,7 @@ import { settingsChecks } from "./settings-checks.mjs";
 import { catalogChecks } from "./catalog-checks.mjs";
 import { taskMaintenanceChecks } from "./task-maintenance-checks.mjs";
 import { todayChecks } from "./today-checks.mjs";
+import { clientNotesChecks } from "./client-notes-checks.mjs";
 import { stopProcessGroup } from "./process-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -307,6 +308,7 @@ export const transition=action({args:{name:v.union(v.literal("consume"),v.litera
   });
   await catalogChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"catalog-local"});
   await recordManagementChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"managementlocal"});
+  await clientNotesChecks({alice,bob,viewer,anonymous,tenantA,tenantB,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check});
   await settingsChecks({alice,bob,viewer,anonymous,viewerIdentity:`${issuer}|viewer`,clientForOwner:()=>client("alice"),check,prefix:"settings-local"});
   await writeFile(resolve(runDir,"legacy-clients.json"),JSON.stringify(Array.from({length:101},(_,i)=>({tenantId:tenantA,name:i===0?"Legacy backfill fixture":`Migration auxiliary ${i}`,email:"legacy@example.com",createdAt:123,createdBy:`${issuer}|alice`,requestKey:`legacy-fixture-${i}`}))));
   await command(["import","--env-file",".push.env","--table","clients","--append", "legacy-clients.json"]);

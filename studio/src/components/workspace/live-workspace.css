@@ -1,4 +1,9 @@
 /* Live records inhabit the reviewed Precision workspace. */
+.ws-live-content .lp-client-notes { margin-top: 12px; }
+.ws-live-content .lp-notes-form { max-width: 680px; margin: 20px 0 28px; }
+.ws-live-content .lp-notes-form label { display: block; font-size: 16px; font-weight: 600; }
+.ws-live-content .lp-notes-form .lp-muted { margin: 8px 0; }
+.ws-live-content .lp-notes-form textarea { display: block; width: 100%; resize: vertical; margin: 8px 0 12px; font-size: 13px; line-height: 1.5; }
 .ws-live-content .lp-client-history { margin-top: 12px; }
 .ws-live-content .lp-client-history section { margin-top: 20px; max-width: 680px; }
 .ws-live-content .lp-client-history h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }

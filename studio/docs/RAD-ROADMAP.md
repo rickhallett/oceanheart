@@ -39,11 +39,11 @@ is only a compatibility redirect. Today uses server time and the saved practice
 IANA zone; task selection precedes the 200-row cap and viewers receive no booking
 queries or client-link identity.
 
-The next bounded records increment is owner-only client booking history
-(RIC-105): paginated linked appointments, retained booked terms, reschedule and
-cancellation activity, and history for archived clients. See
-[the history contract](CLIENT-HISTORY.md). This completes the history portion;
-private notes remain separate. Website publishing follows the roadmap sequence
+Owner-only client booking history (RIC-105) is accepted on staging: paginated
+linked appointments, retained booked terms, reschedule/cancellation activity,
+and archived-client history. See [the history contract](CLIENT-HISTORY.md).
+The next records increment adds [private practical notes](CLIENT-NOTES.md),
+with independent revisions and explicit stale-draft recovery. Website publishing follows the roadmap sequence
 after outstanding booking rules are scoped; the public marketing introduction
 is a separate visual-approval hold.
 
