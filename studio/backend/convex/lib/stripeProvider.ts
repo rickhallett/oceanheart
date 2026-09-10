@@ -89,10 +89,16 @@ export async function createStripeCheckout(
     tenantId: attempt.tenantId,
     bookingId: attempt.bookingId,
   };
+  const successUrl = new URL("/app/calendar", config.appOrigin);
+  successUrl.searchParams.set("practice", attempt.tenantId);
+  successUrl.searchParams.set("checkout", "return");
+  const cancelUrl = new URL("/app/calendar", config.appOrigin);
+  cancelUrl.searchParams.set("practice", attempt.tenantId);
+  cancelUrl.searchParams.set("checkout", "cancel");
   const body = new URLSearchParams({
     mode: "payment",
-    success_url: `${config.appOrigin}/app/calendar?checkout=return`,
-    cancel_url: `${config.appOrigin}/app/calendar?checkout=cancel`,
+    success_url: successUrl.toString(),
+    cancel_url: cancelUrl.toString(),
     client_reference_id: attempt.attemptId,
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": attempt.currency.toLowerCase(),
