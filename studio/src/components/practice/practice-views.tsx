@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQuery, usePaginatedQuery } from "convex/react";
-import { practiceApi, type TaskFilter, type TenantId } from "./api";
+import { practiceApi, type Task, type TaskFilter, type TenantId } from "./api";
 import { PracticeGmail } from "./gmail";
 import type { EnquiryId } from "./enquiry-api";
 import { PracticeEnquiries } from "./enquiries";
@@ -29,9 +29,11 @@ export function PracticeViews(props: {
 function PracticeTasks({
   tenantId,
   canWrite,
+  openClient,
 }: {
   tenantId: TenantId;
   canWrite: boolean;
+  openClient?: (client: { name: string; archived: boolean }) => void;
 }) {
   const [filter, setFilter] = useState<TaskFilter>("all");
   const result = useQuery(practiceApi.tasks, { tenantId, filter });
@@ -39,35 +41,121 @@ function PracticeTasks({
   const complete = useMutation(practiceApi.setCompleted);
   const update = useMutation(practiceApi.updateTask);
   const remove = useMutation(practiceApi.removeTask);
+  const shared: {
+    result: Parameters<typeof TaskPanel>[0]["result"];
+    canWrite: boolean;
+    filter: TaskFilter;
+    changeFilter: (filter: TaskFilter) => void;
+    setCompleted: (task: Task, completed: boolean) => Promise<unknown>;
+    removeTask: (task: Task, expectedRevision: number) => Promise<unknown>;
+    openClient?: (client: { name: string; archived: boolean }) => void;
+  } = {
+    result,
+    canWrite,
+    filter,
+    changeFilter: setFilter,
+    setCompleted: (task, completed) =>
+      complete({ tenantId, taskId: task._id, completed, expectedRevision: task.revision }),
+    removeTask: (task, expectedRevision) =>
+      remove({ tenantId, taskId: task._id, expectedRevision }),
+    openClient,
+  };
+  if (!canWrite) {
+    // Viewers never mount the owner-only client search; their task
+    // projection carries no client fields at all.
+    return (
+      <TaskPanel
+        {...shared}
+        addTask={() => Promise.reject(new Error("FORBIDDEN"))}
+        updateTask={() => Promise.reject(new Error("FORBIDDEN"))}
+      />
+    );
+  }
+  return (
+    <OwnedTaskPanel
+      tenantId={tenantId}
+      shared={shared}
+      create={create}
+      update={update}
+    />
+  );
+}
+type CreateTaskArgs = {
+  tenantId: TenantId;
+  title: string;
+  requestKey: string;
+  dueDate?: string;
+  clientId?: Task["clientId"];
+};
+type UpdateTaskArgs = {
+  tenantId: TenantId;
+  taskId: Task["_id"];
+  title: string;
+  expectedRevision: number;
+  dueDate?: string | null;
+  clientId?: Task["clientId"] | null;
+};
+function OwnedTaskPanel({
+  tenantId,
+  shared,
+  create,
+  update,
+}: {
+  tenantId: TenantId;
+  shared: Omit<
+    Parameters<typeof TaskPanel>[0],
+    | "addTask"
+    | "updateTask"
+    | "clientOptions"
+    | "clientsStatus"
+    | "clientSearch"
+    | "changeClientSearch"
+    | "loadMoreClients"
+  >;
+  create: (args: CreateTaskArgs) => Promise<unknown>;
+  update: (args: UpdateTaskArgs) => Promise<{ taskId: Task["_id"]; revision: number }>;
+}) {
+  const [clientSearch, setClientSearch] = useState("");
+  const {
+    results: clientResults,
+    status: clientsStatus,
+    loadMore: loadMoreClients,
+  } = usePaginatedQuery(
+    practiceApi.clients,
+    { tenantId, archived: false, search: clientSearch },
+    { initialNumItems: 20 },
+  );
   return (
     <TaskPanel
-      result={result}
-      canWrite={canWrite}
-      filter={filter}
-      changeFilter={setFilter}
-      addTask={(title, requestKey, dueDate) =>
+      {...shared}
+      addTask={(title, requestKey, dueDate, clientId) =>
         create({
           tenantId,
           title,
           requestKey,
           ...(dueDate !== undefined ? { dueDate } : {}),
+          ...(clientId !== undefined ? { clientId } : {}),
         })
       }
-      setCompleted={(task, completed) =>
-        complete({ tenantId, taskId: task._id, completed, expectedRevision: task.revision })
-      }
-      updateTask={(task, title, expectedRevision, dueDate) =>
+      updateTask={(task, title, expectedRevision, dueDate, clientId) =>
         update({
           tenantId,
           taskId: task._id,
           title,
           expectedRevision,
           ...(dueDate === undefined ? {} : { dueDate }),
+          ...(clientId === undefined ? {} : { clientId }),
         })
       }
-      removeTask={(task, expectedRevision) =>
-        remove({ tenantId, taskId: task._id, expectedRevision })
-      }
+      clientOptions={(clientResults ?? []).map((client) => ({
+        _id: client._id,
+        name: client.name,
+        archived: client.archived,
+      }))}
+      clientsStatus={clientsStatus}
+      clientSearch={clientSearch}
+      changeClientSearch={setClientSearch}
+      loadMoreClients={() => loadMoreClients(20)}
     />
   );
 }
@@ -87,6 +175,9 @@ function PracticeContent({
     canWrite && gmailStatus ? "gmail" : "tasks",
   );
   const [enquiryId, setEnquiryId] = useState<EnquiryId>();
+  const [clientFocus, setClientFocus] = useState<
+    { name: string; archived: boolean } | undefined
+  >();
   return (
     <>
       <PracticeNavigation
@@ -94,11 +185,24 @@ function PracticeContent({
         canWrite={canWrite}
         select={(next) => {
           setEnquiryId(undefined);
+          setClientFocus(undefined);
           setSection(next);
         }}
       />
       {section === "tasks" ? (
-        <PracticeTasks tenantId={tenantId} canWrite={canWrite} />
+        <PracticeTasks
+          tenantId={tenantId}
+          canWrite={canWrite}
+          openClient={
+            canWrite
+              ? (client) => {
+                  setEnquiryId(undefined);
+                  setClientFocus(client);
+                  setSection("clients");
+                }
+              : undefined
+          }
+        />
       ) : section === "services" ? (
         <PracticeServices tenantId={tenantId} canWrite={canWrite} />
       ) : section === "settings" ? (
@@ -125,7 +229,11 @@ function PracticeContent({
       ) : canWrite && section === "bookings" ? (
         <PracticeBookings tenantId={tenantId} timeZone={timeZone} />
       ) : canWrite ? (
-        <PracticeClients tenantId={tenantId} />
+        <PracticeClients
+          key={clientFocus ? `${clientFocus.name}||${clientFocus.archived}` : "all"}
+          tenantId={tenantId}
+          focus={clientFocus}
+        />
       ) : null}
     </>
   );
@@ -180,9 +288,15 @@ function PracticeServices({
     </>
   );
 }
-function PracticeClients({ tenantId }: { tenantId: TenantId }) {
-  const [archived, setArchived] = useState(false),
-    [search, setSearch] = useState("");
+function PracticeClients({
+  tenantId,
+  focus,
+}: {
+  tenantId: TenantId;
+  focus?: { name: string; archived: boolean };
+}) {
+  const [archived, setArchived] = useState(focus?.archived ?? false),
+    [search, setSearch] = useState(focus?.name ?? "");
   const { results, status, loadMore } = usePaginatedQuery(
     practiceApi.clients,
     { tenantId, archived, search },

@@ -20,7 +20,16 @@ export type Task = {
   createdAt: number;
   revision: number;
   dueDate?: string;
+  clientId?: GenericId<"clients">;
+  clientName?: string;
+  clientArchived?: boolean;
 };
+export type TaskClientOption = {
+  _id: GenericId<"clients">;
+  name: string;
+  archived: boolean;
+};
+export type LinkedClient = { name: string; archived: boolean };
 export type TaskFilter = "all" | "open" | "completed";
 export type TaskUpdateResult = { taskId: GenericId<"tasks">; revision: number };
 export type TaskList = { items: Task[]; hasMore: boolean; limit: number };
@@ -163,7 +172,13 @@ export const practiceApi = {
   ),
   createTask: makeFunctionReference<
     "mutation",
-    { tenantId: TenantId; title: string; requestKey: string; dueDate?: string },
+    {
+      tenantId: TenantId;
+      title: string;
+      requestKey: string;
+      dueDate?: string;
+      clientId?: GenericId<"clients">;
+    },
     GenericId<"tasks">
   >("tasks:create"),
   setCompleted: makeFunctionReference<
@@ -184,6 +199,7 @@ export const practiceApi = {
       title: string;
       expectedRevision: number;
       dueDate?: string | null;
+      clientId?: GenericId<"clients"> | null;
     },
     TaskUpdateResult
   >("tasks:update"),

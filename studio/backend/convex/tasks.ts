@@ -1,4 +1,6 @@
 import { mutation, query } from "./_generated/server";
+import type { MutationCtx } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 import { v, ConvexError } from "convex/values";
 import { requireMember } from "./lib/access";
 
@@ -40,12 +42,33 @@ function taskDueDate(value: string) {
   return value;
 }
 
+// A linked client must be a live record in the same tenant. Archived or
+// foreign records can never be newly linked; missing records are treated
+// as foreign so existence never leaks across tenants.
+async function taskClient(ctx: MutationCtx, tenantId: Id<"tenants">, clientId: Id<"clients">) {
+  const record = await ctx.db.get(clientId);
+  if (!record || record.tenantId !== tenantId)
+    throw new ConvexError("FORBIDDEN");
+  if (record.archived) throw new ConvexError("ARCHIVED_RECORD");
+  return record;
+}
+
 export const list = query({
   // `filter` is optional so deployed clients using the original list contract
   // keep receiving the complete, active task list.
   args: { tenantId: v.id("tenants"), filter: v.optional(taskFilter) },
   handler: async (ctx, { tenantId, filter = "all" }) => {
-    await requireMember(ctx, tenantId);
+    const user = await requireMember(ctx, tenantId);
+    // Clients are owner-only records, but tasks are member-readable. The
+    // backend derives the role and redacts every client link field for
+    // viewers; frontend hiding alone would still leak identity.
+    const membership = await ctx.db
+      .query("memberships")
+      .withIndex("by_tenant_identity", (q) =>
+        q.eq("tenantId", tenantId).eq("identity", user.tokenIdentifier),
+      )
+      .unique();
+    const isOwner = membership?.role === "owner";
     const source =
       filter === "all"
         ? ctx.db
@@ -63,16 +86,34 @@ export const list = query({
             );
     const rows = await source.order("desc").take(201);
     return {
-      items: rows
-        .slice(0, 200)
-        .map(({ _id, title, completed, createdAt, revision, dueDate }) => ({
-          _id,
-          title,
-          completed,
-          createdAt,
-          revision: revision ?? 0,
-          ...(dueDate !== undefined ? { dueDate } : {}),
-        })),
+      items: await Promise.all(
+        rows.slice(0, 200).map(async (row) => {
+          const { _id, title, completed, createdAt, revision, dueDate, clientId } = row;
+          // Archived links stay intelligible: the name resolves with its
+          // archived flag. Deleted records (admin-only) read as unlinked.
+          const linked =
+            isOwner && clientId !== undefined
+              ? await ctx.db.get(clientId)
+              : null;
+          const tenantLinked =
+            linked?.tenantId === tenantId ? linked : null;
+          return {
+            _id,
+            title,
+            completed,
+            createdAt,
+            revision: revision ?? 0,
+            ...(dueDate !== undefined ? { dueDate } : {}),
+            ...(tenantLinked
+              ? {
+                  clientId: tenantLinked._id,
+                  clientName: tenantLinked.name,
+                  clientArchived: tenantLinked.archived ?? false,
+                }
+              : {}),
+          };
+        }),
+      ),
       hasMore: rows.length > 200,
       limit: 200,
     };
@@ -85,8 +126,9 @@ export const create = mutation({
     title: v.string(),
     requestKey: v.string(),
     dueDate: v.optional(v.string()),
+    clientId: v.optional(v.id("clients")),
   },
-  handler: async (ctx, { tenantId, title: rawTitle, requestKey, dueDate: rawDueDate }) => {
+  handler: async (ctx, { tenantId, title: rawTitle, requestKey, dueDate: rawDueDate, clientId: rawClientId }) => {
     const user = await requireMember(ctx, tenantId, true);
     const normalizedTitle = taskTitle(rawTitle);
     const normalizedDueDate =
@@ -108,25 +150,42 @@ export const create = mutation({
       // Absence is immutable too: a date-less create stores creationTitle
       // with no creationDueDate, so its receipt is "no date" even after a
       // later update adds one. Only legacy rows (no creationTitle marker)
-      // fall back to the live fields as their pre-image.
+      // fall back to the live fields as their pre-image. The same marker
+      // rule keeps an originally-unlinked create retryable after a link
+      // is added or removed.
       const originalDueDate =
         existing.creationTitle !== undefined
           ? (existing.creationDueDate ?? undefined)
           : (existing.dueDate ?? undefined);
+      const originalClientId =
+        existing.creationTitle !== undefined
+          ? (existing.creationClientId ?? undefined)
+          : (existing.clientId ?? undefined);
       if (
         (existing.creationTitle ?? existing.title) !== normalizedTitle ||
         originalDueDate !== normalizedDueDate ||
+        (originalClientId ?? undefined) !== (rawClientId ?? undefined) ||
         existing.createdBy !== user.tokenIdentifier
       )
         throw new ConvexError("IDEMPOTENCY_MISMATCH");
       return existing._id;
     }
+    // Receipt retries above compare the immutable original client id without
+    // revalidating its current lifecycle state. A genuinely new link must
+    // still resolve to a live client owned by this tenant.
+    const normalizedClientId =
+      rawClientId === undefined
+        ? undefined
+        : (await taskClient(ctx, tenantId, rawClientId))._id;
     return ctx.db.insert("tasks", {
       tenantId,
       title: normalizedTitle,
       creationTitle: normalizedTitle,
       ...(normalizedDueDate !== undefined
         ? { dueDate: normalizedDueDate, creationDueDate: normalizedDueDate }
+        : {}),
+      ...(normalizedClientId !== undefined
+        ? { clientId: normalizedClientId, creationClientId: normalizedClientId }
         : {}),
       completed: false,
       revision: 0,
@@ -169,13 +228,15 @@ export const update = mutation({
     taskId: v.id("tasks"),
     title: v.string(),
     expectedRevision: v.number(),
-    // Legacy callers omit dueDate and keep the existing date. An explicit
-    // null clears the date; a YYYY-MM-DD string sets it.
+    // Legacy callers omit dueDate/clientId and keep the existing values. An
+    // explicit null clears; a YYYY-MM-DD string sets the date and a client
+    // id sets the link (live, same-tenant, unarchived records only).
     dueDate: v.optional(v.union(v.string(), v.null())),
+    clientId: v.optional(v.union(v.id("clients"), v.null())),
   },
   handler: async (
     ctx,
-    { tenantId, taskId, title: rawTitle, expectedRevision: expected, dueDate: rawDueDate },
+    { tenantId, taskId, title: rawTitle, expectedRevision: expected, dueDate: rawDueDate, clientId: rawClientId },
   ) => {
     await requireMember(ctx, tenantId, true);
     expectedRevision(expected);
@@ -190,19 +251,39 @@ export const update = mutation({
         : rawDueDate === null
           ? undefined
           : taskDueDate(rawDueDate);
-    if (task.title === normalizedTitle && currentDueDate === desiredDueDate)
+    const currentClientId = task.clientId ?? undefined;
+    const desiredClientId =
+      rawClientId === undefined
+        ? currentClientId
+        : (rawClientId ?? undefined);
+    if (
+      task.title === normalizedTitle &&
+      currentDueDate === desiredDueDate &&
+      (currentClientId ?? undefined) === (desiredClientId ?? undefined)
+    )
       return { taskId, revision: task.revision ?? 0 };
     if ((task.revision ?? 0) !== expected)
       throw new ConvexError("REVISION_CONFLICT");
+    // Only a changed link is revalidated: keeping the existing link (even
+    // to a since-archived client) never fails, but newly linking an
+    // archived or foreign record is rejected.
+    if (
+      desiredClientId !== undefined &&
+      desiredClientId !== currentClientId
+    )
+      await taskClient(ctx, tenantId, desiredClientId);
     // Backfill the immutable create receipt for legacy rows only. Using the
-    // creationTitle marker avoids overwriting an originally-absent date with
-    // a later edited date on the second write.
+    // creationTitle marker avoids overwriting an originally-absent date or
+    // link with later edited values on the second write.
     const backfill =
       task.creationTitle === undefined
         ? {
             creationTitle: task.title,
             ...(task.dueDate !== undefined
               ? { creationDueDate: task.dueDate }
+              : {}),
+            ...(task.clientId !== undefined
+              ? { creationClientId: task.clientId }
               : {}),
           }
         : {};
@@ -213,6 +294,11 @@ export const update = mutation({
         : desiredDueDate === undefined
           ? { dueDate: undefined }
           : { dueDate: desiredDueDate }),
+      ...(rawClientId === undefined
+        ? {}
+        : desiredClientId === undefined
+          ? { clientId: undefined }
+          : { clientId: desiredClientId }),
       ...backfill,
       revision: (task.revision ?? 0) + 1,
     });
@@ -241,6 +327,9 @@ export const remove = mutation({
             creationTitle: task.title,
             ...(task.dueDate !== undefined
               ? { creationDueDate: task.dueDate }
+              : {}),
+            ...(task.clientId !== undefined
+              ? { creationClientId: task.clientId }
               : {}),
           }
         : {}),
