@@ -60,7 +60,10 @@ it("creates test Checkout with the durable key and only server-bound booked term
   expect(init.body.get("line_items[0][price_data][unit_amount]")).toBe("6250");
   expect(init.body.get("line_items[0][price_data][currency]")).toBe("gbp");
   expect(init.body.get("success_url")).toBe(
-    "https://studio-staging.example/app/calendar?checkout=return",
+    "https://studio-staging.example/app/calendar?practice=tenant&checkout=return",
+  );
+  expect(init.body.get("cancel_url")).toBe(
+    "https://studio-staging.example/app/calendar?practice=tenant&checkout=cancel",
   );
   expect(init.body.get("metadata[tenantId]")).toBe("tenant");
 });
