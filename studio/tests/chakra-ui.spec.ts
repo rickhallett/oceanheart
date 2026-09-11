@@ -18,11 +18,7 @@ test("all site surfaces remain readable inside responsive viewports", async ({ p
       expect(dimensions.width, `${route} layout viewport at ${width}px`).toBeLessThanOrEqual(width + 1);
       expect(dimensions.document, `${route} document at ${width}px`).toBeLessThanOrEqual(width + 1);
       await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
-      if (route === "/") {
-        const heading = await page.locator("#hero-title").evaluate(element => ({ size: parseFloat(getComputedStyle(element).fontSize), font: getComputedStyle(element).fontFamily }));
-        expect(heading.size).toBeGreaterThanOrEqual(width < 768 ? 40 : 44);
-        expect(heading.font).toMatch(/DM.Sans/i);
-      }
+      if (route === "/") await expect(page).toHaveURL(/\/app$/);
       if (width !== 1024) await page.screenshot({ path: info.outputPath(`${route.replaceAll("/", "-") || "home"}-${width}.png`), fullPage: true });
     }
   }
@@ -80,10 +76,6 @@ test("record tables expose headers and assistant tabs support keyboard navigatio
 });
 
 test("primary actions keep contrast and readable styling inside dialogs", async ({ page }) => {
-  await page.goto("/");
-  const cta = page.locator(".ph-primary");
-  await expect(cta).toHaveCSS("color", "rgb(255, 255, 255)");
-  await expect(cta).toHaveCSS("background-color", "rgb(37, 91, 215)");
   await page.goto("/app/clients");
   const add = page.getByRole("button", { name: "Add client", exact: true });
   await expect(add).toHaveCSS("font-size", "13px");
