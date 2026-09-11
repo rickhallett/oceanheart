@@ -43,9 +43,10 @@ if [ ! -x "$NODE_ROOT/bin/node" ]; then
   mkdir "$TEMP_ROOT/unpacked"
   tar -xJf "$TEMP_ROOT/$NODE_ARCHIVE" -C "$TEMP_ROOT/unpacked" --strip-components=1
   chown -R root:root "$TEMP_ROOT/unpacked"
-  chmod -R go-w "$TEMP_ROOT/unpacked"
+  chmod -R a+rX,go-w "$TEMP_ROOT/unpacked"
   mv "$TEMP_ROOT/unpacked" "$NODE_ROOT"
 fi
+chmod -R a+rX,go-w "$NODE_ROOT"
 if [ "$($NODE_ROOT/bin/node --version)" != "v${NODE_VERSION}" ]; then
   printf 'installed Node version mismatch\n' >&2
   exit 79
@@ -69,6 +70,10 @@ fi
 if ! id "$SERVICE_USER" >/dev/null 2>&1; then
   useradd --system --gid "$SERVICE_USER" --home-dir "$SERVICE_HOME" \
     --create-home --shell "$SERVICE_SHELL" "$SERVICE_USER"
+fi
+if [ "$(runuser -u "$SERVICE_USER" -- "$NODE_ROOT/bin/node" --version)" != "v${NODE_VERSION}" ]; then
+  printf 'service user cannot execute pinned Node\n' >&2
+  exit 80
 fi
 install -d -o root -g root -m 0755 /opt/studio /opt/studio/releases
 install -d -o "$SERVICE_USER" -g "$SERVICE_USER" -m 0700 "$SERVICE_HOME"
