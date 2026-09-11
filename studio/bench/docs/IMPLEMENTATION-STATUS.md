@@ -26,6 +26,8 @@ The package supplies `run`, `eval`, read-only run `inspect`, manifest `plan` and
 
 The Clara adaptation slice adds `adapt` and exact-prior `rollback`. A reviewed CL-09 effective-date/rate request is evaluated under both configurations across all nine cases using fresh evaluation state and the existing HTML/JSON report. Accepted configuration artifacts and releases are immutable and digest-addressed; a client-scoped atomic pointer selects the runtime version. Live runtime state is deliberately retained, so changing configuration never bypasses an existing draft/session reservation. Failed or stale activation leaves the prior version active, and rollback is limited to the compatible prior configuration. Clean-environment configuration plus SQLite backup/restore remains outstanding.
 
+The HE-10 application lane now packages a source-verified standalone Studio artifact and switches it through a stable private loopback router only after manifest identity and application health checks. Its client-scoped fsync-backed pointer is independent of Clara configuration and durable workflow state. Local process/HTTP evidence covers prior-serving-on-failure, exact reported source/digest/data target, compatible exact-prior rollback and owned-process shutdown. Private VM supervision, authenticated hosted use and HE-12 restore remain outside this evidence.
+
 Clara's eight specified cases run through the actual Pi SDK using the scripted transport. A ninth independent case compares baseline GBP 230 against adapted GBP 240, preserving its historical and negotiated rates. Policies have an explicit practice, session/person scope, effective date and version. No model chooses rate scope. The comparison is local, not the conversational change-and-release journey requested by the full product specification.
 
 Promptfoo 0.123.0 was run with caching and telemetry disabled against the same provider. The direct CLI matrix and Promptfoo each passed 18 case/configuration comparisons. Independent provider calls receive fresh private state directories; CL-08 explicitly repeats one request inside a run. Local trace files are linked from the report. A scripted transport has no inference-provider bill; zero inference cost is labelled as such.
@@ -41,7 +43,7 @@ Promptfoo 0.123.0 was run with caching and telemetry disabled against the same p
 | HE-07 | Credential rotation/revocation/OAuth refresh not implemented |
 | HE-08 | Durable local recovery plus remote supervisor stop/restart/replay preserved one synthetic draft and one job/effect/reservation; VM-boot reinstallation remains operator-owned |
 | HE-09 | Git export verified; scoped clone/push/PR integration not implemented |
-| HE-10 | Exact-source export plus local atomic configuration activation/exact-prior rollback; actual application artifact deployment switch outstanding |
+| HE-10 | Local standalone Studio process switch: verified source/digest/data target, candidate health before atomic pointer, prior serving through failure, and exact compatible rollback. Private-VM deployment remains outstanding |
 | HE-11 | Clara fixed/held-out cases and scoped rate activation demonstrated locally; another-client input stays invariant; hosted second-instance invariance outstanding |
 | HE-12 | Off-VM backup and clean-environment restore not implemented |
 
