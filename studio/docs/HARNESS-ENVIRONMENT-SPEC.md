@@ -179,6 +179,47 @@ Begin with private structured traces and a small HTML/JSON evaluation report. Ad
 
 ## 9. Bench commands to implement
 
+### Recommended workbench tools and integrations
+
+The bench is Richard's working environment for understanding, changing and evaluating a client's agent. Recommended starting combination: **Pi + SSH + Git/gh + Promptfoo + private structured traces**, connected by the thin `studio-bench` CLI. Add **Langfuse** as the preferred trace-inspection UI when the first workflow produces enough runs to justify it. These are recommendations for implementation, not installed integrations or verified Pi adapters.
+
+| Tool | Role in the bench | Recommendation |
+| --- | --- | --- |
+| Pi CLI and SDK | Interactive coding, resumable client sessions, custom workflow tools and event capture | Core; already selected. Keep the SDK adapter small and version-pinned |
+| SSH and exe.dev control plane | Enter the correct client development VM, inspect services and provision environments | Core; reuse existing access rather than build remote-shell UI |
+| Git and gh | Inspect changes, create client branches/PRs, record exact versions and checks | Core; keep code, instructions and synthetic cases in the client repository |
+| Promptfoo | Compare instructions, models and retrieval configurations against fixed cases; inspect side-by-side outputs | First evaluation integration; use local CLI/viewer and a custom adapter invoking the actual Pi workflow |
+| Langfuse | Inspect session/run timelines, tool and retrieval spans, latency, usage and feedback | Preferred optional observability UI; start with synthetic traces and a measured self-hosting pilot |
+| 1Password CLI/service identity | Provision and rotate the bench's scoped machine credentials | As specified in section 6; credential transport stays outside prompts and eval exports |
+| Existing application tests | Verify deterministic calculations, effects and the rendered Studio journey | Reuse the repository's focused tests alongside model evaluations |
+| LangSmith | Alternative trace/evaluation service | Consider instead of Langfuse if a short trial materially improves Richard's workflow; do not integrate both initially |
+| LangGraph | Explicit graph-based orchestration | Defer until a demonstrated workflow needs coordination beyond Pi plus the durable job supervisor |
+
+Promptfoo documents local evaluation, configurable assertions, comparison views and custom providers. Its JavaScript provider interface gives us an integration route for a Pi workflow; a working Pi connector is still ours to implement and test. Model calls still go to the configured inference provider even when the evaluation runner is local. [Overview](https://www.promptfoo.dev/docs/intro/), [custom provider](https://www.promptfoo.dev/docs/providers/custom-api/).
+
+Langfuse documents traces, sessions, feedback, evaluations and OpenTelemetry/SDK ingestion. Use the existing Oceanheart run/session IDs in exported spans and link the result back to the bench. Keep Git as the initial authority for deployed instructions; do not introduce independent prompt publication through the observability UI. [Langfuse capabilities](https://langfuse.com/docs).
+
+Self-hosted Langfuse has several services and storage dependencies; it is not a tiny extra daemon. Its docs distinguish Docker Compose for local/testing use from production deployment and identify licensed add-ons. Run one operator-only bench installation, not a full stack per client, subject to measured capacity and suitable feature licensing. Client tagging is for navigation, not an access boundary: practitioners do not get access to that shared operator installation. Its project keys and exports must still be scoped. A paid enterprise feature is not a prerequisite; retain local traces if the available setup does not fit. [Self-hosting requirements](https://langfuse.com/self-hosting).
+
+LangSmith offers observability; LangGraph is an orchestration framework. They are separate choices, and neither needs to be added merely because the other is used. No self-hosting entitlement or pricing assumption is made for LangSmith. [LangSmith](https://docs.langchain.com/langsmith/observability), [LangGraph](https://docs.langchain.com/oss/javascript/langgraph/overview).
+
+### How the integrations should work together
+
+1. Richard selects Clara through the bench and opens the client-scoped Pi workspace.
+2. A change to instructions, a tool or retrieval configuration gets a Git branch and version.
+3. Promptfoo's custom provider calls the same workflow adapter used by Studio, with a fresh isolated fixture/session per independent case. It returns output, structured effects and the run reference. Multi-turn cases explicitly preserve only their own session.
+4. Deterministic assertions check invoice amounts, source IDs and allowed effects. A human rubric evaluates usefulness; model judges are optional and their model/configuration is recorded. Repeated-run tests disable or distinguish cached results.
+5. Pi events and connector spans populate private traces; an optional Langfuse exporter sends redacted records asynchronously. Export failure must not block a workflow or discard its local audit record.
+6. The comparison report links case, configuration, result and trace. Richard can inspect a failure, correct it and rerun the affected cases before the release controller promotes the exact tested artifact.
+
+For retrieval work, version the source corpus and retrieval configuration independently from the prompt. Compare the retrieved evidence as well as the final answer. A managed RAG service is a workflow dependency, not a mandatory workbench platform; attach it through the same adapter and evaluate it against Elena's source/version cases when that slice begins.
+
+### First workbench integration acceptance
+
+Demonstrate two configurations of Clara's workflow across CL-01 through CL-08 in Promptfoo, with result-to-trace links, explicit arithmetic assertions and no external billing effects. Repeat one uncached case to demonstrate fresh execution. Confirm the adapter exercises the real Pi/tool path rather than evaluating a simplified substitute prompt. If Langfuse is trialled, confirm a run is navigable there, private data is scoped/redacted and the workflow still completes while its exporter is unavailable. This is the first tooling milestone; no dashboard build or framework migration is required.
+
+### Command interface
+
 All commands below are proposed interfaces, not available executables. Mutations emit receipts and support a plan mode where applicable.
 
 | Command | Result |
