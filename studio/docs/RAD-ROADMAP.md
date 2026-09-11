@@ -2,6 +2,8 @@
 
 ## Direction update: 11 September 2026
 
+The [harness/environment specification](HARNESS-ENVIRONMENT-SPEC.md) now details the selected Pi + exe.dev foundation, proposed GitHub repository/branch model, credential lifecycle and first implementation slices.
+
 The [agent service product direction](PRODUCT-DIRECTION.md) supersedes the feature order below. The primary development target is a provisionable dedicated client instance, developed through an agent workbench and tested against [mock-practitioner workflows](MOCK-CLIENTS.md). Begin with instance provisioning, one useful agent workflow and a demonstrated client-specific adaptation. The old suite expansion sequence is retained as historical context, not an automatic implementation backlog. Existing shipped contracts and acceptance evidence remain scoped to their original functionality.
 
 Start from the accepted UI. Optimise for the smallest useful end-to-end increment, not the largest number of mock screens. Estimates below are relative effort, not delivery promises; reassess after the first live slice.

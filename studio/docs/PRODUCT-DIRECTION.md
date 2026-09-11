@@ -43,7 +43,7 @@ The workbench must let him:
 - Build and test changes in the client's environment, then identify the version serving that client.
 - Export the essential configuration, cases and records so a tool can be replaced.
 
-Pi is the preferred harness candidate from this discussion because extensibility matters. LangGraph and LangSmith, or other services, are candidates for parts of the bench; none is selected or required by this document. Evaluate a small combination against an actual mock-client workflow before building equivalent infrastructure. A useful bench may initially be a repository, CLI/harness and existing evaluation/trace tools connected by client and run identifiers.
+Pi is now the selected code harness, and exe.dev is the selected instance provider (11 September follow-up). The [harness and environment specification](HARNESS-ENVIRONMENT-SPEC.md) defines provisioning, client repositories/branches, credentials, execution profiles and acceptance. LangGraph and LangSmith, or other services, remain candidates for parts of the bench; neither is required. Evaluate a small combination against an actual mock-client workflow before building equivalent infrastructure. A useful bench may initially be a repository, CLI/harness and existing evaluation/trace tools connected by client and run identifiers.
 
 ## Workflow contract and auditability
 
