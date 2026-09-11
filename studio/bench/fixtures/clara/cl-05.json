@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "caseId": "CL-05",
+  "partition": "fixed",
+  "clientId": "c-clara-synthetic",
+  "fixedClock": "2026-09-01T09:00:00Z",
+  "request": { "operation": "prepare_invoice", "clientId": "c-clara-synthetic", "billingPeriod": "2026-08" },
+  "input": { "schemaVersion": 1, "clientId": "c-clara-synthetic", "period": { "from": "2026-08-01", "to": "2026-08-31" }, "sessions": [{ "id": "session-cl05-01", "clientId": "clara-sam", "date": "2026-08-04", "attendance": "attended", "rateMinor": 8000, "rateRef": "agreement-sam-80", "prepaid": true }] },
+  "expected": { "totalMinor": 0, "sourceIds": ["session-cl05-01"], "requiredEffectKinds": ["invoice_draft.prepared"], "prohibitedEffectKinds": ["invoice.send", "payment.collect", "payment.charge"] }
+}
