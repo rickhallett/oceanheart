@@ -4,7 +4,7 @@ The specification is `studio/docs/HARNESS-ENVIRONMENT-SPEC.md`. This package is 
 
 ## Source baseline
 
-For the 11 September 2026 provider-transport slice, the release owner recorded the accepted Studio staging deployment as:
+For the 11 September 2026 provider-transport and WorkOS-verification slices, the release owner recorded the accepted Studio staging deployment as:
 
 - Deployment: `dpl_6PP7M9VMbuSpDkSFu1AsjZf949kj`
 - URL: `https://oceanheart-studio-ee5hyvgah-rick-halletts-projects.vercel.app`
@@ -35,12 +35,12 @@ Promptfoo 0.123.0 was run with caching and telemetry disabled against the same p
 | Spec acceptance | Local evidence and remaining boundary |
 | --- | --- |
 | HE-01 | Provider-double timeout/crash reconciliation tests; live provider retry still outstanding |
-| HE-02 | Controller-registry identity resolution plus run/draft/trace client scope tested; real hosted session/backend/repo isolation outstanding |
+| HE-02 | Real `jose` signature/claim verification over a local JWKS network fixture feeds controller-registry identity resolution and client-scoped run/draft/trace access; real WorkOS session and hosted backend isolation remain outstanding |
 | HE-03 | Actual Pi restricted tools and disabled discovered resources tested; OS/service isolation outstanding |
 | HE-04 | Clean private builder uses a distinct unprivileged service account and built the exact Studio export without credentials; a deploy-controller boundary remains outstanding |
 | HE-05 | Three clean operator-only guests and private proxy state inspected; concrete Convex Management API/WorkOS account CLI transport now enforces a private exact target registration and safe partial reconciliation. No dedicated live target has yet been created, so hosted backend/identity isolation remains outstanding |
 | HE-06 | Trace exports omit raw model/input data; export rejects secret paths/material; full credential canary acceptance outstanding |
-| HE-07 | Credential rotation/revocation/OAuth refresh not implemented |
+| HE-07 | JWKS key rotation and optional bounded active-session rejection are tested; hosted WorkOS status transport, credential rotation and OAuth refresh remain outstanding |
 | HE-08 | Durable local recovery plus remote supervisor stop/restart/replay preserved one synthetic draft and one job/effect/reservation; VM-boot reinstallation remains operator-owned |
 | HE-09 | Git export verified; scoped clone/push/PR integration not implemented |
 | HE-10 | Local standalone Studio process switch: verified source/digest/data target, candidate health before atomic pointer, prior serving through failure, and exact compatible rollback. Private-VM deployment remains outstanding |
@@ -55,4 +55,4 @@ The manifest still accepts only client-scoped `synthetic://<clientId>/...` backe
 
 The accepted Studio staging backend remains shared and is deliberately ineligible. Metadata-only discovery confirmed an authenticated WorkOS account with only its existing sandbox staging and production environments; no dedicated Convex project/deployment or WorkOS environment was created. The missing live prerequisite is an approved existing Convex team ID/project target and controller environment-variable reference containing a team-scoped Management API token. Once registered, the same operation may create the Convex project/development deployment and WorkOS sandbox, reconcile provider IDs, and persist only the ready binding or a redacted uncertainty state. Placeholder values in `.env.example` remain non-evidence.
 
-The server-side authenticated runtime boundary adds a first Clara start/inspect path over the existing Pi/SQLite runtime. It derives client and hashed actor identity from a verified principal plus the controller registry, never from request client fields, and repeats authorization for run, draft and trace reads. Synthetic identity/backend adapters are explicitly test-only and cannot initialize hosted mode. Hosted evidence still requires the concrete provider-controlled targets and real session verifier described above; no hosted isolation is claimed.
+The server-side authenticated runtime boundary adds a first Clara start/inspect path over the existing Pi/SQLite runtime. It derives client and hashed actor identity from a verified principal plus the controller registry, never from request client fields, and repeats authorization for run, draft and trace reads. The concrete WorkOS verifier validates RS256 signatures, exact issuer/audience, expiry, subject and session ID against a bounded HTTPS JWKS adapter; the server-configured environment is not taken from request or token claims. A controller-supplied active-session adapter can additionally reject revoked sessions and fails closed on timeout. Synthetic keys and loopback JWKS routing exist only in tests. No public route or production configuration was added, and hosted evidence still requires Gates' provider-controlled binding, resolver and status transport; no hosted isolation is claimed.

@@ -27,7 +27,7 @@ State defaults to `~/.local/state/oceanheart-bench`. Use `--state-dir` to select
 
 Application artifact activation is a separate operator lane. `scripts/app-release.ts` packages a source-verified standalone Studio build, health-checks a candidate on private loopback ports, then atomically changes the stable loopback router. Its state never changes Clara workflow configuration or SQLite data. See `docs/application-release.md`.
 
-The initial authenticated server library maps a verified identity through a controller-owned environment binding before it can start or inspect Clara work. It has no route or alternate login and its synthetic adapter is test-only. See `docs/authenticated-runtime.md`.
+The authenticated server library verifies a WorkOS access JWT against a fixed issuer, audience and bounded JWKS source, then maps its signed subject through a controller-owned environment binding before it can start or inspect Clara work. It has no route or alternate login and its synthetic fixtures are test-only. See `docs/authenticated-runtime.md` and `docs/workos-session-verification.md`.
 
 The controller-side binding registry and provider reconciliation contract are documented in `docs/backend-identity-binding.md`. They accept only provider-inspected dedicated synthetic Convex/WorkOS bindings and expose no credential values.
 
