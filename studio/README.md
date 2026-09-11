@@ -1,5 +1,9 @@
 # Studio development baseline
 
+Implementation planning: [Pi harness, exe.dev environments and credential management](docs/HARNESS-ENVIRONMENT-SPEC.md).
+
+Current product direction: [personally maintained agents and dedicated client instances](docs/PRODUCT-DIRECTION.md). Start new planning there and use the [mock-client laboratory](docs/MOCK-CLIENTS.md) for workflow context, instructions and acceptance cases. Dedicated provisioning and the agent workbench are development targets; the docs do not claim they are already implemented. See the [live landing-page copy audit](docs/STUDIO-COPY-AUDIT-2026-09-11.md) for proposed messaging changes.
+
 The accepted application lives on `studio/dev`. Start with [development and release](docs/DEVELOPMENT.md), [the canonical style guide](docs/STYLE_GUIDE.md), and [the RAD roadmap](docs/RAD-ROADMAP.md). Older implementation notes below may describe the pre-promotion prototype.
 
 # Oceanheart Studio
