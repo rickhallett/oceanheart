@@ -6,7 +6,7 @@ For the first UAT scenario, the server-owned fixture changes the eligible 3 Sept
 
 ## Browser bridge contract
 
-All requests use the existing same-origin `POST /api/private/clara` route. The route requires the current WorkOS session, forwards its access token only to the configured loopback/HTTPS runtime, and never accepts `clientId`, actor, artifact paths, digests or arbitrary rules from the browser.
+All requests use the existing same-origin `POST /api/private/clara` route. The route requires the current WorkOS session, forwards its access token only to the exact IPv4 loopback runtime, and never accepts `clientId`, actor, artifact paths, digests or arbitrary rules from the browser.
 
 - `{operation:"adaptation-status"}` returns the active immutable release and its compatible prior rollback target when one exists.
 - `{operation:"adaptation-evaluate",effectiveDate:"YYYY-MM-DD",newRateMinor:INTEGER}` requests a fresh, isolated evaluation. The Studio route adds an actor-stable idempotency key. The runtime returns a persisted immutable proposal, sanitized explanation, before/after totals, changed session IDs and evaluation counts/digests. Evaluation never activates a configuration.

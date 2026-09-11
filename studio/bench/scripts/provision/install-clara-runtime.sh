@@ -68,11 +68,19 @@ fi
   --state-root "$STATE_ROOT" --port "$PORT"
 for attempt in 1 2 3 4 5; do
   if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null &&
-    /usr/local/bin/node -e "fetch('http://127.0.0.1:$PORT/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"; then
+    /usr/local/bin/node -e "fetch('http://127.0.0.1:$PORT/healthz',{signal:AbortSignal.timeout(1000)}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"; then
     printf '{"clientId":"%s","runtime":"active","port":%s}\n' "$CLIENT_ID" "$PORT"
     exit 0
   fi
   sleep 1
 done
+FAILED_PID="$(cat "$PID_FILE" 2>/dev/null || true)"
+if [[ "$FAILED_PID" =~ ^[0-9]+$ ]] && kill -0 "$FAILED_PID" 2>/dev/null; then
+  PROCESS_COMMAND="$(tr '\000' ' ' < "/proc/$FAILED_PID/cmdline")"
+  case "$PROCESS_COMMAND" in
+    *"$EXPECTED_COMMAND"*) kill "$FAILED_PID" 2>/dev/null || true ;;
+  esac
+fi
+rm -f "$PID_FILE"
 printf 'Clara runtime did not become ready\n' >&2
 exit 70

@@ -4,6 +4,7 @@ export type { ClaraInput, ClaraResult } from '../workflows/clara.ts';
 export interface RunRequest {
   clientId: string; actor: string; idempotencyKey: string;
   configurationVersion?: string;
+  configurationReleaseId?: string;
   input: import('../workflows/clara.ts').ClaraInput;
 }
 export interface RunLimits { maxRunMs: number; maxToolCalls: number; maxTurns: number }

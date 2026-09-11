@@ -3,6 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { POST } from "../../src/app/api/private/clara/route";
+import { claraDemoInput } from "../../src/lib/clara-contract";
 
 vi.mock("@workos-inc/authkit-nextjs", () => ({ withAuth: vi.fn() }));
 
@@ -81,6 +82,9 @@ it("stays disabled without exact dedicated configuration", async () => {
 
 it.each([
   ["STUDIO_CLARA_RUNTIME_URL", "http://runtime.private/v1/clara"],
+  ["STUDIO_CLARA_RUNTIME_URL", "http://localhost:4781/v1/clara"],
+  ["STUDIO_CLARA_RUNTIME_URL", "http://[::1]:4781/v1/clara"],
+  ["STUDIO_CLARA_RUNTIME_URL", "https://runtime.private/v1/clara"],
   ["STUDIO_CLARA_RUNTIME_URL", "https://user:password@runtime.private/v1/clara"],
   ["STUDIO_CLARA_RUNTIME_URL", "https://runtime.private/other"],
   ["WORKOS_CLIENT_ID", "not-a-client"],
@@ -233,6 +237,7 @@ it("forwards only the bounded attended-rate proposal and sanitizes its immutable
     effectiveDate: "2026-09-01",
     newRateMinor: 9000,
     idempotencyKey: `${createHash("sha256").update("user_synthetic_a").digest("hex").slice(0, 24)}-clara-v1-rate-20260901-9000`,
+    input: claraDemoInput,
   });
 
   expect((await POST(request({

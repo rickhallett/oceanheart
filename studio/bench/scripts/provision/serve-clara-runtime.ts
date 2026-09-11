@@ -6,6 +6,7 @@ import { ControllerBindingRegistryAdapter } from "../../src/provision/server-bin
 import type { BackendIdentityBinding, BindingRegistryEntry } from "../../src/provision/binding-types.ts";
 import { createClaraRuntimeBridge, listenOnLoopback } from "../../src/provision/clara-runtime-bridge.ts";
 import { PiWorkflowRuntime } from "../../src/runtime/pi-adapter.ts";
+import { ClaraAdaptationRuntimeController } from "../../src/adaptation/runtime-controller.ts";
 import { AuthenticatedClaraRuntime } from "../../src/server/authenticated-runtime.ts";
 import type { EnvironmentBindingRegistry, VerifiedPrincipal } from "../../src/server/binding.ts";
 import { PiDurableRuntimeAdapter } from "../../src/server/runtime-adapter.ts";
@@ -75,6 +76,7 @@ const authenticated = new AuthenticatedClaraRuntime({
   identity,
   bindings: new ReloadingBindingRegistry(binding, args.get("authorizations")!),
   runtimeFor: (resolved) => resolved.clientId === binding.clientId ? durable : null,
+  adaptation: new ClaraAdaptationRuntimeController(args.get("state-root")!, binding.clientId),
 });
 const server = createClaraRuntimeBridge(authenticated);
 await listenOnLoopback(server, Number(args.get("port")));

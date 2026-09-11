@@ -26,7 +26,7 @@ The route sends `POST` to the exact configured `/v1/clara` endpoint with `Author
 
 Gates' Node runtime bridge must pass every call through the concrete JWT verifier, controller subject registry, exact dedicated environment/client binding and bound durable runtime. Start and all three reads reauthorize independently. It must not trust the idempotency key as identity, accept a client ID from the request or pass identity/provider credentials into Pi. Existing authenticated-runtime response shapes are returned for start/run and draft; trace is reduced by Studio to event count, configuration version and input/result hashes. Private bridge errors and raw trace events are not returned to the browser.
 
-`STUDIO_CLARA_RUNTIME_URL` accepts HTTPS or an explicitly owned loopback listener and must have the exact `/v1/clara` path with no credentials, query or fragment. The Studio route uses a 35-second request bound, a 128 KiB response bound and no caching. A missing or malformed configuration leaves the route unavailable and the ordinary Studio behavior unchanged.
+For this single-host pilot, `STUDIO_CLARA_RUNTIME_URL` accepts only an explicitly owned IPv4 loopback listener (`http://127.0.0.1:<port>/v1/clara`) with no credentials, query or fragment. This prevents a WorkOS bearer from being forwarded to a configured remote host and matches the runtime's IPv4-only bind. The Studio route uses a 35-second request bound, a 128 KiB response bound and no caching. A missing or malformed configuration leaves the route unavailable and the ordinary Studio behavior unchanged.
 
 ## Acceptance boundary
 

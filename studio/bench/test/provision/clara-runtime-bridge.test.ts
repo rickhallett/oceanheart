@@ -88,5 +88,7 @@ test("minimal-guest installer keeps the runtime unprivileged and loopback-only",
   assert.match(script, /start-stop-daemon --start --background --make-pidfile/);
   assert.match(script, /--chuid studio-runtime:studio-runtime/);
   assert.match(script, /127\.0\.0\.1:\$PORT\/healthz/);
+  assert.match(script, /AbortSignal\.timeout\(1000\)/);
+  assert.match(script, /kill "\$FAILED_PID"/);
   assert.doesNotMatch(script, /0\.0\.0\.0/);
 });

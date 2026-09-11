@@ -7,11 +7,20 @@ import {
 } from "../server/authenticated-runtime.ts";
 
 const maxBodyBytes = 64 * 1024;
-const operations = new Set(["start", "run", "draft", "trace"]);
+const operations = new Set([
+  "start", "run", "draft", "trace", "adaptation-status", "adaptation-evaluate",
+  "adaptation-activate", "adaptation-rollback",
+]);
 
 type BridgeRequest =
   | { schemaVersion: 1; operation: "start"; idempotencyKey: string; input: ClaraStartRequest["input"] }
-  | { schemaVersion: 1; operation: "run" | "draft" | "trace"; runId: string };
+  | { schemaVersion: 1; operation: "run"; runId: string }
+  | { schemaVersion: 1; operation: "draft"; runId: string }
+  | { schemaVersion: 1; operation: "trace"; runId: string }
+  | { schemaVersion: 1; operation: "adaptation-status" }
+  | { schemaVersion: 1; operation: "adaptation-evaluate"; idempotencyKey: string; effectiveDate: string; newRateMinor: number; input: ClaraStartRequest["input"] }
+  | { schemaVersion: 1; operation: "adaptation-activate"; proposalId: string; expectedActiveReleaseId: string }
+  | { schemaVersion: 1; operation: "adaptation-rollback"; targetReleaseId: string; expectedActiveReleaseId: string };
 
 function exactKeys(value: Record<string, unknown>, expected: readonly string[]) {
   const actual = Object.keys(value).sort();
@@ -28,6 +37,29 @@ function parseRequest(value: unknown): BridgeRequest {
       typeof request.idempotencyKey !== "string" || !request.input || typeof request.input !== "object" || Array.isArray(request.input))
       throw new Error("REQUEST_INVALID");
     if (Object.hasOwn(request.input, "clientId")) throw new Error("REQUEST_INVALID");
+    return request as BridgeRequest;
+  }
+  if (request.operation === "adaptation-status") {
+    if (!exactKeys(request, ["schemaVersion", "operation"])) throw new Error("REQUEST_INVALID");
+    return request as BridgeRequest;
+  }
+  if (request.operation === "adaptation-evaluate") {
+    if (!exactKeys(request, ["schemaVersion", "operation", "idempotencyKey", "effectiveDate", "newRateMinor", "input"]) ||
+      typeof request.idempotencyKey !== "string" || typeof request.effectiveDate !== "string" ||
+      !Number.isSafeInteger(request.newRateMinor) || !request.input || typeof request.input !== "object" || Array.isArray(request.input) ||
+      Object.hasOwn(request.input, "clientId")) throw new Error("REQUEST_INVALID");
+    return request as BridgeRequest;
+  }
+  if (request.operation === "adaptation-activate") {
+    if (!exactKeys(request, ["schemaVersion", "operation", "proposalId", "expectedActiveReleaseId"]) ||
+      typeof request.proposalId !== "string" || typeof request.expectedActiveReleaseId !== "string")
+      throw new Error("REQUEST_INVALID");
+    return request as BridgeRequest;
+  }
+  if (request.operation === "adaptation-rollback") {
+    if (!exactKeys(request, ["schemaVersion", "operation", "targetReleaseId", "expectedActiveReleaseId"]) ||
+      typeof request.targetReleaseId !== "string" || typeof request.expectedActiveReleaseId !== "string")
+      throw new Error("REQUEST_INVALID");
     return request as BridgeRequest;
   }
   if (!exactKeys(request, ["schemaVersion", "operation", "runId"]) || typeof request.runId !== "string")
@@ -69,6 +101,19 @@ function errorStatus(error: unknown, authorization: string | undefined) {
   return 503;
 }
 
+async function dispatch(runtime: AuthenticatedClaraRuntime, authorization: string | undefined, body: BridgeRequest) {
+  if (body.operation === "start")
+    return runtime.startClara({ authorization, idempotencyKey: body.idempotencyKey, input: body.input });
+  if (body.operation === "run") return runtime.inspectRun(authorization, body.runId);
+  if (body.operation === "draft") return runtime.inspectDraft(authorization, body.runId);
+  if (body.operation === "trace") return runtime.inspectTrace(authorization, body.runId);
+  if (body.operation === "adaptation-status") return runtime.adaptationStatus(authorization);
+  if (body.operation === "adaptation-evaluate") return runtime.evaluateAdaptation(authorization, body);
+  if (body.operation === "adaptation-activate")
+    return runtime.activateAdaptation(authorization, body.proposalId, body.expectedActiveReleaseId);
+  return runtime.rollbackAdaptation(authorization, body.targetReleaseId, body.expectedActiveReleaseId);
+}
+
 export function createClaraRuntimeBridge(runtime: AuthenticatedClaraRuntime): Server {
   return createServer(async (request, response) => {
     if (request.method === "GET" && request.url === "/healthz") return send(response, 200, { status: "ready" });
@@ -76,13 +121,7 @@ export function createClaraRuntimeBridge(runtime: AuthenticatedClaraRuntime): Se
     const authorization = typeof request.headers.authorization === "string" ? request.headers.authorization : undefined;
     try {
       const body = parseRequest(await readBody(request));
-      const result = body.operation === "start"
-        ? await runtime.startClara({ authorization, idempotencyKey: body.idempotencyKey, input: body.input })
-        : body.operation === "run"
-          ? await runtime.inspectRun(authorization, body.runId)
-          : body.operation === "draft"
-            ? await runtime.inspectDraft(authorization, body.runId)
-            : await runtime.inspectTrace(authorization, body.runId);
+      const result = await dispatch(runtime, authorization, body);
       return send(response, 200, result);
     } catch (error) {
       const status = errorStatus(error, authorization);

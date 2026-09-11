@@ -15,11 +15,9 @@ export function claraInstanceConfig(
   try {
     const runtimeUrl = new URL(env.STUDIO_CLARA_RUNTIME_URL ?? ""),
       callback = new URL(env.NEXT_PUBLIC_WORKOS_REDIRECT_URI!);
-    const loopback =
-      runtimeUrl.protocol === "http:" &&
-      ["127.0.0.1", "localhost", "[::1]"].includes(runtimeUrl.hostname);
     if (
-      (!loopback && runtimeUrl.protocol !== "https:") ||
+      runtimeUrl.protocol !== "http:" ||
+      runtimeUrl.hostname !== "127.0.0.1" ||
       runtimeUrl.username ||
       runtimeUrl.password ||
       runtimeUrl.search ||

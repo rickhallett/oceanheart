@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
 import type { ClaraInput, ClaraResult } from "../workflows/clara.ts";
+import type { ClaraAdaptationRuntimeController } from "../adaptation/runtime-controller.ts";
 import { validateBinding, type EnvironmentBinding, type EnvironmentBindingRegistry, type IdentityVerifier, type VerifiedPrincipal } from "./binding.ts";
 import type { DurableRuntimeAdapter } from "./runtime-adapter.ts";
 
@@ -58,12 +59,14 @@ export class AuthenticatedClaraRuntime {
     identity: IdentityVerifier;
     bindings: EnvironmentBindingRegistry;
     runtimeFor(binding: EnvironmentBinding): DurableRuntimeAdapter | null;
+    adaptation?: ClaraAdaptationRuntimeController;
   };
   constructor(input: {
     policy: ServerIdentityPolicy;
     identity: IdentityVerifier;
     bindings: EnvironmentBindingRegistry;
     runtimeFor(binding: EnvironmentBinding): DurableRuntimeAdapter | null;
+    adaptation?: ClaraAdaptationRuntimeController;
   }) {
     this.input = input;
     const policy = input.policy;
@@ -129,11 +132,15 @@ export class AuthenticatedClaraRuntime {
       ...(supplied.payments === undefined ? {} : { payments: supplied.payments }),
     };
     try {
+      const prepared = this.input.adaptation
+        ? await this.input.adaptation.prepare(input, request.idempotencyKey)
+        : { input, idempotencyKey: request.idempotencyKey };
       return safeRun(await authorized.runtime.startRun({
         clientId: authorized.binding.clientId,
         actor: authorized.actor,
-        idempotencyKey: request.idempotencyKey,
-        input,
+        idempotencyKey: prepared.idempotencyKey,
+        input: prepared.input,
+        ...(prepared.configurationVersion ? { configurationVersion: prepared.configurationVersion } : {}),
       }));
     } catch (error) {
       if (error instanceof Error && error.message === "IDEMPOTENCY_MISMATCH") throw new AuthenticatedRuntimeError("REQUEST_CONFLICT");
@@ -168,5 +175,50 @@ export class AuthenticatedClaraRuntime {
     const authorized = await this.ownedRun(authorization, runId);
     try { return authorized.runtime.getTrace(authorized.binding.clientId, runId); }
     catch { throw new AuthenticatedRuntimeError("REQUEST_DENIED"); }
+  }
+
+  private async adaptation(authorization: string | undefined) {
+    const authorized = await this.authorize(authorization);
+    if (!this.input.adaptation) throw new AuthenticatedRuntimeError("SERVICE_UNAVAILABLE");
+    return { controller: this.input.adaptation, authorized };
+  }
+
+  async adaptationStatus(authorization: string | undefined) {
+    const { controller, authorized } = await this.adaptation(authorization);
+    return controller.state(authorized.actor);
+  }
+
+  async evaluateAdaptation(
+    authorization: string | undefined,
+    request: { idempotencyKey: string; effectiveDate: string; newRateMinor: number; input: ClaraStartRequest["input"] },
+  ) {
+    const { controller, authorized } = await this.adaptation(authorization);
+    if (!idempotencyKey.test(request.idempotencyKey)) throw new AuthenticatedRuntimeError("REQUEST_INVALID");
+    const supplied = request.input as ClaraStartRequest["input"] & { clientId?: unknown };
+    if (Object.hasOwn(supplied, "clientId")) throw new AuthenticatedRuntimeError("REQUEST_INVALID");
+    const input: ClaraInput = { ...supplied, clientId: authorized.binding.clientId };
+    try {
+      return await controller.evaluate(authorized.actor, request.idempotencyKey, input, request.effectiveDate, request.newRateMinor);
+    } catch { throw new AuthenticatedRuntimeError("REQUEST_INVALID"); }
+  }
+
+  async activateAdaptation(
+    authorization: string | undefined,
+    proposalId: string,
+    expectedActiveReleaseId: string,
+  ) {
+    const { controller, authorized } = await this.adaptation(authorization);
+    try { return await controller.activate(authorized.actor, proposalId, expectedActiveReleaseId); }
+    catch { throw new AuthenticatedRuntimeError("REQUEST_CONFLICT"); }
+  }
+
+  async rollbackAdaptation(
+    authorization: string | undefined,
+    targetReleaseId: string,
+    expectedActiveReleaseId: string,
+  ) {
+    const { controller, authorized } = await this.adaptation(authorization);
+    try { return await controller.rollback(authorized.actor, targetReleaseId, expectedActiveReleaseId); }
+    catch { throw new AuthenticatedRuntimeError("REQUEST_CONFLICT"); }
   }
 }

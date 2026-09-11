@@ -223,10 +223,15 @@ export class ClaraConfigurationStore {
     ) throw new Error("CONFIGURATION_EVALUATION_REPORT_REJECTED");
     return this.locked(async () => {
       const current = await this.active();
-      if (!current || current.activeReleaseId !== expectedActiveReleaseId) throw new Error("STALE_ACTIVE_CONFIGURATION");
+      if (!current) throw new Error("STALE_ACTIVE_CONFIGURATION");
       if (current.artifactDigest === evaluation.candidateArtifactDigest) {
-        return { active: current, release: await this.release(current.activeReleaseId), reused: true };
+        const release = await this.release(current.activeReleaseId);
+        if (release?.previousReleaseId !== expectedActiveReleaseId ||
+          release.evaluation?.reportDigest !== evaluation.reportDigest)
+          throw new Error("STALE_ACTIVE_CONFIGURATION");
+        return { active: current, release, reused: true };
       }
+      if (current.activeReleaseId !== expectedActiveReleaseId) throw new Error("STALE_ACTIVE_CONFIGURATION");
       if (current.artifactDigest !== evaluation.baselineArtifactDigest) throw new Error("EVALUATION_BASELINE_STALE");
       const currentArtifact = await this.artifact(current.artifactDigest);
       if (!parsed.configurations?.some((configuration) => configuration.id === currentArtifact.version)) {
@@ -243,12 +248,39 @@ export class ClaraConfigurationStore {
   }
 
   async rollback(targetReleaseId: string, now = () => new Date().toISOString()) {
+    return this.rollbackInternal(targetReleaseId, undefined, now);
+  }
+
+  async rollbackIfActive(
+    targetReleaseId: string,
+    expectedActiveReleaseId: string,
+    now = () => new Date().toISOString(),
+  ) {
+    if (!/^[0-9a-f]{64}$/.test(expectedActiveReleaseId)) throw new Error("INVALID_RELEASE_ID");
+    return this.rollbackInternal(targetReleaseId, expectedActiveReleaseId, now);
+  }
+
+  private async rollbackInternal(
+    targetReleaseId: string,
+    expectedActiveReleaseId: string | undefined,
+    now: () => string,
+  ) {
     return this.locked(async () => {
       const current = await this.active();
       const currentRelease = current && await this.release(current.activeReleaseId);
       const target = await this.release(targetReleaseId);
+      if (current && target && expectedActiveReleaseId !== undefined && current.activeReleaseId === target.releaseId) {
+        const expectedRelease = await this.release(expectedActiveReleaseId);
+        if (expectedRelease?.previousReleaseId !== target.releaseId)
+          throw new Error("ROLLBACK_TARGET_NOT_COMPATIBLE_PRIOR_RELEASE");
+        const rollbackId = createHash("sha256")
+          .update(`rollback:${this.clientId}:${expectedActiveReleaseId}:${target.releaseId}:${current.generation}`)
+          .digest("hex");
+        return { rollbackId, active: current, target, reused: true };
+      }
       if (
         !current || !currentRelease || !target ||
+        (expectedActiveReleaseId !== undefined && current.activeReleaseId !== expectedActiveReleaseId) ||
         current.clientId !== this.clientId || target.clientId !== this.clientId ||
         currentRelease.previousReleaseId !== target.releaseId ||
         target.workflow !== current.workflow || target.dataCompatibility !== "no-change"
@@ -269,7 +301,7 @@ export class ClaraConfigurationStore {
         rolledBackAt: active.activatedAt,
       });
       await atomicWrite(this.activePath(), active);
-      return { rollbackId, active, target };
+      return { rollbackId, active, target, reused: false };
     });
   }
 
