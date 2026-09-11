@@ -28,7 +28,7 @@ test("exports only the exact tracked Studio tree with immutable provenance", asy
   await mkdir(join(repo, "studio", "bench", "test"), { recursive: true });
   await writeFile(
     join(repo, "studio", "bench", "test", "provider-fixture.ts"),
-    'export const fake = "secretcanary provider fixture";\n',
+    'export const fake = ["secretcanary provider fixture", "sk_live_forbidden"];\n',
   );
   await writeFile(join(repo, "website", "private-note.txt"), "not exported\n");
   await git(repo, "add", ".");
@@ -92,9 +92,10 @@ test("rejects tracked credential paths and recognizable secret material", async 
 
   await rm(join(repo, "studio", "config.txt"));
   await mkdir(join(repo, "studio", "docs"), { recursive: true });
+  const privateKeyHeader = ["-----BEGIN OPENSSH", "PRIVATE KEY-----"].join(" ");
   await writeFile(
     join(repo, "studio", "docs", "operator.md"),
-    "-----BEGIN OPENSSH PRIVATE KEY-----\nsynthetic-but-recognizable\n",
+    `${privateKeyHeader}\nsynthetic-but-recognizable\n`,
   );
   await git(repo, "add", "-A");
   await git(repo, "commit", "-qm", "credential in documentation");

@@ -13,11 +13,16 @@ npm run bench -- --help
 npm run bench -- run clara --fixture CL-01
 npm run bench -- inspect c-clara-synthetic
 npm run bench -- eval clara
+npm run bench -- adapt clara --fixture CL-09 --effective-date 2026-10-01 --new-rate-minor 9000
+# Use the previousReleaseId from that receipt:
+npm run bench -- rollback clara --release RELEASE_ID
 ```
 
 `run` records the request before execution and returns the result plus a private JSON trace path. Repeating the same fixture/configuration request reuses its idempotency key and durable draft. `waiting_for_input` is an expected result when attendance or an agreed rate is unknown. `eval` isolates each case/configuration in a fresh run directory and writes a comparison report with local trace links.
 
 State defaults to `~/.local/state/oceanheart-bench`. Use `--state-dir` to select a task-owned directory. Keep it and generated reports outside Git. `inspect` reads existing metadata without creating a state directory. A run does not send an invoice or collect money.
+
+`adapt` evaluates the reviewed Clara baseline and scoped rate-change configuration in fresh, independent evaluation state. It writes the existing JSON/HTML comparison report, then atomically activates the digest-addressed configuration only when all cases pass. Ordinary `run` uses the active version while retaining the existing durable jobs, drafts and session reservations; an already-drafted session therefore still fails closed under a different configuration. `rollback` accepts only the exact compatible prior release ID and switches the configuration pointer without clearing or replaying runtime effects.
 
 ## Template and resource planning
 

@@ -5,6 +5,7 @@ import { randomUUID, createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { help, parseCli, UsageError, type CliOptions } from "./cli-options.ts";
 import { inspectRuns } from "./inspect.ts";
+import { adaptedConfiguration, baselineConfiguration } from "./eval/configuration.ts";
 
 const print = (value: unknown) => process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
 
@@ -15,24 +16,81 @@ async function configuration(id: string) {
   return selected;
 }
 
+async function selectedConfiguration(root: string, clientId: string, requested: string) {
+  if (requested !== "active") return { id: requested, source: "explicit" as const };
+  const { ClaraConfigurationStore } = await import("./adaptation/release.ts");
+  const store = new ClaraConfigurationStore(root, clientId);
+  const active = await store.active();
+  if (!active) return { id: baselineConfiguration, source: "default-baseline" as const };
+  const artifact = await store.artifact(active.artifactDigest);
+  if (artifact.version !== active.version) throw new Error("ACTIVE_CONFIGURATION_MISMATCH");
+  return { id: active.version, source: "active-release" as const, releaseId: active.activeReleaseId, artifactDigest: active.artifactDigest, artifact };
+}
+
 async function run(options: CliOptions) {
   const { loadClaraFixtures } = await import("./eval/fixtures.ts");
   const { PiWorkflowRuntime } = await import("./runtime/pi-adapter.ts");
   const fixtures = await loadClaraFixtures();
   const fixture = fixtures.find((item) => item.caseId === options.fixture);
   if (!fixture) throw new UsageError("Unknown fixture. Use a case ID from the Clara suite.");
-  const selected = await configuration(options.configuration);
+  const selection = await selectedConfiguration(options.stateDir, fixture.input.clientId, options.configuration);
+  const selected = await configuration(selection.id);
   const { configuredClaraInput } = await import("./eval/configuration.ts");
+  const { configuredInputForArtifact } = await import("./adaptation/configuration.ts");
   const runtime = new PiWorkflowRuntime({ root: options.stateDir });
   try {
     const key = createHash("sha256").update(JSON.stringify({fixture, configuration: selected})).digest("hex");
-    const job = await runtime.startRun({clientId: fixture.input.clientId, actor: "studio-bench-cli", idempotencyKey: key, configurationVersion: selected.id, input: configuredClaraInput(fixture, selected.id)});
+    const input = selection.artifact
+      ? configuredInputForArtifact(fixture, selection.artifact)
+      : configuredClaraInput(fixture, selected.id);
+    const job = await runtime.startRun({clientId: fixture.input.clientId, actor: "studio-bench-cli", idempotencyKey: key, configurationVersion: selected.id, input});
     const tracePath = join(options.stateDir, "exports", `${job.id}.json`);
     await mkdir(join(options.stateDir, "exports"), {recursive: true, mode: 0o700});
     await writeFile(tracePath, JSON.stringify(runtime.exportTrace(job.clientId, job.id), null, 2) + "\n", {mode: 0o600});
-    print({runId: job.id, clientId: job.clientId, configuration: selected.id, status: job.status, result: job.result, tracePath, evidence: "real Pi SDK; deterministic in-process transport; synthetic invoice effects"});
+    print({runId: job.id, clientId: job.clientId, configuration: selected.id, configurationSource: selection.source, activeReleaseId: selection.releaseId, artifactDigest: selection.artifactDigest, status: job.status, result: job.result, tracePath, evidence: "real Pi SDK; deterministic in-process transport; synthetic invoice effects; durable runtime state retained across configuration changes"});
     if (!["succeeded", "waiting_for_input"].includes(job.status)) process.exitCode = 1;
   } finally { runtime.close(); }
+}
+
+async function adapt(options: CliOptions) {
+  const { loadClaraFixtures } = await import("./eval/fixtures.ts");
+  const { artifactDigest, baselineArtifact, requestedArtifact } = await import("./adaptation/configuration.ts");
+  const { evaluateAdaptation } = await import("./adaptation/evaluate.ts");
+  const { ClaraConfigurationStore } = await import("./adaptation/release.ts");
+  const fixtures = await loadClaraFixtures();
+  const fixture = fixtures.find((item) => item.caseId === options.fixture);
+  if (!fixture) throw new UsageError("Unknown adaptation fixture.");
+  const baseline = baselineArtifact(await configuration(baselineConfiguration), fixture.clientId);
+  const candidate = requestedArtifact(await configuration(adaptedConfiguration), fixture, {
+    effectiveDate: options.effectiveDate!,
+    newRateMinor: options.newRateMinor!,
+  });
+  const baselineDigest = artifactDigest(baseline);
+  const candidateDigest = artifactDigest(candidate);
+  const store = new ClaraConfigurationStore(options.stateDir, fixture.clientId);
+  const before = await store.ensureBaseline(baseline);
+  const evaluation = await evaluateAdaptation({
+    stateDir: options.stateDir,
+    outputDir: options.outputDir ?? join(options.stateDir, "reports", "adaptation"),
+    baseline,
+    baselineDigest,
+    candidate,
+    candidateDigest,
+  });
+  if (!evaluation.accepted) {
+    print({status: "rejected", active: before, evaluation});
+    process.exitCode = 1;
+    return;
+  }
+  const activated = await store.activate(candidate, evaluation, before.activeReleaseId);
+  print({status: activated.reused ? "already_active" : "activated", request: {fixture: fixture.caseId, effectiveDate: options.effectiveDate, newRateMinor: options.newRateMinor}, evaluation, release: activated.release, active: activated.active, runtimeState: "preserved; existing draft/session reservations are not reset"});
+}
+
+async function rollback(options: CliOptions) {
+  const { ClaraConfigurationStore } = await import("./adaptation/release.ts");
+  const store = new ClaraConfigurationStore(options.stateDir, "c-clara-synthetic");
+  const result = await store.rollback(options.release!);
+  print({status: "rolled_back", ...result, runtimeState: "preserved; rollback does not replay or clear prior draft effects"});
 }
 
 async function evaluate(options: CliOptions) {
@@ -70,6 +128,8 @@ export async function main(argv = process.argv.slice(2)) {
   if (options.command === "inspect") {print(inspectRuns(options.stateDir, options.subject!)); return;}
   if (options.command === "run") {await run(options); return;}
   if (options.command === "eval") {await evaluate(options); return;}
+  if (options.command === "adapt") {await adapt(options); return;}
+  if (options.command === "rollback") {await rollback(options); return;}
   if (options.command === "plan") {
     const { validateManifest, hashManifest } = await import("./provision/manifest.ts");
     const { resourceKinds } = await import("./provision/types.ts");

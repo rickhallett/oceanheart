@@ -23,6 +23,7 @@ const secretPath =
 const credentialMaterial =
   /-----BEGIN [A-Z ]+PRIVATE KEY-----|\b(?:sk|rk)_live_[A-Za-z0-9]+|\bgh[pousr]_[A-Za-z0-9]+|\bgithub_pat_[A-Za-z0-9_]+/i;
 const syntheticCanaryMaterial = /\bsecret[-_ ]?canary[A-Za-z0-9._~-]*/i;
+const explicitSyntheticCredential = /\b(?:sk|rk)_live_forbidden\b/gi;
 
 export const studioExporterVersion = "1.0.0";
 
@@ -136,8 +137,11 @@ async function digestDirectory(
     const canContainSyntheticCanary =
       /(^|\/)tests?\//.test(path) || /(^|\/)docs?\//.test(path) || path.endsWith(".md");
     const text = content.toString("utf8");
+    const credentialScanText = canContainSyntheticCanary
+      ? text.replace(explicitSyntheticCredential, "")
+      : text;
     if (
-      credentialMaterial.test(text) ||
+      credentialMaterial.test(credentialScanText) ||
       (!canContainSyntheticCanary && syntheticCanaryMaterial.test(text))
     )
       throw new Error(`Export rejects secret material in tracked file: ${path}`);

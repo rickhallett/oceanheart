@@ -21,6 +21,14 @@ unsubscribe(); runtime.close();
 
 Run status is queued/running/waiting_for_input/succeeded/failed/cancelled. `effect_uncertain` is reserved for future reconciled external connectors, not fabricated for the current atomic local effect. An unresolved draft returns `waiting_for_input`; corrected input requires a new explicit request/version, not silently replacing the original receipt. The initial packet does not implement draft editing or releasing reservations. Use fresh fixture state for independent eval cases; repeated requests reuse the same idempotency key. Distinct keys attempting to reserve the same charged session fail closed.
 
+## Clara configuration activation
+
+The bounded adaptation command accepts only the reviewed CL-09 rate-change request: its effective date and new integer minor-unit amount must match the fixture's explicit tenant/session scope. Evaluation runs both configurations across all nine cases in fresh per-case state and emits the existing private HTML/JSON comparison report. The report digest, candidate artifact digest and prior active release are bound into the immutable release record.
+
+Configuration artifacts and release records are mode `0600`. Activation uses a client-scoped lock, immutable fsync'd records and an atomic, directory-synced active pointer. A stale evaluation baseline or failed evaluation cannot replace the current pointer. A compatible rollback targets the exact prior release and preserves runtime SQLite state. `run` resolves that pointer by default and reports the active version, release and artifact digest; `--config` remains an explicit diagnostic override.
+
+Evaluation isolation is not a runtime reset. The evaluation's fresh state prevents one independent case from reserving another case's sessions, while live runs continue to enforce the existing per-client draft reservations across activation and rollback. Configuration backup/restore into a clean environment remains outside this slice; HE-12 is still unproven, and no claim is made that restoring a configuration snapshot restores or replays workflow effects.
+
 ## Isolation and limits
 
 The workflow creates a dedicated per-client/per-job cwd, config and session directory under the supplied private state root. Explicit tools are exactly `prepare_invoice`; no bash/read/write defaults. Extensions, skills, prompt templates, themes and context-file discovery are disabled. Settings and credential storage are in-memory; model config files and initial catalog/network refresh are disabled. No user or global auth file is opened. The explicit provider is trusted operator code, not accepted from a practitioner request.
