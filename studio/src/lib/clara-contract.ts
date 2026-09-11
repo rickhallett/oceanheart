@@ -222,7 +222,7 @@ export function bridgeRequestFor(
     return {
       schemaVersion: 1 as const,
       ...request,
-      idempotencyKey: `${idempotencyKey}-rate-${request.effectiveDate.replaceAll("-", "")}-${request.newRateMinor}`,
+      idempotencyKey: `${idempotencyKey}-rate2-${request.effectiveDate.replaceAll("-", "")}-${request.newRateMinor}`,
       input: claraDemoInput,
     };
   return { schemaVersion: 1 as const, ...request };

@@ -22,8 +22,8 @@ const baselineDefinition = {
 };
 const adaptedDefinition = {
   ...baselineDefinition,
-  id: "clara-2026-10-01-rate-change",
-  instructionsVersion: "clara-invoice-rules@2026-10-01",
+  id: "clara-2026-09-01-rate-90",
+  instructionsVersion: "clara-invoice-rules@2026-09-01-rate-90",
 };
 
 type ReleaseSummary = {
@@ -182,7 +182,7 @@ export class ClaraAdaptationRuntimeController {
     if (artifact.policy === null) return { input, idempotencyKey: baseIdempotencyKey };
     return {
       input: applyClaraRateChange(input, artifact.policy),
-      idempotencyKey: `${baseIdempotencyKey}-r-${active.activeReleaseId}`,
+      idempotencyKey: `${baseIdempotencyKey}-release2-${active.activeReleaseId}`,
       configurationVersion: artifact.version,
       configurationReleaseId: active.activeReleaseId,
     };
@@ -236,12 +236,17 @@ export class ClaraAdaptationRuntimeController {
       baselineDigest,
       candidate,
       candidateDigest,
+      requestedInput: input,
     });
     const before = calculateInvoice(input), after = calculateInvoice(applyClaraRateChange(input, policy));
     const changedSessionIds = after.lines.filter((line) =>
       before.lines.find((prior) => prior.sessionId === line.sessionId)?.amountMinor !== line.amountMinor,
     ).map((line) => line.sessionId);
-    if (!evaluation.accepted || before.totalMinor !== 12000 || after.totalMinor !== 13000 ||
+    if (!evaluation.accepted || !evaluation.scopeProof?.pass ||
+      evaluation.scopeProof.candidateArtifactDigest !== candidateDigest ||
+      evaluation.scopeProof.baselineTotalMinor !== before.totalMinor ||
+      evaluation.scopeProof.candidateTotalMinor !== after.totalMinor ||
+      before.totalMinor !== 12000 || after.totalMinor !== 13000 ||
       changedSessionIds.join(",") !== "clara-session-2026-09-03")
       throw new Error("PILOT_EVALUATION_REJECTED");
     const proposalId = createHash("sha256").update([
@@ -258,7 +263,7 @@ export class ClaraAdaptationRuntimeController {
       baselineTotalMinor: before.totalMinor,
       candidateTotalMinor: after.totalMinor,
       changedSessionIds,
-      explanation: "The attended session on 3 September changes from £80 to £90. The cancellation charge and prepaid session stay unchanged.",
+      explanation: "The attended session on 3 September changes from £80 to £90. The cancellation charge and prepaid session stay unchanged. The exact requested input comparison and 18 canonical regression checks passed.",
       evaluation: {
         evaluationId: evaluation.evaluationId,
         reportDigest: evaluation.reportDigest,

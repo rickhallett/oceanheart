@@ -6,6 +6,9 @@ import test from "node:test";
 
 import { ClaraAdaptationRuntimeController } from "../../src/adaptation/runtime-controller.ts";
 import { PiWorkflowRuntime } from "../../src/runtime/pi-adapter.ts";
+import { AuthenticatedClaraRuntime } from "../../src/server/authenticated-runtime.ts";
+import type { EnvironmentBinding, IdentityVerifier, VerifiedPrincipal } from "../../src/server/binding.ts";
+import { PiDurableRuntimeAdapter } from "../../src/server/runtime-adapter.ts";
 
 const input = {
   schemaVersion: 1 as const,
@@ -45,7 +48,7 @@ test("attended-rate activation creates one release-specific draft and rollback r
   assert.notEqual(adaptedPrepared.idempotencyKey, baseKey);
   const adapted = await workflow.startRun({ clientId: "c0001", actor, ...adaptedPrepared });
   assert.equal(adapted.result?.totalMinor, 13000);
-  assert.equal(adapted.request.configurationVersion, "clara-2026-10-01-rate-change");
+  assert.equal(adapted.request.configurationVersion, "clara-2026-09-01-rate-90");
   assert.equal(adapted.request.configurationReleaseId, activated.active.releaseId);
   const adaptedReplay = await workflow.startRun({ clientId: "c0001", actor, ...adaptedPrepared });
   assert.equal(adaptedReplay.id, adapted.id);
@@ -76,4 +79,61 @@ test("proposal actor binding and active-release CAS fail closed", async (t) => {
     /PROPOSAL_DENIED/,
   );
   assert.equal((await controller.state(actor)).active.releaseId, evaluated.active.releaseId);
+});
+
+test("authenticated runtime executes the activated candidate through the real Pi adapter", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "studio-clara-adaptation-integrated-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const workflow = new PiWorkflowRuntime({ root });
+  t.after(() => workflow.close());
+  const principal: VerifiedPrincipal = {
+    provider: "synthetic-test",
+    subject: "owner-c0001",
+    environmentId: "environment-c0001",
+    audience: "audience-c0001",
+    issuer: "https://identity.synthetic.invalid",
+  };
+  const binding: EnvironmentBinding = {
+    schemaVersion: 1,
+    clientId: "c0001",
+    environmentId: principal.environmentId,
+    backend: { provider: "synthetic-test", deploymentId: "backend-c0001", url: "synthetic://c0001/backend" },
+    identity: { provider: "synthetic-test", environmentId: principal.environmentId, audience: principal.audience, issuer: principal.issuer },
+    provenance: { sourceSha: "a".repeat(40), source: "synthetic-test", observedAt: "2026-09-11T22:00:00.000Z" },
+    status: "ready",
+  };
+  const identity: IdentityVerifier = {
+    provider: "synthetic-test",
+    verify: async () => principal,
+  };
+  const server = new AuthenticatedClaraRuntime({
+    policy: { mode: "synthetic-test", environmentId: principal.environmentId, provider: "synthetic-test", audience: principal.audience, issuer: principal.issuer },
+    identity,
+    bindings: { resolveAuthorized: async () => binding },
+    runtimeFor: () => new PiDurableRuntimeAdapter(workflow, { clientId: "c0001", environmentId: principal.environmentId, backendDeploymentId: binding.backend.deploymentId }),
+    adaptation: new ClaraAdaptationRuntimeController(root, "c0001"),
+  });
+  const { clientId: _clientId, ...trustedInput } = input;
+  const baseline = await server.adaptationStatus("Bearer synthetic");
+  const evaluated = await server.evaluateAdaptation("Bearer synthetic", {
+    idempotencyKey: "integrated-rate2-20260901-9000",
+    effectiveDate: "2026-09-01",
+    newRateMinor: 9000,
+    input: trustedInput,
+  });
+  await server.activateAdaptation(
+    "Bearer synthetic",
+    evaluated.proposal!.proposalId,
+    baseline.active.releaseId,
+  );
+  const run = await server.startClara({
+    authorization: "Bearer synthetic",
+    idempotencyKey: "integrated-prepare-v1",
+    input: trustedInput,
+  });
+  const stored = workflow.store.get("c0001", run.runId);
+  assert.equal(stored.status, "succeeded");
+  assert.equal(stored.result?.totalMinor, 13000);
+  assert.equal(stored.request.configurationVersion, "clara-2026-09-01-rate-90");
+  assert.equal(stored.request.configurationReleaseId, (await server.adaptationStatus("Bearer synthetic")).active.releaseId);
 });

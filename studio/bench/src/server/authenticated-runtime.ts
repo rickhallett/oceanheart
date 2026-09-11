@@ -141,6 +141,7 @@ export class AuthenticatedClaraRuntime {
         idempotencyKey: prepared.idempotencyKey,
         input: prepared.input,
         ...(prepared.configurationVersion ? { configurationVersion: prepared.configurationVersion } : {}),
+        ...(prepared.configurationReleaseId ? { configurationReleaseId: prepared.configurationReleaseId } : {}),
       }));
     } catch (error) {
       if (error instanceof Error && error.message === "IDEMPOTENCY_MISMATCH") throw new AuthenticatedRuntimeError("REQUEST_CONFLICT");

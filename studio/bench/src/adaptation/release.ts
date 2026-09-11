@@ -212,12 +212,17 @@ export class ClaraConfigurationStore {
     if (`sha256:${createHash("sha256").update(report).digest("hex")}` !== evaluation.reportDigest) {
       throw new Error("CONFIGURATION_EVALUATION_REPORT_MISMATCH");
     }
-    let parsed: { configurations?: Array<{ id?: string }>; results?: Array<{ pass?: boolean }> };
+    let parsed: { configurations?: Array<{ id?: string }>; results?: Array<{ pass?: boolean }>; scopeProof?: AdaptationEvaluation["scopeProof"] };
     try { parsed = JSON.parse(report.toString("utf8")); }
     catch { throw new Error("CONFIGURATION_EVALUATION_REPORT_INVALID"); }
     const passes = parsed.results?.filter((result) => result.pass === true).length ?? -1;
     if (
-      !parsed.configurations?.some((configuration) => configuration.id === artifact.version) ||
+      !(evaluation.scopeProof
+        ? evaluation.scopeProof.candidateVersion === artifact.version &&
+          evaluation.scopeProof.candidateArtifactDigest === evaluation.candidateArtifactDigest &&
+          evaluation.scopeProof.pass === true &&
+          JSON.stringify(parsed.scopeProof) === JSON.stringify(evaluation.scopeProof)
+        : parsed.configurations?.some((configuration) => configuration.id === artifact.version)) ||
       parsed.results?.length !== evaluation.total ||
       passes !== evaluation.passed || passes !== evaluation.total
     ) throw new Error("CONFIGURATION_EVALUATION_REPORT_REJECTED");

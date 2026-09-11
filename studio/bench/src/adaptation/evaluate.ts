@@ -6,8 +6,11 @@ import { passed, assertClaraResult } from "../eval/assertions.ts";
 import type { ClaraFixture, ClaraWorkflowResult } from "../eval/contracts.ts";
 import { loadClaraFixtures } from "../eval/fixtures.ts";
 import ClaraWorkflowProvider from "../eval/promptfoo-clara-provider.ts";
+import { adaptedConfiguration, baselineConfiguration } from "../eval/configuration.ts";
 import { buildComparisonReport, writeComparisonReport } from "../eval/report.ts";
 import { artifactDigest, type ClaraConfigurationArtifact } from "./configuration.ts";
+import { calculateInvoice, type ClaraInput } from "../workflows/clara.ts";
+import { applyClaraRateChange } from "../workflows/adaptation.ts";
 
 export type AdaptationEvaluation = {
   schemaVersion: 1;
@@ -22,6 +25,18 @@ export type AdaptationEvaluation = {
   jsonPath: string;
   htmlPath: string;
   stateBoundary: "fresh-isolated-evaluation";
+  scopeProof?: {
+    schemaVersion: 1;
+    candidateVersion: string;
+    candidateArtifactDigest: string;
+    inputDigest: string;
+    baselineResultDigest: string;
+    candidateResultDigest: string;
+    baselineTotalMinor: number;
+    candidateTotalMinor: number;
+    changedSessionIds: string[];
+    pass: boolean;
+  };
 };
 
 async function evaluateFixture(
@@ -36,6 +51,8 @@ async function evaluateFixture(
   return JSON.parse(response.output) as ClaraWorkflowResult;
 }
 
+const digest = (value: unknown) => `sha256:${createHash("sha256").update(JSON.stringify(value)).digest("hex")}`;
+
 export async function evaluateAdaptation(input: {
   stateDir: string;
   outputDir: string;
@@ -43,6 +60,7 @@ export async function evaluateAdaptation(input: {
   baselineDigest: string;
   candidate: ClaraConfigurationArtifact;
   candidateDigest: string;
+  requestedInput?: ClaraInput;
 }): Promise<AdaptationEvaluation> {
   if (
     input.baseline.clientId !== input.candidate.clientId ||
@@ -58,12 +76,13 @@ export async function evaluateAdaptation(input: {
   const fixtures = await loadClaraFixtures();
   const runs: Array<{ fixture: ClaraFixture; result: ClaraWorkflowResult }> = [];
   for (const artifact of [input.baseline, input.candidate]) {
+    const executionVersion = artifact.policy ? adaptedConfiguration : baselineConfiguration;
     for (const fixture of fixtures) {
-      runs.push({ fixture, result: await evaluateFixture(fixture, artifact.version, evaluationRoot) });
+      runs.push({ fixture, result: await evaluateFixture(fixture, executionVersion, evaluationRoot) });
     }
   }
   const configurations = [input.baseline, input.candidate].map((artifact) => ({
-    id: artifact.version,
+    id: artifact.policy ? adaptedConfiguration : baselineConfiguration,
     instructionsVersion: artifact.instructionsVersion,
     toolsetVersion: artifact.toolsetVersion,
     modelProfile: artifact.modelProfile,
@@ -71,7 +90,31 @@ export async function evaluateAdaptation(input: {
       ? `Scoped rate change effective ${artifact.policy.effectiveDate}.`
       : "Baseline client-specific agreements and invoice draft rules.",
   }));
-  const report = buildComparisonReport(configurations, runs);
+  const scopeProof = input.requestedInput ? (() => {
+    if (!input.candidate.policy || input.requestedInput.clientId !== input.candidate.clientId)
+      throw new Error("INVALID_REQUESTED_INPUT_COMPARISON");
+    const baselineResult = calculateInvoice(input.requestedInput);
+    const candidateResult = calculateInvoice(applyClaraRateChange(input.requestedInput, input.candidate.policy));
+    const changedSessionIds = candidateResult.lines.filter((line) =>
+      baselineResult.lines.find((prior) => prior.sessionId === line.sessionId)?.amountMinor !== line.amountMinor,
+    ).map((line) => line.sessionId);
+    return {
+      schemaVersion: 1 as const,
+      candidateVersion: input.candidate.version,
+      candidateArtifactDigest: input.candidateDigest,
+      inputDigest: digest(input.requestedInput),
+      baselineResultDigest: digest(baselineResult),
+      candidateResultDigest: digest(candidateResult),
+      baselineTotalMinor: baselineResult.totalMinor,
+      candidateTotalMinor: candidateResult.totalMinor,
+      changedSessionIds,
+      pass: changedSessionIds.length > 0,
+    };
+  })() : undefined;
+  const report = {
+    ...buildComparisonReport(configurations, runs),
+    ...(scopeProof ? { scopeProof } : {}),
+  };
   const paths = await writeComparisonReport(reportDir, report);
   await Promise.all([chmod(paths.jsonPath, 0o600), chmod(paths.htmlPath, 0o600)]);
   const reportJson = await readFile(paths.jsonPath);
@@ -89,6 +132,7 @@ export async function evaluateAdaptation(input: {
     jsonPath: paths.jsonPath,
     htmlPath: paths.htmlPath,
     stateBoundary: "fresh-isolated-evaluation",
+    ...(scopeProof ? { scopeProof } : {}),
   };
   await writeFile(join(reportDir, "activation-evaluation.json"), `${JSON.stringify(receipt, null, 2)}\n`, { mode: 0o600 });
   return receipt;

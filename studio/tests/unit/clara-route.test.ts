@@ -236,7 +236,7 @@ it("forwards only the bounded attended-rate proposal and sanitizes its immutable
     operation: "adaptation-evaluate",
     effectiveDate: "2026-09-01",
     newRateMinor: 9000,
-    idempotencyKey: `${createHash("sha256").update("user_synthetic_a").digest("hex").slice(0, 24)}-clara-v1-rate-20260901-9000`,
+    idempotencyKey: `${createHash("sha256").update("user_synthetic_a").digest("hex").slice(0, 24)}-clara-v1-rate2-20260901-9000`,
     input: claraDemoInput,
   });
 
