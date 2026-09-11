@@ -67,7 +67,7 @@ export class HttpsJwksNetworkAdapter implements JwksNetworkAdapter {
   }
 }
 
-type WorkOsClaims = JWTPayload & { sid?: unknown };
+type WorkOsClaims = JWTPayload & { sid?: unknown; client_id?: unknown };
 
 const environmentId = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,255}$/;
 const audience = /^client_[A-Za-z0-9]{8,127}$/;
@@ -180,8 +180,7 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
       try {
         return await jwtVerify<WorkOsClaims>(token, createLocalJWKSet(await this.keys(attempt === 1)), {
           algorithms: ["RS256"],
-          issuer: this.issuer,
-          audience: this.audience,
+          issuer: ["https://api.workos.com", "https://api.workos.com/"],
           clockTolerance: 5,
         });
       } catch (error) {
@@ -207,6 +206,8 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     const { payload } = await this.verifyJwt(match[1]!);
     if (
       !subject.test(String(payload.sub ?? "")) || !subject.test(String(payload.sid ?? "")) ||
+      payload.client_id !== this.audience ||
+      (payload.aud !== undefined && payload.aud !== this.audience) ||
       !Number.isSafeInteger(payload.exp)
     ) throw new Error("WORKOS_TOKEN_CLAIMS_INVALID");
     if (this.sessionStatus) {

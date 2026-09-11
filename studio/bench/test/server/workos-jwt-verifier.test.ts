@@ -58,19 +58,23 @@ async function token(input: {
   subject?: string;
   sessionId?: string;
   issuer?: string;
-  audience?: string;
+  clientId?: string;
+  audienceClaim?: string;
   expiresAt?: number;
   algorithm?: "RS256" | "HS256";
 }) {
   const now = Math.floor(Date.now() / 1000);
-  return new SignJWT({ sid: input.sessionId ?? "session_synthetic_a" })
+  const token = new SignJWT({
+    sid: input.sessionId ?? "session_synthetic_a",
+    client_id: input.clientId ?? audienceA,
+  })
     .setProtectedHeader({ alg: input.algorithm ?? "RS256", kid: input.kid, typ: "JWT" })
     .setSubject(input.subject ?? "user_synthetic_a")
-    .setIssuer(input.issuer ?? issuer)
-    .setAudience(input.audience ?? audienceA)
+    .setIssuer(input.issuer ?? "https://api.workos.com")
     .setIssuedAt(now)
-    .setExpirationTime(input.expiresAt ?? now + 300)
-    .sign(input.key);
+    .setExpirationTime(input.expiresAt ?? now + 300);
+  if (input.audienceClaim !== undefined) token.setAudience(input.audienceClaim);
+  return token.sign(input.key);
 }
 
 async function localJwksServer(current: { value: { keys: JWK[] } }) {
@@ -195,7 +199,8 @@ test("jose verification rejects claim, expiry, algorithm and signature confusion
   const now = Math.floor(Date.now() / 1000);
 
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", issuer: "https://wrong.invalid/" })));
-  await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", audience: audienceB })));
+  await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", clientId: audienceB })));
+  await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", audienceClaim: audienceB })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", expiresAt: now - 30 })));
   await assert.rejects(verifyToken(await token({ key: new TextEncoder().encode("test-only-symmetric-key-material-32"), kid: "workos-key-1", algorithm: "HS256" })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1" }), { environmentId: environmentB }));
