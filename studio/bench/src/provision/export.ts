@@ -20,8 +20,9 @@ const fullSha = /^[0-9a-f]{40}$/;
 const repositorySlug = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const secretPath =
   /(^|\/)(?:\.env(?:\..*)?|credentials?(?:\..*)?|secrets?(?:\..*)?)$|\.(?:pem|key|p12|pfx|sqlite|sqlite3|db)$/i;
-const secretMaterial =
-  /-----BEGIN [A-Z ]+PRIVATE KEY-----|\b(?:sk|rk)_live_[A-Za-z0-9]+|\bgh[pousr]_[A-Za-z0-9]+|\bgithub_pat_[A-Za-z0-9_]+|\bsecret[-_ ]?canary[A-Za-z0-9._~-]*/i;
+const credentialMaterial =
+  /-----BEGIN [A-Z ]+PRIVATE KEY-----|\b(?:sk|rk)_live_[A-Za-z0-9]+|\bgh[pousr]_[A-Za-z0-9]+|\bgithub_pat_[A-Za-z0-9_]+/i;
+const syntheticCanaryMaterial = /\bsecret[-_ ]?canary[A-Za-z0-9._~-]*/i;
 
 export const studioExporterVersion = "1.0.0";
 
@@ -132,8 +133,13 @@ async function digestDirectory(
   let totalBytes = 0;
   for (const path of paths) {
     const content = await readFile(join(root, path));
-    const fixturePath = path.startsWith("tests/") || path.startsWith("test/");
-    if (!fixturePath && secretMaterial.test(content.toString("utf8")))
+    const canContainSyntheticCanary =
+      /(^|\/)tests?\//.test(path) || /(^|\/)docs?\//.test(path) || path.endsWith(".md");
+    const text = content.toString("utf8");
+    if (
+      credentialMaterial.test(text) ||
+      (!canContainSyntheticCanary && syntheticCanaryMaterial.test(text))
+    )
       throw new Error(`Export rejects secret material in tracked file: ${path}`);
     totalBytes += content.length;
     hash.update(`${Buffer.byteLength(path)}:${path}:${content.length}:`);

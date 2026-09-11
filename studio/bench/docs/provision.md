@@ -44,7 +44,22 @@ node studio/bench/scripts/provision/export-studio.ts \
   /absolute/private/output/studio
 ```
 
-The export includes tracked test fixtures, which may contain explicitly synthetic provider-shaped strings. It rejects credential-bearing path names everywhere and scans non-test files for recognizable live/private-key and canary material. `.env.example` is allowed as a value-free configuration template. This is a repository export guard, not a substitute for a dedicated secret scanner or artifact review before a real-client release.
+The export includes tracked test fixtures, which may contain explicitly synthetic canary strings. It rejects credential-bearing path names and recognizable private keys or live-token forms everywhere, including documentation and tests. Canary strings are tolerated only in recognizable test/documentation paths. `.env.example` is allowed as a value-free configuration template. This is a repository export guard, not a substitute for a dedicated secret scanner or artifact review before a real-client release.
+
+Bootstrap a clean Ubuntu 24.04 x86-64 guest as either a runtime or builder:
+
+```sh
+sudo studio/bench/scripts/provision/bootstrap-node24.sh runtime
+sudo studio/bench/scripts/provision/bootstrap-node24.sh builder
+```
+
+The idempotent script installs checksum-pinned Node `24.20.0`, creates a role-specific unprivileged service user and private state directories, and adds build tooling only to builders. It accepts no secrets. After installing the bench package from an exact-SHA export, verify the pinned Pi dependency and run the offline synthetic adapter smoke with:
+
+```sh
+node studio/bench/scripts/provision/verify-pi-install.ts /absolute/path/to/studio/bench
+sudo -u studio-runtime node studio/bench/scripts/provision/remote-pi-smoke.ts \
+  c0001 /var/lib/studio-pi-runtime/c0001
+```
 
 Create a non-executable plan from a separately captured read-only capacity snapshot:
 
@@ -58,11 +73,11 @@ node studio/bench/scripts/provision/plan-live.ts \
 
 ## Exact export evidence
 
-The exporter was exercised against accepted Studio source `fd8d43bc16a3eaa89859c624b740c6c1a72a0858` from `rickhallett/oceanheart`:
+The exporter was exercised against accepted Studio source `8a0003a43fea562a5488124f5d131b93fe34b93a` from `rickhallett/oceanheart`:
 
-- Studio tree: `b70a6ef32546e31004c4e3edec09dc0a91681adf`
-- content digest: `sha256:877a24d9e5c472a9a3144812031314e067038a1fe8ed6d28e7fe7377c9a8eaf2`
-- tracked files: 220; bytes: 1,944,723
+- Studio tree: `47c17894623dbcfefce83983f267d11951ff4cd0`
+- content digest: `sha256:1e59fb5e6043b2f8409d442f10935823e0273b6245b58c030d05d47a2622b806`
+- tracked files: 281; bytes: 2,262,231
 - isolated `npm ci`: passed with zero vulnerabilities reported
 - isolated, environment-cleared `npm run build`: passed; Next.js 16.3.4 compiled, typechecked and generated all routes
 
@@ -70,9 +85,9 @@ The disposable build directory was under `/tmp`; it is evidence of source portab
 
 ## Read-only exe.dev finding
 
-Current account inspection found enough VM-count headroom in principle, but pooled resources are shared and disk usage already exceeds the included allowance. A read-only existing-image probe found Ubuntu 24.04 with Git, tar, SHA-256 tooling and systemd, but no Node or npm. These facts block treating the present image and capacity as a ready two-VM pilot. Detailed inventory is retained in the private local operations receipt, not this repository.
+Current account inspection found enough shared CPU, memory, VM-count and disk headroom for a bounded three-host pilot after authorized idle-spare cleanup. Clean Ubuntu 24.04 guests provide tar, SHA-256 tooling and systemd but require the checksum-pinned Node bootstrap above. Capacity fit is a point-in-time observation, not approval authority or practitioner readiness. Detailed inventory, host identifiers and usage receipts are retained privately rather than in this repository.
 
-No VM was created, copied, stopped, shared or changed. No purchase or credential lookup occurred.
+The private pilot uses clean images and operator-only access; it does not clone workers, expose public shares, configure credentials or change the subscription. Its remote runtime evidence is recorded separately from this reusable packet.
 
 ## Executable next live-synthetic plan
 
