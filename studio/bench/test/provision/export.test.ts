@@ -28,7 +28,7 @@ test("exports only the exact tracked Studio tree with immutable provenance", asy
   await mkdir(join(repo, "studio", "bench", "test"), { recursive: true });
   await writeFile(
     join(repo, "studio", "bench", "test", "provider-fixture.ts"),
-    'export const fake = "secretcanary provider fixture";\n',
+    'export const fake = ["secretcanary provider fixture", "sk_live_forbidden"];\n',
   );
   await writeFile(join(repo, "website", "private-note.txt"), "not exported\n");
   await git(repo, "add", ".");
