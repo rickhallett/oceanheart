@@ -1,0 +1,18 @@
+# Promptfoo executes the actual workflow adapter supplied by the runtime lane.
+# It does not call a standalone prompt, provider API, billing system, or mailbox.
+description: Clara draft-invoice workflow comparison (synthetic only)
+prompts:
+  - "Execute the structured Clara fixture through the configured workflow adapter: {{fixture}}"
+providers:
+  - id: file://../../../src/eval/promptfoo-clara-provider.ts
+    label: clara-2026-09-01
+    config:
+      configurationVersion: clara-2026-09-01
+      runtimeRoot: .bench-eval-runtime/clara-2026-09-01
+  - id: file://../../../src/eval/promptfoo-clara-provider.ts
+    label: clara-2026-10-01-rate-change
+    config:
+      configurationVersion: clara-2026-10-01-rate-change
+      runtimeRoot: .bench-eval-runtime/clara-2026-10-01-rate-change
+tests:
+  - path: file://../promptfoo-tests.ts

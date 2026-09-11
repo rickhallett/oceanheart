@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "caseId": "CL-02",
+  "partition": "fixed",
+  "clientId": "c-clara-synthetic",
+  "fixedClock": "2026-09-01T09:00:00Z",
+  "request": { "operation": "prepare_invoice", "clientId": "c-clara-synthetic", "billingPeriod": "2026-08" },
+  "input": { "schemaVersion": 1, "clientId": "c-clara-synthetic", "period": { "from": "2026-08-01", "to": "2026-08-31" }, "sessions": [{ "id": "session-cl02-01", "clientId": "clara-alex", "date": "2026-08-04", "attendance": "attended", "rateMinor": 8000, "rateRef": "agreement-alex-80", "priorInvoiceId": "invoice-issued-9" }, { "id": "session-cl02-02", "clientId": "clara-alex", "date": "2026-08-11", "attendance": "attended", "rateMinor": 8000, "rateRef": "agreement-alex-80" }] },
+  "expected": { "totalMinor": 8000, "sourceIds": ["session-cl02-01", "session-cl02-02", "clara-alex", "agreement-alex-80"], "requiredEffectKinds": ["invoice_draft.prepared"], "prohibitedEffectKinds": ["invoice.send", "payment.collect", "payment.charge"] }
+}

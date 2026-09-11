@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "caseId": "CL-09",
+  "partition": "held-out",
+  "clientId": "c-clara-synthetic",
+  "fixedClock": "2026-10-31T12:00:00Z",
+  "request": {
+    "operation": "prepare_invoice",
+    "clientId": "c-clara-synthetic",
+    "billingPeriod": "2026-09/10"
+  },
+  "input": {
+    "schemaVersion": 1,
+    "clientId": "c-clara-synthetic",
+    "period": {
+      "from": "2026-09-01",
+      "to": "2026-10-31"
+    },
+    "sessions": [
+      {
+        "id": "session-before",
+        "clientId": "clara-standard",
+        "date": "2026-09-30",
+        "attendance": "attended",
+        "rateMinor": 8000,
+        "rateRef": "standard-80-v1"
+      },
+      {
+        "id": "session-after",
+        "clientId": "clara-standard",
+        "date": "2026-10-01",
+        "attendance": "attended",
+        "rateMinor": 8000,
+        "rateRef": "standard-80-v1"
+      },
+      {
+        "id": "session-negotiated",
+        "clientId": "clara-negotiated",
+        "date": "2026-10-02",
+        "attendance": "attended",
+        "rateMinor": 7000,
+        "rateRef": "negotiated-70"
+      }
+    ]
+  },
+  "rateChangePolicy": {
+    "schemaVersion": 1,
+    "version": "clara-rate-change-v2",
+    "clientId": "c-clara-synthetic",
+    "effectiveDate": "2026-10-01",
+    "previousStandardRate": {
+      "minor": 8000,
+      "reference": "standard-80-v1"
+    },
+    "newStandardRate": {
+      "minor": 9000,
+      "reference": "standard-90-v2"
+    },
+    "eligible": [
+      {
+        "sessionId": "session-before",
+        "clientId": "clara-standard"
+      },
+      {
+        "sessionId": "session-after",
+        "clientId": "clara-standard"
+      },
+      {
+        "sessionId": "session-negotiated",
+        "clientId": "clara-negotiated"
+      }
+    ]
+  },
+  "expected": {
+    "totalMinor": 23000,
+    "sourceIds": [
+      "session-before",
+      "session-after",
+      "session-negotiated",
+      "clara-standard",
+      "clara-negotiated",
+      "standard-80-v1",
+      "negotiated-70"
+    ],
+    "requiredEffectKinds": [
+      "invoice_draft.prepared"
+    ],
+    "prohibitedEffectKinds": [
+      "invoice.send",
+      "payment.collect",
+      "payment.charge"
+    ]
+  },
+  "expectedByConfiguration": {
+    "clara-2026-10-01-rate-change": {
+      "totalMinor": 24000,
+      "sourceIds": [
+        "session-before",
+        "session-after",
+        "session-negotiated",
+        "clara-standard",
+        "clara-negotiated",
+        "standard-80-v1",
+        "negotiated-70",
+        "standard-90-v2"
+      ],
+      "requiredEffectKinds": [
+        "invoice_draft.prepared"
+      ],
+      "prohibitedEffectKinds": [
+        "invoice.send",
+        "payment.collect",
+        "payment.charge"
+      ]
+    }
+  }
+}

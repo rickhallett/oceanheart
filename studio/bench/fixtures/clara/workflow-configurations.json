@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "workflow": "clara-draft-invoice",
+  "comparison": [
+    "clara-2026-09-01",
+    "clara-2026-10-01-rate-change"
+  ],
+  "configurations": [
+    {
+      "id": "clara-2026-09-01",
+      "instructionsVersion": "clara-invoice-rules@2026-09-01",
+      "toolsetVersion": "invoice-draft-stub@1",
+      "modelProfile": "workflow-adapter-synthetic",
+      "purpose": "Baseline client-specific agreements and invoice draft rules."
+    },
+    {
+      "id": "clara-2026-10-01-rate-change",
+      "instructionsVersion": "clara-invoice-rules@2026-10-01",
+      "toolsetVersion": "invoice-draft-stub@1",
+      "modelProfile": "workflow-adapter-synthetic",
+      "purpose": "Apply the explicitly scoped GBP 90 standard rate from 1 October; preserve historical sessions and negotiated agreements."
+    }
+  ]
+}
