@@ -35,14 +35,14 @@ Promptfoo 0.123.0 was run with caching and telemetry disabled against the same p
 | HE-01 | Provider-double timeout/crash reconciliation tests; live provider retry still outstanding |
 | HE-02 | Run/trace lookup client scope tested; hosted API/backend/repo isolation outstanding |
 | HE-03 | Actual Pi restricted tools and disabled discovered resources tested; OS/service isolation outstanding |
-| HE-04 | Builder/release-controller boundary not implemented |
-| HE-05 | Read-only provider inventory only; provisioned-client port/integration acceptance outstanding |
+| HE-04 | Clean private builder uses a distinct unprivileged service account and built the exact Studio export without credentials; a deploy-controller boundary remains outstanding |
+| HE-05 | Three clean operator-only guests and private proxy state inspected; dedicated backend/identity and credential-canary acceptance remain outstanding |
 | HE-06 | Trace exports omit raw model/input data; export rejects secret paths/material; full credential canary acceptance outstanding |
 | HE-07 | Credential rotation/revocation/OAuth refresh not implemented |
-| HE-08 | Durable local job/draft recovery and replay tested; remote supervisor recovery outstanding |
+| HE-08 | Durable local recovery plus remote supervisor stop/restart/replay preserved one synthetic draft and one job/effect/reservation; VM-boot reinstallation remains operator-owned |
 | HE-09 | Git export verified; scoped clone/push/PR integration not implemented |
 | HE-10 | Exact-source export plus local atomic configuration activation/exact-prior rollback; actual application artifact deployment switch outstanding |
 | HE-11 | Clara fixed/held-out cases and scoped rate activation demonstrated locally; another-client input stays invariant; hosted second-instance invariance outstanding |
 | HE-12 | Off-VM backup and clean-environment restore not implemented |
 
-The existing Studio application exported from the accepted source builds independently without production credentials. No hosted resource was created. Current resource discovery also found disk usage above the account's included allowance and no Node 24/npm in the probed image. Capacity alone does not make the provision plan executable. Resolve the resource budget, secret-free image and live backend/identity/provider adapters before the hosted pilot.
+The existing Studio application exported from infrastructure candidate `2c81ee8ab6c19cf0e6a61d5592de96f3e675e0dd` built independently on the clean private builder without production credentials. Two clean runtime guests independently ran the pinned Pi synthetic CLI; a third clean guest completed the build. Current provider inspection reported 65.8 GiB used of 100 GiB pooled disk across 11 private guests, with no overage. These are operator-only synthetic hosts, not practitioner-ready instances. Capacity and runtime proof do not establish a dedicated backend, identity, repository, credential resolver, off-VM restore or application deployment switch.

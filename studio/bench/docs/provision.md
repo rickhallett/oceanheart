@@ -1,6 +1,6 @@
 # Studio bench provisioning packet
 
-Status: local implementation evidence for RIC-136, 11 September 2026. This packet does not create a repository, VM, backend, identity, secret, deployment or release.
+Status: reusable implementation plus bounded private-pilot evidence for RIC-136, 11 September 2026. The committed packet does not itself create a repository, VM, backend, identity, secret, deployment or release; separately authorized operator work provisioned three clean private synthetic guests.
 
 ## Delivered boundary
 
@@ -53,13 +53,22 @@ sudo studio/bench/scripts/provision/bootstrap-node24.sh runtime
 sudo studio/bench/scripts/provision/bootstrap-node24.sh builder
 ```
 
-The idempotent script installs checksum-pinned Node `24.20.0`, creates a role-specific unprivileged service user and private state directories, and adds build tooling only to builders. It accepts no secrets. After installing the bench package from an exact-SHA export, verify the pinned Pi dependency and run the offline synthetic adapter smoke with:
+The idempotent script installs checksum-pinned Node `24.20.0`, creates a role-specific unprivileged service user and private state directories, rewrites only the exact Canonical Ubuntu archive endpoints to HTTPS, and adds build tooling only to builders. It accepts no secrets. After installing the bench package from an exact-SHA export, verify the pinned Pi dependency and run the offline synthetic adapter smoke with:
 
 ```sh
 node studio/bench/scripts/provision/verify-pi-install.ts /absolute/path/to/studio/bench
 sudo -u studio-runtime node studio/bench/scripts/provision/remote-pi-smoke.ts \
   c0001 /var/lib/studio-pi-runtime/c0001
 ```
+
+On the current minimal guest image, which has no systemd, install the scoped recovery supervisor from an immutable digest-addressed release:
+
+```sh
+sudo studio/bench/scripts/provision/install-runtime-recovery.sh \
+  /opt/studio/releases/sha256-DIGEST/bench c0001
+```
+
+It runs as `studio-runtime`, accepts only the matching private state directory, preserves its private log, and refuses a live unrelated PID collision. It periodically recovers queued or lease-expired jobs. The image has no provider startup facility, so an operator must rerun this idempotent installer after a VM reboot; process-level restart/replay is verified, automatic boot activation is not.
 
 Create a non-executable plan from a separately captured read-only capacity snapshot:
 
@@ -73,29 +82,29 @@ node studio/bench/scripts/provision/plan-live.ts \
 
 ## Exact export evidence
 
-The exporter was exercised against accepted Studio source `8a0003a43fea562a5488124f5d131b93fe34b93a` from `rickhallett/oceanheart`:
+The exporter and clean private builder were exercised against infrastructure candidate `2c81ee8ab6c19cf0e6a61d5592de96f3e675e0dd` from `rickhallett/oceanheart`:
 
-- Studio tree: `47c17894623dbcfefce83983f267d11951ff4cd0`
-- content digest: `sha256:1e59fb5e6043b2f8409d442f10935823e0273b6245b58c030d05d47a2622b806`
-- tracked files: 281; bytes: 2,262,231
-- isolated `npm ci`: passed with zero vulnerabilities reported
-- isolated, environment-cleared `npm run build`: passed; Next.js 16.3.4 compiled, typechecked and generated all routes
+- Studio tree: `87f3102bfa47829fffa76bfe027e711c7bb2c5d6`
+- content digest: `sha256:50c6e8f3e52e4b78dbaebb78d61ace1e94ac325d13f3376f83c6647d57b98478`
+- tracked files: 289; bytes: 2,283,953
+- checksum-gated transfer artifact: `sha256:c02db8191804fceddcbf434f4bab73fd985371dd8edb6989cf73c73fd4cc4cfc`
+- isolated, environment-cleared `npm ci --ignore-scripts` and `npm run build`: passed; Next.js 16.3.4 compiled, typechecked and generated all routes
 
 The disposable build directory was under `/tmp`; it is evidence of source portability, not a release artifact or hosted acceptance.
 
 ## Read-only exe.dev finding
 
-Current account inspection found enough shared CPU, memory, VM-count and disk headroom for a bounded three-host pilot after authorized idle-spare cleanup. Clean Ubuntu 24.04 guests provide tar, SHA-256 tooling and systemd but require the checksum-pinned Node bootstrap above. Capacity fit is a point-in-time observation, not approval authority or practitioner readiness. Detailed inventory, host identifiers and usage receipts are retained privately rather than in this repository.
+Current account inspection found 65.8 GiB used of the 100 GiB pooled disk across 11 private guests, with no disk overage, after the bounded three-host pilot and authorized idle-spare cleanup. Clean Ubuntu 24.04 guests provide tar and SHA-256 tooling but no systemd; they require the checksum-pinned Node bootstrap and process supervisor above. Capacity fit is a point-in-time observation, not approval authority or practitioner readiness. Detailed inventory, host identifiers and usage receipts are retained privately rather than in this repository.
 
-The private pilot uses clean images and operator-only access; it does not clone workers, expose public shares, configure credentials or change the subscription. Its remote runtime evidence is recorded separately from this reusable packet.
+The private pilot uses clean images and operator-only access; it does not clone workers, expose public shares, configure credentials or change the subscription. Two runtime guests independently completed the pinned Pi synthetic CLI. A separate synthetic recovery probe survived a supervisor process stop/restart and reused the same run, draft and result hash with exactly one job, effect and reservation. The builder completed the exact-source secret-free Studio build above. Private receipts remain outside this repository.
 
 ## Executable next live-synthetic plan
 
 The next operator-owned packet should proceed only after the concrete blockers are resolved, using the same manifest and original operation key throughout:
 
-1. Capture a fresh read-only exe.dev inventory and decide how the existing disk overage is handled without assuming new spend or capacity.
+1. Capture a fresh read-only exe.dev inventory and confirm the retained disk headroom without assuming new spend or capacity.
 2. Approve a private synthetic repository target and an isolated synthetic backend/identity target. Confirm neither resolves to staging or production.
-3. Build a secret-free Node 24 image or a checksum-pinned bootstrap in a disposable existing environment; verify Pi `0.85.1`, Studio build/start and service supervision.
+3. Reuse the checksum-pinned Node 24 bootstrap and verify Pi `0.85.1`, the exact-source Studio artifact and supervisor receipt on the intended retained guests.
 4. Implement an exe.dev adapter whose `reconcileResource` uses authoritative provider IDs/ownership metadata and whose create operation reports only explicit pre-effect rejection as retryable. Timeouts, transport loss, malformed responses and persisted `pending` receipts remain uncertain.
 5. Run `plan-live`; inspect that it remains non-executable until the controller has explicit readiness inputs rather than only quota data.
 6. In one bounded synthetic run, reconcile then create the private repository, runtime VM, development VM and synthetic backend. Persist each returned provider ID; never derive SSH identity from a requested name.
