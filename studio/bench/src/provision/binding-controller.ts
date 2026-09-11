@@ -108,11 +108,15 @@ export class BackendIdentityBindingController {
     }
     if (observation.state === "foreign")
       return this.conflict(entry, "Provider reports a binding owned by another client or environment");
-    if (observation.state === "partial" || observation.state === "unknown")
+    if (observation.state === "unknown")
       return this.uncertain(entry, "Provider could not establish one complete backend and identity binding");
-    if (priorState === "pending" || priorState === "effect_uncertain")
-      return this.uncertain(entry, "A prior environment create may have taken effect; inspect before retry");
-    if (!observation.retrySafe)
+    if (observation.state === "partial" && !observation.retrySafe)
+      return this.uncertain(entry, "Provider could not safely repair the partial backend and identity binding");
+    if (
+      (priorState === "pending" || priorState === "effect_uncertain") &&
+      observation.state === "absent"
+    ) return this.uncertain(entry, "A prior environment create may have taken effect; inspect before retry");
+    if (observation.state === "absent" && !observation.retrySafe)
       return this.uncertain(entry, "Provider absence is not authoritative; inspect before retry");
 
     entry.state = "pending";

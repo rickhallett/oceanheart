@@ -4,12 +4,12 @@ The specification is `studio/docs/HARNESS-ENVIRONMENT-SPEC.md`. This package is 
 
 ## Source baseline
 
-For the 11 September 2026 authenticated-boundary slice, the release owner recorded the stable Studio staging alias as:
+For the 11 September 2026 provider-transport slice, the release owner recorded the accepted Studio staging deployment as:
 
-- Deployment: `dpl_jesncfBjUL8D2tB1ntqvamb53fxL`
-- URL: `https://oceanheart-studio-m9y0kvxso-rick-halletts-projects.vercel.app` (stable alias `https://oceanheart-studio-env-staging-rick-halletts-projects.vercel.app`)
+- Deployment: `dpl_6PP7M9VMbuSpDkSFu1AsjZf949kj`
+- URL: `https://oceanheart-studio-ee5hyvgah-rick-halletts-projects.vercel.app`
 - Environment: custom `staging`
-- Git source: `74ce82dcf461838b6ff2232a9c3b680d81868adb`, `studio/dev`
+- Git source: `4f8c8fae8b49334f7b3b59105fe7b888aae381a7`, `studio/dev`
 - Remote `studio/dev` independently matched that SHA.
 
 The source SHA was fetched and independently matched before creating the clean feature worktree. Deployment identity, URL, environment and READY state were refreshed through provider metadata, and the stable `/app` route returned HTTP 200. Provider metadata did not expose the Git SHA, so source attribution remains the accepted release receipt corroborated by the matching remote head; this is not authenticated practitioner acceptance. No website release is included.
@@ -38,7 +38,7 @@ Promptfoo 0.123.0 was run with caching and telemetry disabled against the same p
 | HE-02 | Controller-registry identity resolution plus run/draft/trace client scope tested; real hosted session/backend/repo isolation outstanding |
 | HE-03 | Actual Pi restricted tools and disabled discovered resources tested; OS/service isolation outstanding |
 | HE-04 | Clean private builder uses a distinct unprivileged service account and built the exact Studio export without credentials; a deploy-controller boundary remains outstanding |
-| HE-05 | Three clean operator-only guests and private proxy state inspected; dedicated synthetic binding validation and server authorization are deterministic evidence, while actual dedicated backend/identity and credential-canary acceptance remain outstanding |
+| HE-05 | Three clean operator-only guests and private proxy state inspected; concrete Convex Management API/WorkOS account CLI transport now enforces a private exact target registration and safe partial reconciliation. No dedicated live target has yet been created, so hosted backend/identity isolation remains outstanding |
 | HE-06 | Trace exports omit raw model/input data; export rejects secret paths/material; full credential canary acceptance outstanding |
 | HE-07 | Credential rotation/revocation/OAuth refresh not implemented |
 | HE-08 | Durable local recovery plus remote supervisor stop/restart/replay preserved one synthetic draft and one job/effect/reservation; VM-boot reinstallation remains operator-owned |
@@ -51,8 +51,8 @@ The existing Studio application exported from infrastructure candidate `2c81ee8a
 
 ## Dedicated backend and identity boundary
 
-The manifest still accepts only client-scoped `synthetic://<clientId>/...` backend and retrieval references. The controller now has a typed injectable Convex/WorkOS binding adapter, a private client registry, uncertainty reconciliation and an explicit verified-subject resolver. A ready record requires provider-attested synthetic/dedicated scope, exact provider-controlled IDs and a matching client; production, shared, partial and foreign-client observations fail closed. Only credential references cross the interface.
+The manifest still accepts only client-scoped `synthetic://<clientId>/...` backend and retrieval references. The controller now has concrete Convex Management API and WorkOS account CLI transports, a private exact-target registration, scoped authority resolver, uncertainty/partial reconciliation and an explicit verified-subject resolver. A ready record requires the registered synthetic/dedicated client, exact provider-controlled IDs, a Convex development deployment and WorkOS sandbox. Production, shared, unregistered and foreign-client observations fail closed. Only credential references cross the interface; token values remain inside the trusted controller transport callback.
 
-The accepted Studio staging backend remains shared and is deliberately ineligible. No dedicated Convex project/deployment or WorkOS environment was selected or created, and no provider credentials were read. Live completion requires concrete isolated synthetic provider targets plus a controller-only credential resolver and inspection transport; hosted acceptance must then verify WorkOS identity maps server-side to the bound client and a second client cannot read or mutate it. Placeholder values in `.env.example` remain non-evidence.
+The accepted Studio staging backend remains shared and is deliberately ineligible. Metadata-only discovery confirmed an authenticated WorkOS account with only its existing sandbox staging and production environments; no dedicated Convex project/deployment or WorkOS environment was created. The missing live prerequisite is an approved existing Convex team ID/project target and controller environment-variable reference containing a team-scoped Management API token. Once registered, the same operation may create the Convex project/development deployment and WorkOS sandbox, reconcile provider IDs, and persist only the ready binding or a redacted uncertainty state. Placeholder values in `.env.example` remain non-evidence.
 
 The server-side authenticated runtime boundary adds a first Clara start/inspect path over the existing Pi/SQLite runtime. It derives client and hashed actor identity from a verified principal plus the controller registry, never from request client fields, and repeats authorization for run, draft and trace reads. Synthetic identity/backend adapters are explicitly test-only and cannot initialize hosted mode. Hosted evidence still requires the concrete provider-controlled targets and real session verifier described above; no hosted isolation is claimed.
