@@ -1,7 +1,10 @@
 {
   "schemaVersion": 1,
   "workflow": "clara-draft-invoice",
-  "comparison": ["clara-2026-09-01", "clara-2026-10-01-rate-change"],
+  "comparison": [
+    "clara-2026-09-01",
+    "clara-2026-10-01-rate-change"
+  ],
   "configurations": [
     {
       "id": "clara-2026-09-01",
@@ -15,7 +18,7 @@
       "instructionsVersion": "clara-invoice-rules@2026-10-01",
       "toolsetVersion": "invoice-draft-stub@1",
       "modelProfile": "workflow-adapter-synthetic",
-      "purpose": "Identical scripted control; retained to verify report comparison plumbing until the rate adaptation changes the runtime configuration."
+      "purpose": "Apply the explicitly scoped GBP 90 standard rate from 1 October; preserve historical sessions and negotiated agreements."
     }
   ]
 }

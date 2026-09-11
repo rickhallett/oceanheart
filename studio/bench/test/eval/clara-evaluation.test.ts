@@ -24,11 +24,11 @@ function idealResult(fixture: ClaraFixture): ClaraWorkflowResult {
   return { caseId: fixture.caseId, configurationVersion: "clara-2026-09-01", result, questions: result.unresolved.map((item) => item.reason), sourceIds: [], effects: [{ kind: fixture.replay ? "invoice_draft.reused" : result.unresolved.length ? "clarification.requested" : "invoice_draft.prepared", external: false }], trace: { runId: `run-${fixture.caseId}`, href: `bench://trace/${fixture.caseId}` }, estimate: { latencyMs: 12, costUsd: 0, label: "estimate", basis: "test fixture only" } };
 }
 
-test("loads canonical CL-01 through CL-08 fixed and held-out fixtures", async () => {
+test("loads canonical CL-01 through CL-08 fixed cases plus independent adaptation case fixtures", async () => {
   const fixtures = await loadClaraFixtures();
-  assert.deepEqual(fixtures.map((fixture) => fixture.caseId), ["CL-01", "CL-02", "CL-03", "CL-04", "CL-05", "CL-06", "CL-07", "CL-08"]);
-  assert.equal(fixtures.filter((fixture) => fixture.partition === "fixed").length, 6);
-  assert.equal(fixtures.filter((fixture) => fixture.partition === "held-out").length, 2);
+  assert.deepEqual(fixtures.map((fixture) => fixture.caseId), ["CL-01", "CL-02", "CL-03", "CL-04", "CL-05", "CL-06", "CL-07", "CL-08", "CL-09"]);
+  assert.equal(fixtures.filter((fixture) => fixture.partition === "fixed").length, 8);
+  assert.equal(fixtures.filter((fixture) => fixture.partition === "held-out").length, 1);
   assert.deepEqual(fixtures.flatMap(validateClaraFixture), []);
 });
 

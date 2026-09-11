@@ -11,7 +11,7 @@ export async function loadClaraFixtures(
   partition?: FixturePartition,
 ): Promise<ClaraFixture[]> {
   const filenames = (await readdir(fixtureDirectory))
-    .filter((filename) => /^cl-0[1-8]\.json$/.test(filename))
+    .filter((filename) => /^cl-0[1-9]\.json$/.test(filename))
     .sort();
   const fixtures = await Promise.all(
     filenames.map(async (filename) => {
@@ -25,7 +25,7 @@ export async function loadClaraFixtures(
 export function validateClaraFixture(fixture: ClaraFixture): string[] {
   const errors: string[] = [];
   if (fixture.schemaVersion !== 1) errors.push("schemaVersion must be 1");
-  if (!/^CL-0[1-8]$/.test(fixture.caseId)) errors.push("caseId must be CL-01 through CL-08");
+  if (!/^CL-0[1-9]$/.test(fixture.caseId)) errors.push("caseId must be CL-01 through CL-09");
   if (!fixture.fixedClock.endsWith("Z")) errors.push("fixedClock must be UTC ISO time");
   if (fixture.input.schemaVersion !== 1) errors.push("input must use canonical ClaraInput schemaVersion 1");
   if (fixture.input.clientId !== fixture.request.clientId) errors.push("request and input client IDs must match");

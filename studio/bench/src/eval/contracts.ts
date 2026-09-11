@@ -1,3 +1,4 @@
+import type { ClaraRateChangePolicy } from "../workflows/adaptation.ts";
 /**
  * Boundary shared by the synthetic Clara suite and the real workflow adapter.
  * The adapter is deliberately responsible for the workflow; this package only
@@ -47,6 +48,8 @@ export type ClaraFixture = {
   };
   /** Exact canonical ClaraInput shape from bench/src/runtime/contract.ts. */
   input: ClaraInput;
+  rateChangePolicy?: ClaraRateChangePolicy;
+  expectedByConfiguration?: Record<string, ClaraFixture["expected"]>;
   /** An explicit same-request replay; never inferred from fixture state. */
   replay?: { count: 2 };
   expected: {

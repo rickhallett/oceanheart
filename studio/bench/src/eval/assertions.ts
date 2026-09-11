@@ -23,7 +23,7 @@ export function assertClaraResult(
   result: ClaraWorkflowResult,
 ): EvaluationCheck[] {
   const checks: EvaluationCheck[] = [];
-  const expected = fixture.expected;
+  const expected = fixture.expectedByConfiguration?.[result.configurationVersion] ?? fixture.expected;
   checks.push({
     name: "case-id",
     pass: result.caseId === fixture.caseId,

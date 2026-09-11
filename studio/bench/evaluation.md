@@ -4,9 +4,9 @@ This is the initial synthetic, deterministic evaluation slice for the first Stud
 
 ## Inputs and partitions
 
-`fixtures/clara/` holds fixed-clock, fictional JSON fixtures. CL-01 through CL-06 are the fixed set; CL-07 and CL-08 are held out. Every fixture carries the canonical `ClaraInput` passed unchanged to the runtime, plus eval expectations for exact minor-unit amounts, source IDs and allowed/prohibited effects. CL-08 explicitly replays the identical request twice and checks the same durable job is reused. Effects are structured local receipts only. A sent invoice, payment collection/charge, mailbox call, or model-provider call is prohibited.
+`fixtures/clara/` holds fixed-clock, fictional JSON fixtures. CL-01 through CL-08 are the fixed set; CL-09 is a separate adaptation case with independent expected totals. Every fixture carries the canonical `ClaraInput` passed to the runtime after the selected explicit rate policy, if any, plus eval expectations for exact minor-unit amounts, source IDs and allowed/prohibited effects. CL-08 explicitly replays the identical request twice and checks the same durable job is reused. Effects are structured local receipts only. A sent invoice, payment collection/charge, mailbox call, or model-provider call is prohibited.
 
-`workflow-configurations.json` compares `clara-2026-09-01` with an honestly labelled identical scripted control. It establishes comparison/report plumbing; it does not claim the later rate adaptation has changed runtime behaviour.
+`workflow-configurations.json` compares the baseline with `clara-2026-10-01-rate-change`. The candidate applies only the reviewed fixture policy. CL-09 totals GBP 230 at baseline and GBP 240 after adaptation; its historical GBP 80 session and negotiated GBP 70 agreement remain unchanged. The old eight cases retain their original expected results. This is a versioned local transformation, not a conversational UI or hosted release.
 
 ## Runtime path
 
@@ -18,14 +18,16 @@ const job = await runtime.startRun(request);
 const latencyMs = Math.round(performance.now() - startedAt);
 ```
 
-Each independent case uses a distinct idempotency key; CL-08 is the only deliberate same-key replay. Latency is measured around the actual runtime call. Cost remains a labelled zero estimate because the pinned scripted transport makes no provider call.
+Every provider invocation creates a fresh private execution directory, including uncached repeats; CL-08 is the deliberate same-key replay within one invocation. Relative runtime roots resolve under the operator state directory, not the Git checkout. Latency is measured around the actual runtime call. Cost remains a labelled zero estimate because the pinned scripted transport makes no provider call.
 
 ## Running after runtime/package integration
 
-Silver owns the Promptfoo dependency/lockfile. After it is added, run from `bench/`:
+Promptfoo 0.123.0 was exercised through the real CLI. Keep it optional, outside the runtime dependency tree. From `bench/`:
 
 ```sh
-npx promptfoo eval -c test/eval/promptfoo/clara.config.yaml
+PROMPTFOO_DISABLE_TELEMETRY=1 PROMPTFOO_DISABLE_UPDATE=1 \
+  npm exec --yes --package=promptfoo@0.123.0 -- promptfoo eval \
+  -c test/eval/promptfoo/clara.config.yaml --no-cache --max-concurrency 1 --no-table
 ```
 
 Promptfoo's current custom JavaScript/TypeScript provider interface requires `id` and `callApi`; external test generators are supported. The configuration uses both facilities. Deterministic assertions inspect the adapter's JSON output; there is no LLM judge.

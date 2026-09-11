@@ -15,7 +15,7 @@ export class PiWorkflowRuntime {
  constructor(options:RuntimeOptions){this.root=resolve(options.root);this.store=new JobStore(this.root);this.limits={maxRunMs:30000,maxToolCalls:4,maxTurns:6,...options.limits};for(const n of Object.values(this.limits))if(!Number.isSafeInteger(n)||n<=0||n>180000)throw Error('INVALID_LIMIT');this.provider=options.provider??scriptedProvider();this.model=options.model??scriptedModel;if(this.model.provider!==this.provider.id)throw Error('PROVIDER_MISMATCH');}
  subscribeEvents(listener:(event:Record<string,unknown>)=>void){this.listeners.add(listener);return()=>this.listeners.delete(listener);}
  private emit(job:Job,type:string,detail:Record<string,unknown>={}){const event=this.store.event(job,type,detail);for(const listener of this.listeners){try{listener(event);}catch{/* observers do not alter durable jobs */}}}
- async startRun(request:RunRequest):Promise<Job>{validateInput(request.input);if(request.clientId!==request.input.clientId||!request.actor||!request.idempotencyKey||request.idempotencyKey.length>128)throw Error('INVALID_REQUEST');const snapshot=JSON.parse(JSON.stringify(request));return this.resumeSession(request.clientId,this.store.enqueue(snapshot).id);}
+ async startRun(request:RunRequest):Promise<Job>{validateInput(request.input);if(request.clientId!==request.input.clientId||!request.actor||!request.idempotencyKey||request.idempotencyKey.length>128||(request.configurationVersion!==undefined&&!/^[a-zA-Z0-9._-]{1,100}$/.test(request.configurationVersion)))throw Error('INVALID_REQUEST');const snapshot=JSON.parse(JSON.stringify(request));return this.resumeSession(request.clientId,this.store.enqueue(snapshot).id);}
  async resumeSession(clientId:string,runId:string):Promise<Job>{
   const initial=this.store.get(clientId,runId);if(!['queued','running'].includes(initial.status))return initial;
   const leaseMs=this.limits.maxRunMs+5000;let job=this.store.claim(clientId,runId,leaseMs);if(job.status!=='running')return job;const token=job.token!;
@@ -33,7 +33,7 @@ export class PiWorkflowRuntime {
     execute:async(_id,args,signal)=>{if(signal?.aborted)throw Error('CANCELLED');if((!args || typeof args!=="object" || Object.keys(args).length))throw Error('UNEXPECTED_ARGUMENTS');this.store.mutate(clientId,runId,token,j=>{if(++j.toolCalls>this.limits.maxToolCalls)throw Error('TOOL_LIMIT');});const result=this.store.effect(clientId,runId,token);return {content:[{type:'text',text:JSON.stringify(result)}],details:{draftId:result.draftId}};}
    }]});session=created.session;this.active.set(runId,session);
    if(session.getActiveToolNames().join(',')!=='prepare_invoice'||loader.getExtensions().extensions.length||loader.getAgentsFiles().agentsFiles.length)throw Error('ISOLATION_FAILURE');
-   job=this.store.mutate(clientId,runId,token,j=>{j.sessionFile=session!.sessionFile;});this.emit(job,'session_started',{sdk:'0.85.1',model:this.model.id,provider:this.provider.id,workflowVersion:'clara-v1',inputHash:digest(job.request.input),tools:session.getActiveToolNames()});
+   job=this.store.mutate(clientId,runId,token,j=>{j.sessionFile=session!.sessionFile;});this.emit(job,'session_started',{sdk:'0.85.1',model:this.model.id,provider:this.provider.id,workflowVersion:'clara-v1',configurationVersion:job.request.configurationVersion??'clara-v1',inputHash:digest(job.request.input),tools:session.getActiveToolNames()});
    session.subscribe(event=>{try{if(event.type==='turn_start')this.store.mutate(clientId,runId,token,j=>{if(++j.turns>this.limits.maxTurns)throw Error('TURN_LIMIT');});this.emit(job,'pi_event',{eventType:event.type});}catch{limitHit=true;void session!.abort();}});
    const expiry=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{void session!.abort();reject(Error('RUN_LIMIT'));},this.limits.maxRunMs);});
    await Promise.race([session.prompt('Prepare the invoice draft for the supplied trusted job. Call prepare_invoice.',{expandPromptTemplates:false}),expiry]);
@@ -44,6 +44,6 @@ export class PiWorkflowRuntime {
   return job;
  }
  async cancelRun(clientId:string,runId:string){const job=this.store.transaction(()=>{const j=this.store.get(clientId,runId);if(['queued','running'].includes(j.status)){j.status='cancelled';j.lease=0;this.store.save(j);this.emit(j,'cancelled');}return j;});await this.active.get(runId)?.abort();return job;}
- exportTrace(clientId:string,runId:string){const job=this.store.get(clientId,runId);return {schemaVersion:1,job:{id:job.id,clientId:job.clientId,status:job.status,inputHash:digest(job.request.input),resultHash:job.result?digest(job.result):undefined},events:this.store.trace(clientId,runId)};}
+ exportTrace(clientId:string,runId:string){const job=this.store.get(clientId,runId);return {schemaVersion:1,job:{id:job.id,clientId:job.clientId,status:job.status,configurationVersion:job.request.configurationVersion??'clara-v1',inputHash:digest(job.request.input),resultHash:job.result?digest(job.result):undefined},events:this.store.trace(clientId,runId)};}
  close(){if(this.active.size)throw Error('ACTIVE_RUNS');this.store.close();}
 }

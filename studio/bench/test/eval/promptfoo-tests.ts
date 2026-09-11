@@ -2,7 +2,8 @@ import { loadClaraFixtures } from "../../src/eval/fixtures.ts";
 
 const deterministicAssertion = `
 const result = typeof output === "string" ? JSON.parse(output) : output;
-const expected = vars.fixture.expected;
+const vars = context.vars;
+const expected = vars.fixture.expectedByConfiguration?.[result.configurationVersion] ?? vars.fixture.expected;
 const sameSet = (actual, wanted) => actual.length === wanted.length && actual.every((item) => wanted.includes(item));
 const effectKinds = result.effects.map((effect) => effect.kind);
 const questionText = result.questions.join(" ").toLowerCase();
