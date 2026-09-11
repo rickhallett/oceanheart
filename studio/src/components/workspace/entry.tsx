@@ -27,6 +27,7 @@ export function WorkspaceEntry({ authError }: { authError?: boolean }) {
                   Sign in
                 </a>
                 <p><a href="/app?demo=1">Explore the fictional demo</a></p>
+                <p><a href="https://www.oceanheart.ai/studio">About Studio</a></p>
               </div>
             </div>
           ),

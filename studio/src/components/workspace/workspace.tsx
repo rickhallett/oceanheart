@@ -417,8 +417,8 @@ export function Shell({
               size="sm"
               display={{ base: "none", md: "inline-flex" }}
             >
-              <Link href="/">
-                Our website <ArrowUpRight size={14} />
+              <Link href="https://www.oceanheart.ai/studio">
+                About Studio <ArrowUpRight size={14} />
               </Link>
             </Button>
           </Flex>
