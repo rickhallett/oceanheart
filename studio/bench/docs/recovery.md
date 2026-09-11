@@ -13,9 +13,9 @@ Archives include only:
 - `jobs.sqlite`, normalized so saved Pi session paths are portable;
 - `<clientId>/` Pi session state;
 - `configurations/<clientId>/` Clara artifacts, releases, rollbacks and active pointer; and
-- `application-releases/<clientId>/` when that separately implemented release controller is present.
+- `application-releases/<clientId>/` controller state and receipts when present. Immutable application payloads are not recovery state and must be rebuilt or recovered separately from their exact source/digest.
 
-Locks, temporary files, WAL sidecars and supervisor logs are excluded. Each included file has a size and SHA-256 digest; the manifest binds the format version, client, Pi version, state schema, database counts and active configuration. Restore authenticates and validates the complete archive in a private temporary directory, rebases session paths, and creates only a previously absent destination. Corrupt, wrong-client, incompatible or existing-state targets fail closed.
+Locks, temporary files, WAL sidecars and supervisor logs are excluded. Each included file has a size and SHA-256 digest; the manifest binds the format version, client, Pi version, state schema, database counts and active configuration. If application release state exists, backup verifies the referenced immutable artifact and records its client, source SHA, Studio tree, digest, version, runtime, data schema and target for both active and prior releases. Restore authenticates and validates the complete archive in a private temporary directory, rebases session paths, and creates only a previously absent destination. Corrupt, wrong-client, incompatible or existing-state targets fail closed.
 
 ## Operator commands
 
@@ -29,9 +29,10 @@ node scripts/recovery/create-backup.ts \
 
 node scripts/recovery/restore-backup.ts \
   c0001 /private/off-vm/c0001.ohbackup \
-  /var/lib/studio-pi-runtime/c0001-restored /private/keys/c0001-recovery.key
+  /var/lib/studio-pi-runtime/c0001-restored /private/keys/c0001-recovery.key \
+  --application-schema synthetic-v1 --data-target c0001-private-state
 ```
 
-Keep the source task stopped for the full filesystem-consistency boundary when possible. The online SQLite backup remains safe with a concurrent database writer, but arbitrary application code that ignores the activation locks can still change non-database files and make the operation fail. A successful restore is not permission to start services: validate the returned client, source/config/application release digests and intended backend/identity target first.
+Keep the source task stopped for the full filesystem-consistency boundary when possible. The online SQLite backup remains safe with a concurrent database writer, but arbitrary application code that ignores the activation locks can still change non-database files and make the operation fail. A successful restore is not permission to start services: process IDs and absolute artifact paths in an archived HE-10 pointer describe the former host. Rebuild or recover the exact immutable payload, then explicitly activate it against the validated client/schema/data target. Never start the restored controller state as if it were a live process record.
 
 No Studio application database migration is involved. This packet does not back up a managed backend, identity-provider configuration or external provider state.

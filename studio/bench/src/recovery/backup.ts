@@ -33,6 +33,12 @@ import {
 import { backup as sqliteBackup, DatabaseSync } from "node:sqlite";
 
 import { ClaraConfigurationStore } from "../adaptation/release.ts";
+import { applicationReleaseId, verifyArtifact } from "../release/artifact.ts";
+import type {
+  ApplicationArtifactManifest,
+  ApplicationReleaseState,
+  RunningApplication,
+} from "../release/types.ts";
 
 const ARCHIVE_MAGIC = Buffer.from("OHBKP001", "ascii");
 const ARCHIVE_IV_BYTES = 12;
@@ -71,6 +77,23 @@ export type BackupConfigurationReceipt = {
   generation: number;
 };
 
+export type BackupApplicationRelease = {
+  releaseId: string;
+  sourceSha: string;
+  studioTreeSha: string;
+  artifactDigest: string;
+  version: string;
+  runtime: ApplicationArtifactManifest["runtime"];
+  compatibility: ApplicationArtifactManifest["compatibility"];
+};
+
+export type BackupApplicationReleaseReceipt = {
+  contentDigest: string;
+  generation: number;
+  active: BackupApplicationRelease | null;
+  previous: BackupApplicationRelease | null;
+};
+
 export type BackupManifest = {
   schemaVersion: 1;
   format: "oceanheart-studio-state";
@@ -82,7 +105,7 @@ export type BackupManifest = {
   contentDigest: string;
   database: BackupDatabaseReceipt;
   configuration: BackupConfigurationReceipt | null;
-  applicationReleaseState: { contentDigest: string } | null;
+  applicationReleaseState: BackupApplicationReleaseReceipt | null;
   files: FileEntry[];
 };
 
@@ -129,7 +152,11 @@ type RestoreBackupInput = {
   archivePath: string;
   destinationStateRoot: string;
   key: Uint8Array;
-  compatibility?: { piVersion: string; stateSchemaVersion: number };
+  compatibility?: {
+    piVersion: string;
+    stateSchemaVersion: number;
+    application?: { schemaVersion: string; dataTarget: string };
+  };
   now?: () => string;
 };
 
@@ -318,7 +345,7 @@ async function withBackupLocks<T>(stateRoot: string, clientId: string, operation
   const paths = [
     join(stateRoot, ".he12-backup.lock"),
     join(stateRoot, "configurations", clientId, "activation.lock"),
-    join(stateRoot, "application-releases", clientId, "activation.lock"),
+    join(stateRoot, "application-releases", clientId, "release.lock"),
   ];
   const acquired: Array<{ path: string; handle: Awaited<ReturnType<typeof open>> }> = [];
   try {
@@ -473,10 +500,106 @@ function fileDigest(files: Array<Pick<FileEntry, "path" | "size" | "sha256">>) {
   return `sha256:${hash.digest("hex")}`;
 }
 
-function applicationReleaseState(files: ArchiveFile[], clientId: string) {
+function archivedApplicationState(files: ArchiveFile[], clientId: string) {
   const prefix = `application-releases/${clientId}/`;
   const selected = files.filter((file) => file.path.startsWith(prefix));
-  return selected.length ? { contentDigest: fileDigest(selected) } : null;
+  if (!selected.length) return null;
+  const active = selected.find((file) => file.path === `${prefix}active.json`);
+  if (!active) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  try {
+    return {
+      contentDigest: fileDigest(selected),
+      state: JSON.parse(Buffer.from(active.contentBase64, "base64").toString("utf8")) as ApplicationReleaseState,
+    };
+  } catch {
+    throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  }
+}
+
+function validateRunningApplication(
+  application: RunningApplication | null,
+  clientId: string,
+  expected: BackupApplicationRelease | null,
+) {
+  if (application === null || expected === null) {
+    if (application !== expected) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+    return;
+  }
+  if (
+    typeof application.manifestPath !== "string" ||
+    application.releaseId !== expected.releaseId ||
+    application.sourceSha !== expected.sourceSha ||
+    application.artifactDigest !== expected.artifactDigest ||
+    application.version !== expected.version ||
+    JSON.stringify(application.compatibility) !== JSON.stringify(expected.compatibility)
+  ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  validateClientId(clientId);
+}
+
+function validateArchivedApplicationState(
+  files: ArchiveFile[],
+  clientId: string,
+  expected: BackupApplicationReleaseReceipt | null,
+) {
+  const archived = archivedApplicationState(files, clientId);
+  if (archived === null || expected === null) {
+    if (archived !== expected) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+    return;
+  }
+  if (
+    archived.contentDigest !== expected.contentDigest ||
+    archived.state.schemaVersion !== 1 ||
+    archived.state.clientId !== clientId ||
+    !Number.isSafeInteger(archived.state.generation) ||
+    archived.state.generation !== expected.generation
+  ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  validateRunningApplication(archived.state.active, clientId, expected.active);
+  validateRunningApplication(archived.state.previous, clientId, expected.previous);
+}
+
+async function describeApplication(
+  application: RunningApplication | null,
+  clientId: string,
+): Promise<BackupApplicationRelease | null> {
+  if (!application) return null;
+  const { manifest } = await verifyArtifact(application.manifestPath);
+  if (
+    manifest.clientId !== clientId ||
+    application.releaseId !== applicationReleaseId(manifest) ||
+    application.sourceSha !== manifest.sourceSha ||
+    application.artifactDigest !== manifest.artifactDigest ||
+    application.version !== manifest.version ||
+    JSON.stringify(application.compatibility) !== JSON.stringify(manifest.compatibility)
+  ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  return {
+    releaseId: application.releaseId,
+    sourceSha: manifest.sourceSha,
+    studioTreeSha: manifest.studioTreeSha,
+    artifactDigest: manifest.artifactDigest,
+    version: manifest.version,
+    runtime: manifest.runtime,
+    compatibility: manifest.compatibility,
+  };
+}
+
+async function applicationReleaseState(
+  files: ArchiveFile[],
+  clientId: string,
+): Promise<BackupApplicationReleaseReceipt | null> {
+  const archived = archivedApplicationState(files, clientId);
+  if (!archived) return null;
+  if (
+    archived.state.schemaVersion !== 1 ||
+    archived.state.clientId !== clientId ||
+    !Number.isSafeInteger(archived.state.generation) ||
+    archived.state.generation < 0
+  ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  return {
+    contentDigest: archived.contentDigest,
+    generation: archived.state.generation,
+    active: await describeApplication(archived.state.active, clientId),
+    previous: await describeApplication(archived.state.previous, clientId),
+  };
 }
 
 function encryptEnvelope(envelope: BackupEnvelope, key: Buffer) {
@@ -595,18 +718,37 @@ function validateEnvelope(envelope: BackupEnvelope, expectedClientId: string) {
       manifest.configuration.generation < 1
     )
   ) throw new Error("BACKUP_CONFIGURATION_INVALID");
-  if (
-    manifest.applicationReleaseState !== null &&
-    !/^sha256:[0-9a-f]{64}$/.test(manifest.applicationReleaseState.contentDigest)
-  ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+  if (manifest.applicationReleaseState !== null) {
+    const application = manifest.applicationReleaseState;
+    if (
+      !/^sha256:[0-9a-f]{64}$/.test(application.contentDigest) ||
+      !Number.isSafeInteger(application.generation) ||
+      application.generation < 0
+    ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+    for (const release of [application.active, application.previous]) {
+      if (release === null) continue;
+      if (
+        !/^[0-9a-f]{64}$/.test(release.releaseId) ||
+        !/^[0-9a-f]{40}$/.test(release.sourceSha) ||
+        !/^[0-9a-f]{40}$/.test(release.studioTreeSha) ||
+        !/^sha256:[0-9a-f]{64}$/.test(release.artifactDigest) ||
+        typeof release.version !== "string" ||
+        typeof release.runtime?.nodeVersion !== "string" ||
+        typeof release.runtime?.nextVersion !== "string" ||
+        typeof release.compatibility?.schemaVersion !== "string" ||
+        typeof release.compatibility?.dataTarget !== "string"
+      ) throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
+    }
+  }
   const expectedBackupId = sha256(
     `${manifest.clientId}:${manifest.createdAt}:${manifest.piVersion}:${manifest.stateSchemaVersion}:${manifest.contentDigest}`,
   );
   if (expectedBackupId !== manifest.backupId) throw new Error("BACKUP_MANIFEST_INVALID");
-  const appState = applicationReleaseState(envelope.files, expectedClientId);
-  if (JSON.stringify(appState) !== JSON.stringify(manifest.applicationReleaseState)) {
-    throw new Error("BACKUP_APPLICATION_RELEASE_INVALID");
-  }
+  validateArchivedApplicationState(
+    envelope.files,
+    expectedClientId,
+    manifest.applicationReleaseState,
+  );
   return manifest;
 }
 
@@ -738,6 +880,7 @@ export async function createEncryptedBackup(input: CreateBackupInput): Promise<B
         ...databaseValidation.receipt,
         sha256: databaseEntry.sha256,
       };
+      const releaseState = await applicationReleaseState(files, input.clientId);
       const manifest: BackupManifest = {
         schemaVersion: 1,
         format: "oceanheart-studio-state",
@@ -749,7 +892,7 @@ export async function createEncryptedBackup(input: CreateBackupInput): Promise<B
         contentDigest,
         database,
         configuration,
-        applicationReleaseState: applicationReleaseState(files, input.clientId),
+        applicationReleaseState: releaseState,
         files: manifestFiles,
       };
       const encrypted = encryptEnvelope({ manifest, files }, key);
@@ -810,6 +953,14 @@ export async function restoreEncryptedBackup(input: RestoreBackupInput): Promise
     compatibility.piVersion !== manifest.piVersion ||
     compatibility.stateSchemaVersion !== manifest.stateSchemaVersion
   ) throw new Error("BACKUP_INCOMPATIBLE");
+  if (compatibility.application) {
+    const active = manifest.applicationReleaseState?.active;
+    if (
+      !active ||
+      active.compatibility.schemaVersion !== compatibility.application.schemaVersion ||
+      active.compatibility.dataTarget !== compatibility.application.dataTarget
+    ) throw new Error("BACKUP_APPLICATION_INCOMPATIBLE");
+  }
 
   const temporary = await mkdtemp(join(parent, `.he12-restore-${input.clientId}-`));
   await chmod(temporary, 0o700);

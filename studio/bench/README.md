@@ -27,6 +27,8 @@ State defaults to `~/.local/state/oceanheart-bench`. Use `--state-dir` to select
 
 Application artifact activation is a separate operator lane. `scripts/app-release.ts` packages a source-verified standalone Studio build, health-checks a candidate on private loopback ports, then atomically changes the stable loopback router. Its state never changes Clara workflow configuration or SQLite data. See `docs/application-release.md`.
 
+Encrypted, client-bound off-VM backup and clean restore use the standalone scripts under `scripts/recovery/`. The archive includes the SQLite effect ledger, Pi sessions, Clara activation state and application-release metadata, but not credentials or immutable application payloads. See `docs/recovery.md`.
+
 ## Template and resource planning
 
 ```sh
@@ -48,4 +50,4 @@ npm test
 
 Read [implementation status](docs/IMPLEMENTATION-STATUS.md) for source provenance and the overall evidence boundary, and [runtime notes](docs/runtime.md) for adapter capabilities and limits. The full environment requirements remain in [the specification](../docs/HARNESS-ENVIRONMENT-SPEC.md).
 
-The synthetic transport exercises the real Pi session and tool path. It does not measure an inference provider's quality, cost or availability. Hosted client isolation, actual credential rotation, provider provisioning, backup restoration and production release require their own evidence. The initial bench does not change the Studio UI or existing Convex schema/functions.
+The synthetic transport exercises the real Pi session and tool path. It does not measure an inference provider's quality, cost or availability. Hosted client isolation, actual credential rotation, provider provisioning and production release require their own evidence. The bench does not change the Studio UI or existing Convex schema/functions.

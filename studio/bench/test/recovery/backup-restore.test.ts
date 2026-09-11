@@ -2,9 +2,11 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes } from "node:crypto";
 import {
   chmod,
+  lstat,
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   stat,
   writeFile,
@@ -20,6 +22,12 @@ import {
 } from "../../src/adaptation/configuration.ts";
 import type { AdaptationEvaluation } from "../../src/adaptation/evaluate.ts";
 import { ClaraConfigurationStore } from "../../src/adaptation/release.ts";
+import { applicationReleaseId, packageStudioApplication } from "../../src/release/artifact.ts";
+import {
+  LocalApplicationReleaseController,
+  type ApplicationRuntime,
+} from "../../src/release/controller.ts";
+import type { ApplicationReleaseState, RunningApplication } from "../../src/release/types.ts";
 import {
   createEncryptedBackup,
   readRecoveryKey,
@@ -52,6 +60,22 @@ const request = {
   configurationVersion: "clara-2026-10-01-rate-change",
   input: fixture,
 };
+
+async function makeWritable(path: string) {
+  let metadata;
+  try {
+    metadata = await lstat(path);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+    throw error;
+  }
+  if (!metadata.isDirectory()) {
+    await chmod(path, 0o600);
+    return;
+  }
+  await chmod(path, 0o700);
+  for (const entry of await readdir(path)) await makeWritable(join(path, entry));
+}
 
 async function activateConfiguration(root: string) {
   const baseline = baselineArtifact(
@@ -103,9 +127,78 @@ async function activateConfiguration(root: string) {
   return { initial, activated };
 }
 
+async function activateApplication(root: string) {
+  const build = join(root, "synthetic-studio-build");
+  await mkdir(join(build, ".next", "standalone"), { recursive: true });
+  await mkdir(join(build, ".next", "static"), { recursive: true });
+  await mkdir(join(build, "public"));
+  await writeFile(join(build, ".next", "standalone", "server.js"), "// synthetic\n");
+  await writeFile(join(build, ".next", "static", "marker.js"), "release-1");
+  await writeFile(join(build, "public", "marker.txt"), "release-1");
+  await writeFile(join(build, "package.json"), JSON.stringify({ dependencies: { next: "16.3.4" } }));
+  const artifact = await packageStudioApplication({
+    builtStudioRoot: build,
+    destinationRoot: join(root, "synthetic-studio-artifact"),
+    clientId,
+    sourceSha: "a".repeat(40),
+    studioTreeSha: "b".repeat(40),
+    version: "1.0.0",
+    compatibility: {
+      schemaVersion: "synthetic-v1",
+      dataTarget: "c0001-private-state",
+      change: "none",
+    },
+    health: { path: "/health", status: 200, contains: "release-1" },
+  });
+  const stateRoot = join(root, "application-releases", clientId);
+  const statePath = join(stateRoot, "active.json");
+  let pid = 10_000;
+  const runtime: ApplicationRuntime = {
+    startRouter: async ({ port, now }) => ({
+      pid: pid++, port, ownerToken: "r".repeat(48), startedAt: (now ?? (() => "now"))(),
+    }),
+    startApplication: async ({ manifestPath, publicPort, applicationPort, releaseId, now }) => ({
+      releaseId,
+      manifestPath,
+      artifactDigest: artifact.manifest.artifactDigest,
+      sourceSha: artifact.manifest.sourceSha,
+      version: artifact.manifest.version,
+      compatibility: artifact.manifest.compatibility,
+      pid: pid++,
+      publicPort,
+      applicationPort,
+      ownerToken: "a".repeat(48),
+      startedAt: (now ?? (() => "now"))(),
+    } satisfies RunningApplication),
+    stopApplication: async () => true,
+    stopRouter: async () => true,
+    inspectServedRelease: async () => {
+      const state = JSON.parse(await readFile(statePath, "utf8")) as ApplicationReleaseState;
+      assert.ok(state.active);
+      return {
+        releaseId: state.active.releaseId,
+        sourceSha: state.active.sourceSha,
+        artifactDigest: state.active.artifactDigest,
+        dataTarget: state.active.compatibility.dataTarget,
+      };
+    },
+  };
+  const controller = new LocalApplicationReleaseController({ stateRoot, clientId, runtime });
+  await controller.activate({
+    manifestPath: artifact.manifestPath,
+    routerPort: 44_000,
+    publicPort: 44_001,
+    applicationPort: 44_002,
+  });
+  return artifact.manifest;
+}
+
 test("online SQLite backup restores Pi/config state and replay cannot duplicate a committed effect", async (t) => {
   const workspace = await mkdtemp(join(tmpdir(), "studio-he12-"));
-  t.after(() => rm(workspace, { recursive: true, force: true }));
+  t.after(async () => {
+    await makeWritable(join(workspace, "source", "synthetic-studio-artifact", "payload"));
+    await rm(workspace, { recursive: true, force: true });
+  });
   const source = join(workspace, "source");
   const offVm = join(workspace, "off-vm");
   const restored = join(workspace, "clean-restore");
@@ -114,6 +207,7 @@ test("online SQLite backup restores Pi/config state and replay cannot duplicate 
   const key = randomBytes(32);
 
   const configuration = await activateConfiguration(source);
+  const application = await activateApplication(source);
   const runtime = new PiWorkflowRuntime({ root: source });
   const original = await runtime.startRun(request);
   assert.equal(original.status, "succeeded");
@@ -141,6 +235,15 @@ test("online SQLite backup restores Pi/config state and replay cannot duplicate 
   assert.equal(backup.database.integrityCheck, "ok");
   assert.equal(backup.database.effects, 1);
   assert.equal(backup.database.reservations, 1);
+  assert.deepEqual(backup.applicationReleaseState?.active, {
+    releaseId: applicationReleaseId(application),
+    sourceSha: application.sourceSha,
+    studioTreeSha: application.studioTreeSha,
+    artifactDigest: application.artifactDigest,
+    version: application.version,
+    runtime: application.runtime,
+    compatibility: application.compatibility,
+  });
   assert.equal((await stat(archivePath)).mode & 0o777, 0o600);
   assert.equal((await readFile(archivePath)).includes(Buffer.from(clientId)), false);
 
@@ -149,9 +252,23 @@ test("online SQLite backup restores Pi/config state and replay cannot duplicate 
     archivePath,
     destinationStateRoot: restored,
     key,
+    compatibility: {
+      piVersion: "0.85.1",
+      stateSchemaVersion: 1,
+      application: {
+        schemaVersion: application.compatibility.schemaVersion,
+        dataTarget: application.compatibility.dataTarget,
+      },
+    },
   });
   assert.equal(receipt.backupId, backup.backupId);
   assert.equal(receipt.configuration?.activeReleaseId, configuration.activated.active.activeReleaseId);
+  assert.equal(receipt.applicationReleaseState?.active?.sourceSha, application.sourceSha);
+  const restoredApplication = JSON.parse(
+    await readFile(join(restored, "application-releases", clientId, "active.json"), "utf8"),
+  ) as ApplicationReleaseState;
+  assert.equal(restoredApplication.clientId, clientId);
+  assert.equal(restoredApplication.active?.artifactDigest, application.artifactDigest);
 
   let providerCalls = 0;
   const recovered = new PiWorkflowRuntime({
@@ -215,6 +332,20 @@ test("restore rejects wrong-client, corrupt, incompatible and existing destinati
       compatibility: { piVersion: "0.84.0", stateSchemaVersion: 1 },
     }),
     /BACKUP_INCOMPATIBLE/,
+  );
+  await assert.rejects(
+    restoreEncryptedBackup({
+      clientId,
+      archivePath,
+      destinationStateRoot: join(workspace, "application-incompatible"),
+      key,
+      compatibility: {
+        piVersion: "0.85.1",
+        stateSchemaVersion: 1,
+        application: { schemaVersion: "synthetic-v1", dataTarget: "other-client-state" },
+      },
+    }),
+    /BACKUP_APPLICATION_INCOMPATIBLE/,
   );
 
   const corrupted = join(offVm, "corrupted.ohbackup");
