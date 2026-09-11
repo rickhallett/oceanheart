@@ -62,6 +62,7 @@ const identity = new WorkOsJwtIdentityVerifier({
   audience: binding.identity.audience,
   issuer: binding.identity.issuer,
   jwksUrl: `https://api.workos.com/sso/jwks/${binding.identity.audience}`,
+  diagnostic: (code) => process.stderr.write(`${JSON.stringify({ event: "workos_verification_denied", code })}\n`),
 });
 const authenticated = new AuthenticatedClaraRuntime({
   policy: {

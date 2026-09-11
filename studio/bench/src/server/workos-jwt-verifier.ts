@@ -68,6 +68,17 @@ export class HttpsJwksNetworkAdapter implements JwksNetworkAdapter {
 }
 
 type WorkOsClaims = JWTPayload & { sid?: unknown; client_id?: unknown };
+export type WorkOsVerificationCode =
+  | "POLICY_MISMATCH"
+  | "AUTHORIZATION_INVALID"
+  | "TOKEN_HEADER_INVALID"
+  | "TOKEN_VERIFICATION_FAILED"
+  | "SUBJECT_INVALID"
+  | "SESSION_ID_INVALID"
+  | "CLIENT_ID_MISMATCH"
+  | "AUDIENCE_MISMATCH"
+  | "EXPIRY_INVALID"
+  | "SESSION_INACTIVE";
 
 const environmentId = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,255}$/;
 const audience = /^client_[A-Za-z0-9]{8,127}$/;
@@ -126,6 +137,7 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
   private readonly sessionStatus?: WorkOsSessionStatusAdapter;
   private readonly timeoutMs: number;
   private readonly cacheTtlMs: number;
+  private readonly diagnostic?: (code: WorkOsVerificationCode) => void;
   private cache?: { jwks: JSONWebKeySet; expiresAt: number };
   private loading?: Promise<JSONWebKeySet>;
 
@@ -138,6 +150,7 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     sessionStatus?: WorkOsSessionStatusAdapter;
     timeoutMs?: number;
     cacheTtlMs?: number;
+    diagnostic?: (code: WorkOsVerificationCode) => void;
   }) {
     if (!environmentId.test(input.environmentId)) throw new Error("WORKOS_ENVIRONMENT_INVALID");
     if (!audience.test(input.audience)) throw new Error("WORKOS_AUDIENCE_INVALID");
@@ -152,6 +165,7 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     this.sessionStatus = input.sessionStatus;
     this.timeoutMs = input.timeoutMs ?? 3_000;
     this.cacheTtlMs = input.cacheTtlMs ?? 5 * 60_000;
+    this.diagnostic = input.diagnostic;
     if (!Number.isSafeInteger(this.timeoutMs) || this.timeoutMs < 50 || this.timeoutMs > 10_000)
       throw new Error("WORKOS_TIMEOUT_INVALID");
     if (!Number.isSafeInteger(this.cacheTtlMs) || this.cacheTtlMs < 1_000 || this.cacheTtlMs > 60 * 60_000)
@@ -174,8 +188,10 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
 
   private async verifyJwt(token: string) {
     const header = decodeProtectedHeader(token);
-    if (header.alg !== "RS256" || !keyId.test(String(header.kid ?? "")) || (header.typ !== undefined && header.typ !== "JWT"))
-      throw new Error("WORKOS_TOKEN_HEADER_INVALID");
+    if (
+      header.alg !== "RS256" || !keyId.test(String(header.kid ?? "")) ||
+      (header.typ !== undefined && header.typ !== "JWT" && header.typ !== "at+jwt")
+    ) throw new Error("WORKOS_TOKEN_HEADER_INVALID");
     for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
         return await jwtVerify<WorkOsClaims>(token, createLocalJWKSet(await this.keys(attempt === 1)), {
@@ -191,40 +207,59 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     throw new Error("WORKOS_TOKEN_INVALID");
   }
 
+  private diagnosticCode(error: unknown): WorkOsVerificationCode {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "WORKOS_POLICY_MISMATCH") return "POLICY_MISMATCH";
+    if (message === "WORKOS_AUTHORIZATION_INVALID") return "AUTHORIZATION_INVALID";
+    if (message === "WORKOS_TOKEN_HEADER_INVALID") return "TOKEN_HEADER_INVALID";
+    if (message === "WORKOS_TOKEN_SUBJECT_INVALID") return "SUBJECT_INVALID";
+    if (message === "WORKOS_TOKEN_SESSION_INVALID") return "SESSION_ID_INVALID";
+    if (message === "WORKOS_TOKEN_CLIENT_INVALID") return "CLIENT_ID_MISMATCH";
+    if (message === "WORKOS_TOKEN_AUDIENCE_INVALID") return "AUDIENCE_MISMATCH";
+    if (message === "WORKOS_TOKEN_EXPIRY_INVALID") return "EXPIRY_INVALID";
+    if (message === "WORKOS_SESSION_INACTIVE") return "SESSION_INACTIVE";
+    return "TOKEN_VERIFICATION_FAILED";
+  }
+
   async verify(input: {
     authorization: string | undefined;
     environmentId: string;
     audience: string;
     issuer: string;
   }): Promise<VerifiedPrincipal> {
-    if (
-      input.environmentId !== this.environmentId || input.audience !== this.audience ||
-      input.issuer !== this.issuer || !input.authorization || input.authorization.length > 16 * 1024
-    ) throw new Error("WORKOS_POLICY_MISMATCH");
-    const match = bearer.exec(input.authorization);
-    if (!match) throw new Error("WORKOS_AUTHORIZATION_INVALID");
-    const { payload } = await this.verifyJwt(match[1]!);
-    if (
-      !subject.test(String(payload.sub ?? "")) || !subject.test(String(payload.sid ?? "")) ||
-      payload.client_id !== this.audience ||
-      (payload.aud !== undefined && payload.aud !== this.audience) ||
-      !Number.isSafeInteger(payload.exp)
-    ) throw new Error("WORKOS_TOKEN_CLAIMS_INVALID");
-    if (this.sessionStatus) {
-      const active = await bounded(this.timeoutMs, (signal) => this.sessionStatus!.isActive({
-        sessionId: String(payload.sid),
+    try {
+      if (
+        input.environmentId !== this.environmentId || input.audience !== this.audience ||
+        input.issuer !== this.issuer || !input.authorization || input.authorization.length > 16 * 1024
+      ) throw new Error("WORKOS_POLICY_MISMATCH");
+      const match = bearer.exec(input.authorization);
+      if (!match) throw new Error("WORKOS_AUTHORIZATION_INVALID");
+      const { payload } = await this.verifyJwt(match[1]!);
+      if (!subject.test(String(payload.sub ?? ""))) throw new Error("WORKOS_TOKEN_SUBJECT_INVALID");
+      if (!subject.test(String(payload.sid ?? ""))) throw new Error("WORKOS_TOKEN_SESSION_INVALID");
+      if (payload.client_id !== this.audience) throw new Error("WORKOS_TOKEN_CLIENT_INVALID");
+      if (payload.aud !== undefined && payload.aud !== this.audience)
+        throw new Error("WORKOS_TOKEN_AUDIENCE_INVALID");
+      if (!Number.isSafeInteger(payload.exp)) throw new Error("WORKOS_TOKEN_EXPIRY_INVALID");
+      if (this.sessionStatus) {
+        const active = await bounded(this.timeoutMs, (signal) => this.sessionStatus!.isActive({
+          sessionId: String(payload.sid),
+          subject: String(payload.sub),
+          environmentId: this.environmentId,
+          signal,
+        }));
+        if (!active) throw new Error("WORKOS_SESSION_INACTIVE");
+      }
+      return {
+        provider: "workos",
         subject: String(payload.sub),
         environmentId: this.environmentId,
-        signal,
-      }));
-      if (!active) throw new Error("WORKOS_SESSION_INACTIVE");
+        audience: this.audience,
+        issuer: this.issuer,
+      };
+    } catch (error) {
+      try { this.diagnostic?.(this.diagnosticCode(error)); } catch { /* diagnostic sinks cannot alter auth */ }
+      throw error;
     }
-    return {
-      provider: "workos",
-      subject: String(payload.sub),
-      environmentId: this.environmentId,
-      audience: this.audience,
-      issuer: this.issuer,
-    };
   }
 }

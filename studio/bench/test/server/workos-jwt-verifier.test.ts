@@ -60,6 +60,7 @@ async function token(input: {
   issuer?: string;
   clientId?: string;
   audienceClaim?: string;
+  tokenType?: string;
   expiresAt?: number;
   algorithm?: "RS256" | "HS256";
 }) {
@@ -68,7 +69,7 @@ async function token(input: {
     sid: input.sessionId ?? "session_synthetic_a",
     client_id: input.clientId ?? audienceA,
   })
-    .setProtectedHeader({ alg: input.algorithm ?? "RS256", kid: input.kid, typ: "JWT" })
+    .setProtectedHeader({ alg: input.algorithm ?? "RS256", kid: input.kid, typ: input.tokenType ?? "at+jwt" })
     .setSubject(input.subject ?? "user_synthetic_a")
     .setIssuer(input.issuer ?? "https://api.workos.com")
     .setIssuedAt(now)
@@ -193,7 +194,17 @@ test("jose verification rejects claim, expiry, algorithm and signature confusion
   const endpoint = await localJwksServer(current);
   t.after(() => new Promise<void>((resolve) => endpoint.server.close(() => resolve())));
   const network = new LoopbackJwksNetwork(endpoint.url);
-  const identity = verifier(network);
+  const diagnostics: string[] = [];
+  const identity = new WorkOsJwtIdentityVerifier({
+    environmentId: environmentA,
+    audience: audienceA,
+    issuer,
+    jwksUrl: `https://api.workos.com/sso/jwks/${audienceA}`,
+    network,
+    diagnostic: (code) => diagnostics.push(code),
+    timeoutMs: 500,
+    cacheTtlMs: 60_000,
+  });
   const expected = { environmentId: environmentA, audience: audienceA, issuer };
   const verifyToken = (value: string, overrides: Partial<typeof expected> = {}) => identity.verify({ authorization: `Bearer ${value}`, ...expected, ...overrides });
   const now = Math.floor(Date.now() / 1000);
@@ -201,6 +212,7 @@ test("jose verification rejects claim, expiry, algorithm and signature confusion
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", issuer: "https://wrong.invalid/" })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", clientId: audienceB })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", audienceClaim: audienceB })));
+  await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", tokenType: "unsupported+jwt" })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1", expiresAt: now - 30 })));
   await assert.rejects(verifyToken(await token({ key: new TextEncoder().encode("test-only-symmetric-key-material-32"), kid: "workos-key-1", algorithm: "HS256" })));
   await assert.rejects(verifyToken(await token({ key: first.privateKey, kid: "workos-key-1" }), { environmentId: environmentB }));
@@ -210,6 +222,9 @@ test("jose verification rejects claim, expiry, algorithm and signature confusion
   assert.equal((await verifyToken(rotated)).subject, "user_synthetic_a");
   await assert.rejects(verifyToken(await token({ key: impostor.privateKey, kid: "workos-key-2" })));
   assert.equal(network.calls, 2);
+  assert.ok(diagnostics.includes("CLIENT_ID_MISMATCH"));
+  assert.ok(diagnostics.includes("AUDIENCE_MISMATCH"));
+  assert.ok(diagnostics.includes("TOKEN_HEADER_INVALID"));
 });
 
 test("JWKS and session-status stalls fail closed within the configured bound", async () => {
