@@ -152,6 +152,7 @@ export class ConvexManagementTransport {
 
   async createMissing(): Promise<void> {
     let observation = await this.inspect();
+    let externalEffectPresent = observation.state === "project-only" || observation.state === "owned";
     if (observation.state === "foreign") throw new BindingConflictError("Convex target conflicts");
     if (observation.state === "unknown") throw new BindingEffectUncertainError("Convex target inspection failed");
     if (observation.state === "absent") {
@@ -159,16 +160,23 @@ export class ConvexManagementTransport {
         projectName: this.target.convex.projectName,
         deploymentType: null,
       });
+      externalEffectPresent = true;
       observation = await this.inspect();
       if (observation.state !== "project-only" && observation.state !== "owned")
         throw new BindingEffectUncertainError("Convex project was not confirmed");
     }
     if (observation.state === "project-only") {
-      await this.request("POST", `/projects/${observation.project.id}/create_deployment`, {
-        type: this.target.convex.deploymentType,
-        reference: this.target.convex.deploymentReference,
-        isDefault: false,
-      });
+      try {
+        await this.request("POST", `/projects/${observation.project.id}/create_deployment`, {
+          type: this.target.convex.deploymentType,
+          reference: this.target.convex.deploymentReference,
+          isDefault: false,
+        });
+      } catch (error) {
+        if (externalEffectPresent && error instanceof BindingCreateRejectedError)
+          throw new BindingEffectUncertainError("Convex partial target requires reconciliation");
+        throw error;
+      }
       observation = await this.inspect();
     }
     if (observation.state !== "owned")

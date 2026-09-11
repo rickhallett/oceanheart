@@ -62,6 +62,7 @@ class ProviderFixture {
   workosCreates = 0;
   loseProjectResponse = false;
   loseWorkosResponse = false;
+  rejectDeploymentOnce = false;
 
   readonly runner: SafeCommandRunner = {
     run: async (_executable, args) => {
@@ -126,6 +127,10 @@ class ProviderFixture {
       return Response.json(this.deployment ? [this.deployment] : []);
     if (init?.method === "POST" && url.pathname === "/v1/projects/501/create_deployment") {
       this.convexDeploymentCreates += 1;
+      if (this.rejectDeploymentOnce) {
+        this.rejectDeploymentOnce = false;
+        return Response.json({ code: "rejected", message: secretCanary }, { status: 422 });
+      }
       this.deployment = {
         id: 601,
         name: "synthetic-runtime-601",
@@ -228,6 +233,21 @@ test("lost WorkOS create response is reconciled without duplicate environment or
   assert.equal((await fixture.controller.ensure(fixture.input)).status, "ready");
   assert.equal(state.workosCreates, 1);
   assert.doesNotMatch(JSON.stringify(await fixture.registry.read("c0001")), new RegExp(secretCanary));
+});
+
+test("a definite deployment rejection after project creation remains partial and repairable", async (t) => {
+  const state = new ProviderFixture();
+  state.rejectDeploymentOnce = true;
+  const fixture = await controllerFixture(state);
+  t.after(() => rm(fixture.root, { recursive: true, force: true }));
+  await assert.rejects(fixture.controller.ensure(fixture.input), /uncertain/);
+  assert.equal((await fixture.registry.read("c0001"))?.state, "effect_uncertain");
+  assert.equal(state.convexProjectCreates, 1);
+  assert.equal((await fixture.controller.ensure(fixture.input)).status, "ready");
+  assert.deepEqual(
+    [state.convexProjectCreates, state.convexDeploymentCreates, state.workosCreates],
+    [1, 2, 1],
+  );
 });
 
 test("provider inspection refuses shared production or unregistered targets before writes", async () => {
