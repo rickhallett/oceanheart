@@ -72,6 +72,11 @@ export type WorkOsVerificationCode =
   | "POLICY_MISMATCH"
   | "AUTHORIZATION_INVALID"
   | "TOKEN_HEADER_INVALID"
+  | "ISSUER_MISMATCH"
+  | "SIGNING_KEY_NOT_FOUND"
+  | "SIGNATURE_INVALID"
+  | "TOKEN_EXPIRED"
+  | "JWKS_UNAVAILABLE"
   | "TOKEN_VERIFICATION_FAILED"
   | "SUBJECT_INVALID"
   | "SESSION_ID_INVALID"
@@ -209,9 +214,24 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
 
   private diagnosticCode(error: unknown): WorkOsVerificationCode {
     const message = error instanceof Error ? error.message : "";
+    const joseCode = typeof (error as { code?: unknown })?.code === "string"
+      ? String((error as { code: string }).code)
+      : "";
+    const claim = typeof (error as { claim?: unknown })?.claim === "string"
+      ? String((error as { claim: string }).claim)
+      : "";
     if (message === "WORKOS_POLICY_MISMATCH") return "POLICY_MISMATCH";
     if (message === "WORKOS_AUTHORIZATION_INVALID") return "AUTHORIZATION_INVALID";
     if (message === "WORKOS_TOKEN_HEADER_INVALID") return "TOKEN_HEADER_INVALID";
+    if (joseCode === "ERR_JWT_CLAIM_VALIDATION_FAILED" && claim === "iss") return "ISSUER_MISMATCH";
+    if (joseCode === "ERR_JWKS_NO_MATCHING_KEY" || joseCode === "ERR_JWKS_MULTIPLE_MATCHING_KEYS")
+      return "SIGNING_KEY_NOT_FOUND";
+    if (joseCode === "ERR_JWS_SIGNATURE_VERIFICATION_FAILED") return "SIGNATURE_INVALID";
+    if (joseCode === "ERR_JWT_EXPIRED") return "TOKEN_EXPIRED";
+    if (
+      joseCode === "ERR_JWKS_TIMEOUT" ||
+      ["JWKS_FETCH_FAILED", "JWKS_RESPONSE_TOO_LARGE", "JWKS_RESPONSE_INVALID", "JWKS_INVALID", "VERIFICATION_TIMEOUT"].includes(message)
+    ) return "JWKS_UNAVAILABLE";
     if (message === "WORKOS_TOKEN_SUBJECT_INVALID") return "SUBJECT_INVALID";
     if (message === "WORKOS_TOKEN_SESSION_INVALID") return "SESSION_ID_INVALID";
     if (message === "WORKOS_TOKEN_CLIENT_INVALID") return "CLIENT_ID_MISMATCH";

@@ -225,6 +225,8 @@ test("jose verification rejects claim, expiry, algorithm and signature confusion
   assert.ok(diagnostics.includes("CLIENT_ID_MISMATCH"));
   assert.ok(diagnostics.includes("AUDIENCE_MISMATCH"));
   assert.ok(diagnostics.includes("TOKEN_HEADER_INVALID"));
+  assert.ok(diagnostics.includes("ISSUER_MISMATCH"));
+  assert.ok(diagnostics.includes("SIGNATURE_INVALID"));
 });
 
 test("JWKS and session-status stalls fail closed within the configured bound", async () => {
