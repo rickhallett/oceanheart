@@ -9,7 +9,8 @@
   "scripts": {
     "test": "node --test test/**/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "bench": "node src/cli.ts"
+    "bench": "node src/cli.ts",
+    "app-release": "node scripts/app-release.ts"
   },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "0.85.1",
