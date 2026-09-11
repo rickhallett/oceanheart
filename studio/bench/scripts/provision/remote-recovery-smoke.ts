@@ -73,7 +73,7 @@ async function main() {
   if (!/^c[0-9]{4,}$/.test(clientId ?? "") || !stateRootArgument)
     throw new Error("Usage: remote-recovery-smoke.ts seed|verify <cNNNN> <state-root>");
   const stateRoot = resolve(stateRootArgument);
-  if (stateRoot !== `/var/lib/studio-pi-runtime/${clientId}-recovery-probe`)
+  if (stateRoot !== `/var/lib/studio-pi-runtime/${clientId}`)
     throw new Error("INVALID_STATE_ROOT");
   const result =
     operation === "seed"
