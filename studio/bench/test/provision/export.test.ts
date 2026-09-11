@@ -92,9 +92,10 @@ test("rejects tracked credential paths and recognizable secret material", async 
 
   await rm(join(repo, "studio", "config.txt"));
   await mkdir(join(repo, "studio", "docs"), { recursive: true });
+  const privateKeyHeader = ["-----BEGIN OPENSSH", "PRIVATE KEY-----"].join(" ");
   await writeFile(
     join(repo, "studio", "docs", "operator.md"),
-    "-----BEGIN OPENSSH PRIVATE KEY-----\nsynthetic-but-recognizable\n",
+    `${privateKeyHeader}\nsynthetic-but-recognizable\n`,
   );
   await git(repo, "add", "-A");
   await git(repo, "commit", "-qm", "credential in documentation");

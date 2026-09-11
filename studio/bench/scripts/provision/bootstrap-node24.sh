@@ -22,6 +22,16 @@ NODE_ROOT="/opt/node-v${NODE_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
 umask 027
 
+# exe.dev's clean Ubuntu image can stall on the default HTTP archive route.
+# Keep Canonical's signed repositories but prefer their HTTPS endpoints.
+UBUNTU_SOURCES="/etc/apt/sources.list.d/ubuntu.sources"
+if [ -f "$UBUNTU_SOURCES" ]; then
+  sed -i \
+    -e 's#URIs: http://archive.ubuntu.com/ubuntu/#URIs: https://archive.ubuntu.com/ubuntu/#' \
+    -e 's#URIs: http://security.ubuntu.com/ubuntu/#URIs: https://security.ubuntu.com/ubuntu/#' \
+    "$UBUNTU_SOURCES"
+fi
+
 APT_NETWORK_OPTIONS=(
   -o Acquire::http::Timeout=30
   -o Acquire::https::Timeout=30

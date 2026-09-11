@@ -16,6 +16,8 @@ test("guest bootstrap is valid shell with checksum-pinned Node and distinct user
   assert.match(source, /studio-builder/);
   assert.match(source, /chmod -R a\+rX,go-w "\$NODE_ROOT"/);
   assert.match(source, /runuser -u "\$SERVICE_USER" -- "\$NODE_ROOT\/bin\/node" --version/);
+  assert.match(source, /https:\/\/archive\.ubuntu\.com\/ubuntu\//);
+  assert.match(source, /https:\/\/security\.ubuntu\.com\/ubuntu\//);
   assert.doesNotMatch(source, /--env|secretref|PASSWORD=|TOKEN=|KEY=/);
 });
 
