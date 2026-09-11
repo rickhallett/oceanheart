@@ -16,8 +16,13 @@ const workosAudience = /^client_[A-Za-z0-9]{8,127}$/;
 const secretMaterial =
   /-----BEGIN [A-Z ]+PRIVATE KEY-----|\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]+|\bgh[pousr]_[A-Za-z0-9]+|\bgithub_pat_[A-Za-z0-9_]+|\bwhsec_[A-Za-z0-9]+|\bBearer\s+[A-Za-z0-9._~-]+/;
 
+export function containsBindingSecretMaterial(value: string) {
+  return secretMaterial.test(value);
+}
+
 function exactSecretRef(value: string, expected: string) {
-  if (value !== expected || secretMaterial.test(value)) throw new Error("INVALID_BINDING_CREDENTIAL_REFERENCE");
+  if (value !== expected || containsBindingSecretMaterial(value))
+    throw new Error("INVALID_BINDING_CREDENTIAL_REFERENCE");
 }
 
 function safeHttpsUrl(value: string) {
@@ -31,7 +36,7 @@ function safeHttpsUrl(value: string) {
   if (
     url.protocol !== "https:" || authority.includes("@") || url.port ||
     url.pathname !== "/" || url.search || url.hash ||
-    !/^[a-z0-9-]+\.convex\.cloud$/.test(url.hostname)
+    !/^[a-z0-9-]+(?:\.[a-z0-9-]+)?\.convex\.cloud$/.test(url.hostname)
   ) throw new Error("INVALID_BINDING_BACKEND_URL");
   return url.toString();
 }

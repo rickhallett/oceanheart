@@ -9,7 +9,7 @@ export type BindingReconcileResult =
   | { state: "owned"; binding: ProviderEnvironmentBinding }
   | { state: "absent"; retrySafe: boolean }
   | { state: "foreign" }
-  | { state: "partial" }
+  | { state: "partial"; retrySafe: boolean }
   | { state: "unknown" };
 
 export interface BackendIdentityProvider {
