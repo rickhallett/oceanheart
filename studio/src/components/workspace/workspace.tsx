@@ -123,6 +123,7 @@ export type LiveShell = {
   picker?: ReactNode;
   account?: ReactNode;
   content: ReactNode;
+  focused?: { title: string; navigationLabel: string };
 };
 export function Shell({
   view,
@@ -144,15 +145,20 @@ export function Shell({
   const searchTrigger = useRef<HTMLButtonElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
   const menuClose = useRef<HTMLButtonElement>(null);
+  const availableModules = live?.focused
+    ? modules.filter(([id]) => id === view)
+    : modules;
   const featureCollection = createListCollection({
-    items: modules
+    items: availableModules
       .filter((m) =>
         (m[1] + " " + m[2]).toLowerCase().includes(query.toLowerCase()),
       )
       .map(([value, label, description]) => ({ value, label, description })),
   });
   const Screen = screens[view];
-  const title = modules.find((m) => m[0] === view)!;
+  const title = live?.focused
+    ? ([view, live.focused.title, ""] as const)
+    : modules.find((m) => m[0] === view)!;
   const liveDescriptions: Partial<Record<View, string>> = {
     payments: "Payment actions for your bookings",
     support: "Guidance and a way to get in touch",
@@ -160,13 +166,37 @@ export function Shell({
     portal: "The next step in client self-service",
     shop: "Products and services for your practice",
   };
+  const navigationGroups = live?.focused
+    ? [{ label: "WORKSPACE", ids: [view] }]
+    : [
+        {
+          label: "WORKSPACE",
+          ids: ["today", "inbox", "calendar", "clients", "tasks"],
+        },
+        {
+          label: "MANAGEMENT",
+          ids: [
+            "services",
+            "website",
+            "portal",
+            "knowledge",
+            "assistant",
+            "payments",
+            "shop",
+          ],
+        },
+        {
+          label: "ADMINISTRATION",
+          ids: ["support", "setup", "settings", "roadmap"],
+        },
+      ];
   useEffect(() => {
     setMenu(false);
     setSearch(false);
   }, [view]);
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if (!live?.focused && (e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setSearch((s) => !s);
       }
@@ -177,7 +207,7 @@ export function Shell({
     };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
-  }, []);
+  }, [live?.focused]);
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       document
@@ -208,28 +238,7 @@ export function Shell({
       </div>
       {live?.picker}
       <nav aria-label="Practice navigation">
-        {[
-          {
-            label: "WORKSPACE",
-            ids: ["today", "inbox", "calendar", "clients", "tasks"],
-          },
-          {
-            label: "MANAGEMENT",
-            ids: [
-              "services",
-              "website",
-              "portal",
-              "knowledge",
-              "assistant",
-              "payments",
-              "shop",
-            ],
-          },
-          {
-            label: "ADMINISTRATION",
-            ids: ["support", "setup", "settings", "roadmap"],
-          },
-        ].map((group) => (
+        {navigationGroups.map((group) => (
           <div
             className={`ws-nav-group ${group.label === "WORKSPACE" ? "studio-nav-primary" : group.label === "ADMINISTRATION" ? "studio-nav-secondary" : ""}`}
             key={group.label}
@@ -267,7 +276,10 @@ export function Shell({
                     aria-current={view === id ? "page" : undefined}
                   >
                     <Icon size={17} strokeWidth={1.5} />
-                    <span>{modules.find((m) => m[0] === id)![1]}</span>
+                    <span>
+                      {live?.focused?.navigationLabel ??
+                        modules.find((m) => m[0] === id)![1]}
+                    </span>
                     {!live && id === "inbox" && (
                       <small>
                         {
@@ -288,18 +300,28 @@ export function Shell({
           </div>
         ))}
       </nav>
-      <Button
-        variant="ghost"
-        height="auto"
-        className="ws-user"
-        onClick={() => go("settings")}
-      >
-        <Avatar name={ownerName} />
-        <div>
-          <strong>{ownerName}</strong>
-          <small>{live ? live.role : "Practice owner · sample"}</small>
+      {live?.focused ? (
+        <div className="ws-user">
+          <Avatar name={ownerName} />
+          <div>
+            <strong>{ownerName}</strong>
+            <small>{live.role}</small>
+          </div>
         </div>
-      </Button>
+      ) : (
+        <Button
+          variant="ghost"
+          height="auto"
+          className="ws-user"
+          onClick={() => go("settings")}
+        >
+          <Avatar name={ownerName} />
+          <div>
+            <strong>{ownerName}</strong>
+            <small>{live ? live.role : "Practice owner · sample"}</small>
+          </div>
+        </Button>
+      )}
       {live?.account}
     </>
   );
@@ -397,20 +419,22 @@ export function Shell({
             </Breadcrumb.Root>
           </Flex>
           <Flex align="center" gap="4">
-            <Button
-              variant="outline"
-              size="sm"
-              ref={searchTrigger}
-              aria-label="Find anything"
-              aria-expanded={search}
-              onClick={() => setSearch(true)}
-            >
-              <Search size={16} />
-              <Text as="span" display={{ base: "none", md: "inline" }}>
-                Find anything
-              </Text>
-              <Kbd display={{ base: "none", md: "inline" }}>⌘ K</Kbd>
-            </Button>
+            {!live?.focused && (
+              <Button
+                variant="outline"
+                size="sm"
+                ref={searchTrigger}
+                aria-label="Find anything"
+                aria-expanded={search}
+                onClick={() => setSearch(true)}
+              >
+                <Search size={16} />
+                <Text as="span" display={{ base: "none", md: "inline" }}>
+                  Find anything
+                </Text>
+                <Kbd display={{ base: "none", md: "inline" }}>⌘ K</Kbd>
+              </Button>
+            )}
             <Button
               asChild
               variant="ghost"
@@ -423,17 +447,18 @@ export function Shell({
             </Button>
           </Flex>
         </Flex>
-        <Dialog.Root
-          open={search}
-          onOpenChange={(details) => setSearch(details.open)}
-          initialFocusEl={() => searchInput.current}
-          finalFocusEl={() => searchTrigger.current}
-          motionPreset="none"
-          placement="top"
-          scrollBehavior="inside"
-          size="lg"
-        >
-          <ChakraPortal>
+        {!live?.focused && (
+          <Dialog.Root
+            open={search}
+            onOpenChange={(details) => setSearch(details.open)}
+            initialFocusEl={() => searchInput.current}
+            finalFocusEl={() => searchTrigger.current}
+            motionPreset="none"
+            placement="top"
+            scrollBehavior="inside"
+            size="lg"
+          >
+            <ChakraPortal>
             <Dialog.Backdrop />
             <Dialog.Positioner p="4">
               <Dialog.Content
@@ -521,8 +546,9 @@ export function Shell({
                 </Dialog.Body>
               </Dialog.Content>
             </Dialog.Positioner>
-          </ChakraPortal>
-        </Dialog.Root>
+            </ChakraPortal>
+          </Dialog.Root>
+        )}
         <main id="workspace-main" className="ws-main" tabIndex={-1}>
           {view !== "today" &&
             !(live && ["knowledge", "assistant"].includes(view)) && (

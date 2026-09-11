@@ -6,6 +6,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { verifyArtifact } from "./artifact.ts";
+import { studioRuntimeEnvironment } from "./environment.ts";
 import type { ApplicationArtifactManifest, RunningApplication } from "./types.ts";
 
 const scriptsRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../scripts/release");
@@ -16,7 +17,7 @@ export function assertPrivatePort(port: number) {
 
 function ownerToken() { return randomBytes(24).toString("hex"); }
 
-async function spawnDetached(script: string, args: string[], logPath: string) {
+async function spawnDetached(script: string, args: string[], logPath: string, environment: NodeJS.ProcessEnv = {}) {
   await mkdir(dirname(logPath), { recursive: true, mode: 0o700 });
   const output = openSync(logPath, "a", 0o600);
   try {
@@ -28,6 +29,7 @@ async function spawnDetached(script: string, args: string[], logPath: string) {
         NODE_ENV: "production",
         NEXT_TELEMETRY_DISABLED: "1",
         TMPDIR: process.env.TMPDIR ?? "/tmp",
+        ...environment,
       },
     });
     child.unref();
@@ -84,7 +86,7 @@ export async function startApplication(input: {
     "--public-port", String(input.publicPort),
     "--application-port", String(input.applicationPort),
     "--owner-token", token,
-  ], join(input.stateRoot, "logs", `${input.releaseId}.log`));
+  ], join(input.stateRoot, "logs", `${input.releaseId}.log`), studioRuntimeEnvironment(process.env));
   const running: RunningApplication = {
     releaseId: input.releaseId,
     manifestPath: resolve(input.manifestPath),

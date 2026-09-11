@@ -1,12 +1,11 @@
 // Never expose provider secrets in the browser. Shared server-side readiness gate.
-export function practiceConfigured(
+export function workosConfigured(
   env: Record<string, string | undefined> = process.env,
 ): boolean {
   if (
     !env.WORKOS_CLIENT_ID ||
     !env.WORKOS_API_KEY ||
     (env.WORKOS_COOKIE_PASSWORD?.length ?? 0) < 32 ||
-    !env.NEXT_PUBLIC_CONVEX_URL ||
     !env.NEXT_PUBLIC_WORKOS_REDIRECT_URI
   )
     return false;
@@ -14,7 +13,6 @@ export function practiceConfigured(
     env.WORKOS_CLIENT_ID,
     env.WORKOS_API_KEY,
     env.WORKOS_COOKIE_PASSWORD,
-    env.NEXT_PUBLIC_CONVEX_URL,
     env.NEXT_PUBLIC_WORKOS_REDIRECT_URI,
   ];
   if (
@@ -24,18 +22,31 @@ export function practiceConfigured(
     return false;
   try {
     const callback = new URL(env.NEXT_PUBLIC_WORKOS_REDIRECT_URI);
-    const database = new URL(env.NEXT_PUBLIC_CONVEX_URL);
     return (
       !callback.username &&
       !callback.password &&
-      !database.username &&
-      !database.password &&
       callback.pathname === "/callback" &&
       !callback.search &&
       !callback.hash &&
       (callback.protocol === "https:" ||
         (callback.protocol === "http:" &&
-          ["localhost", "127.0.0.1"].includes(callback.hostname))) &&
+          ["localhost", "127.0.0.1"].includes(callback.hostname)))
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function practiceConfigured(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  if (!workosConfigured(env) || !env.NEXT_PUBLIC_CONVEX_URL) return false;
+  try {
+    const database = new URL(env.NEXT_PUBLIC_CONVEX_URL);
+    return (
+      env.NEXT_PUBLIC_CONVEX_URL.trim() === env.NEXT_PUBLIC_CONVEX_URL &&
+      !database.username &&
+      !database.password &&
       (database.protocol === "https:" ||
         (database.protocol === "http:" &&
           ["localhost", "127.0.0.1"].includes(database.hostname)))

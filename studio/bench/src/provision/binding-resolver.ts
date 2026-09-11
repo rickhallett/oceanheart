@@ -1,5 +1,5 @@
 import type { BackendIdentityBinding, BindingRequest } from "./binding-types.ts";
-import { validateBinding, validateBindingRequest } from "./binding-validation.ts";
+import { validateBinding, validateBindingRequest, workosIssuerForAudience } from "./binding-validation.ts";
 
 export type VerifiedIdentity = {
   subject: string;
@@ -50,8 +50,8 @@ export class SubjectBindingResolver {
     for (const authorization of this.authorizations) {
       if (
         !opaqueSubject(authorization.subject) ||
-        authorization.issuer !== "https://api.workos.com/" ||
-        !/^client_[A-Za-z0-9]{8,127}$/.test(authorization.audience)
+        !/^client_[A-Za-z0-9]{8,127}$/.test(authorization.audience) ||
+        authorization.issuer !== workosIssuerForAudience(authorization.audience)
       ) throw new Error("INVALID_SUBJECT_BINDING_AUTHORIZATION");
       const key = `${authorization.issuer}\0${authorization.audience}\0${authorization.subject}`;
       if (subjectKeys.has(key)) throw new Error("AMBIGUOUS_SUBJECT_BINDING_AUTHORIZATION");

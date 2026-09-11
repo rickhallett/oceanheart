@@ -70,6 +70,17 @@ sudo studio/bench/scripts/provision/install-runtime-recovery.sh \
 
 It runs as `studio-runtime`, accepts only the matching private state directory, preserves its private log, and refuses a live unrelated PID collision. It periodically recovers queued or lease-expired jobs. The image has no provider startup facility, so an operator must rerun this idempotent installer after a VM reboot; process-level restart/replay is verified, automatic boot activation is not.
 
+The dedicated Clara HTTP bridge uses the same minimal-guest boundary. It accepts only a controller-inspected binding plus a separate private subject authorization file, runs as `studio-runtime`, and listens on an explicit loopback port:
+
+```sh
+sudo studio/bench/scripts/provision/install-clara-runtime.sh \
+  /opt/studio/releases/sha256-DIGEST/bench c0001 \
+  /private/controller/c0001.binding.json \
+  /private/controller/c0001.authorizations.json 43760
+```
+
+Only the Studio application calls `POST /v1/clara`. Every start/read request re-verifies the WorkOS JWT and resolves its subject through the private client binding. The browser cannot choose a client, environment, subject, amount or provider target. The bridge has no controller credential and the Pi runtime has no WorkOS, Convex or application credential. Expose only the separate Studio router port through the VM HTTPS proxy; never expose the bridge port.
+
 Create a non-executable plan from a separately captured read-only capacity snapshot:
 
 ```sh
@@ -98,18 +109,16 @@ Current account inspection found 65.8 GiB used of the 100 GiB pooled disk across
 
 The private pilot uses clean images and operator-only access; it does not clone workers, expose public shares, configure credentials or change the subscription. Two runtime guests independently completed the pinned Pi synthetic CLI. A separate synthetic recovery probe survived a supervisor process stop/restart and reused the same run, draft and result hash with exactly one job, effect and reservation. The builder completed the exact-source secret-free Studio build above. Private receipts remain outside this repository.
 
-## Executable next live-synthetic plan
+## Live synthetic boundary
 
-The next operator-owned packet should proceed only after the concrete blockers are resolved, using the same manifest and original operation key throughout:
+One dedicated synthetic Convex development deployment and one WorkOS sandbox are now controller-inspected and bound to c0001. Exact provider IDs, credential references and reconciliation receipts remain private. The existing Studio schema/functions can be deployed with a short-lived deployment key scoped to that one deployment; the key is deleted after use. The WorkOS environment has a single exact private callback. Neither credential is copied to a guest, browser, Pi process, Git history or receipt.
 
-1. Capture a fresh read-only exe.dev inventory and confirm the retained disk headroom without assuming new spend or capacity.
-2. Approve a private synthetic repository target and an isolated synthetic backend/identity target. Confirm neither resolves to staging or production.
-3. Reuse the checksum-pinned Node 24 bootstrap and verify Pi `0.85.1`, the exact-source Studio artifact and supervisor receipt on the intended retained guests.
-4. Implement an exe.dev adapter whose `reconcileResource` uses authoritative provider IDs/ownership metadata and whose create operation reports only explicit pre-effect rejection as retryable. Timeouts, transport loss, malformed responses and persisted `pending` receipts remain uncertain.
-5. Run `plan-live`; inspect that it remains non-executable until the controller has explicit readiness inputs rather than only quota data.
-6. In one bounded synthetic run, reconcile then create the private repository, runtime VM, development VM and synthetic backend. Persist each returned provider ID; never derive SSH identity from a requested name.
-7. Bootstrap from the verified export by digest with no secrets in arguments, images, Git or receipts. Add scoped references only after the secret resolver boundary exists.
-8. Prove HE-01 (timeout/retry creates no duplicate), HE-06 (canary absent from every durable surface) and HE-10 (exact digest, failed release leaves prior serving, compatible rollback). Inspect provider state independently before marking ready.
-9. Record usage delta and tear-down/retention ownership. Do not generalize one synthetic result to real-client readiness.
+The remaining operator sequence is:
 
-Database impact in this packet: none. Hosted/provider acceptance: not run and not claimed.
+1. Export the exact committed Studio tree and build it without credentials. Inject only the dedicated app's WorkOS API key and cookie secret into the trusted Studio process; the controller team token remains off-host.
+2. Keep the app under a separate `studio-app` OS identity and proxy only its stable router port. Keep the durable Clara bridge under `studio-runtime` on loopback.
+3. After the intended human signs in, record that exact verified WorkOS subject in the private authorization file. Do not infer authorization from a request client string or from access to the URL alone.
+4. Prove prepare, inspect and retry under one stable operation key: the retry must return the original run and the SQLite effect count must remain one. Exercise an unauthenticated or unbound-subject denial.
+5. Preserve the provider/source/application/runtime receipts privately. This synthetic result does not establish production readiness, real-client suitability or VM boot-time recovery.
+
+Database impact: the existing Studio schema/functions were installed into the empty dedicated synthetic development deployment; no rows were seeded. Hosted authenticated workflow acceptance remains separate and is not claimed here.

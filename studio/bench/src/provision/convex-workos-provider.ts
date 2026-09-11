@@ -8,6 +8,7 @@ import {
 import { ConvexManagementTransport } from "./convex-management.ts";
 import type { ProviderEnvironmentBinding } from "./binding-types.ts";
 import { validateApprovedProviderTarget, type ApprovedProviderTarget } from "./provider-target.ts";
+import { workosIssuerForAudience } from "./binding-validation.ts";
 import { WorkosAccountTransport } from "./workos-account.ts";
 
 export class ConvexWorkosBindingProvider implements BackendIdentityProvider {
@@ -54,7 +55,7 @@ export class ConvexWorkosBindingProvider implements BackendIdentityProvider {
         identity: {
           provider: "workos",
           environmentId: workos.environment.id,
-          issuer: "https://api.workos.com/",
+          issuer: workosIssuerForAudience(workos.environment.clientId),
           audience: workos.environment.clientId,
         },
       };

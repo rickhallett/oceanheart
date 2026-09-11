@@ -5,6 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { PiWorkflowRuntime } from "../../src/runtime/pi-adapter.ts";
+import type { ClaraAdaptationRuntimeController } from "../../src/adaptation/runtime-controller.ts";
 import { AuthenticatedClaraRuntime, AuthenticatedRuntimeError } from "../../src/server/authenticated-runtime.ts";
 import type { EnvironmentBinding, EnvironmentBindingRegistry, IdentityVerifier, VerifiedPrincipal } from "../../src/server/binding.ts";
 import { PiDurableRuntimeAdapter } from "../../src/server/runtime-adapter.ts";
@@ -81,6 +82,36 @@ test("verified identity starts one durable Clara effect and owns authenticated r
     assert.equal((await server.inspectDraft("Bearer owner-a", first.runId)).clientId, "c0001");
     const trace = await server.inspectTrace("Bearer owner-a", first.runId);
     assert.doesNotMatch(JSON.stringify(trace), /owner-a|Bearer|c9999/);
+  } finally { runtime.close(); rmSync(root, { recursive: true, force: true }); }
+});
+
+test("authenticated start preserves the controller's exact active release identity", async () => {
+  const root = mkdtempSync(join(tmpdir(), "bench-auth-release-"));
+  const runtime = new PiWorkflowRuntime({ root });
+  const clientBinding = binding("c0001", "env-clara");
+  const adapter = new PiDurableRuntimeAdapter(runtime, { clientId: "c0001", environmentId: "env-clara", backendDeploymentId: clientBinding.backend.deploymentId });
+  const releaseId = "a".repeat(64);
+  const adaptation = {
+    prepare: async (trustedInput: typeof input) => ({
+      input: { ...trustedInput, sessions: trustedInput.sessions.map((session) => ({ ...session, rateMinor: 9000 })) },
+      idempotencyKey: `request-release-${releaseId}`,
+      configurationVersion: "clara-rate-90",
+      configurationReleaseId: releaseId,
+    }),
+  } as unknown as ClaraAdaptationRuntimeController;
+  const server = new AuthenticatedClaraRuntime({
+    policy: { mode: "synthetic-test", environmentId: "env-clara", provider: "synthetic-test", audience, issuer },
+    identity: new TestIdentity({ "Bearer owner-a": principal("owner-a", "env-clara") }),
+    bindings: new TestRegistry({ "owner-a": clientBinding }),
+    runtimeFor: () => adapter,
+    adaptation,
+  });
+  try {
+    const started = await server.startClara({ authorization: "Bearer owner-a", idempotencyKey: "request-base", input });
+    const stored = runtime.store.get("c0001", started.runId);
+    assert.equal(stored.request.configurationReleaseId, releaseId);
+    assert.equal(stored.request.configurationVersion, "clara-rate-90");
+    assert.equal(stored.result?.totalMinor, 9000);
   } finally { runtime.close(); rmSync(root, { recursive: true, force: true }); }
 });
 

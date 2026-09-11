@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { join } from "node:path";
 
 import { verifyArtifact, applicationReleaseId } from "../../src/release/artifact.ts";
+import { studioRuntimeEnvironment } from "../../src/release/environment.ts";
 import { proxyRequest } from "../../src/release/proxy.ts";
 
 function args() {
@@ -25,6 +26,7 @@ const child = spawn(process.execPath, [join(payload, "server.js")], {
   env: {
     PATH: process.env.PATH ?? "/usr/bin:/bin", NODE_ENV: "production", NEXT_TELEMETRY_DISABLED: "1",
     PORT: String(input.applicationPort), HOSTNAME: "127.0.0.1", TMPDIR: process.env.TMPDIR ?? "/tmp",
+    ...studioRuntimeEnvironment(process.env),
   },
 });
 

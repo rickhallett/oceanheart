@@ -20,6 +20,11 @@ export function containsBindingSecretMaterial(value: string) {
   return secretMaterial.test(value);
 }
 
+export function workosIssuerForAudience(value: string) {
+  if (!workosAudience.test(value)) throw new Error("INVALID_BINDING_IDENTITY");
+  return `https://api.workos.com/user_management/${value}`;
+}
+
 function exactSecretRef(value: string, expected: string) {
   if (value !== expected || containsBindingSecretMaterial(value))
     throw new Error("INVALID_BINDING_CREDENTIAL_REFERENCE");
@@ -89,8 +94,8 @@ export function validateProviderBinding(
     value.identity.provider !== "workos" ||
     !providerId.test(value.identity.environmentId) ||
     value.identity.environmentId !== value.environmentId ||
-    value.identity.issuer !== "https://api.workos.com/" ||
-    !workosAudience.test(value.identity.audience)
+    !workosAudience.test(value.identity.audience) ||
+    value.identity.issuer !== workosIssuerForAudience(value.identity.audience)
   ) throw new Error("INVALID_BINDING_IDENTITY");
   if (!digest.test(operationId)) throw new Error("INVALID_BINDING_OPERATION_ID");
   if (!Number.isFinite(Date.parse(observedAt))) throw new Error("INVALID_BINDING_OBSERVED_AT");

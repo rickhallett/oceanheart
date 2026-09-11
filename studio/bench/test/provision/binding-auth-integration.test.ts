@@ -22,10 +22,9 @@ import type { IdentityVerifier, VerifiedPrincipal } from "../../src/server/bindi
 import { PiDurableRuntimeAdapter } from "../../src/server/runtime-adapter.ts";
 import { validManifest } from "./fixture.ts";
 
-const issuer = "https://api.workos.com/";
-
 function observed(clientId: string): ProviderEnvironmentBinding {
   const environmentId = `environment_synthetic_${clientId}`;
+  const audience = `client_synthetic${clientId}`;
   return {
     environmentId,
     classification: "synthetic",
@@ -39,8 +38,8 @@ function observed(clientId: string): ProviderEnvironmentBinding {
     identity: {
       provider: "workos",
       environmentId,
-      issuer,
-      audience: `client_synthetic${clientId}`,
+      issuer: `https://api.workos.com/user_management/${audience}`,
+      audience,
     },
   };
 }
@@ -106,14 +105,14 @@ test("controller registry authorizes one durable run/replay and denies the other
     subject: "user_synthetic_a",
     environmentId: bindingA.environmentId,
     audience: bindingA.identity.audience,
-    issuer,
+    issuer: bindingA.identity.issuer,
   };
   const ownerB = {
     provider: "workos" as const,
     subject: "user_synthetic_b",
     environmentId: bindingB.environmentId,
     audience: bindingB.identity.audience,
-    issuer,
+    issuer: bindingB.identity.issuer,
   };
   const bindings = new ControllerBindingRegistryAdapter(new SubjectBindingResolver({
     bindings: [bindingA, bindingB],
@@ -134,7 +133,7 @@ test("controller registry authorizes one durable run/replay and denies the other
       environmentId: bindingA.environmentId,
       provider: "workos",
       audience: bindingA.identity.audience,
-      issuer,
+      issuer: bindingA.identity.issuer,
     },
     identity: new VerifiedTestIdentity({ "Bearer owner-a": ownerA, "Bearer owner-b": ownerB }),
     bindings,

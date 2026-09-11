@@ -1,9 +1,10 @@
 import { handleAuth } from "@workos-inc/authkit-nextjs";
 import { NextResponse, type NextRequest } from "next/server";
 import { practiceConfigured } from "@/lib/practice-config";
+import { claraInstanceConfigured } from "@/lib/clara-instance";
 
 export async function GET(request: NextRequest) {
-  if (!practiceConfigured())
+  if (!practiceConfigured() && !claraInstanceConfigured())
     return NextResponse.redirect(new URL("/app", request.url));
   return handleAuth({
     returnPathname: "/app",
