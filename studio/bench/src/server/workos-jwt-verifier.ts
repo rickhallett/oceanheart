@@ -78,7 +78,8 @@ const bearer = /^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/;
 function httpsUrl(value: string, label: string) {
   let url: URL;
   try { url = new URL(value); } catch { throw new Error(`${label}_INVALID`); }
-  if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash)
+  const authority = url.href.slice(`${url.protocol}//`.length).split("/", 1)[0] ?? "";
+  if (url.protocol !== "https:" || authority.includes("@") || url.search || url.hash)
     throw new Error(`${label}_INVALID`);
   return url;
 }
@@ -142,9 +143,11 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     if (!audience.test(input.audience)) throw new Error("WORKOS_AUDIENCE_INVALID");
     this.environmentId = input.environmentId;
     this.audience = input.audience;
-    httpsUrl(input.issuer, "WORKOS_ISSUER");
+    if (input.issuer !== "https://api.workos.com/") throw new Error("WORKOS_ISSUER_INVALID");
     this.issuer = input.issuer;
     this.jwksUrl = httpsUrl(input.jwksUrl, "WORKOS_JWKS_URL");
+    if (this.jwksUrl.href !== `https://api.workos.com/sso/jwks/${this.audience}`)
+      throw new Error("WORKOS_JWKS_URL_INVALID");
     this.network = input.network ?? new HttpsJwksNetworkAdapter();
     this.sessionStatus = input.sessionStatus;
     this.timeoutMs = input.timeoutMs ?? 3_000;

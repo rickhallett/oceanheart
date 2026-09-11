@@ -232,3 +232,21 @@ test("JWKS and session-status stalls fail closed within the configured bound", a
   await assert.rejects(statusIdentity.verify({ authorization: `Bearer ${statusToken}`, environmentId: environmentA, audience: audienceA, issuer }));
   assert.ok(Date.now() - statusStarted < 500);
 });
+
+test("verifier configuration is pinned to the WorkOS issuer and bound client JWKS", () => {
+  const network: JwksNetworkAdapter = { fetch: async () => ({ keys: [] }) };
+  assert.throws(() => new WorkOsJwtIdentityVerifier({
+    environmentId: environmentA,
+    audience: audienceA,
+    issuer: "https://identity.invalid/",
+    jwksUrl: `https://api.workos.com/sso/jwks/${audienceA}`,
+    network,
+  }), /WORKOS_ISSUER_INVALID/);
+  assert.throws(() => new WorkOsJwtIdentityVerifier({
+    environmentId: environmentA,
+    audience: audienceA,
+    issuer,
+    jwksUrl: `https://api.workos.com/sso/jwks/${audienceB}`,
+    network,
+  }), /WORKOS_JWKS_URL_INVALID/);
+});
