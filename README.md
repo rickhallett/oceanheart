@@ -12,7 +12,9 @@ Oceanheart is Rick Hallett's practice, bringing together conversation, breathwor
 
 ## Oceanheart Studio
 
-Studio brings the daily work of a practice into one place: enquiries, bookings, client records, tasks and services. It also explores a client portal, website editing, payments and an assistant with a queue for reviewing proposed actions.
+Studio is being developed as a private space for agentic workflows configured, tested and maintained around an individual practitioner. The primary development target is a dedicated client instance and an agent workbench for adapting its context, instructions, integrations and behaviour. Read the [product direction](studio/docs/PRODUCT-DIRECTION.md), [eight mock-practitioner briefs](studio/docs/MOCK-CLIENTS.md), and [live landing-page copy audit](studio/docs/STUDIO-COPY-AUDIT-2026-09-11.md). These are development targets, not claims that dedicated provisioning is already available.
+
+The prototype description below records an earlier stage; it is not a current hosted-capability inventory. Consult the dated release evidence before relying on it for deployment or acceptance status.
 
 ![Oceanheart Studio Today screen, showing the sample practice's schedule, tasks and latest enquiry](docs/assets/studio-today.png)
 
