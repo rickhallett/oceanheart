@@ -27,6 +27,10 @@ State defaults to `~/.local/state/oceanheart-bench`. Use `--state-dir` to select
 
 Application artifact activation is a separate operator lane. `scripts/app-release.ts` packages a source-verified standalone Studio build, health-checks a candidate on private loopback ports, then atomically changes the stable loopback router. Its state never changes Clara workflow configuration or SQLite data. See `docs/application-release.md`.
 
+The initial authenticated server library maps a verified identity through a controller-owned environment binding before it can start or inspect Clara work. It has no route or alternate login and its synthetic adapter is test-only. See `docs/authenticated-runtime.md`.
+
+The controller-side binding registry and provider reconciliation contract are documented in `docs/backend-identity-binding.md`. They accept only provider-inspected dedicated synthetic Convex/WorkOS bindings and expose no credential values.
+
 Encrypted, client-bound off-VM backup and clean restore use the standalone scripts under `scripts/recovery/`. The archive includes the SQLite effect ledger, Pi sessions, Clara activation state and application-release metadata, but not credentials or immutable application payloads. See `docs/recovery.md`.
 
 ## Template and resource planning
