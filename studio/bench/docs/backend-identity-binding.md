@@ -8,7 +8,7 @@ A ready binding contains:
 
 - the opaque synthetic `clientId` and provider-controlled environment ID;
 - an exact Convex deployment ID and HTTPS `*.convex.cloud` URL;
-- an exact WorkOS environment ID, `https://api.workos.com/` issuer and client audience;
+- an exact WorkOS environment ID, client audience and client-derived `https://api.workos.com/user_management/<client_id>` issuer;
 - the manifest hash, exact source SHA, deterministic operation ID and inspection time;
 - `mode: synthetic`, `scope: dedicated`, `status: ready`; and
 - only exact client-scoped `secretref://...` references for controller credentials.

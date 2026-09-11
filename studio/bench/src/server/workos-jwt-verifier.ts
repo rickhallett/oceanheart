@@ -161,7 +161,8 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
     if (!audience.test(input.audience)) throw new Error("WORKOS_AUDIENCE_INVALID");
     this.environmentId = input.environmentId;
     this.audience = input.audience;
-    if (input.issuer !== "https://api.workos.com/") throw new Error("WORKOS_ISSUER_INVALID");
+    if (input.issuer !== `https://api.workos.com/user_management/${this.audience}`)
+      throw new Error("WORKOS_ISSUER_INVALID");
     this.issuer = input.issuer;
     this.jwksUrl = httpsUrl(input.jwksUrl, "WORKOS_JWKS_URL");
     if (this.jwksUrl.href !== `https://api.workos.com/sso/jwks/${this.audience}`)
@@ -201,7 +202,7 @@ export class WorkOsJwtIdentityVerifier implements IdentityVerifier {
       try {
         return await jwtVerify<WorkOsClaims>(token, createLocalJWKSet(await this.keys(attempt === 1)), {
           algorithms: ["RS256"],
-          issuer: ["https://api.workos.com", "https://api.workos.com/"],
+          issuer: this.issuer,
           clockTolerance: 5,
         });
       } catch (error) {

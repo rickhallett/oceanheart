@@ -19,9 +19,9 @@ import {
   type WorkOsSessionStatusAdapter,
 } from "../../src/server/workos-jwt-verifier.ts";
 
-const issuer = "https://api.workos.com/";
 const audienceA = "client_syntheticc0001";
 const audienceB = "client_syntheticc0002";
+const issuer = `https://api.workos.com/user_management/${audienceA}`;
 const environmentA = "environment_synthetic_c0001";
 const environmentB = "environment_synthetic_c0002";
 
@@ -33,7 +33,7 @@ function binding(clientId: "c0001" | "c0002", environmentId: string, audience: s
     mode: "synthetic",
     scope: "dedicated",
     backend: { provider: "convex", deploymentId: `synthetic-${clientId}-backend`, url: `https://synthetic-${clientId}.convex.cloud/` },
-    identity: { provider: "workos", environmentId, issuer, audience },
+    identity: { provider: "workos", environmentId, issuer: `https://api.workos.com/user_management/${audience}`, audience },
     provenance: {
       manifestHash: "b".repeat(64), sourceSha: "a".repeat(40), operationId: "c".repeat(64),
       source: "controller-inspection", observedAt: "2026-09-11T18:30:00.000Z",
@@ -71,7 +71,7 @@ async function token(input: {
   })
     .setProtectedHeader({ alg: input.algorithm ?? "RS256", kid: input.kid, typ: input.tokenType ?? "at+jwt" })
     .setSubject(input.subject ?? "user_synthetic_a")
-    .setIssuer(input.issuer ?? "https://api.workos.com")
+    .setIssuer(input.issuer ?? issuer)
     .setIssuedAt(now)
     .setExpirationTime(input.expiresAt ?? now + 300);
   if (input.audienceClaim !== undefined) token.setAudience(input.audienceClaim);
@@ -142,7 +142,7 @@ test("signed WorkOS-shaped session drives bound durable Clara start/replay/read 
     bindings: [bindingA, bindingB],
     authorizations: [
       { subject: "user_synthetic_a", issuer, audience: audienceA, clientId: "c0001", environmentId: environmentA },
-      { subject: "user_synthetic_b", issuer, audience: audienceB, clientId: "c0002", environmentId: environmentB },
+      { subject: "user_synthetic_b", issuer: bindingB.identity.issuer, audience: audienceB, clientId: "c0002", environmentId: environmentB },
     ],
   }));
   const root = mkdtempSync(join(tmpdir(), "workos-bound-runtime-"));

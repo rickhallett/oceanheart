@@ -31,7 +31,7 @@ function providerBinding(clientId = "c0001"): ProviderEnvironmentBinding {
     identity: {
       provider: "workos",
       environmentId,
-      issuer: "https://api.workos.com/",
+      issuer: "https://api.workos.com/user_management/client_syntheticc0001",
       audience: `client_synthetic${clientId}`,
     },
   };

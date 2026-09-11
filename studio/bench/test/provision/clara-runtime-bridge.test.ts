@@ -16,7 +16,7 @@ const principal: VerifiedPrincipal = {
   subject: "user_synthetic_owner",
   environmentId: "environment_synthetic_c0001",
   audience: "client_syntheticc0001",
-  issuer: "https://api.workos.com/",
+  issuer: "https://api.workos.com/user_management/client_syntheticc0001",
 };
 const binding: EnvironmentBinding = {
   schemaVersion: 1,
