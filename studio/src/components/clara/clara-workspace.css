@@ -41,6 +41,56 @@
   color: #17212f;
   overflow-wrap: anywhere;
 }
+.clara-adaptation {
+  margin-top: 32px;
+}
+.clara-adaptation > h2 {
+  margin: 4px 0 10px;
+  font-size: 16px;
+}
+.clara-rate-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+.clara-rate-fields label {
+  display: grid;
+  gap: 6px;
+  color: #657389;
+  font-size: 13px;
+}
+.clara-rate-fields input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  border: 1px solid #d8dfe8;
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #17212f;
+  background: #fff;
+  font: inherit;
+}
+.clara-rate-fields input:focus-visible {
+  border-color: #255bd7;
+  outline: 2px solid color-mix(in srgb, #255bd7 22%, transparent);
+  outline-offset: 1px;
+}
+.clara-configuration {
+  color: #657389;
+  font-size: 13px;
+}
+.clara-proposal {
+  margin-top: 20px;
+}
+.clara-proposal h3 {
+  margin: 4px 0 10px;
+  color: #17212f;
+  font-size: 16px;
+}
+.clara-proposal p + p {
+  margin-top: 8px;
+}
 .clara-actions {
   display: flex;
   flex-wrap: wrap;
@@ -91,5 +141,8 @@
   }
   .clara-result li {
     align-items: flex-start;
+  }
+  .clara-rate-fields {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

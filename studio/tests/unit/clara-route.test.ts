@@ -14,6 +14,32 @@ const run = {
   inspectPath: "runs/123e4567-e89b-42d3-a456-426614174000",
   draftId: "draft-123e4567-e89b-42d3-a456-426614174000",
 };
+const baselineRelease = {
+  releaseId: "1".repeat(64),
+  artifactDigest: `sha256:${"2".repeat(64)}`,
+  version: "clara-2026-09-01",
+  generation: 1,
+};
+const proposal = {
+  proposalId: "3".repeat(64),
+  expectedActiveReleaseId: baselineRelease.releaseId,
+  candidateArtifactDigest: `sha256:${"4".repeat(64)}`,
+  candidateVersion: "clara-2026-09-01-rate-90",
+  effectiveDate: "2026-09-01",
+  previousRateMinor: 8000,
+  newRateMinor: 9000,
+  baselineTotalMinor: 12000,
+  candidateTotalMinor: 13000,
+  changedSessionIds: ["clara-session-2026-09-03"],
+  explanation: "One eligible attended session changes; cancellation and prepaid sessions remain unchanged.",
+  evaluation: {
+    evaluationId: "eval-rate-90",
+    reportDigest: `sha256:${"5".repeat(64)}`,
+    accepted: true,
+    passed: 4,
+    total: 4,
+  },
+};
 
 function request(body: unknown, headers: Record<string, string> = {}) {
   return new NextRequest(`${origin}/api/private/clara`, {
@@ -175,6 +201,52 @@ it("reauthorizes and sanitizes run, draft and trace reads", async () => {
     },
   });
   expect(JSON.stringify(outputs)).not.toContain("private-actor-value");
+});
+
+it("forwards only the bounded attended-rate proposal and sanitizes its immutable receipt", async () => {
+  const upstream = {
+    schemaVersion: 1,
+    clientId: "private-client",
+    active: baselineRelease,
+    proposal: { ...proposal, reportPath: "/private/runtime/report.html" },
+  };
+  const bridge = vi.fn().mockResolvedValue(Response.json(upstream));
+  vi.stubGlobal("fetch", bridge);
+  const response = await POST(request({
+    operation: "adaptation-evaluate",
+    effectiveDate: "2026-09-01",
+    newRateMinor: 9000,
+  }));
+  expect(response.status).toBe(200);
+  const output = await response.json();
+  expect(output).toEqual({
+    operation: "adaptation-evaluate",
+    adaptation: { schemaVersion: 1, active: baselineRelease, proposal },
+  });
+  expect(JSON.stringify(output)).not.toContain("private-client");
+  expect(JSON.stringify(output)).not.toContain("report.html");
+  const options = bridge.mock.calls[0][1];
+  expect(options.headers.authorization).toBe("Bearer signed.synthetic.token");
+  expect(JSON.parse(options.body)).toEqual({
+    schemaVersion: 1,
+    operation: "adaptation-evaluate",
+    effectiveDate: "2026-09-01",
+    newRateMinor: 9000,
+    idempotencyKey: `${createHash("sha256").update("user_synthetic_a").digest("hex").slice(0, 24)}-clara-v1-rate-20260901-9000`,
+  });
+
+  expect((await POST(request({
+    operation: "adaptation-evaluate",
+    effectiveDate: "2026-09-01",
+    newRateMinor: 9000,
+    clientId: "other-client",
+  }))).status).toBe(400);
+  expect((await POST(request({
+    operation: "adaptation-activate",
+    proposalId: proposal.proposalId,
+    expectedActiveReleaseId: "not-a-release",
+  }))).status).toBe(400);
+  expect(bridge).toHaveBeenCalledTimes(1);
 });
 
 it("redacts bridge denial and failure", async () => {

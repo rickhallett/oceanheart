@@ -39,14 +39,73 @@ export type ClaraTraceSummary = {
   resultHash?: string;
 };
 
+export type ClaraConfigurationSummary = {
+  releaseId: string;
+  artifactDigest: string;
+  version: string;
+  generation: number;
+};
+
+export type ClaraRateChangeProposal = {
+  proposalId: string;
+  expectedActiveReleaseId: string;
+  candidateArtifactDigest: string;
+  candidateVersion: string;
+  effectiveDate: string;
+  previousRateMinor: number;
+  newRateMinor: number;
+  baselineTotalMinor: number;
+  candidateTotalMinor: number;
+  changedSessionIds: string[];
+  explanation: string;
+  evaluation: {
+    evaluationId: string;
+    reportDigest: string;
+    accepted: boolean;
+    passed: number;
+    total: number;
+  };
+};
+
+export type ClaraAdaptationState = {
+  schemaVersion: 1;
+  active: ClaraConfigurationSummary;
+  rollbackTarget?: ClaraConfigurationSummary;
+  proposal?: ClaraRateChangeProposal;
+};
+
 export type ClaraBrowserRequest =
   | { operation: "prepare" }
-  | { operation: "run" | "draft" | "trace"; runId: string };
+  | { operation: "run" | "draft" | "trace"; runId: string }
+  | { operation: "adaptation-status" }
+  | {
+      operation: "adaptation-evaluate";
+      effectiveDate: string;
+      newRateMinor: number;
+    }
+  | {
+      operation: "adaptation-activate";
+      proposalId: string;
+      expectedActiveReleaseId: string;
+    }
+  | {
+      operation: "adaptation-rollback";
+      targetReleaseId: string;
+      expectedActiveReleaseId: string;
+    };
 
 export type ClaraBrowserResponse =
   | { operation: "prepare" | "run"; run: ClaraRun }
   | { operation: "draft"; draft: ClaraDraft }
-  | { operation: "trace"; trace: ClaraTraceSummary };
+  | { operation: "trace"; trace: ClaraTraceSummary }
+  | {
+      operation:
+        | "adaptation-status"
+        | "adaptation-evaluate"
+        | "adaptation-activate"
+        | "adaptation-rollback";
+      adaptation: ClaraAdaptationState;
+    };
 
 export const claraDemoInput = Object.freeze({
   schemaVersion: 1 as const,
@@ -82,6 +141,8 @@ export const claraDemoIdempotencyKey = "clara-fictional-september-2026-v1";
 
 const runId = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const digest = /^[0-9a-f]{64}$/;
+const artifactDigestPattern = /^sha256:[0-9a-f]{64}$/;
+const calendarDate = /^\d{4}-\d{2}-\d{2}$/;
 const statuses = new Set<ClaraRunStatus>([
   "queued", "running", "waiting_for_input", "succeeded", "failed", "cancelled",
 ]);
@@ -112,6 +173,35 @@ export function parseClaraBrowserRequest(value: unknown): ClaraBrowserRequest {
       throw new Error("INVALID_REQUEST");
     return input as ClaraBrowserRequest;
   }
+  if (input.operation === "adaptation-status") {
+    exactKeys(input, ["operation"]);
+    return { operation: "adaptation-status" };
+  }
+  if (input.operation === "adaptation-evaluate") {
+    exactKeys(input, ["operation", "effectiveDate", "newRateMinor"]);
+    if (
+      typeof input.effectiveDate !== "string" ||
+      !calendarDate.test(input.effectiveDate) ||
+      new Date(`${input.effectiveDate}T00:00:00.000Z`).toISOString().slice(0, 10) !== input.effectiveDate ||
+      !Number.isSafeInteger(input.newRateMinor) ||
+      (input.newRateMinor as number) < 0 ||
+      (input.newRateMinor as number) > 100_000_000
+    )
+      throw new Error("INVALID_REQUEST");
+    return input as ClaraBrowserRequest;
+  }
+  if (input.operation === "adaptation-activate") {
+    exactKeys(input, ["operation", "proposalId", "expectedActiveReleaseId"]);
+    if (!digest.test(String(input.proposalId)) || !digest.test(String(input.expectedActiveReleaseId)))
+      throw new Error("INVALID_REQUEST");
+    return input as ClaraBrowserRequest;
+  }
+  if (input.operation === "adaptation-rollback") {
+    exactKeys(input, ["operation", "targetReleaseId", "expectedActiveReleaseId"]);
+    if (!digest.test(String(input.targetReleaseId)) || !digest.test(String(input.expectedActiveReleaseId)))
+      throw new Error("INVALID_REQUEST");
+    return input as ClaraBrowserRequest;
+  }
   throw new Error("INVALID_REQUEST");
 }
 
@@ -119,14 +209,22 @@ export function bridgeRequestFor(
   request: ClaraBrowserRequest,
   idempotencyKey = claraDemoIdempotencyKey,
 ) {
-  return request.operation === "prepare"
-    ? {
+  if (request.operation === "prepare")
+    return {
         schemaVersion: 1 as const,
         operation: "start" as const,
         idempotencyKey,
         input: claraDemoInput,
-      }
-    : { schemaVersion: 1 as const, operation: request.operation, runId: request.runId };
+      };
+  if (request.operation === "run" || request.operation === "draft" || request.operation === "trace")
+    return { schemaVersion: 1 as const, operation: request.operation, runId: request.runId };
+  if (request.operation === "adaptation-evaluate")
+    return {
+      schemaVersion: 1 as const,
+      ...request,
+      idempotencyKey: `${idempotencyKey}-rate-${request.effectiveDate.replaceAll("-", "")}-${request.newRateMinor}`,
+    };
+  return { schemaVersion: 1 as const, ...request };
 }
 
 function safeText(value: unknown, max = 200) {
@@ -147,12 +245,89 @@ function stringList(value: unknown) {
   return value.map((item) => safeText(item));
 }
 
+function releaseSummary(value: unknown): ClaraConfigurationSummary {
+  const release = record(value);
+  if (
+    !digest.test(String(release.releaseId)) ||
+    !artifactDigestPattern.test(String(release.artifactDigest)) ||
+    !Number.isSafeInteger(release.generation) ||
+    (release.generation as number) < 1
+  )
+    throw new Error("INVALID_RESPONSE");
+  return {
+    releaseId: String(release.releaseId),
+    artifactDigest: String(release.artifactDigest),
+    version: safeText(release.version, 100),
+    generation: release.generation as number,
+  };
+}
+
+function rateChangeProposal(value: unknown): ClaraRateChangeProposal {
+  const proposal = record(value), evaluation = record(proposal.evaluation);
+  const changedSessionIds = stringList(proposal.changedSessionIds);
+  if (
+    !digest.test(String(proposal.proposalId)) ||
+    !digest.test(String(proposal.expectedActiveReleaseId)) ||
+    !artifactDigestPattern.test(String(proposal.candidateArtifactDigest)) ||
+    typeof proposal.effectiveDate !== "string" ||
+    !calendarDate.test(proposal.effectiveDate) ||
+    new Date(`${proposal.effectiveDate}T00:00:00.000Z`).toISOString().slice(0, 10) !== proposal.effectiveDate ||
+    typeof evaluation.accepted !== "boolean" ||
+    !Number.isSafeInteger(evaluation.passed) ||
+    !Number.isSafeInteger(evaluation.total) ||
+    (evaluation.passed as number) < 0 ||
+    (evaluation.total as number) < 1 ||
+    (evaluation.passed as number) > (evaluation.total as number) ||
+    !artifactDigestPattern.test(String(evaluation.reportDigest))
+  )
+    throw new Error("INVALID_RESPONSE");
+  return {
+    proposalId: String(proposal.proposalId),
+    expectedActiveReleaseId: String(proposal.expectedActiveReleaseId),
+    candidateArtifactDigest: String(proposal.candidateArtifactDigest),
+    candidateVersion: safeText(proposal.candidateVersion, 100),
+    effectiveDate: proposal.effectiveDate,
+    previousRateMinor: safeMoney(proposal.previousRateMinor),
+    newRateMinor: safeMoney(proposal.newRateMinor),
+    baselineTotalMinor: safeMoney(proposal.baselineTotalMinor),
+    candidateTotalMinor: safeMoney(proposal.candidateTotalMinor),
+    changedSessionIds,
+    explanation: safeText(proposal.explanation, 500),
+    evaluation: {
+      evaluationId: safeText(evaluation.evaluationId, 100),
+      reportDigest: String(evaluation.reportDigest),
+      accepted: evaluation.accepted,
+      passed: evaluation.passed as number,
+      total: evaluation.total as number,
+    },
+  };
+}
+
+function adaptationState(value: unknown): ClaraAdaptationState {
+  const state = record(value);
+  if (state.schemaVersion !== 1) throw new Error("INVALID_RESPONSE");
+  return {
+    schemaVersion: 1,
+    active: releaseSummary(state.active),
+    ...(state.rollbackTarget === undefined ? {} : { rollbackTarget: releaseSummary(state.rollbackTarget) }),
+    ...(state.proposal === undefined ? {} : { proposal: rateChangeProposal(state.proposal) }),
+  };
+}
+
 export function parseClaraBridgeResponse(
   request: ClaraBrowserRequest,
   value: unknown,
 ): ClaraBrowserResponse {
   const operation = request.operation;
   const input = record(value);
+  if (
+    operation === "adaptation-status" ||
+    operation === "adaptation-evaluate" ||
+    operation === "adaptation-activate" ||
+    operation === "adaptation-rollback"
+  ) {
+    return { operation, adaptation: adaptationState(input) } as ClaraBrowserResponse;
+  }
   if (operation === "prepare" || operation === "run") {
     if (
       input.schemaVersion !== 1 ||
@@ -225,6 +400,7 @@ export function parseClaraBridgeResponse(
       },
     };
   }
+  if (operation !== "trace") throw new Error("INVALID_RESPONSE");
   const job = record(input.job);
   if (
     input.schemaVersion !== 1 ||

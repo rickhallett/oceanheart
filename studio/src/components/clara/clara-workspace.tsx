@@ -5,6 +5,7 @@ import { FileText, Sparkles } from "lucide-react";
 import { Shell } from "@/components/workspace/workspace";
 import { signOutPractice } from "@/app/practice/actions";
 import type {
+  ClaraAdaptationState,
   ClaraBrowserResponse,
   ClaraDraft,
   ClaraRun,
@@ -33,12 +34,23 @@ function pounds(minor: number) {
   }).format(minor / 100);
 }
 
+function poundsToMinor(value: string) {
+  if (!/^\d{1,6}(?:\.\d{1,2})?$/.test(value)) return null;
+  const [pounds, pence = ""] = value.split(".");
+  return Number(pounds) * 100 + Number(pence.padEnd(2, "0"));
+}
+
 export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
   const [run, setRun] = useState<ClaraRun>();
   const [draft, setDraft] = useState<ClaraDraft>();
   const [trace, setTrace] = useState<ClaraTraceSummary>();
+  const [adaptation, setAdaptation] = useState<ClaraAdaptationState>();
   const [busy, setBusy] = useState(false);
+  const [adaptationBusy, setAdaptationBusy] = useState(false);
   const [error, setError] = useState("");
+  const [adaptationError, setAdaptationError] = useState("");
+  const [effectiveDate, setEffectiveDate] = useState("2026-09-01");
+  const [newRate, setNewRate] = useState("90.00");
 
   const inspect = useCallback(async (runId: string) => {
     setBusy(true);
@@ -69,6 +81,11 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
   }, []);
 
   useEffect(() => {
+    void requestClara({ operation: "adaptation-status" })
+      .then((response) => {
+        if (response.operation === "adaptation-status") setAdaptation(response.adaptation);
+      })
+      .catch(() => setAdaptationError("Rate changes are not available right now."));
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved && runIdPattern.test(saved)) void inspect(saved);
@@ -76,6 +93,70 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
       setError("This browser cannot remember the draft. Keep this page open while reviewing it.");
     }
   }, [inspect]);
+
+  async function adaptationAction(body: object) {
+    setAdaptationBusy(true);
+    setAdaptationError("");
+    try {
+      const response = await requestClara(body);
+      if (
+        response.operation !== "adaptation-status" &&
+        response.operation !== "adaptation-evaluate" &&
+        response.operation !== "adaptation-activate" &&
+        response.operation !== "adaptation-rollback"
+      ) throw new Error("INVALID_RESPONSE");
+      setAdaptation(response.adaptation);
+      return response.adaptation;
+    } catch (reason) {
+      if (reason instanceof Error && reason.message === "SESSION_REQUIRED") {
+        window.location.assign("/sign-in");
+        return;
+      }
+      setAdaptationError("The rate change could not be completed. The current rule remains active.");
+    } finally {
+      setAdaptationBusy(false);
+    }
+  }
+
+  async function evaluateRateChange() {
+    const newRateMinor = poundsToMinor(newRate);
+    if (newRateMinor === null) {
+      setAdaptationError("Enter a GBP rate with no more than two decimal places.");
+      return;
+    }
+    await adaptationAction({ operation: "adaptation-evaluate", effectiveDate, newRateMinor });
+  }
+
+  async function activateRateChange() {
+    const proposal = adaptation?.proposal;
+    if (!proposal?.evaluation.accepted) return;
+    const state = await adaptationAction({
+      operation: "adaptation-activate",
+      proposalId: proposal.proposalId,
+      expectedActiveReleaseId: proposal.expectedActiveReleaseId,
+    });
+    if (state) {
+      setRun(undefined);
+      setDraft(undefined);
+      setTrace(undefined);
+      try { localStorage.removeItem(storageKey); } catch { /* Server state remains authoritative. */ }
+    }
+  }
+
+  async function rollbackRateChange() {
+    if (!adaptation?.rollbackTarget) return;
+    const state = await adaptationAction({
+      operation: "adaptation-rollback",
+      targetReleaseId: adaptation.rollbackTarget.releaseId,
+      expectedActiveReleaseId: adaptation.active.releaseId,
+    });
+    if (state) {
+      setRun(undefined);
+      setDraft(undefined);
+      setTrace(undefined);
+      try { localStorage.removeItem(storageKey); } catch { /* Server state remains authoritative. */ }
+    }
+  }
 
   async function prepare() {
     setBusy(true);
@@ -141,6 +222,68 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                   <div><dt>10 September</dt><dd>Cancelled · Fictional policy · £40.00</dd></div>
                   <div><dt>17 September</dt><dd>Attended · Prepaid · £0.00 due</dd></div>
                 </dl>
+              </section>
+
+              <section className="clara-adaptation" aria-labelledby="clara-adaptation-title">
+                <p className="ws-date-label">Supported rule change</p>
+                <h2 id="clara-adaptation-title">Change the standard attended-session rate</h2>
+                <p>
+                  This demonstration evaluates one defined rate rule. It does not interpret general instructions, change negotiated rates, cancellation charges or prepaid sessions.
+                </p>
+                <div className="clara-rate-fields">
+                  <label>
+                    Effective from
+                    <input
+                      type="date"
+                      value={effectiveDate}
+                      disabled={adaptationBusy}
+                      onChange={(event) => setEffectiveDate(event.target.value)}
+                    />
+                  </label>
+                  <label>
+                    New standard rate (GBP)
+                    <input
+                      inputMode="decimal"
+                      value={newRate}
+                      disabled={adaptationBusy}
+                      onChange={(event) => setNewRate(event.target.value)}
+                    />
+                  </label>
+                </div>
+                <div className="clara-actions">
+                  <button className="ws-button" type="button" disabled={adaptationBusy} onClick={() => void evaluateRateChange()}>
+                    {adaptationBusy ? "Working…" : "Evaluate change"}
+                  </button>
+                  {adaptation?.proposal?.evaluation.accepted && (
+                    <button className="ws-button ws-button-primary" type="button" disabled={adaptationBusy} onClick={() => void activateRateChange()}>
+                      Activate evaluated change
+                    </button>
+                  )}
+                  {adaptation?.rollbackTarget && (
+                    <button className="ws-button" type="button" disabled={adaptationBusy} onClick={() => void rollbackRateChange()}>
+                      Roll back to {adaptation.rollbackTarget.version}
+                    </button>
+                  )}
+                </div>
+                {adaptationError && <p role="alert" className="clara-error">{adaptationError}</p>}
+                {adaptation && (
+                  <p className="clara-configuration">
+                    Active rule: <strong>{adaptation.active.version}</strong> · generation {adaptation.active.generation}
+                  </p>
+                )}
+                {adaptation?.proposal && (
+                  <section className="clara-proposal" aria-labelledby="clara-proposal-title">
+                    <p className="ws-date-label">Evaluated proposal</p>
+                    <h3 id="clara-proposal-title">
+                      {pounds(adaptation.proposal.baselineTotalMinor)} → {pounds(adaptation.proposal.candidateTotalMinor)}
+                    </h3>
+                    <p>{adaptation.proposal.explanation}</p>
+                    <p>
+                      Evaluation: {adaptation.proposal.evaluation.passed}/{adaptation.proposal.evaluation.total} checks passed
+                      {adaptation.proposal.evaluation.accepted ? ". Ready for your explicit activation." : ". Not accepted; activation is unavailable."}
+                    </p>
+                  </section>
+                )}
               </section>
 
               <div className="clara-actions">
