@@ -538,7 +538,7 @@ export function Shell({
           {live ? live.content : <Screen />}
         </main>
         <footer className="ws-footer">
-          <span>oceanheart Studio</span>
+          <a href="https://www.oceanheart.ai/studio">About Studio</a>
         </footer>
       </Box>
     </>

@@ -8,6 +8,9 @@ test("Studio root opens the application and links to the canonical product page"
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("link", { name: "About Studio", exact: true }).first()).toHaveAttribute("href", "https://www.oceanheart.ai/studio");
+  await page.goto("/app?demo=1");
+  await expect(page.locator("footer").getByRole("link", { name: "About Studio", exact: true })).toBeVisible();
+  await expect(page.locator("footer a")).toHaveAttribute("href", "https://www.oceanheart.ai/studio");
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width);
 });
