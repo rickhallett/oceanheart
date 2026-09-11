@@ -30,7 +30,7 @@ test("a supervisor process recovers an atomic draft and replay cannot duplicate 
   );
 });
 
-test("recovery defers an unexpired lease and installer is a hardened timer", async (t) => {
+test("recovery defers an unexpired lease and installer starts a scoped service user", async (t) => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "studio-recovery-lease-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const seeded = seedInterruptedDraft("c0002", root);
@@ -47,9 +47,13 @@ test("recovery defers an unexpired lease and installer is a hardened timer", asy
   const installer = join(benchRoot, "scripts/provision/install-runtime-recovery.sh");
   const source = readFileSync(installer, "utf8");
   assert.equal(spawnSync("bash", ["-n", installer]).status, 0);
-  assert.match(source, /User=studio-runtime/);
-  assert.match(source, /ProtectSystem=strict/);
-  assert.match(source, /RestrictAddressFamilies=AF_UNIX/);
-  assert.match(source, /ReadWritePaths=\/var\/lib\/studio-pi-runtime\/%i/);
+  assert.match(source, /--chuid studio-runtime:studio-runtime/);
+  assert.match(source, /\/run\/studio-pi-recovery-\$CLIENT_ID\.pid/);
+  assert.match(source, /--umask 077/);
+  assert.match(source, /--watch 30/);
+  assert.match(source, /pid file conflicts with an unrelated live process/);
+  assert.match(source, /if \[ ! -e "\$LOG_FILE" \]/);
+  assert.doesNotMatch(source, /systemctl/);
+  assert.doesNotMatch(source, /> "\$LOG_FILE"/);
   assert.doesNotMatch(source, /PASSWORD=|TOKEN=|KEY=|--env/);
 });

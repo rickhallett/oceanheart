@@ -73,15 +73,59 @@ export async function recoverDurableJobs(
 }
 
 async function main() {
-  const [clientId, stateRoot] = process.argv.slice(2);
+  const [clientId, stateRoot, mode, intervalArgument] = process.argv.slice(2);
   if (!clientId || !stateRoot)
-    throw new Error("Usage: recover-durable-jobs.ts <cNNNN> <state-root>");
+    throw new Error("Usage: recover-durable-jobs.ts <cNNNN> <state-root> [--watch seconds]");
   const expectedRoot = `/var/lib/studio-pi-runtime/${clientId}`;
   if (resolve(stateRoot) !== expectedRoot || basename(stateRoot) !== clientId)
     throw new Error("INVALID_STATE_ROOT");
-  const receipt = await recoverDurableJobs(clientId, stateRoot);
-  process.stdout.write(`${JSON.stringify(receipt)}\n`);
-  if (receipt.errors.length) process.exitCode = 1;
+  if (mode === undefined) {
+    const receipt = await recoverDurableJobs(clientId, stateRoot);
+    process.stdout.write(`${JSON.stringify(receipt)}\n`);
+    if (receipt.errors.length) process.exitCode = 1;
+    return;
+  }
+  const intervalSeconds = Number(intervalArgument);
+  if (
+    mode !== "--watch" ||
+    !Number.isSafeInteger(intervalSeconds) ||
+    intervalSeconds < 5 ||
+    intervalSeconds > 3600
+  )
+    throw new Error("INVALID_WATCH_INTERVAL");
+  let stopped = false;
+  process.once("SIGTERM", () => {
+    stopped = true;
+  });
+  process.once("SIGINT", () => {
+    stopped = true;
+  });
+  while (!stopped) {
+    try {
+      const receipt = await recoverDurableJobs(clientId, stateRoot);
+      process.stdout.write(`${JSON.stringify(receipt)}\n`);
+    } catch {
+      process.stdout.write('{"code":"SUPERVISOR_CYCLE_FAILED"}\n');
+    }
+    await new Promise<void>((resolvePromise) => {
+      let timer: NodeJS.Timeout;
+      const cleanup = () => {
+        process.off("SIGTERM", stop);
+        process.off("SIGINT", stop);
+      };
+      const stop = () => {
+        clearTimeout(timer);
+        cleanup();
+        resolvePromise();
+      };
+      timer = setTimeout(() => {
+        cleanup();
+        resolvePromise();
+      }, intervalSeconds * 1_000);
+      process.once("SIGTERM", stop);
+      process.once("SIGINT", stop);
+    });
+  }
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url)

@@ -32,24 +32,50 @@ if [ ! -f "/var/lib/studio-pi-runtime/$CLIENT_ID/jobs.sqlite" ]; then
   exit 66
 fi
 
-UNIT_PATH="/etc/systemd/system/studio-pi-recovery@.service"
-TIMER_PATH="/etc/systemd/system/studio-pi-recovery@.timer"
-{
-  printf '%s\n' '[Unit]' 'Description=Recover durable Studio Pi jobs for %i' 'After=local-fs.target'
-  printf '\n%s\n' '[Service]' 'Type=oneshot' 'User=studio-runtime' 'Group=studio-runtime'
-  printf 'WorkingDirectory=%s\n' "$BENCH_ROOT"
-  printf 'ExecStart=/usr/local/bin/node %s/scripts/provision/recover-durable-jobs.ts %%i /var/lib/studio-pi-runtime/%%i\n' "$BENCH_ROOT"
-  printf '%s\n' 'NoNewPrivileges=true' 'PrivateDevices=true' 'PrivateTmp=true' 'ProtectHome=true' 'ProtectSystem=strict' 'RestrictAddressFamilies=AF_UNIX' 'ReadWritePaths=/var/lib/studio-pi-runtime/%i'
-} > "$UNIT_PATH"
-{
-  printf '%s\n' '[Unit]' 'Description=Periodically recover durable Studio Pi jobs for %i'
-  printf '\n%s\n' '[Timer]' 'OnBootSec=15s' 'OnUnitActiveSec=30s' 'AccuracySec=1s' 'Unit=studio-pi-recovery@%i.service'
-  printf '\n%s\n' '[Install]' 'WantedBy=timers.target'
-} > "$TIMER_PATH"
-chown root:root "$UNIT_PATH" "$TIMER_PATH"
-chmod 0644 "$UNIT_PATH" "$TIMER_PATH"
-systemctl daemon-reload
-systemctl enable --now "studio-pi-recovery@$CLIENT_ID.timer"
-systemctl start "studio-pi-recovery@$CLIENT_ID.service"
-systemctl --quiet is-active "studio-pi-recovery@$CLIENT_ID.timer"
-printf '{"clientId":"%s","timer":"active"}\n' "$CLIENT_ID"
+STATE_ROOT="/var/lib/studio-pi-runtime/$CLIENT_ID"
+PID_FILE="/run/studio-pi-recovery-$CLIENT_ID.pid"
+LOG_FILE="$STATE_ROOT/recovery-supervisor.log"
+ENTRYPOINT="$BENCH_ROOT/scripts/provision/recover-durable-jobs.ts"
+EXPECTED_COMMAND="$ENTRYPOINT $CLIENT_ID $STATE_ROOT --watch 30"
+if [ -f "$PID_FILE" ]; then
+  EXISTING_PID="$(cat "$PID_FILE" 2>/dev/null || true)"
+  if [[ "$EXISTING_PID" =~ ^[0-9]+$ ]] && kill -0 "$EXISTING_PID" 2>/dev/null; then
+    PROCESS_COMMAND="$(tr '\000' ' ' < "/proc/$EXISTING_PID/cmdline")"
+    case "$PROCESS_COMMAND" in
+      *"$EXPECTED_COMMAND"*)
+        printf '{"clientId":"%s","supervisor":"already-active"}\n' "$CLIENT_ID"
+        exit 0
+        ;;
+      *)
+        printf 'pid file conflicts with an unrelated live process\n' >&2
+        exit 73
+        ;;
+    esac
+  fi
+fi
+rm -f "$PID_FILE"
+if [ ! -e "$LOG_FILE" ]; then
+  install -o studio-runtime -g studio-runtime -m 0600 /dev/null "$LOG_FILE"
+else
+  chown studio-runtime:studio-runtime "$LOG_FILE"
+  chmod 0600 "$LOG_FILE"
+fi
+/sbin/start-stop-daemon --start --background --make-pidfile \
+  --pidfile "$PID_FILE" --chuid studio-runtime:studio-runtime \
+  --chdir "$BENCH_ROOT" --umask 077 --output "$LOG_FILE" \
+  --startas /usr/local/bin/node -- \
+  "$ENTRYPOINT" "$CLIENT_ID" "$STATE_ROOT" --watch 30
+for attempt in 1 2 3 4 5; do
+  if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+    PROCESS_COMMAND="$(tr '\000' ' ' < "/proc/$(cat "$PID_FILE")/cmdline")"
+    case "$PROCESS_COMMAND" in
+      *"$EXPECTED_COMMAND"*)
+        printf '{"clientId":"%s","supervisor":"active"}\n' "$CLIENT_ID"
+        exit 0
+        ;;
+    esac
+  fi
+  sleep 1
+done
+printf 'recovery supervisor did not become ready\n' >&2
+exit 70
