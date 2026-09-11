@@ -25,6 +25,11 @@ test("exports only the exact tracked Studio tree with immutable provenance", asy
   await git(repo, "config", "user.name", "Synthetic Test");
   await writeFile(join(repo, "studio", "app.ts"), "export const version = 1;\n");
   await writeFile(join(repo, "studio", ".env.example"), "MODEL_API_KEY=\n");
+  await mkdir(join(repo, "studio", "bench", "test"), { recursive: true });
+  await writeFile(
+    join(repo, "studio", "bench", "test", "provider-fixture.ts"),
+    'export const fake = "secretcanary provider fixture";\n',
+  );
   await writeFile(join(repo, "website", "private-note.txt"), "not exported\n");
   await git(repo, "add", ".");
   await git(repo, "commit", "-qm", "first");
@@ -83,5 +88,24 @@ test("rejects tracked credential paths and recognizable secret material", async 
       destination: join(root, "content-export"),
     }),
     /secret material/,
+  );
+
+  await rm(join(repo, "studio", "config.txt"));
+  await mkdir(join(repo, "studio", "docs"), { recursive: true });
+  await writeFile(
+    join(repo, "studio", "docs", "operator.md"),
+    "-----BEGIN OPENSSH PRIVATE KEY-----\nsynthetic-but-recognizable\n",
+  );
+  await git(repo, "add", "-A");
+  await git(repo, "commit", "-qm", "credential in documentation");
+  const documentationSha = await git(repo, "rev-parse", "HEAD");
+  await assert.rejects(
+    exportStudioAtSha({
+      repositoryRoot: repo,
+      sourceRepository: "oceanheart/synthetic",
+      sourceSha: documentationSha,
+      destination: join(root, "documentation-export"),
+    }),
+    /secret material.*docs\/operator\.md/,
   );
 });
