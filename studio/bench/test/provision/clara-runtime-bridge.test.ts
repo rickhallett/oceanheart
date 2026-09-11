@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 import { createClaraRuntimeBridge } from "../../src/provision/clara-runtime-bridge.ts";
@@ -80,4 +81,12 @@ test("loopback bridge prepares, inspects and replays without caller client autho
   const denied = await call({ schemaVersion: 1, operation: "run", runId: run.runId }, "Bearer denied.token.fixture");
   assert.equal(denied.status, 403);
   assert.deepEqual(await denied.json(), { error: "REQUEST_DENIED" });
+});
+
+test("minimal-guest installer keeps the runtime unprivileged and loopback-only", async () => {
+  const script = await readFile(fileURLToPath(new URL("../../scripts/provision/install-clara-runtime.sh", import.meta.url)), "utf8");
+  assert.match(script, /start-stop-daemon --start --background --make-pidfile/);
+  assert.match(script, /--chuid studio-runtime:studio-runtime/);
+  assert.match(script, /127\.0\.0\.1:\$PORT\/healthz/);
+  assert.doesNotMatch(script, /0\.0\.0\.0/);
 });
