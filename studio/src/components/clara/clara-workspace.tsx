@@ -1,0 +1,195 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { FileText, Sparkles } from "lucide-react";
+import { Shell } from "@/components/workspace/workspace";
+import { signOutPractice } from "@/app/practice/actions";
+import type {
+  ClaraBrowserResponse,
+  ClaraDraft,
+  ClaraRun,
+  ClaraTraceSummary,
+} from "@/lib/clara-contract";
+import "./clara-workspace.css";
+
+const storageKey = "oceanheart:clara-fictional-run:v1";
+const runIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function requestClara(body: object): Promise<ClaraBrowserResponse> {
+  const response = await fetch("/api/private/clara", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (response.status === 401) throw new Error("SESSION_REQUIRED");
+  if (!response.ok) throw new Error("CLARA_UNAVAILABLE");
+  return response.json() as Promise<ClaraBrowserResponse>;
+}
+
+function pounds(minor: number) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+  }).format(minor / 100);
+}
+
+export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
+  const [run, setRun] = useState<ClaraRun>();
+  const [draft, setDraft] = useState<ClaraDraft>();
+  const [trace, setTrace] = useState<ClaraTraceSummary>();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const inspect = useCallback(async (runId: string) => {
+    setBusy(true);
+    setError("");
+    setDraft(undefined);
+    setTrace(undefined);
+    try {
+      const runResponse = await requestClara({ operation: "run", runId });
+      if (runResponse.operation !== "run") throw new Error("INVALID_RESPONSE");
+      setRun(runResponse.run);
+      const [draftResponse, traceResponse] = await Promise.all([
+        requestClara({ operation: "draft", runId }),
+        requestClara({ operation: "trace", runId }),
+      ]);
+      if (draftResponse.operation !== "draft" || traceResponse.operation !== "trace")
+        throw new Error("INVALID_RESPONSE");
+      setDraft(draftResponse.draft);
+      setTrace(traceResponse.trace);
+    } catch (reason) {
+      if (reason instanceof Error && reason.message === "SESSION_REQUIRED") {
+        window.location.assign("/sign-in");
+        return;
+      }
+      setError("The draft could not be loaded. Try again when the private runtime is available.");
+    } finally {
+      setBusy(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved && runIdPattern.test(saved)) void inspect(saved);
+    } catch {
+      setError("This browser cannot remember the draft. Keep this page open while reviewing it.");
+    }
+  }, [inspect]);
+
+  async function prepare() {
+    setBusy(true);
+    setError("");
+    setDraft(undefined);
+    setTrace(undefined);
+    try {
+      const response = await requestClara({ operation: "prepare" });
+      if (response.operation !== "prepare") throw new Error("INVALID_RESPONSE");
+      setRun(response.run);
+      try {
+        localStorage.setItem(storageKey, response.run.runId);
+      } catch {
+        // The durable server receipt remains authoritative for this request.
+      }
+      await inspect(response.run.runId);
+    } catch (reason) {
+      if (reason instanceof Error && reason.message === "SESSION_REQUIRED") {
+        window.location.assign("/sign-in");
+        return;
+      }
+      setError("The invoice draft could not be prepared. Nothing was sent or charged.");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="ws-root ws-live clara-instance">
+      <Shell
+        view="assistant"
+        live={{
+          practiceName: "Clara",
+          ownerName,
+          role: "Private demonstration",
+          go: () => window.scrollTo(0, 0),
+          href: () => "/app",
+          focused: {
+            title: "Invoice preparation",
+            navigationLabel: "Invoice preparation",
+          },
+          account: (
+            <form className="ws-live-account" action={signOutPractice}>
+              <button type="submit">Sign out</button>
+            </form>
+          ),
+          content: (
+            <section className="clara-workflow" aria-labelledby="clara-title">
+              <header>
+                <p className="ws-date-label">Fictional Clara demonstration</p>
+                <h1 id="clara-title">Prepare September’s invoice draft</h1>
+                <p>
+                  Review three fictional session records, then prepare a private draft. This does not send an invoice, collect payment or contact anyone.
+                </p>
+              </header>
+
+              <section className="clara-ledger" aria-labelledby="clara-ledger-title">
+                <div className="clara-section-heading">
+                  <FileText aria-hidden="true" size={18} />
+                  <h2 id="clara-ledger-title">Session ledger</h2>
+                </div>
+                <dl>
+                  <div><dt>3 September</dt><dd>Attended · Fictional agreement · £80.00</dd></div>
+                  <div><dt>10 September</dt><dd>Cancelled · Fictional policy · £40.00</dd></div>
+                  <div><dt>17 September</dt><dd>Attended · Prepaid · £0.00 due</dd></div>
+                </dl>
+              </section>
+
+              <div className="clara-actions">
+                <button className="ws-button ws-button-primary" type="button" disabled={busy} onClick={() => void prepare()}>
+                  <Sparkles aria-hidden="true" size={16} />
+                  {busy ? "Preparing…" : run ? "Retry safely" : "Prepare invoice draft"}
+                </button>
+                {run && (
+                  <button className="ws-button" type="button" disabled={busy} onClick={() => void inspect(run.runId)}>
+                    Reload result
+                  </button>
+                )}
+              </div>
+
+              {error && <p role="alert" className="clara-error">{error}</p>}
+              {run && (
+                <p role="status" className="clara-status">
+                  Draft run: <strong>{run.status.replaceAll("_", " ")}</strong>
+                </p>
+              )}
+
+              {draft && (
+                <section className="clara-result" aria-labelledby="clara-result-title">
+                  <p className="ws-date-label">Prepared draft</p>
+                  <h2 id="clara-result-title">Total {pounds(draft.totalMinor)}</h2>
+                  <ul>
+                    {draft.lines.map((line) => (
+                      <li key={line.sessionId}>
+                        <span>{line.sessionId.replace("clara-session-", "Session ")}</span>
+                        <strong>{pounds(line.amountMinor)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  {draft.prepaidSessionIds.length > 0 && (
+                    <p>{draft.prepaidSessionIds.length} prepaid session excluded from the amount due.</p>
+                  )}
+                  {draft.unresolved.length > 0 && (
+                    <p>{draft.unresolved.length} session needs review before this draft is ready.</p>
+                  )}
+                  <p className="clara-receipt">
+                    Durable receipt {draft.draftId.slice(0, 18)}…
+                    {trace && ` · ${trace.eventCount} trace events · ${trace.configurationVersion}`}
+                  </p>
+                </section>
+              )}
+            </section>
+          ),
+        }}
+      />
+    </div>
+  );
+}

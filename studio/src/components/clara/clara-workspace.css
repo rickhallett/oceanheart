@@ -1,0 +1,95 @@
+.clara-workflow {
+  max-width: 680px;
+  color: #354256;
+}
+.clara-workflow > header {
+  margin-bottom: 32px;
+}
+.clara-workflow h1 {
+  margin: 4px 0 10px;
+  color: #17212f;
+}
+.clara-workflow h2 {
+  margin: 0;
+  color: #17212f;
+}
+.clara-workflow p {
+  margin: 0;
+  line-height: 1.65;
+}
+.clara-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.clara-ledger dl {
+  margin: 0;
+}
+.clara-ledger dl > div {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+.clara-ledger dt {
+  color: #657389;
+}
+.clara-ledger dd {
+  margin: 0;
+  color: #17212f;
+  overflow-wrap: anywhere;
+}
+.clara-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 18px;
+}
+.clara-actions .ws-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.clara-status,
+.clara-error {
+  margin: 14px 0 !important;
+}
+.clara-error {
+  color: #9b2c2c;
+}
+.clara-result {
+  margin-top: 32px;
+}
+.clara-result h2 {
+  font-size: 22px;
+  margin: 4px 0 16px;
+}
+.clara-result ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+.clara-result li {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+.clara-receipt {
+  margin-top: 18px !important;
+  color: #657389;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 520px) {
+  .clara-ledger dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .clara-result li {
+    align-items: flex-start;
+  }
+}
