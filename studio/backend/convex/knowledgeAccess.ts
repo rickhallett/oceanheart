@@ -12,8 +12,12 @@ function identity(value: string) {
 export const status = query({
   args: { tenantId: v.id("tenants") },
   handler: async (ctx, { tenantId }) => {
-    await requireKnowledgeAccess(ctx, tenantId, "read");
-    return { authorised: true };
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) throw new ConvexError("UNAUTHENTICATED");
+    const membership = await ctx.db.query("memberships").withIndex("by_tenant_identity", q => q.eq("tenantId", tenantId).eq("identity", user.tokenIdentifier)).unique();
+    if (membership?.role === "owner") return { capability: "owner" as const };
+    const grant = await ctx.db.query("knowledgeAccessGrants").withIndex("by_tenant_identity", q => q.eq("tenantId", tenantId).eq("identity", user.tokenIdentifier)).unique();
+    return { capability: grant?.active ? grant.capability : null };
   },
 });
 

@@ -12,6 +12,11 @@ export type IngestionErrorCode =
   | "EXTRACTION_FAILED";
 
 export const supportedEngagementApi = {
+  access: makeFunctionReference<
+    "query",
+    { tenantId: TenantId },
+    { capability: "read" | "contribute" | "owner" | null }
+  >("knowledgeAccess:status"),
   changeSourceStatus: makeFunctionReference<
     "mutation",
     {

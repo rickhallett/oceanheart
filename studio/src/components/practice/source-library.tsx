@@ -69,9 +69,15 @@ export function SourceLibrary({
   canWrite: boolean;
   initialSection?: "documents" | "answers" | "tasks";
 }) {
-  return canWrite ? (
+  if (canWrite) return <LibraryBoundary key={tenantId}><Library tenantId={tenantId} initialSection={initialSection} capability="owner" /></LibraryBoundary>;
+  return <GrantedLibrary tenantId={tenantId} initialSection={initialSection} />;
+}
+function GrantedLibrary({tenantId, initialSection}:{tenantId:TenantId;initialSection:"documents"|"answers"|"tasks"}) {
+  const access = useQuery(supportedEngagementApi.access, {tenantId});
+  if (!access) return <p role="status">Checking Knowledge access…</p>;
+  return access.capability ? (
     <LibraryBoundary key={tenantId}>
-      <Library tenantId={tenantId} initialSection={initialSection} />
+      <Library tenantId={tenantId} initialSection={initialSection} capability={access.capability} />
     </LibraryBoundary>
   ) : (
     <div className="lp-empty">
@@ -83,9 +89,11 @@ export function SourceLibrary({
 function Library({
   tenantId,
   initialSection,
+  capability,
 }: {
   tenantId: TenantId;
   initialSection: "documents" | "answers" | "tasks";
+  capability: "read" | "contribute" | "owner";
 }) {
   const [archived, setArchived] = useState(false),
     [selected, setSelected] = useState<SourceId>(),
@@ -100,6 +108,7 @@ function Library({
     { initialNumItems: 20 },
   );
   const create = useMutation(api.sourceLibrary.create);
+  const canContribute = capability === "owner" || capability === "contribute";
   return (
     <section className="source-library">
       <header className="knowledge-header">
@@ -110,7 +119,7 @@ function Library({
             team and kept inside this engagement.
           </p>
         </div>
-        {!adding && !selected && section === "documents" && (
+        {canContribute && !adding && !selected && section === "documents" && (
           <button className="knowledge-primary" onClick={() => setAdding(true)}>
             <Plus size={16} />
             Add document
@@ -119,11 +128,14 @@ function Library({
       </header>
       <nav className="knowledge-tabs" aria-label="Knowledge sections">
         {(
-          [
+          (capability === "owner" ? [
             ["documents", "Documents"],
             ["answers", "Ask your library"],
             ["tasks", "Tasks"],
-          ] as const
+          ] : [
+            ["documents", "Documents"],
+            ["answers", "Ask your library"],
+          ]) as readonly (readonly ["documents" | "answers" | "tasks", string])[]
         ).map(([id, label]) => (
           <button
             key={id}
@@ -135,14 +147,14 @@ function Library({
         ))}
       </nav>
       <div hidden={section !== "answers"}>
-        <CitedAnswers tenantId={tenantId} canWrite={true} />
+        <CitedAnswers tenantId={tenantId} canWrite={true} canApprove={capability === "owner"} />
       </div>
-      <div hidden={section !== "tasks"}>
+      {capability === "owner" && <div hidden={section !== "tasks"}>
         <PrepareCompletion tenantId={tenantId} />
-      </div>
-      <TaskApproval tenantId={tenantId} />
+      </div>}
+      {capability === "owner" && <TaskApproval tenantId={tenantId} />}
       <div hidden={section !== "documents"}>
-        {!adding && !selected && <OwnerDocumentIngestion tenantId={tenantId} />}
+        {!adding && !selected && <OwnerDocumentIngestion tenantId={tenantId} capability={capability} />}
         {adding ? (
           <SourceEditor
             save={async (fields, key) => {
@@ -158,6 +170,7 @@ function Library({
             tenantId={tenantId}
             sourceId={selected}
             back={() => setSelected(undefined)}
+            capability={capability}
           />
         ) : (
           <>
@@ -197,7 +210,7 @@ function Library({
                     ? "Documents you archive will appear here."
                     : "Add a policy, a service guide or useful notes. Choose which documents to use when you ask a question."}
                 </p>
-                {!archived && (
+                {!archived && canContribute && (
                   <button
                     className="knowledge-primary"
                     onClick={() => setAdding(true)}
@@ -284,9 +297,11 @@ function sourceTitle(fileName: string) {
 export function OwnerDocumentIngestion({
   tenantId,
   replacement,
+  capability = "owner",
 }: {
   tenantId: TenantId;
   replacement?: { sourceId: SourceId; title: string; revision: number };
+  capability?: "read" | "contribute" | "owner";
 }) {
   const upload = useAction(supportedEngagementApi.upload);
   const process = useAction(supportedEngagementApi.process);
@@ -304,7 +319,7 @@ export function OwnerDocumentIngestion({
   } : recent ? { id: recent.id, fileName: recent.fileName, state: "pending" } : undefined;
   return (
     <DocumentUpload
-      capability="owner"
+      capability={capability}
       formats={ingestionFormats}
       latest={latest}
       replacement={!!replacement}
@@ -348,10 +363,12 @@ function SourceDetail({
   tenantId,
   sourceId,
   back,
+  capability,
 }: {
   tenantId: TenantId;
   sourceId: SourceId;
   back: () => void;
+  capability: "read" | "contribute" | "owner";
 }) {
   const value = useQuery(api.sourceLibrary.get, { tenantId, sourceId });
   const save = useMutation(api.sourceLibrary.save),
@@ -417,12 +434,12 @@ function SourceDetail({
       ) : (
         <>
           <p>{version.provenance || ""}</p>
-          {!source.archived && (
+          {!source.archived && capability !== "read" && (
             <div className="source-toolbar">
               <button disabled={pending} onClick={() => setEditing(true)}>
                 Edit document
               </button>
-              <button
+              {capability === "owner" && <button
                 className="document-answer-switch"
                 role="switch"
                 aria-checked={source.approvedVersionId === version._id}
@@ -437,27 +454,28 @@ function SourceDetail({
               >
                 <span aria-hidden="true" className="document-switch-track" />
                 Use in answers
-              </button>
-              <button
+              </button>}
+              {capability === "owner" && <button
                 disabled={pending}
                 onClick={() => setArchiveConfirm(true)}
               >
                 Archive document
-              </button>
-              <DeleteDocumentControl
+              </button>}
+              {capability === "owner" && <DeleteDocumentControl
                 disabled={pending}
                 deleteDocument={() => status("delete")}
-              />
+              />}
             </div>
           )}
           <pre className="source-text">{version.content}</pre>
-          <details>
+          {capability !== "read" && <details>
             <summary>Upload a replacement version</summary>
             <OwnerDocumentIngestion
               tenantId={tenantId}
               replacement={{ sourceId, title: source.title, revision: source.revision }}
+              capability={capability}
             />
-          </details>
+          </details>}
           {archiveConfirm && (
             <div role="group" aria-label="Confirm archive">
               <p>

@@ -40,19 +40,21 @@ class AnswerBoundary extends Component<
 export function CitedAnswers({
   tenantId,
   canWrite,
+  canApprove = canWrite,
 }: {
   tenantId: TenantId;
   canWrite: boolean;
+  canApprove?: boolean;
 }) {
   return canWrite ? (
     <AnswerBoundary key={tenantId}>
-      <Answers tenantId={tenantId} />
+      <Answers tenantId={tenantId} canApprove={canApprove} />
     </AnswerBoundary>
   ) : (
     <p>Answers from the library are private to practice owners.</p>
   );
 }
-function Answers({ tenantId }: { tenantId: TenantId }) {
+function Answers({ tenantId, canApprove }: { tenantId: TenantId; canApprove: boolean }) {
   const sources = usePaginatedQuery(
     api.sourceLibrary.list,
     { tenantId, archived: false },
@@ -208,7 +210,7 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
       {error && <p role="alert">{error}</p>}
       {result && (
         <AnswerBoundary key={sequence.current}>
-          <CurrentAnswer tenantId={tenantId} result={result} />
+          <CurrentAnswer tenantId={tenantId} result={result} canApprove={canApprove} />
         </AnswerBoundary>
       )}
     </section>
@@ -217,9 +219,11 @@ function Answers({ tenantId }: { tenantId: TenantId }) {
 export function CurrentAnswer({
   tenantId,
   result,
+  canApprove = true,
 }: {
   tenantId: TenantId;
   result: Result;
+  canApprove?: boolean;
 }) {
   // Reactive authorization/currentness gate: never display the action's cached text.
   const citations = useQuery(api.citedAnswers.resolve, {
@@ -265,7 +269,7 @@ export function CurrentAnswer({
           ))}
         </ol>
       )}
-      {result.status === "answer" && citations.length > 0 && (
+      {canApprove && result.status === "answer" && citations.length > 0 && (
         <PrepareTask
           tenantId={tenantId}
           evidence={{
