@@ -164,10 +164,11 @@ export type WorkflowDraft = {
   id: string;
   status: "draft" | "accepted" | "changes_requested";
   title: string;
-  summary: string;
-  steps: { title: string; responsibility: string; detail: string }[];
-  limitations: string[];
-  citations: { sourceId: string; title: string; version: number; excerpt: string }[];
+  outcome: string;
+  reviewNotes: string;
+  revision: number;
+  evidenceState: "current" | "unavailable";
+  evidence: WorkflowEvidence[];
 };
 
 export function WorkflowBrief({
@@ -179,7 +180,7 @@ export function WorkflowBrief({
   evidence: WorkflowEvidence[];
   draft?: WorkflowDraft;
   prepare: (input: { title: string; objective: string; reviewNotes: string; sourceIds: string[] }) => Promise<void>;
-  review: (decision: "accept" | "request_changes") => Promise<void>;
+  review: (decision: "accept" | "request_changes", expectedRevision: number) => Promise<void>;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [title, setTitle] = useState("");
@@ -194,8 +195,10 @@ export function WorkflowBrief({
     try {
       await operation();
       setMessage(success);
-    } catch {
-      setMessage("The workflow brief could not be updated. No workflow was activated.");
+    } catch (error) {
+      setMessage(String(error).includes("EVIDENCE_UNAVAILABLE")
+        ? "The selected evidence changed or is no longer approved. Review the documents and save a new draft."
+        : "The workflow brief could not be updated. No workflow was activated.");
     } finally {
       setBusy(false);
     }
@@ -276,35 +279,27 @@ export function WorkflowBrief({
         <article className="workflow-draft">
           <p className="workflow-draft-label">Reviewed draft · {draft.status.replace("_", " ")}</p>
           <h3>{draft.title}</h3>
-          <p>{draft.summary}</p>
-          <h4>Proposed steps</h4>
+          <h4>Outcome to explore</h4>
+          <p>{draft.outcome}</p>
+          {draft.reviewNotes && <><h4>Limits or questions for review</h4><p>{draft.reviewNotes}</p></>}
+          <h4>Evidence references</h4>
           <ol>
-            {draft.steps.map((step) => (
-              <li key={`${step.title}:${step.responsibility}`}>
-                <strong>{step.title}</strong>
-                <span>{step.responsibility}</span>
-                <p>{step.detail}</p>
+            {draft.evidence.map((source) => (
+              <li key={`${source.sourceId}:${source.version}`}>
+                <span>{source.title} · version {source.version}</span>
               </li>
             ))}
           </ol>
-          <h4>Limits and review points</h4>
-          <ul>{draft.limitations.map((limit) => <li key={limit}>{limit}</li>)}</ul>
-          <h4>Evidence used</h4>
-          <ol>
-            {draft.citations.map((citation) => (
-              <li key={`${citation.sourceId}:${citation.version}:${citation.excerpt}`}>
-                <blockquote>{citation.excerpt}</blockquote>
-                <span>{citation.title} · version {citation.version}</span>
-              </li>
-            ))}
-          </ol>
+          {draft.evidenceState === "unavailable" && (
+            <p role="alert">Evidence changed or is no longer approved. This draft cannot be reviewed.</p>
+          )}
           {draft.status === "draft" && (
             <div className="source-toolbar">
-              <button disabled={busy} onClick={() => void act(
-                () => review("accept"), "Draft accepted for supported delivery review.",
+              <button disabled={busy || draft.evidenceState !== "current"} onClick={() => void act(
+                () => review("accept", draft.revision), "Draft accepted for supported delivery review.",
               )}>Accept draft</button>
-              <button disabled={busy} onClick={() => void act(
-                () => review("request_changes"), "Changes requested; no workflow was activated.",
+              <button disabled={busy || draft.evidenceState !== "current"} onClick={() => void act(
+                () => review("request_changes", draft.revision), "Changes requested; no workflow was activated.",
               )}>Request changes</button>
             </div>
           )}

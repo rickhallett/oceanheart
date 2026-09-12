@@ -8,11 +8,12 @@ import "./source-library.css";
 import { TaskApproval, PrepareCompletion } from "./approved-task";
 import { BookOpen, FileText, Plus, Search } from "lucide-react";
 import { CitedAnswers } from "./cited-answers";
-import { DocumentUpload, type UploadStatus } from "./supported-engagement";
+import { DocumentUpload, WorkflowBrief, type UploadStatus } from "./supported-engagement";
 import {
   supportedEngagementApi,
   type IngestionFormat,
   type KnowledgeUploadId,
+  type WorkflowBriefId,
 } from "./supported-engagement-api";
 
 type SourceId = Id<"knowledgeSources">;
@@ -67,17 +68,17 @@ export function SourceLibrary({
 }: {
   tenantId: TenantId;
   canWrite: boolean;
-  initialSection?: "documents" | "answers" | "tasks";
+  initialSection?: "documents" | "answers" | "tasks" | "workflow";
 }) {
   if (canWrite) return <LibraryBoundary key={tenantId}><Library tenantId={tenantId} initialSection={initialSection} capability="owner" /></LibraryBoundary>;
   return <GrantedLibrary tenantId={tenantId} initialSection={initialSection} />;
 }
-function GrantedLibrary({tenantId, initialSection}:{tenantId:TenantId;initialSection:"documents"|"answers"|"tasks"}) {
+function GrantedLibrary({tenantId, initialSection}:{tenantId:TenantId;initialSection:"documents"|"answers"|"tasks"|"workflow"}) {
   const access = useQuery(supportedEngagementApi.access, {tenantId});
   if (!access) return <p role="status">Checking Knowledge access…</p>;
   return access.capability ? (
     <LibraryBoundary key={tenantId}>
-      <Library tenantId={tenantId} initialSection={initialSection} capability={access.capability} />
+      <Library tenantId={tenantId} initialSection={initialSection === "workflow" ? "documents" : initialSection} capability={access.capability} />
     </LibraryBoundary>
   ) : (
     <div className="lp-empty">
@@ -92,13 +93,13 @@ function Library({
   capability,
 }: {
   tenantId: TenantId;
-  initialSection: "documents" | "answers" | "tasks";
+  initialSection: "documents" | "answers" | "tasks" | "workflow";
   capability: "read" | "contribute" | "owner";
 }) {
   const [archived, setArchived] = useState(false),
     [selected, setSelected] = useState<SourceId>(),
     [adding, setAdding] = useState(false),
-    [section, setSection] = useState<"documents" | "answers" | "tasks">(
+    [section, setSection] = useState<"documents" | "answers" | "tasks" | "workflow">(
       initialSection,
     ),
     [search, setSearch] = useState("");
@@ -132,10 +133,11 @@ function Library({
             ["documents", "Documents"],
             ["answers", "Ask your library"],
             ["tasks", "Tasks"],
+            ["workflow", "Workflow brief"],
           ] : [
             ["documents", "Documents"],
             ["answers", "Ask your library"],
-          ]) as readonly (readonly ["documents" | "answers" | "tasks", string])[]
+          ]) as readonly (readonly ["documents" | "answers" | "tasks" | "workflow", string])[]
         ).map(([id, label]) => (
           <button
             key={id}
@@ -151,6 +153,9 @@ function Library({
       </div>
       {capability === "owner" && <div hidden={section !== "tasks"}>
         <PrepareCompletion tenantId={tenantId} />
+      </div>}
+      {capability === "owner" && <div hidden={section !== "workflow"}>
+        <WorkflowBriefJourney tenantId={tenantId} />
       </div>}
       {capability === "owner" && <TaskApproval tenantId={tenantId} />}
       <div hidden={section !== "documents"}>
@@ -271,6 +276,54 @@ function Library({
         )}
       </div>
     </section>
+  );
+}
+
+function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
+  const eligible = useQuery(supportedEngagementApi.eligibleBriefEvidence, { tenantId });
+  const latest = useQuery(supportedEngagementApi.latestBrief, { tenantId });
+  const [briefId, setBriefId] = useState<WorkflowBriefId>();
+  const selected = useQuery(
+    supportedEngagementApi.getBrief,
+    briefId ? { tenantId, briefId } : "skip",
+  );
+  const prepareMutation = useMutation(supportedEngagementApi.prepareBrief);
+  const reviewMutation = useMutation(supportedEngagementApi.reviewBrief);
+  const prepareReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const reviewReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const draft = selected ?? latest ?? undefined;
+  return (
+    <WorkflowBrief
+      evidence={eligible ?? []}
+      draft={draft}
+      prepare={async ({ title, objective, reviewNotes, sourceIds }) => {
+        const payload = JSON.stringify({ title, outcome: objective, reviewNotes, sourceIds });
+        if (prepareReceipt.current?.payload !== payload)
+          prepareReceipt.current = { payload, key: crypto.randomUUID() };
+        const id = await prepareMutation({
+          tenantId,
+          title,
+          outcome: objective,
+          reviewNotes,
+          sourceIds: sourceIds as SourceId[],
+          requestKey: prepareReceipt.current.key,
+        });
+        setBriefId(id);
+      }}
+      review={async (decision, revision) => {
+        if (!draft) return;
+        const payload = JSON.stringify({ briefId: draft.id, decision, revision });
+        if (reviewReceipt.current?.payload !== payload)
+          reviewReceipt.current = { payload, key: crypto.randomUUID() };
+        await reviewMutation({
+          tenantId,
+          briefId: draft.id,
+          expectedRevision: revision,
+          decision,
+          requestKey: reviewReceipt.current.key,
+        });
+      }}
+    />
   );
 }
 

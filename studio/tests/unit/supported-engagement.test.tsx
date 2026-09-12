@@ -91,21 +91,30 @@ it("saves a user-authored brief only from selected approved evidence and never i
   }));
 });
 
-it("shows cited structured draft and records review without executing it", async () => {
+it("reviews a durable user-authored draft only while its evidence remains current", async () => {
   const review = vi.fn().mockResolvedValue(undefined);
   const draft: WorkflowDraft = {
     id: "w1",
     status: "draft",
     title: "Appointment exception review",
-    summary: "Prepare appointment exceptions for a person to review.",
-    steps: [{ title: "Collect", responsibility: "Oceanheart delivery team", detail: "Collect supported entries." }],
-    limitations: ["No messages, bookings or payments are changed."],
-    citations: [{ sourceId: "s1", title: "Fictional massage practice guide", version: 2, excerpt: "Review appointment exceptions before taking action." }],
+    outcome: "Prepare appointment exceptions for a person to review.",
+    reviewNotes: "No messages, bookings or payments are changed.",
+    revision: 0,
+    evidenceState: "current",
+    evidence: [{ sourceId: "s1", title: "Fictional massage practice guide", version: 2 }],
   };
-  render(<WorkflowBrief evidence={[]} draft={draft} prepare={vi.fn()} review={review} />);
-  expect(screen.getByText("Review appointment exceptions before taking action.")).toBeVisible();
+  const { rerender } = render(<WorkflowBrief evidence={[]} draft={draft} prepare={vi.fn()} review={review} />);
   expect(screen.getByText("No messages, bookings or payments are changed.")).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Accept draft" }));
-  await waitFor(() => expect(review).toHaveBeenCalledWith("accept"));
+  await waitFor(() => expect(review).toHaveBeenCalledWith("accept", 0));
   expect(screen.getByRole("status")).toHaveTextContent("supported delivery review");
+
+  rerender(<WorkflowBrief
+    evidence={[]}
+    draft={{ ...draft, evidenceState: "unavailable" }}
+    prepare={vi.fn()}
+    review={review}
+  />);
+  expect(screen.getByRole("alert")).toHaveTextContent("cannot be reviewed");
+  expect(screen.getByRole("button", { name: "Accept draft" })).toBeDisabled();
 });
