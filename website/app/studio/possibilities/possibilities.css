@@ -173,7 +173,7 @@
 .p-small-arrow { flex-shrink: 0; }
 .connection-choices button { display: inline-flex; align-items: center; gap: 9px; }
 .p-brand-mark { flex-shrink: 0; background: #fff; border-radius: 3px; padding: 3px; box-sizing: content-box; }
-.p-portrait img { width: 100%; height: auto; max-height: 620px; aspect-ratio: auto; object-fit: contain; border-radius: 0; -webkit-mask-image: radial-gradient(ellipse 50% 57% at 50% 45%, black 38%, transparent 95%); mask-image: radial-gradient(ellipse 50% 57% at 50% 45%, black 38%, transparent 95%); }
+.p-portrait img { width: 100%; height: auto; max-height: 620px; aspect-ratio: auto; object-fit: contain; border-radius: 0; opacity: .25; -webkit-mask-image: radial-gradient(ellipse 50% 57% at 50% 45%, black 38%, transparent 95%); mask-image: radial-gradient(ellipse 50% 57% at 50% 45%, black 38%, transparent 95%); }
 @media (max-width: 1000px) { .p-foundation { grid-template-columns: 1fr; gap: 38px; } .p-foundation-combination { max-width: 590px; width: 100%; margin-inline: auto; } .p-foundation-statement > p { max-width: 680px; } }
 @media (max-width: 600px) {
   .p-foundation { padding-block: 42px; }

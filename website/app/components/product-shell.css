@@ -1,0 +1,128 @@
+/* Shared geometry: changing between Studio and its technical note changes colour, not navigation placement. */
+:is(.studio-page, .technical-page) header.editorial-header {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 96px;
+  margin: 0;
+  padding: 24px max(5vw, calc((100vw - 1240px) / 2));
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  border: 0;
+  border-bottom: 1px solid var(--shell-rule, #e6e9ee);
+  background: var(--shell-bg, #fff);
+  color: var(--shell-ink, #354256);
+}
+:is(.studio-page, .technical-page) header.editorial-header .wordmark {
+  font: 400 17px/24px Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+  color: inherit;
+  white-space: nowrap;
+}
+:is(.studio-page, .technical-page) header.editorial-header nav {
+  width: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 32px;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  background: transparent;
+}
+:is(.studio-page, .technical-page) header.editorial-header nav a {
+  font: 400 16px/24px Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+  color: inherit;
+  opacity: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+:is(.studio-page, .technical-page) header.editorial-header nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+}
+:is(.studio-page, .technical-page) header.editorial-header .mobile-menu-toggle { color: inherit; }
+@media (min-width: 801px) {
+  :is(.studio-page, .technical-page) header.editorial-header .mobile-menu-toggle { display: none; }
+}
+@media (max-width: 800px) {
+  :is(.studio-page, .technical-page) header.editorial-header {
+    min-height: 72px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  :is(.studio-page, .technical-page) header.editorial-header .mobile-menu-toggle { display: flex; }
+  :is(.studio-page, .technical-page) header.editorial-header nav {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    visibility: hidden;
+    opacity: 0;
+  }
+  :is(.studio-page, .technical-page) header.editorial-header nav[data-open="true"] {
+    max-height: 180px;
+    padding-top: 16px;
+    visibility: visible;
+    opacity: 1;
+  }
+  :is(.studio-page, .technical-page) header.editorial-header nav a { min-height: 44px; font-size: 14px; }
+}
+
+/* Stable hero slots across the two product pages. */
+:is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) {
+  box-sizing: border-box;
+  height: max(800px, calc(min(1240px, 90vw) * .5094 + 160px));
+  grid-template-columns: 1.15fr 1.3fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 4%;
+  padding-block: 84px 76px;
+  align-items: center;
+}
+:is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) {
+  width: 100%;
+  max-width: 637px;
+  margin: 0;
+  justify-self: end;
+}
+:is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  opacity: .9;
+}
+@media(max-width: 1000px) and (min-width: 601px) {
+  :is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) { grid-template-columns: 1.3fr .8fr; gap: 5%; }
+}
+@media(max-width: 600px) {
+  :is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 40px;
+    padding-block: 52px;
+  }
+  :is(.studio-page, .technical-page) :is(.p-hero-copy, .tech-intro-copy) { align-self: start; }
+  :is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) { display: block; max-width: 340px; margin-inline: auto; justify-self: center; }
+}
+.technical-page .technical-intro { border-bottom: 0; box-shadow: inset 0 -1px var(--tech-line); }
+:is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) { width: min(1240px, 90vw); margin-inline: auto; }
+@media(max-width: 600px) {
+  .studio-page .p-hero .p-hero-art { grid-row: 1; }
+  .studio-page .p-hero .p-hero-copy { grid-row: 2; }
+}

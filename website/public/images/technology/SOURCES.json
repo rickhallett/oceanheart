@@ -1,0 +1,87 @@
+{
+  "collection": "Simple Icons and upstream brand assets",
+  "license": "See each upstream source; Simple Icons assets use CC0-1.0",
+  "note": "Brand marks remain subject to their owners trademark policies. Technologies without a verified mark retain text labels.",
+  "assets": [
+    {
+      "file": "react.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/react.svg"
+    },
+    {
+      "file": "vite.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/vite.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "vercel.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/vercel.svg"
+    },
+    {
+      "file": "nextdotjs.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/nextdotjs.svg"
+    },
+    {
+      "file": "typescript.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/typescript.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "chakraui.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/chakra-ui.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "convex.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/convex.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "nodedotjs.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/nodejs.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "sqlite.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/sqlite.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "githubactions.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/githubactions.svg"
+    },
+    {
+      "file": "cloudflare.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/cloudflare.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "ubuntu.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/ubuntu.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "jsonwebtokens.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/jwt.svg",
+      "note": "Original coloured brand artwork"
+    },
+    {
+      "file": "workos.svg",
+      "source": "https://raw.githubusercontent.com/pheralb/svgl/main/static/library/workos.svg",
+      "note": "Brand logo"
+    },
+    {
+      "file": "pi.svg",
+      "source": "https://pi.dev/logo-auto.svg",
+      "note": "Official logo linked in Pi project README"
+    },
+    {
+      "file": "exedev.png",
+      "source": "https://exe.dev/static/exy.png",
+      "note": "Official website navigation logo, published as PNG"
+    },
+    {
+      "file": "github.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/github.svg"
+    }
+  ]
+}
