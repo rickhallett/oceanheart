@@ -2,7 +2,7 @@ import { v, ConvexError } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { mutation, query, type QueryCtx } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
-import { requireMember } from "./lib/access";
+import { requireKnowledgeAccess } from "./lib/knowledgeAccess";
 import { requestKey, expectedRevision } from "./lib/catalog";
 
 const fields = {
@@ -54,8 +54,9 @@ async function owned(
   ctx: QueryCtx,
   tenantId: Id<"tenants">,
   sourceId: Id<"knowledgeSources">,
+  capability: "read" | "contribute" = "read",
 ) {
-  const actor = await requireMember(ctx, tenantId, true),
+  const actor = await requireKnowledgeAccess(ctx, tenantId, capability),
     source = await ctx.db.get(sourceId);
   if (!source || source.tenantId !== tenantId)
     throw new ConvexError("FORBIDDEN");
@@ -80,11 +81,11 @@ export const list = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    await requireMember(ctx, args.tenantId, true);
+    await requireKnowledgeAccess(ctx, args.tenantId, "read");
     const result = await ctx.db
       .query("knowledgeSources")
-      .withIndex("by_tenant_archived", (q) =>
-        q.eq("tenantId", args.tenantId).eq("archived", args.archived),
+      .withIndex("by_tenant_archived_deleted", (q) =>
+        q.eq("tenantId", args.tenantId).eq("archived", args.archived).eq("deletedAt", undefined),
       )
       .order("desc")
       .paginate({
@@ -148,7 +149,7 @@ export const version = query({
 export const create = mutation({
   args: { tenantId: v.id("tenants"), requestKey: v.string(), ...fields },
   handler: async (ctx, args) => {
-    const actor = await requireMember(ctx, args.tenantId, true);
+    const actor = await requireKnowledgeAccess(ctx, args.tenantId, "contribute");
     requestKey(args.requestKey);
     const data = await validated(args),
       payload = JSON.stringify(data);
@@ -200,7 +201,7 @@ export const save = mutation({
     ...fields,
   },
   handler: async (ctx, args) => {
-    const { source, actor } = await owned(ctx, args.tenantId, args.sourceId);
+    const { source, actor } = await owned(ctx, args.tenantId, args.sourceId, "contribute");
     const current = await currentVersion(ctx, source);
     expectedRevision(args.expectedRevision);
     requestKey(args.requestKey);
@@ -257,11 +258,12 @@ export const changeStatus = mutation({
       v.literal("approve"),
       v.literal("revoke"),
       v.literal("archive"),
+      v.literal("delete"),
     ),
   },
   handler: async (ctx, args) => {
+    await requireKnowledgeAccess(ctx, args.tenantId, "approve");
     const { source } = await owned(ctx, args.tenantId, args.sourceId);
-    await currentVersion(ctx, source);
     expectedRevision(args.expectedRevision);
     const actionKey = JSON.stringify({
       action: args.action,
@@ -273,15 +275,32 @@ export const changeStatus = mutation({
       source.lastAction === actionKey
     )
       return source.revision;
+    await currentVersion(ctx, source);
     if (
       source.revision !== args.expectedRevision ||
       source.currentVersionId !== args.versionId
     )
       throw new ConvexError("REVISION_CONFLICT");
-    if (source.archived) throw new ConvexError("SOURCE_ARCHIVED");
+    if (source.archived && args.action !== "delete") throw new ConvexError("SOURCE_ARCHIVED");
+    if (args.action === "delete") {
+      const versions = await ctx.db.query("knowledgeVersions").withIndex("by_source", q => q.eq("sourceId", source._id)).collect();
+      const completedUploads = await ctx.db.query("knowledgeUploads").withIndex("by_source", q => q.eq("sourceId", source._id)).collect();
+      const replacementUploads = await ctx.db.query("knowledgeUploads").withIndex("by_target_source", q => q.eq("targetSourceId", source._id)).collect();
+      const uploads = [...new Map([...completedUploads, ...replacementUploads].map(upload => [upload._id, upload])).values()];
+      for (const version of versions) await ctx.db.delete(version._id);
+      for (const upload of uploads) {
+        await ctx.storage.delete(upload.storageId);
+        await ctx.db.delete(upload._id);
+      }
+    }
     await ctx.db.patch(source._id, {
       approvedVersionId: args.action === "approve" ? args.versionId : undefined,
-      archived: args.action === "archive",
+      archived: args.action === "archive" || args.action === "delete",
+      deletedAt: args.action === "delete" ? Date.now() : source.deletedAt,
+      currentVersionId: args.action === "delete" ? undefined : source.currentVersionId,
+      title: args.action === "delete" ? "Deleted document" : source.title,
+      provenance: args.action === "delete" ? "" : source.provenance,
+      creationPayload: args.action === "delete" ? "deleted" : source.creationPayload,
       revision: source.revision + 1,
       lastAction: actionKey,
     });

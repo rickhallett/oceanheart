@@ -7,7 +7,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
-import { requireMember } from "./lib/access";
+import { requireKnowledgeAccess } from "./lib/knowledgeAccess";
 import { retrieve, type Passage } from "./lib/retrieval";
 import { providerConfig, selectEvidence } from "./lib/answerProvider";
 
@@ -39,7 +39,7 @@ async function eligible(
   tenantId: Id<"tenants">,
   sourceIds: Id<"knowledgeSources">[],
 ) {
-  await requireMember(ctx, tenantId, true);
+  await requireKnowledgeAccess(ctx, tenantId, "read");
   if (
     !sourceIds.length ||
     sourceIds.length > 5 ||
@@ -52,7 +52,7 @@ async function eligible(
       if (!source || source.tenantId !== tenantId)
         throw new ConvexError("FORBIDDEN");
       if (
-        source.archived ||
+        source.archived || source.deletedAt !== undefined ||
         source.audience !== "owner" ||
         !source.currentVersionId ||
         source.approvedVersionId !== source.currentVersionId
@@ -164,7 +164,7 @@ export const revalidate = internalQuery({
 export const availability = query({
   args: { tenantId: v.id("tenants") },
   handler: async (ctx, args) => {
-    await requireMember(ctx, args.tenantId, true);
+    await requireKnowledgeAccess(ctx, args.tenantId, "read");
     return { enabled: providerConfig(process.env)?.tenantId === args.tenantId };
   },
 });

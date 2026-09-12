@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@js-temporal/polyfill": "0.5.1",
-    "convex": "1.45.0"
+    "convex": "1.45.0",
+    "mammoth": "^1.12.2",
+    "pdfjs-dist": "^6.3.289"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "typescript": "^5.9.3",
-    "jose": "^6.1.0"
+    "jose": "^6.1.0",
+    "typescript": "^5.9.3"
   }
 }
