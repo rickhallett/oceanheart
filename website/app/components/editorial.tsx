@@ -51,7 +51,8 @@ export function Booking({ invitation, description = 'A free, short conversation 
 }
 
 export function Footer({ practice }: { practice?: Practice }) {
-  return <footer className="editorial-footer"><Link href={practice ? '/dev' : '/'}>{practice ? 'dev.oceanheart.ai' : 'oceanheart.ai'}</Link>{(practice ? practiceNavigation.dev : flagshipFooterNavigation).map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<a href="mailto:rick@oceanheart.ai">Email Rick</a><span>{practice ? 'Design & engineering · Rick Hallett' : 'Stay human. · Rick Hallett'}</span></footer>;
+  const pathname = usePathname();
+  return <footer className="editorial-footer"><Link href={practice ? '/dev' : '/'}>{practice ? 'dev.oceanheart.ai' : 'oceanheart.ai'}</Link>{(practice ? practiceNavigation.dev : flagshipFooterNavigation).filter(([, href]) => href !== pathname && !(href === '/studio' && pathname === '/')).map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<a href="mailto:rick@oceanheart.ai">Email Rick</a><span>{practice ? 'Design & engineering · Rick Hallett' : 'Stay human. © 2026'}</span></footer>;
 }
 
 export function ReadingSection({ label, children }: { label: string; children: ReactNode }) {

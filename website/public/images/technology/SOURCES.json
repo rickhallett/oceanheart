@@ -1,0 +1,47 @@
+{
+  "collection": "Simple Icons",
+  "license": "CC0-1.0",
+  "note": "Brand marks remain subject to their owners trademark policies. Technologies without a verified mark retain text labels.",
+  "assets": [
+    {
+      "file": "react.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/react.svg"
+    },
+    {
+      "file": "vite.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/vite.svg"
+    },
+    {
+      "file": "vercel.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/vercel.svg"
+    },
+    {
+      "file": "nextdotjs.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/nextdotjs.svg"
+    },
+    {
+      "file": "typescript.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/typescript.svg"
+    },
+    {
+      "file": "chakraui.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/chakraui.svg"
+    },
+    {
+      "file": "convex.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/convex.svg"
+    },
+    {
+      "file": "nodedotjs.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/nodedotjs.svg"
+    },
+    {
+      "file": "sqlite.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/sqlite.svg"
+    },
+    {
+      "file": "githubactions.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/githubactions.svg"
+    }
+  ]
+}

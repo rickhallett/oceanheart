@@ -18,7 +18,7 @@ function SystemDiagram() {
     <text x={x + 18} y={y + 47} className="diagram-detail">{detail}</text>
   </g>;
   return <figure className="system-figure">
-    <div className="figure-bar"><span>STUDIO / SYSTEM MAP</span><span>Application + dedicated runtime</span></div>
+    <div className="figure-bar"><span>System architecture</span><span>Application + dedicated runtime</span></div>
     <div className="diagram-scroll" tabIndex={0} role="region" aria-label="System architecture diagram; scroll horizontally on small screens">
       <svg viewBox="0 0 850 438" role="img" aria-labelledby="system-title system-description">
         <title id="system-title">Studio system architecture</title>
@@ -47,6 +47,11 @@ function SystemDiagram() {
 }
 
 const sections = [['01','Architecture','architecture'],['02','Client delivery','delivery'],['03','Workflow execution','execution'],['04','Development & release','development'],['05','Technology','technology']] as const;
+const technologyIcons: Record<string, string> = {
+  'React 19': 'react', 'Vite': 'vite', 'Vercel': 'vercel', 'Next.js 16': 'nextdotjs',
+  'TypeScript': 'typescript', 'Chakra UI': 'chakraui', 'Convex': 'convex',
+  'Node.js 24': 'nodedotjs', 'SQLite': 'sqlite', 'GitHub Actions': 'githubactions',
+};
 const stack = [
   ['Website','React 19 · vinext · Vite · Vercel','Public pages, with Hugo for the writing archive.'],
   ['Workspace','Next.js 16 · TypeScript · Chakra UI','Client workspace and authenticated server routes.'],
@@ -63,50 +68,50 @@ export default function TechnicalBit() {
     <main className="technical-shell">
       <header className="technical-intro">
         <div className="tech-intro-copy">
-        <p className="tech-eyebrow">Oceanheart Studio <span>/ Engineering notes</span></p>
+
         <h1>The technical bit.</h1>
-        <p className="tech-deck">How Studio is built, how a workflow runs,<br className="tech-desktop-break" /> and where the human work fits.</p>
-        <div className="tech-intro-bottom"><p>A client workspace, a bounded agent runtime, and a delivery team working from the same operational knowledge.</p><a href="https://github.com/rickhallett/oceanheart">Explore the repository <span aria-hidden="true">↗</span></a></div>
+        <p className="tech-deck">Application architecture and workflow runtime.</p>
+        <div className="tech-intro-bottom"><p>Next.js and Convex provide the authenticated workspace and client data. Pi executes workflow tools; SQLite persists jobs, effects and traces.</p><a href="https://github.com/rickhallett/oceanheart">Explore the repository </a></div>
         </div>
-        <figure className="technical-frontispiece"><img src="/images/studio/technical-frontispiece.png" alt="Fine architectural line drawing connecting source documents, a shared workspace and workflow infrastructure." width="1800" height="900" /><figcaption>Client knowledge. Shared understanding. Supported workflows.</figcaption></figure>
+        <figure className="technical-frontispiece"><img src="/images/studio/technical-frontispiece.png" alt="Fine architectural line drawing connecting source documents, a shared workspace and workflow infrastructure." width="1800" height="900" /></figure>
       </header>
       <div className="technical-layout">
-        <aside className="technical-index"><nav aria-label="On this page"><p>IN THIS NOTE</p>{sections.map(([n,label,id])=><a key={id} href={`#${id}`}><span>{n}</span>{label}</a>)}</nav><a className="tech-readme" href="https://github.com/rickhallett/oceanheart#readme">Project README ↗</a></aside>
+        <aside className="technical-index"><nav aria-label="On this page">{sections.map(([,label,id])=><a key={id} href={`#${id}`}>{label}</a>)}</nav><a className="tech-readme" href="https://github.com/rickhallett/oceanheart#readme">Project README</a></aside>
         <div className="tech-reading">
           <section id="architecture" className="tech-section">
-            <div className="tech-section-heading"><span>01</span><h2>Architecture</h2></div>
+            <div className="tech-section-heading"><h2>Architecture</h2></div>
             <p>Studio combines an authenticated web application, client-scoped data and a workflow runtime. The application holds the practice’s records and source material. The runtime executes specific jobs and records what happened.</p>
             <SystemDiagram />
             <div className="tech-two-columns"><div><h3>Client data</h3><p>Convex checks access to application records and source versions. Workflow requests resolve a verified identity to a server-owned client binding.</p></div><div><h3>Operational authority</h3><p>Provisioning and release credentials stay with the operator. The runtime receives only the tools and authority required for its job.</p></div></div>
           </section>
           <section id="delivery" className="tech-section">
-            <div className="tech-section-heading"><span>02</span><h2>From knowledge to a client workflow</h2></div>
+            <div className="tech-section-heading"><h2>From knowledge to a client workflow</h2></div>
             <p>The starting point is the client’s documents, policies, examples and exceptions. Versioned sources and cited answers give the client and delivery team a shared basis for deciding what to build.</p>
             <ol className="delivery-sequence">
-              <li><span>01</span><div><h3>Understand the work</h3><p>Consult the source material, ask specific questions and return to the client when facts are missing or conflicting.</p></div></li>
-              <li><span>02</span><div><h3>Agree the workflow</h3><p>Describe the intended outcome, inputs, decisions and approval points. Review the proposal with its owner.</p></div></li>
-              <li><span>03</span><div><h3>Build, check and use</h3><p>Develop a bounded change, test relevant examples and introduce it through supervised use.</p></div></li>
-              <li><span>↺</span><div><h3>Learn from the result</h3><p>Use observed results, exceptions and corrections to decide what changes next.</p></div></li>
+              <li><div><h3>Understand the work</h3><p>Consult the source material, ask specific questions and return to the client when facts are missing or conflicting.</p></div></li>
+              <li><div><h3>Agree the workflow</h3><p>Describe the intended outcome, inputs, decisions and approval points. Review the proposal with its owner.</p></div></li>
+              <li><div><h3>Build, check and use</h3><p>Develop a bounded change, test relevant examples and introduce it through supervised use.</p></div></li>
+              <li><div><h3>Learn from the result</h3><p>Use observed results, exceptions and corrections to decide what changes next.</p></div></li>
             </ol>
             <p className="tech-margin-note">Documents provide evidence. The client’s agreement defines permission to act.</p>
           </section>
           <section id="execution" className="tech-section">
-            <div className="tech-section-heading"><span>03</span><h2>Workflow execution</h2></div>
+            <div className="tech-section-heading"><h2>Workflow execution</h2></div>
             <p>A job needs to remain understandable after an interrupted connection or process restart. The runtime persists the job, request key, configuration references and outcome so a retry can recover an existing result.</p>
-            <div className="execution-strip" aria-label="Workflow execution sequence"><span>Validate request</span><b aria-hidden="true">→</b><span>Persist job</span><b aria-hidden="true">→</b><span>Run tool</span><b aria-hidden="true">→</b><span>Record outcome</span></div>
+            <div className="execution-strip" aria-label="Workflow execution sequence"><span>Validate request</span><span>Persist job</span><span>Run tool</span><span>Record outcome</span></div>
             <dl className="execution-outcomes"><div><dt><i className="outcome-dot" />Complete</dt><dd>Persist the result and effect receipt; return the result and trace.</dd></div><div><dt><i className="outcome-dot pending" />Missing facts</dt><dd>Request clarification before continuing.</dd></div><div><dt><i className="outcome-dot uncertain" />Uncertain effect</dt><dd>Hold for provider-specific reconciliation before attempting another action.</dd></div></dl>
-            <div className="tech-example"><p className="tech-eyebrow">A working example / Clara</p><h3>Preparing an invoice draft</h3><p>Clara uses validated session records and rate references to prepare a draft. A private pilot has exercised evaluation, activation and rollback of a supported rule change. This is bounded engineering evidence; real-client billing remains a separate milestone.</p></div>
+            <div className="tech-example"><h3>Clara: invoice draft generation</h3><p>Clara uses validated session records and rate references to prepare a draft. A private pilot has exercised evaluation, activation and rollback of a supported rule change. This is bounded engineering evidence; real-client billing remains a separate milestone.</p></div>
           </section>
           <section id="development" className="tech-section">
-            <div className="tech-section-heading"><span>04</span><h2>Development and release</h2></div>
+            <div className="tech-section-heading"><h2>Development and release</h2></div>
             <p><strong>Agentic Client Workflows</strong> do the client’s work. <strong>Agentic Developer Workflows</strong> help the engineering team implement, test and maintain the software. Oceanheart supplies the interpretation and development work, and remains responsible for scope and release.</p>
             <p>Changes start with a concrete need and examples. Focused checks cover the changed behaviour and its boundaries. Releases identify the code and configuration in use, with recovery or rollback when something goes wrong.</p>
-            <div className="tech-status"><span className="tech-status-label">CURRENT FOCUS</span><div><h3>One supported engagement</h3><p>The authenticated workspace and bounded runtime provide the foundations. The next delivery milestone is a practitioner’s authorised document set, reliable answers to their questions and one workflow reviewed with its owner. Real-user outcomes will come from that work.</p></div></div>
+            <div className="tech-status"><div><h3>One supported engagement</h3><p>The authenticated workspace and bounded runtime provide the foundations. The next delivery milestone is a practitioner’s authorised document set, reliable answers to their questions and one workflow reviewed with its owner. Real-user outcomes will come from that work.</p></div></div>
           </section>
           <section id="technology" className="tech-section">
-            <div className="tech-section-heading"><span>05</span><h2>Technology</h2></div>
-            <div className="tech-stack">{stack.map(([layer,tools,role])=><div key={layer}><h3>{layer}</h3><div><p>{tools}</p><span>{role}</span></div></div>)}</div>
-            <div className="tech-source-links"><a href="https://github.com/rickhallett/oceanheart#readme">Read the README <span aria-hidden="true">↗</span></a><a href="https://github.com/rickhallett/oceanheart/tree/studio/dev/studio/bench">Explore the runtime <span aria-hidden="true">↗</span></a><a href="/studio/case-study">Studio case study <span aria-hidden="true">→</span></a></div>
+            <div className="tech-section-heading"><h2>Technology</h2></div>
+            <div className="tech-stack">{stack.map(([layer,tools,role])=><div key={layer}><h3>{layer}</h3><div><div className="technology-logos">{tools.split(' · ').map(tool => <span className="technology-logo" key={tool}>{technologyIcons[tool] && <img src={`/images/technology/${technologyIcons[tool]}.svg`} alt="" width="24" height="24" />}<span>{tool}</span></span>)}</div><span>{role}</span></div></div>)}</div>
+            <div className="tech-source-links"><a href="https://github.com/rickhallett/oceanheart#readme">Read the README </a><a href="https://github.com/rickhallett/oceanheart/tree/studio/dev/studio/bench">Explore the runtime </a><a href="/studio/case-study">Studio case study </a></div>
           </section>
         </div>
       </div>
