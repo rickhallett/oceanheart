@@ -24,6 +24,7 @@ find_matching_hugo() {
   current_hugo="$("${candidate_path}" version)"
   read -r command_name version_token _ <<< "${current_hugo}"
   version_token="${version_token#v}"
+  version_token="${version_token%%-*}"
   version_token="${version_token%%+*}"
   if [[ "${command_name}" == "hugo" && "${version_token}" == "${HUGO_VERSION}" ]]; then
     hugo_bin="${candidate_path}"

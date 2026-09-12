@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.oceanheart.ai/studio" },
   robots: { index: true, follow: true },
   openGraph: { title: "Studio + Oceanheart | More room for the work that matters", url: "https://www.oceanheart.ai/studio" },
+  twitter: { card: "summary_large_image", title: "Studio + Oceanheart | More room for the work that matters", description: "AI agents for everyday practice administration, configured, tested and maintained with Rick at Oceanheart. A private workspace shaped around you." },
 };
 
 const contact = "mailto:rick@oceanheart.ai?subject=Let%E2%80%99s%20talk%20about%20my%20practice";
@@ -29,10 +30,11 @@ const possibilities = [
 export default function PossibilitiesPage() {
   return <main className="studio-page possibilities-page" id="possibilities-top">
     <SiteNav />
+    {/* Secondary product navigation is intentionally held while Studio becomes the main landing page.
     <nav className="studio-product-nav" aria-label="Studio possibilities">
       <a className="studio-product-name" href="#possibilities-top">Studio <span className="p-nav-plus">+ Oceanheart</span></a>
       <div><a href="#everyday">Everyday possibilities</a><a href="#connections">Your tools</a><a href="#vision">The bigger picture</a><a href={contact}>Talk to Rick</a></div>
-    </nav>
+    </nav> */}
 
     <section className="p-hero studio-wide" aria-labelledby="possibilities-title">
       <div className="p-hero-copy">
