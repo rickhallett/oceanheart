@@ -31,7 +31,7 @@ claim a dedicated browser profile.
 From `studio/bench`:
 
 ```sh
-node scripts/uat-storm/operator-broker.ts serve --state-dir /absolute/private/state --timeout-ms 120000
+node scripts/uat-storm/operator-broker.ts serve --state-dir /absolute/private/state --timeout-ms 600000
 node scripts/uat-storm/operator-broker.ts pending --state-dir /absolute/private/state
 node scripts/uat-storm/operator-broker.ts respond --state-dir /absolute/private/state --file /absolute/private/response.json
 ```
@@ -42,13 +42,15 @@ pending request ID and either `ok: true` with the kind-specific result, or
 and shape-invalid responses fail closed.
 
 The broker defaults to a 120-second operator deadline (configurable from 50 ms
-to 15 minutes). Shutdown returns `BROKER_SHUTDOWN` to an active caller and
+to 15 minutes); the c0001 pilot explicitly uses 600 seconds. Cleanup is an
+automatic broker control acknowledgement and never waits for browser authority.
+Shutdown returns `BROKER_SHUTDOWN` to an active caller and
 removes broker-owned pending/response/socket files. Timeout returns
 `OPERATOR_TIMEOUT` and retains no actionable pending request.
 
 ## Integrated timeout boundary
 
 The engine-side Unix socket adapter uses a configurable response timeout capped
-by the enclosing 180-second run deadline. Start the broker and engine with the
-same 180-second ceiling; every pending operator action still shares that single
+by the enclosing 600-second live-run deadline. Start the broker and engine with
+the same 600-second ceiling; every pending operator action still shares that single
 overall deadline rather than receiving a fresh budget.

@@ -76,9 +76,9 @@ export class UnixSocketStormAdapter implements StormAdapter {
   private readonly responseTimeoutMs: number;
   private sequence = 0;
 
-  constructor(socketPath: string, responseTimeoutMs = 180_000) {
+  constructor(socketPath: string, responseTimeoutMs = 600_000) {
     if (!isAbsolute(socketPath)) throw new Error("ADAPTER_SOCKET_INVALID");
-    if (!Number.isSafeInteger(responseTimeoutMs) || responseTimeoutMs < 1_000 || responseTimeoutMs > 180_000)
+    if (!Number.isSafeInteger(responseTimeoutMs) || responseTimeoutMs < 1_000 || responseTimeoutMs > 600_000)
       throw new Error("ADAPTER_TIMEOUT_INVALID");
     this.socketPath = socketPath;
     this.responseTimeoutMs = responseTimeoutMs;

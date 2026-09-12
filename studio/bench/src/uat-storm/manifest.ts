@@ -118,7 +118,9 @@ export function validateManifest(value: unknown, now = Date.now()): string[] {
 
   const limits: Record<string, unknown> = isRecord(m.limits) ? m.limits : {};
   need(Number.isSafeInteger(limits.maxActions) && Number(limits.maxActions) >= 1 && Number(limits.maxActions) <= 5, "ACTION_BUDGET_INVALID");
-  need(Number.isSafeInteger(limits.maxSeconds) && Number(limits.maxSeconds) >= 1 && Number(limits.maxSeconds) <= 180, "TIME_BUDGET_INVALID");
+  const maxSeconds = m.mode === "live" ? 600 : 180;
+  need(Number.isSafeInteger(limits.maxSeconds) && Number(limits.maxSeconds) >= 1 && Number(limits.maxSeconds) <= maxSeconds,
+    "TIME_BUDGET_INVALID");
   need(limits.maxModelDecisions === 0, "MODEL_DECISIONS_DENIED");
   need(limits.maxCostMicros === 0, "MODEL_COST_DENIED");
   if (Number.isFinite(expiresAt) && Number.isSafeInteger(limits.maxSeconds))

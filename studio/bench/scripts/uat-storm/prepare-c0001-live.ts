@@ -67,7 +67,7 @@ async function main(): Promise<void> {
     !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(browserId) ||
     !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(tabId)) throw new Error("PREPARE_BINDING_INVALID");
   const expiry = Date.parse(expiresAt);
-  if (!Number.isFinite(expiry) || expiry < Date.now() + 180_000) throw new Error("PREPARE_EXPIRY_INVALID");
+  if (!Number.isFinite(expiry) || expiry < Date.now() + 600_000) throw new Error("PREPARE_EXPIRY_INVALID");
   await mkdir(output, { recursive: false, mode: 0o700 });
   const outputInfo = await lstat(output);
   if (!outputInfo.isDirectory() || outputInfo.isSymbolicLink() || (outputInfo.mode & 0o777) !== 0o700 ||
@@ -123,7 +123,7 @@ async function main(): Promise<void> {
       kind: "clara-durable-draft", readOnly: true,
       bindingDigest: "" as `sha256:${string}`, evidence: {} as EvidenceRef,
     },
-    limits: { maxActions: 5, maxSeconds: 180, maxModelDecisions: 0, maxCostMicros: 0 },
+    limits: { maxActions: 5, maxSeconds: 600, maxModelDecisions: 0, maxCostMicros: 0 },
     providersEnabled: false,
     faults: [],
   } satisfies StormManifest;

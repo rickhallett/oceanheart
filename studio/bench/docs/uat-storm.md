@@ -8,7 +8,7 @@ This is a single-workflow operator harness, not a load platform. It runs one fix
 4. retry the same release-safe request; and
 5. inspect again and require the same single effect.
 
-The pilot permits at most five actions and 180 seconds. Model decisions, model cost, provider calls and faults are fixed at zero. Production origins and the production Convex deployment are rejected. No command accepts browser selectors, task text, credentials, client IDs or arbitrary operations from a model or manifest.
+The live operator pilot permits at most five actions and 600 seconds; deterministic fixtures remain capped at 180 seconds. Model decisions, model cost, provider calls and faults are fixed at zero. Production origins and the production Convex deployment are rejected. No command accepts browser selectors, task text, credentials, client IDs or arbitrary operations from a model or manifest.
 
 ## Evidence and execution boundary
 
@@ -45,10 +45,10 @@ node scripts/uat-storm/run.ts fixture --run fixture-one --artifacts /private/uat
 node scripts/uat-storm/run.ts validate --manifest /private/uat-storm/live-manifest.json
 node scripts/uat-storm/run.ts live --manifest /private/uat-storm/live-manifest.json \
   --artifacts /private/uat-storm --socket /private/operator-broker/operator.sock \
-  --response-timeout-ms 180000
+  --response-timeout-ms 600000
 node scripts/uat-storm/run.ts live --resume --manifest /private/uat-storm/resume-manifest.json \
   --artifacts /private/uat-storm --socket /private/operator-broker/operator.sock \
-  --response-timeout-ms 180000
+  --response-timeout-ms 600000
 ```
 
 For each pending broker request, the operator first confirms the bound tab is

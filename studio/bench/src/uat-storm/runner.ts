@@ -110,11 +110,11 @@ export class ClaraStormRunner {
     return seen;
   }
 
-  private async guard(signal?: AbortSignal) {
+  private async guard(reinspect: boolean, signal?: AbortSignal) {
     if (Date.now() >= this.deadlineAt) throw new Error("RUN_DEADLINE_EXCEEDED");
     if (this.journal.events.filter((event) => event.kind === "action-intent").length > this.manifest.limits.maxActions)
       throw new Error("ACTION_BUDGET_EXCEEDED");
-    await this.inspectAdapter(signal);
+    if (reinspect) await this.inspectAdapter(signal);
   }
 
   private stop(classification: RunOutcome["classification"], code: string): never {
@@ -157,7 +157,9 @@ export class ClaraStormRunner {
       return;
     }
     if (priorTerminal) this.stop(priorTerminal.kind === "invariant-failed" ? "invariant_failed" : "effect_uncertain", "PRIOR_STEP_NOT_RECOVERABLE");
-    await this.guard();
+    // The initial binding probe covers reads. Re-probe immediately before each
+    // write; the single broker and exclusive lease bind the intervening reads.
+    await this.guard(action.operation === "write");
     const priorIntent = this.journal.events.find((event) => event.kind === "action-intent" && event.actionId === action.actionId);
     if (!priorIntent) {
       if (this.journal.events.filter((event) => event.kind === "action-intent").length >= this.manifest.limits.maxActions)
@@ -202,7 +204,6 @@ export class ClaraStormRunner {
       // pre-dispatch policy stop.
       await this.reconcile(action);
     } else {
-      await this.guard();
       try { validateBaselineObservation(acknowledgement.observation); }
       catch { this.stop("invariant_failed", "CLARA_BASELINE_MISMATCH"); }
       await this.append({ epoch: this.manifest.lease.epoch, kind: "read-complete", step: action.step,

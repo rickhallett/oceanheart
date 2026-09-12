@@ -29,6 +29,15 @@ test("production, cost, faults, missing operator binding and disabled live execu
     "MODEL_COST_DENIED", "FAULTS_DENIED", "LIVE_RUN_DISABLED"]) assert.ok(errors.includes(code), code);
 });
 
+test("live operator time permits 600 seconds while fixtures remain capped at 180", () => {
+  const manifest = liveManifest("/private/evidence");
+  manifest.limits.maxSeconds = 600;
+  assert.equal(validateManifest(manifest).includes("TIME_BUDGET_INVALID"), false);
+  manifest.mode = "fixture";
+  manifest.enabled = false;
+  assert.equal(validateManifest(manifest).includes("TIME_BUDGET_INVALID"), true);
+});
+
 test("changed receipt content is rejected before a live adapter can open", async () => {
   const root = await mkdtemp(join(tmpdir(), "storm-evidence-"));
   const manifest = await writeEvidence(liveManifest(root));

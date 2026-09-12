@@ -247,6 +247,10 @@ export class OperatorBroker {
       safeEnd(socket, failure(request.requestId, "BROKER_BUSY"));
       return;
     }
+    if (request.kind === "cleanup") {
+      safeEnd(socket, { schemaVersion: 1, requestId: request.requestId, ok: true, result: {} });
+      return;
+    }
     const active = {} as ActiveRequest;
     active.request = request;
     active.socket = socket;

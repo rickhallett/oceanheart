@@ -215,7 +215,7 @@ test("broker timeout and shutdown fail closed and remove pending state", async (
   const timeoutBroker = new OperatorBroker({ stateDir: timeoutDir, timeoutMs: 80, pollMs: 10 });
   await timeoutBroker.start();
   const timedOut = await exchange(timeoutBroker.paths.socket,
-    { schemaVersion: 1, requestId: "request-timeout", kind: "cleanup" });
+    { schemaVersion: 1, requestId: "request-timeout", kind: "inspect" });
   assert.deepEqual(timedOut,
     { schemaVersion: 1, requestId: "request-timeout", ok: false, code: "OPERATOR_TIMEOUT" });
   await assert.rejects(readFile(timeoutBroker.paths.pending), { code: "ENOENT" });
@@ -225,11 +225,23 @@ test("broker timeout and shutdown fail closed and remove pending state", async (
   const shutdownBroker = new OperatorBroker({ stateDir: shutdownDir, timeoutMs: 2_000, pollMs: 10 });
   await shutdownBroker.start();
   const result = exchange(shutdownBroker.paths.socket,
-    { schemaVersion: 1, requestId: "request-shutdown", kind: "cleanup" });
+    { schemaVersion: 1, requestId: "request-shutdown", kind: "inspect" });
   await eventually(() => readPendingOperatorRequest(shutdownDir));
   await shutdownBroker.close();
   assert.deepEqual(await result,
     { schemaVersion: 1, requestId: "request-shutdown", ok: false, code: "BROKER_SHUTDOWN" });
+});
+
+test("cleanup is an automatic control acknowledgement and creates no operator handoff", async () => {
+  const stateDir = join(await mkdtemp(join(tmpdir(), "oceanheart-broker-")), "state");
+  const broker = new OperatorBroker({ stateDir, timeoutMs: 2_000, pollMs: 10 });
+  await broker.start();
+  const response = await exchange(broker.paths.socket,
+    { schemaVersion: 1, requestId: "request-cleanup", kind: "cleanup" });
+  assert.deepEqual(response,
+    { schemaVersion: 1, requestId: "request-cleanup", ok: true, result: {} });
+  await assert.rejects(readFile(broker.paths.pending), { code: "ENOENT" });
+  await broker.close();
 });
 
 test("strict validation rejects secret-bearing fields and invalid action combinations", () => {

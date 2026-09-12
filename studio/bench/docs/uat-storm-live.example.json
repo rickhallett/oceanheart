@@ -40,7 +40,7 @@
     "bindingDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
     "evidence": {"path": "/private/evidence/oracle.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
   },
-  "limits": {"maxActions": 5, "maxSeconds": 180, "maxModelDecisions": 0, "maxCostMicros": 0},
+  "limits": {"maxActions": 5, "maxSeconds": 600, "maxModelDecisions": 0, "maxCostMicros": 0},
   "providersEnabled": false,
   "faults": []
 }
