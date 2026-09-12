@@ -6,8 +6,10 @@ export type IngestionErrorCode =
   | "EXTRACTION_FAILED";
 
 export class IngestionError extends Error {
-  constructor(readonly code: IngestionErrorCode) {
+  readonly code: IngestionErrorCode;
+  constructor(code: IngestionErrorCode) {
     super(code);
+    this.code = code;
   }
 }
 
@@ -58,8 +60,8 @@ export async function extractDocument(
       const result = await mammoth.extractRawText({ buffer: Buffer.from(bytes) });
       return checked(result.value, "INVALID_TEXT");
     }
-    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    const loadingTask = pdfjs.getDocument({ data: bytes });
+    const { getDocument } = await import("unpdf/pdfjs");
+    const loadingTask = getDocument({ data: bytes });
     const pdf = await loadingTask.promise;
     try {
       if (pdf.numPages > MAX_PDF_PAGES) throw new IngestionError("FILE_TOO_LARGE");

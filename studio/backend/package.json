@@ -12,7 +12,7 @@
     "@js-temporal/polyfill": "0.5.1",
     "convex": "1.45.0",
     "mammoth": "^1.12.2",
-    "pdfjs-dist": "^6.3.289"
+    "unpdf": "^1.8.1"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
