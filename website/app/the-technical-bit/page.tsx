@@ -62,10 +62,13 @@ export default function TechnicalBit() {
     <SiteNav />
     <main className="technical-shell">
       <header className="technical-intro">
-        <p className="tech-eyebrow"><span className="tech-mark" aria-hidden="true">✳</span> Oceanheart Studio <span>/ Engineering notes</span></p>
+        <div className="tech-intro-copy">
+        <p className="tech-eyebrow">Oceanheart Studio <span>/ Engineering notes</span></p>
         <h1>The technical bit.</h1>
         <p className="tech-deck">How Studio is built, how a workflow runs,<br className="tech-desktop-break" /> and where the human work fits.</p>
         <div className="tech-intro-bottom"><p>A client workspace, a bounded agent runtime, and a delivery team working from the same operational knowledge.</p><a href="https://github.com/rickhallett/oceanheart">Explore the repository <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <figure className="technical-frontispiece"><img src="/images/studio/technical-frontispiece.png" alt="Fine architectural line drawing connecting source documents, a shared workspace and workflow infrastructure." width="1800" height="900" /><figcaption>Client knowledge. Shared understanding. Supported workflows.</figcaption></figure>
       </header>
       <div className="technical-layout">
         <aside className="technical-index"><nav aria-label="On this page"><p>IN THIS NOTE</p>{sections.map(([n,label,id])=><a key={id} href={`#${id}`}><span>{n}</span>{label}</a>)}</nav><a className="tech-readme" href="https://github.com/rickhallett/oceanheart#readme">Project README ↗</a></aside>

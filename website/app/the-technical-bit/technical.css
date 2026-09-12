@@ -83,3 +83,25 @@
 @media(max-width: 520px) { .tech-two-columns { grid-template-columns: 1fr; }.system-figure figcaption::before { content: "Scroll the diagram to explore → "; color: var(--tech-accent); } }
 
 .tech-reading { min-width: 0; }
+
+/* The same page frame as Studio, with a dark surface and light engineering drawings. */
+.technical-page { --shell-bg: #101514; --shell-ink: #c7d1ca; --shell-rule: #2c3732; }
+.technical-shell { width: min(1240px, 90%); max-width: none; padding: 0; }
+.technical-intro { display: grid; grid-template-columns: 1.15fr 1.3fr; gap: 4%; align-items: center; padding-block: 84px 76px; }
+.technical-intro h1 { font-size: clamp(48px, 5.5vw, 78px); margin-top: 24px; }
+.tech-intro-bottom { display: block; margin-top: 24px; }
+.tech-intro-bottom a { display: inline-block; margin-top: 24px; }
+.technical-frontispiece { margin: 0; padding: 0; min-width: 0; }
+.technical-frontispiece img { display: block; width: 100%; height: auto; border: 1px solid #dfded7; border-radius: 3px; background: #f8f6f0; }
+.technical-frontispiece figcaption { color: var(--tech-muted); font: 10px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; margin-top: 14px; }
+.system-figure .figure-bar { background: #f6f3ec; border-color: #ddd8cc; color: #77716a; }
+.system-figure .figure-bar span:first-child { color: #7d5242; }
+.system-figure .diagram-scroll { background-color: #fcfaf5; background-image: radial-gradient(#ddd8cd .6px, transparent .6px); border-color: #ddd8cc; }
+.system-figure .diagram-node { fill: #fffcf7; stroke: #c6bba8; }
+.system-figure .diagram-node-accent { fill: #f1f6fa; stroke: #78a6c3; }
+.system-figure .diagram-label { fill: #3c352f; }
+.system-figure .diagram-detail { fill: #70675f; }
+.system-figure .diagram-annotation { fill: #857b6e; }
+.system-figure .diagram-path { stroke: #ac8976; }
+.system-figure .diagram-boundary { stroke: #c8b8a2; }
+@media (max-width: 800px) { .technical-intro { grid-template-columns: 1fr; padding-block: 44px 48px; gap: 32px; }.technical-frontispiece { width: 100%; }.technical-intro h1 { margin-top: 20px; } }

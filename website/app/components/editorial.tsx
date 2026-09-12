@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from '@/app/components/site-link';
+import { usePathname } from 'next/navigation';
 import { CardArt, type CardKind } from './card-art';
 import { practiceNavigation, flagshipFooterNavigation, flagshipNavigation, type Practice } from './practice';
 
 import { bookingLink, type BookingKind } from '../../lib/bookings';
 
 export function SiteNav({ practice }: { practice?: Practice }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -21,7 +23,7 @@ export function SiteNav({ practice }: { practice?: Practice }) {
     <Link href={practice ? `/${practice}` : "/"} className="wordmark" aria-label={practice ? `${practice} home` : "Oceanheart home"}>{practice ? `${practice}.` : ''}oceanheart.ai</Link>
     <button ref={menuButton} className="mobile-menu-toggle" aria-label={open ? 'close menu' : 'open menu'} aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen(!open)}><span className="menu-strokes" aria-hidden="true"><span /><span /></span></button>
     <nav id="primary-navigation" data-open={open} aria-label="primary navigation">
-      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} onClick={() => setOpen(false)} href={href}>{label}</Link>)}
+      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} aria-current={pathname === href || (!practice && href === '/studio' && pathname === '/') ? 'page' : undefined} onClick={() => setOpen(false)} href={href}>{label}</Link>)}
     </nav>
   </header>;
 }

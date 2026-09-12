@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './stay-human.css';
+import './components/product-shell.css';
 import { SectionReveals } from './components/section-reveals';
 
 const siteUrl = new URL('https://www.oceanheart.ai');
