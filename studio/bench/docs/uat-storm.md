@@ -67,6 +67,11 @@ node scripts/uat-storm/operator-response.ts oracle --pending /private/operator-b
   node scripts/uat-storm/operator-broker.ts respond --state-dir /private/operator-broker
 ```
 
+For this private pilot, the controller obtains that oracle result with
+`c0001-remote-oracle.ts --manifest MANIFEST --output NEW-PRIVATE-FILE`. It uses
+the pinned, host-verified SSH route and the credential-free helper installed on
+c0001; it cannot select another host, client, backend or state root.
+
 The committed example remains disabled. Private run artifacts and real evidence receipts stay outside Git under the canonical operations vault.
 
 ## Selective legacy provenance
