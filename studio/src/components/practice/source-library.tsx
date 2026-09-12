@@ -1,6 +1,6 @@
 "use client";
 import { Component, useRef, useState, type ReactNode } from "react";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { useAction, useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import type { Doc, Id } from "../../../backend/convex/_generated/dataModel";
 import { api } from "../../../backend/convex/_generated/api";
 import type { TenantId } from "./api";
@@ -8,6 +8,12 @@ import "./source-library.css";
 import { TaskApproval, PrepareCompletion } from "./approved-task";
 import { BookOpen, FileText, Plus, Search } from "lucide-react";
 import { CitedAnswers } from "./cited-answers";
+import { DocumentUpload, type UploadStatus } from "./supported-engagement";
+import {
+  supportedEngagementApi,
+  type IngestionFormat,
+  type KnowledgeUploadId,
+} from "./supported-engagement-api";
 
 type SourceId = Id<"knowledgeSources">;
 type Fields = {
@@ -26,6 +32,8 @@ function errorText(error: unknown) {
     return "Enter a title and non-empty text up to 32 KiB. The source description is limited to 500 characters.";
   if (text.includes("SOURCE_ARCHIVED"))
     return "This source is archived and cannot be changed.";
+  if (text.includes("SOURCE_DELETED"))
+    return "This document was deleted and is no longer available.";
   return "Could not save the change. Your draft is retained; try again.";
 }
 class LibraryBoundary extends Component<
@@ -96,8 +104,11 @@ function Library({
     <section className="source-library">
       <header className="knowledge-header">
         <div>
-          <h1>Knowledge library</h1>
-          <p>Your practice information, ready when you need it.</p>
+          <h1>Knowledge Centre</h1>
+          <p>
+            Your documents, shared with your authorised Oceanheart delivery
+            team and kept inside this engagement.
+          </p>
         </div>
         {!adding && !selected && section === "documents" && (
           <button className="knowledge-primary" onClick={() => setAdding(true)}>
@@ -131,6 +142,7 @@ function Library({
       </div>
       <TaskApproval tenantId={tenantId} />
       <div hidden={section !== "documents"}>
+        {!adding && !selected && <OwnerDocumentIngestion tenantId={tenantId} />}
         {adding ? (
           <SourceEditor
             save={async (fields, key) => {
@@ -248,6 +260,90 @@ function Library({
     </section>
   );
 }
+
+const ingestionFormats = [
+  { label: "TXT", extensions: [".txt"], mimeTypes: ["text/plain"], maxBytes: 5 * 1024 * 1024 },
+  { label: "Markdown", extensions: [".md", ".markdown"], mimeTypes: ["text/markdown"], maxBytes: 5 * 1024 * 1024 },
+  { label: "PDF", extensions: [".pdf"], mimeTypes: ["application/pdf"], maxBytes: 5 * 1024 * 1024 },
+  { label: "DOCX", extensions: [".docx"], mimeTypes: ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"], maxBytes: 5 * 1024 * 1024 },
+];
+
+function ingestionFormat(fileName: string): IngestionFormat {
+  const name = fileName.toLowerCase();
+  if (name.endsWith(".txt")) return "text";
+  if (name.endsWith(".md") || name.endsWith(".markdown")) return "markdown";
+  if (name.endsWith(".pdf")) return "pdf";
+  if (name.endsWith(".docx")) return "docx";
+  throw new Error("UNSUPPORTED_FORMAT");
+}
+
+function sourceTitle(fileName: string) {
+  return fileName.replace(/\.(?:txt|md|markdown|pdf|docx)$/i, "").replace(/[_-]+/g, " ").trim();
+}
+
+export function OwnerDocumentIngestion({
+  tenantId,
+  replacement,
+}: {
+  tenantId: TenantId;
+  replacement?: { sourceId: SourceId; title: string; revision: number };
+}) {
+  const upload = useAction(supportedEngagementApi.upload);
+  const process = useAction(supportedEngagementApi.process);
+  const [recent, setRecent] = useState<{ id: KnowledgeUploadId; fileName: string }>();
+  const status = useQuery(
+    supportedEngagementApi.status,
+    recent ? { tenantId, uploadId: recent.id } : "skip",
+  );
+  const receipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const latest: UploadStatus | undefined = recent && status ? {
+    id: recent.id,
+    fileName: recent.fileName,
+    state: status.status,
+    error: status.errorCode,
+  } : recent ? { id: recent.id, fileName: recent.fileName, state: "pending" } : undefined;
+  return (
+    <DocumentUpload
+      capability="owner"
+      formats={ingestionFormats}
+      latest={latest}
+      replacement={!!replacement}
+      upload={async (file) => {
+        const bytes = await file.arrayBuffer();
+        const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)))
+          .map((value) => value.toString(16).padStart(2, "0")).join("");
+        const format = ingestionFormat(file.name);
+        const payload = JSON.stringify({
+          name: file.name,
+          size: file.size,
+          hash,
+          format,
+          targetSourceId: replacement?.sourceId,
+          expectedRevision: replacement?.revision,
+        });
+        if (receipt.current?.payload !== payload) receipt.current = { payload, key: crypto.randomUUID() };
+        const registered = await upload({
+          tenantId,
+          bytes,
+          title: replacement?.title || sourceTitle(file.name),
+          provenance: `Uploaded as ${file.name}`,
+          format,
+          requestKey: receipt.current.key,
+          ...(replacement ? {
+            targetSourceId: replacement.sourceId,
+            expectedRevision: replacement.revision,
+          } : {}),
+        });
+        setRecent({ id: registered.uploadId, fileName: file.name });
+        try {
+          await process({ tenantId, uploadId: registered.uploadId });
+        } catch {
+          // The reactive, typed status is authoritative for extraction failures.
+        }
+      }}
+    />
+  );
+}
 function SourceDetail({
   tenantId,
   sourceId,
@@ -259,14 +355,14 @@ function SourceDetail({
 }) {
   const value = useQuery(api.sourceLibrary.get, { tenantId, sourceId });
   const save = useMutation(api.sourceLibrary.save),
-    change = useMutation(api.sourceLibrary.changeStatus);
+    change = useMutation(supportedEngagementApi.changeSourceStatus);
   const [editing, setEditing] = useState(false),
     [pending, setPending] = useState(false),
     [error, setError] = useState(""),
     [archiveConfirm, setArchiveConfirm] = useState(false);
   if (!value?.version) return <p role="status">Loading source…</p>;
   const { source, version } = value;
-  async function status(action: "approve" | "revoke" | "archive") {
+  async function status(action: "approve" | "revoke" | "archive" | "delete") {
     if (pending) return;
     setPending(true);
     setError("");
@@ -279,6 +375,7 @@ function SourceDetail({
         action,
       });
       setArchiveConfirm(false);
+      if (action === "delete") back();
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -347,9 +444,20 @@ function SourceDetail({
               >
                 Archive document
               </button>
+              <DeleteDocumentControl
+                disabled={pending}
+                deleteDocument={() => status("delete")}
+              />
             </div>
           )}
           <pre className="source-text">{version.content}</pre>
+          <details>
+            <summary>Upload a replacement version</summary>
+            <OwnerDocumentIngestion
+              tenantId={tenantId}
+              replacement={{ sourceId, title: source.title, revision: source.revision }}
+            />
+          </details>
           {archiveConfirm && (
             <div role="group" aria-label="Confirm archive">
               <p>
@@ -374,6 +482,35 @@ function SourceDetail({
         </>
       )}
     </>
+  );
+}
+
+export function DeleteDocumentControl({
+  disabled,
+  deleteDocument,
+}: {
+  disabled: boolean;
+  deleteDocument: () => Promise<void>;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  return confirming ? (
+    <div className="document-delete-confirm" role="group" aria-label="Confirm delete">
+      <p>
+        Delete this document permanently? Its uploaded file, text and version
+        history will be removed and it will stop appearing in citations. This
+        cannot be undone. Archive it instead if you need to retain its history.
+      </p>
+      <button disabled={disabled} onClick={() => void deleteDocument()}>
+        Confirm permanent delete
+      </button>
+      <button disabled={disabled} onClick={() => setConfirming(false)}>
+        Keep document
+      </button>
+    </div>
+  ) : (
+    <button disabled={disabled} onClick={() => setConfirming(true)}>
+      Delete document
+    </button>
   );
 }
 function VersionHistory({

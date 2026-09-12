@@ -230,6 +230,15 @@
 .source-library [role="status"] {
   line-height: 1.6;
 }
+.document-delete-confirm {
+  flex-basis: 100%;
+  padding: 16px;
+  border-left: 3px solid #9c2f26;
+  background: #fff7f6;
+}
+.document-delete-confirm p {
+  margin: 0 0 12px;
+}
 .source-library [hidden] {
   display: none !important;
 }
