@@ -158,3 +158,5 @@
   .technical-page .technology-logo > span { grid-column: 2; font-size: 14px; line-height: 1.4; }
   .technical-page .technology-logo img { grid-column: 1; grid-row: 1; }
 }
+
+.technology-logo img { color-scheme: light; }

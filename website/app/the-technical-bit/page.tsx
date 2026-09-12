@@ -39,7 +39,6 @@ function SystemDiagram() {
         <text x="668" y="401" textAnchor="middle" className="diagram-detail">SQLite / jobs · effects · traces</text>
         <path d="M330 196H515" className="diagram-boundary" />
         <text x="423" y="219" textAnchor="middle" className="diagram-annotation">separate execution path</text>
-        <text x="62" y="399" className="diagram-annotation">Release authority stays with Oceanheart operations.</text>
       </svg>
     </div>
     <div className="system-mobile" aria-label="Studio system architecture">
@@ -54,14 +53,15 @@ function SystemDiagram() {
 
 const sections = [['01','Architecture','architecture'],['02','Client delivery','delivery'],['03','Workflow execution','execution'],['04','Development & release','development'],['05','Technology','technology']] as const;
 const technologyIcons: Record<string, string> = {
+  'GitHub': 'github', 'exe.dev': 'exedev', 'Pi SDK': 'pi', 'vinext': 'cloudflare', 'WorkOS AuthKit': 'workos', 'jose (JWT)': 'jsonwebtokens', 'Ubuntu 24.04': 'ubuntu',
   'React 19': 'react', 'Vite': 'vite', 'Vercel': 'vercel', 'Next.js 16': 'nextdotjs',
   'TypeScript': 'typescript', 'Chakra UI': 'chakraui', 'Convex': 'convex',
   'Node.js 24': 'nodedotjs', 'SQLite': 'sqlite', 'GitHub Actions': 'githubactions',
 };
 const stack = [
   ['Website','React 19 · vinext · Vite · Vercel','Public pages, with Hugo for the writing archive.'],
-  ['Workspace','Next.js 16 · TypeScript · Chakra UI','Client workspace and authenticated server routes.'],
-  ['Identity','WorkOS AuthKit · jose','Sessions and server-side identity verification.'],
+  ['Workspace','Next.js 16 · TypeScript · Chakra UI · Ubuntu 24.04 · GitHub','Client workspace and authenticated server routes. Dedicated exe.dev instances run Ubuntu 24.04 LTS.'],
+  ['Identity','WorkOS AuthKit · jose (JWT)','Sessions and server-side identity verification.'],
   ['Application data','Convex','Records, source versions and authorised mutations.'],
   ['Execution','Node.js 24 · Pi SDK · TypeBox','Typed inputs and bounded workflow tools.'],
   ['Runtime storage','SQLite','Dedicated instance runtime: jobs, leases, retry keys, effects and traces. Application records remain in Convex.'],
@@ -116,8 +116,8 @@ export default function TechnicalBit() {
           </section>
           <section id="technology" className="tech-section">
             <div className="tech-section-heading"><h2>Technology</h2></div>
-            <div className="tech-stack">{stack.map(([layer,tools,role])=><div key={layer}><h3>{layer}</h3><div><div className="technology-logos">{tools.split(' · ').map(tool => <span className="technology-logo" key={tool}>{technologyIcons[tool] && <img src={`/images/technology/${technologyIcons[tool]}.svg`} alt="" width="24" height="24" />}<span>{tool}</span></span>)}</div><span>{role}</span></div></div>)}</div>
-            <div className="tech-source-links"><a href="https://github.com/rickhallett/oceanheart#readme">Read the README </a><a href="https://github.com/rickhallett/oceanheart/tree/studio/dev/studio/bench">Explore the runtime </a><a href="/studio/case-study">Studio case study </a></div>
+            <div className="tech-stack">{stack.map(([layer,tools,role])=><div key={layer}><h3>{layer}</h3><div><div className="technology-logos">{tools.split(' · ').map(tool => <span className="technology-logo" key={tool}>{technologyIcons[tool] && <img src={`/images/technology/${technologyIcons[tool]}.${tool === 'exe.dev' ? 'png' : 'svg'}?v=brand-colour-1`} alt="" width="24" height="24" />}<span>{tool}</span></span>)}</div><span>{role}</span></div></div>)}</div>
+            <div className="tech-source-links"><a href="https://github.com/rickhallett/oceanheart#readme">Read the README </a><a href="/studio/case-study">Studio case study </a></div>
           </section>
         </div>
       </div>
