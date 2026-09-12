@@ -77,3 +77,48 @@
   }
   :is(.studio-page, .technical-page) header.editorial-header nav a { min-height: 44px; font-size: 14px; }
 }
+
+/* Stable hero slots across the two product pages. */
+:is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) {
+  box-sizing: border-box;
+  height: max(800px, calc(min(1240px, 90vw) * .5094 + 160px));
+  grid-template-columns: 1.15fr 1.3fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 4%;
+  padding-block: 84px 76px;
+  align-items: center;
+}
+:is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) {
+  width: 100%;
+  max-width: 637px;
+  margin: 0;
+  justify-self: end;
+}
+:is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  opacity: .9;
+}
+@media(max-width: 1000px) and (min-width: 601px) {
+  :is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) { grid-template-columns: 1.3fr .8fr; gap: 5%; }
+}
+@media(max-width: 600px) {
+  :is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: 700px auto;
+    gap: 40px;
+    padding-block: 52px;
+  }
+  :is(.studio-page, .technical-page) :is(.p-hero-copy, .tech-intro-copy) { align-self: start; }
+  :is(.studio-page, .technical-page) :is(.p-hero-art, .technical-frontispiece) { display: block; max-width: 340px; margin-inline: auto; justify-self: center; }
+}
+.technical-page .technical-intro { border-bottom: 0; box-shadow: inset 0 -1px var(--tech-line); }
+:is(.studio-page, .technical-page) :is(.p-hero, .technical-intro) { width: min(1240px, 90vw); margin-inline: auto; }

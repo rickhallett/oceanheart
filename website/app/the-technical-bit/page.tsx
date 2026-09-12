@@ -58,7 +58,7 @@ const stack = [
   ['Identity','WorkOS AuthKit · jose','Sessions and server-side identity verification.'],
   ['Application data','Convex','Records, source versions and authorised mutations.'],
   ['Execution','Node.js 24 · Pi SDK · TypeBox','Typed inputs and bounded workflow tools.'],
-  ['Durability','SQLite','Jobs, leases, retry keys, effects and traces.'],
+  ['Runtime storage','SQLite','Dedicated instance runtime: jobs, leases, retry keys, effects and traces. Application records remain in Convex.'],
   ['Operations','GitHub Actions · Vercel · exe.dev','Verification, hosting, identified releases and recovery.'],
 ];
 
@@ -71,9 +71,9 @@ export default function TechnicalBit() {
 
         <h1>The technical bit.</h1>
         <p className="tech-deck">Application architecture and workflow runtime.</p>
-        <div className="tech-intro-bottom"><p>Next.js and Convex provide the authenticated workspace and client data. Pi executes workflow tools; SQLite persists jobs, effects and traces.</p><a href="https://github.com/rickhallett/oceanheart">Explore the repository </a></div>
+        <div className="tech-intro-bottom"><p>Next.js and Convex provide the authenticated workspace and client data. On dedicated instances, Pi executes workflow tools and SQLite persists their jobs, effects and traces.</p><a href="https://github.com/rickhallett/oceanheart">Explore the repository </a></div>
         </div>
-        <figure className="technical-frontispiece"><img src="/images/studio/technical-frontispiece.png" alt="Fine architectural line drawing connecting source documents, a shared workspace and workflow infrastructure." width="1800" height="900" /></figure>
+        <figure className="technical-frontispiece"><img src="/images/studio/technical-hero-variant.png" alt="A technical cutaway of Studio’s miniature machine, held in the same hand as the Studio hero." width="1254" height="1254" /></figure>
       </header>
       <div className="technical-layout">
         <aside className="technical-index"><nav aria-label="On this page">{sections.map(([,label,id])=><a key={id} href={`#${id}`}>{label}</a>)}</nav><a className="tech-readme" href="https://github.com/rickhallett/oceanheart#readme">Project README</a></aside>

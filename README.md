@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/oceanheart-logo.svg" alt="Oceanheart" width="360" />
+  <img src="website/public/images/studio-possibilities/hero-selected-refined.png" alt="Oceanheart Studio: Enterprise-grade. Human-sized. A miniature technological structure held in a hand." width="480" />
 </p>
 
 <p align="center">
