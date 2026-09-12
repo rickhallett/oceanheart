@@ -4,6 +4,8 @@ The private Clara instance supports one explicit, synthetic rule change: update 
 
 For the first UAT scenario, the server-owned fixture changes the eligible 3 September attended session from GBP 80 to GBP 90 effective 1 September 2026. The GBP 40 cancellation and prepaid session remain unchanged, so the draft comparison is GBP 120 to GBP 130.
 
+The first browser pilot accepts only that exact GBP 90 and 1 September 2026 combination. Other values are rejected locally with a specific pilot-limit message before any evaluation request. Editing either field removes the previously displayed proposal, so activation is never presented beside inputs that do not match that immutable evaluation.
+
 ## Browser bridge contract
 
 All requests use the existing same-origin `POST /api/private/clara` route. The route requires the current WorkOS session, forwards its access token only to the exact IPv4 loopback runtime, and never accepts `clientId`, actor, artifact paths, digests or arbitrary rules from the browser.

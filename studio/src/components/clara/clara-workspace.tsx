@@ -15,6 +15,9 @@ import "./clara-workspace.css";
 
 const storageKey = "oceanheart:clara-fictional-run:v1";
 const runIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const pilotEffectiveDate = "2026-09-01";
+const pilotRateMinor = 9000;
+const pilotRateMessage = "This pilot supports only £90.00 effective 1 September 2026. The current rule remains active.";
 
 async function requestClara(body: object): Promise<ClaraBrowserResponse> {
   const response = await fetch("/api/private/clara", {
@@ -49,8 +52,13 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
   const [adaptationBusy, setAdaptationBusy] = useState(false);
   const [error, setError] = useState("");
   const [adaptationError, setAdaptationError] = useState("");
-  const [effectiveDate, setEffectiveDate] = useState("2026-09-01");
+  const [effectiveDate, setEffectiveDate] = useState(pilotEffectiveDate);
   const [newRate, setNewRate] = useState("90.00");
+  const displayedProposal =
+    adaptation?.proposal?.effectiveDate === effectiveDate &&
+    adaptation.proposal.newRateMinor === poundsToMinor(newRate)
+      ? adaptation.proposal
+      : undefined;
 
   const inspect = useCallback(async (runId: string) => {
     setBusy(true);
@@ -120,15 +128,28 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
 
   async function evaluateRateChange() {
     const newRateMinor = poundsToMinor(newRate);
-    if (newRateMinor === null) {
-      setAdaptationError("Enter a GBP rate with no more than two decimal places.");
+    setAdaptation((current) => current ? { ...current, proposal: undefined } : current);
+    if (effectiveDate !== pilotEffectiveDate || newRateMinor !== pilotRateMinor) {
+      setAdaptationError(pilotRateMessage);
       return;
     }
     await adaptationAction({ operation: "adaptation-evaluate", effectiveDate, newRateMinor });
   }
 
+  function changeEffectiveDate(value: string) {
+    setEffectiveDate(value);
+    setAdaptationError("");
+    setAdaptation((current) => current ? { ...current, proposal: undefined } : current);
+  }
+
+  function changeNewRate(value: string) {
+    setNewRate(value);
+    setAdaptationError("");
+    setAdaptation((current) => current ? { ...current, proposal: undefined } : current);
+  }
+
   async function activateRateChange() {
-    const proposal = adaptation?.proposal;
+    const proposal = displayedProposal;
     if (!proposal?.evaluation.accepted) return;
     const state = await adaptationAction({
       operation: "adaptation-activate",
@@ -230,6 +251,9 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                 <p>
                   This demonstration evaluates one defined rate rule. It does not interpret general instructions, change negotiated rates, cancellation charges or prepaid sessions.
                 </p>
+                <p className="clara-pilot-limit">
+                  Pilot values: £90.00 effective 1 September 2026.
+                </p>
                 <div className="clara-rate-fields">
                   <label>
                     Effective from
@@ -237,7 +261,7 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                       type="date"
                       value={effectiveDate}
                       disabled={adaptationBusy}
-                      onChange={(event) => setEffectiveDate(event.target.value)}
+                      onChange={(event) => changeEffectiveDate(event.target.value)}
                     />
                   </label>
                   <label>
@@ -246,7 +270,7 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                       inputMode="decimal"
                       value={newRate}
                       disabled={adaptationBusy}
-                      onChange={(event) => setNewRate(event.target.value)}
+                      onChange={(event) => changeNewRate(event.target.value)}
                     />
                   </label>
                 </div>
@@ -254,7 +278,7 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                   <button className="ws-button" type="button" disabled={adaptationBusy} onClick={() => void evaluateRateChange()}>
                     {adaptationBusy ? "Working…" : "Evaluate change"}
                   </button>
-                  {adaptation?.proposal?.evaluation.accepted && (
+                  {displayedProposal?.evaluation.accepted && (
                     <button className="ws-button ws-button-primary" type="button" disabled={adaptationBusy} onClick={() => void activateRateChange()}>
                       Activate evaluated change
                     </button>
@@ -271,16 +295,16 @@ export function ClaraWorkspace({ ownerName }: { ownerName: string }) {
                     Active rule: <strong>{adaptation.active.version}</strong> · generation {adaptation.active.generation}
                   </p>
                 )}
-                {adaptation?.proposal && (
+                {displayedProposal && (
                   <section className="clara-proposal" aria-labelledby="clara-proposal-title">
                     <p className="ws-date-label">Evaluated proposal</p>
                     <h3 id="clara-proposal-title">
-                      {pounds(adaptation.proposal.baselineTotalMinor)} → {pounds(adaptation.proposal.candidateTotalMinor)}
+                      {pounds(displayedProposal.baselineTotalMinor)} → {pounds(displayedProposal.candidateTotalMinor)}
                     </h3>
-                    <p>{adaptation.proposal.explanation}</p>
+                    <p>{displayedProposal.explanation}</p>
                     <p>
-                      Evaluation: {adaptation.proposal.evaluation.passed}/{adaptation.proposal.evaluation.total} checks passed
-                      {adaptation.proposal.evaluation.accepted ? ". Ready for your explicit activation." : ". Not accepted; activation is unavailable."}
+                      Evaluation: {displayedProposal.evaluation.passed}/{displayedProposal.evaluation.total} checks passed
+                      {displayedProposal.evaluation.accepted ? ". Ready for your explicit activation." : ". Not accepted; activation is unavailable."}
                     </p>
                   </section>
                 )}

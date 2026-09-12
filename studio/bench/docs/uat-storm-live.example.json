@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "runId": "c0001-pilot-example",
+  "mode": "live",
+  "enabled": false,
+  "workflow": "clara-c0001-baseline",
+  "authorization": {"path": "/private/evidence/authorization.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"},
+  "target": {
+    "classification": "private-synthetic",
+    "clientId": "c0001",
+    "origin": "https://private-synthetic.example.invalid",
+    "integrationSha": "0000000000000000000000000000000000000000",
+    "applicationSourceSha": "0000000000000000000000000000000000000000",
+    "applicationReleaseId": "0000000000000000000000000000000000000000000000000000000000000000",
+    "applicationArtifactDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "backendDeployment": "synthetic-backend",
+    "evidence": {"path": "/private/evidence/target.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
+  },
+  "identity": {
+    "clientId": "c0001",
+    "actorId": "operator",
+    "kind": "operator",
+    "role": "owner",
+    "subjectDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "runtimeActorDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "evidence": {"path": "/private/evidence/identity.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
+  },
+  "lease": {
+    "workerId": "operator-browser",
+    "leaseId": "replace-me",
+    "epoch": 1,
+    "owner": "operator",
+    "expiresAt": "1970-01-01T00:00:00.000Z",
+    "operatorSessionBindingDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "evidence": {"path": "/private/evidence/lease.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
+  },
+  "oracle": {
+    "kind": "clara-durable-draft",
+    "readOnly": true,
+    "bindingDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "evidence": {"path": "/private/evidence/oracle.json", "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}
+  },
+  "limits": {"maxActions": 5, "maxSeconds": 600, "maxModelDecisions": 0, "maxCostMicros": 0},
+  "providersEnabled": false,
+  "faults": []
+}

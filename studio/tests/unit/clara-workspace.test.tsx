@@ -179,3 +179,31 @@ it("evaluates, explicitly activates and rolls back the bounded attended-rate cha
     expectedActiveReleaseId: adaptedRelease.releaseId,
   });
 });
+
+it("rejects unsupported pilot values and never offers a stale proposal for activation", async () => {
+  const fetcher = vi.fn((_url, options) => {
+    const { operation } = JSON.parse(options.body);
+    if (operation === "adaptation-status")
+      return reply(adaptation(operation, baselineRelease, { proposal }));
+    throw new Error(`Unexpected operation ${operation}`);
+  });
+  vi.stubGlobal("fetch", fetcher);
+  render(<ClaraWorkspace ownerName="Synthetic owner" />);
+
+  expect(await screen.findByRole("button", { name: "Activate evaluated change" })).toBeVisible();
+  expect(screen.getByText("Pilot values: £90.00 effective 1 September 2026.")).toBeVisible();
+
+  fireEvent.change(screen.getByLabelText("New standard rate (GBP)"), { target: { value: "95" } });
+  expect(screen.queryByRole("button", { name: "Activate evaluated change" })).not.toBeInTheDocument();
+  expect(screen.queryByText("Evaluated proposal")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Evaluate change" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "This pilot supports only £90.00 effective 1 September 2026. The current rule remains active.",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(1);
+
+  fireEvent.change(screen.getByLabelText("New standard rate (GBP)"), { target: { value: "-1" } });
+  fireEvent.click(screen.getByRole("button", { name: "Evaluate change" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("This pilot supports only £90.00 effective 1 September 2026");
+  expect(fetcher).toHaveBeenCalledTimes(1);
+});
