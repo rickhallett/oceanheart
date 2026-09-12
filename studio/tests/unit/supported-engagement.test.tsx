@@ -104,17 +104,29 @@ it("reviews a durable user-authored draft only while its evidence remains curren
     evidence: [{ sourceId: "s1", title: "Fictional massage practice guide", version: 2 }],
   };
   const { rerender } = render(<WorkflowBrief evidence={[]} draft={draft} prepare={vi.fn()} review={review} />);
+  expect(screen.getByText("Draft · draft")).toBeVisible();
   expect(screen.getByText("No messages, bookings or payments are changed.")).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Accept draft" }));
   await waitFor(() => expect(review).toHaveBeenCalledWith("accept", 0));
   expect(screen.getByRole("status")).toHaveTextContent("supported delivery review");
 
-  rerender(<WorkflowBrief
-    evidence={[]}
-    draft={{ ...draft, evidenceState: "unavailable" }}
-    prepare={vi.fn()}
-    review={review}
-  />);
+  function Recovery() {
+    const [current, setCurrent] = React.useState<WorkflowDraft | undefined>({
+      ...draft,
+      evidenceState: "unavailable",
+    });
+    return <WorkflowBrief
+      evidence={[{ sourceId: "s2", title: "Current massage practice guide", version: 3 }]}
+      draft={current}
+      prepare={vi.fn()}
+      review={review}
+      startNew={() => setCurrent(undefined)}
+    />;
+  }
+  rerender(<Recovery />);
   expect(screen.getByRole("alert")).toHaveTextContent("cannot be reviewed");
   expect(screen.getByRole("button", { name: "Accept draft" })).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Revise as a new draft" }));
+  expect(screen.getByLabelText(/Current massage practice guide/)).not.toBeChecked();
+  expect(screen.getByRole("button", { name: "Save draft for review" })).toBeDisabled();
 });

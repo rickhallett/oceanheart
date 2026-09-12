@@ -283,6 +283,7 @@ function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
   const eligible = useQuery(supportedEngagementApi.eligibleBriefEvidence, { tenantId });
   const latest = useQuery(supportedEngagementApi.latestBrief, { tenantId });
   const [briefId, setBriefId] = useState<WorkflowBriefId>();
+  const [startingNew, setStartingNew] = useState(false);
   const selected = useQuery(
     supportedEngagementApi.getBrief,
     briefId ? { tenantId, briefId } : "skip",
@@ -291,7 +292,7 @@ function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
   const reviewMutation = useMutation(supportedEngagementApi.reviewBrief);
   const prepareReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
   const reviewReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
-  const draft = selected ?? latest ?? undefined;
+  const draft = startingNew ? undefined : briefId ? selected : latest ?? undefined;
   return (
     <WorkflowBrief
       evidence={eligible ?? []}
@@ -309,6 +310,7 @@ function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
           requestKey: prepareReceipt.current.key,
         });
         setBriefId(id);
+        setStartingNew(false);
       }}
       review={async (decision, revision) => {
         if (!draft) return;
@@ -322,6 +324,10 @@ function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
           decision,
           requestKey: reviewReceipt.current.key,
         });
+      }}
+      startNew={() => {
+        setBriefId(undefined);
+        setStartingNew(true);
       }}
     />
   );

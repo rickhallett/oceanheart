@@ -195,17 +195,13 @@ function Answers({ tenantId, canApprove }: { tenantId: TenantId; canApprove: boo
           Find an answer
         </button>
       </div>
-      {available?.enabled ? (
-        <p>
-          Your question and selected excerpts are processed by OpenAI. Each
-          answer links to the text it comes from.
-        </p>
-      ) : (
-        <p>
-          You can search your documents here. AI-assisted answers are not
-          enabled for this practice yet.
-        </p>
-      )}
+      <p>
+        Find matching text searches inside Studio. Only Find an answer sends
+        your question and selected excerpts to OpenAI.
+        {available?.enabled
+          ? " Each answer links to the text it comes from."
+          : " AI-assisted answers are not enabled for this practice yet."}
+      </p>
       {busy && <p role="status">Checking selected sources…</p>}
       {error && <p role="alert">{error}</p>}
       {result && (

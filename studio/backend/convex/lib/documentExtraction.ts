@@ -6,8 +6,10 @@ export type IngestionErrorCode =
   | "EXTRACTION_FAILED";
 
 export class IngestionError extends Error {
-  constructor(readonly code: IngestionErrorCode) {
+  readonly code: IngestionErrorCode;
+  constructor(code: IngestionErrorCode) {
     super(code);
+    this.code = code;
   }
 }
 
@@ -42,6 +44,36 @@ function checked(text: string, emptyCode: IngestionErrorCode) {
   return normalized;
 }
 
+function decodeXmlText(value: string) {
+  return value.replace(/&#(x[0-9a-f]+|[0-9]+);|&(amp|lt|gt|quot|apos);/gi, (entity, numeric, named) => {
+    if (numeric) {
+      const codePoint = Number.parseInt(numeric.startsWith("x") ? numeric.slice(1) : numeric, numeric.startsWith("x") ? 16 : 10);
+      return Number.isSafeInteger(codePoint) && codePoint <= 0x10ffff && !(codePoint >= 0xd800 && codePoint <= 0xdfff)
+        ? String.fromCodePoint(codePoint)
+        : entity;
+    }
+    const entities: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
+    return entities[named.toLowerCase()] ?? entity;
+  });
+}
+
+async function extractDocx(bytes: Uint8Array) {
+  assertBoundedDocxArchive(bytes);
+  const { unzipSync } = await import("fflate");
+  const archive = unzipSync(bytes, {
+    filter: entry => entry.name === "word/document.xml",
+  });
+  const document = archive["word/document.xml"];
+  if (!document) throw new IngestionError("EXTRACTION_FAILED");
+  const xml = new TextDecoder("utf-8", { fatal: true }).decode(document);
+  const paragraphs = xml.split(/<\/w:p\s*>/i).map(paragraph =>
+    [...paragraph.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t\s*>/gi)]
+      .map(match => decodeXmlText(match[1]))
+      .join(""),
+  );
+  return checked(paragraphs.join("\n"), "INVALID_TEXT");
+}
+
 export async function extractDocument(
   bytes: Uint8Array,
   format: DocumentFormat,
@@ -53,13 +85,10 @@ export async function extractDocument(
       return checked(new TextDecoder("utf-8", { fatal: true }).decode(bytes), "INVALID_TEXT");
     }
     if (format === "docx") {
-      assertBoundedDocxArchive(bytes);
-      const mammoth = await import("mammoth");
-      const result = await mammoth.extractRawText({ buffer: Buffer.from(bytes) });
-      return checked(result.value, "INVALID_TEXT");
+      return await extractDocx(bytes);
     }
-    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    const loadingTask = pdfjs.getDocument({ data: bytes });
+    const { getDocument } = await import("unpdf/pdfjs");
+    const loadingTask = getDocument({ data: bytes });
     const pdf = await loadingTask.promise;
     try {
       if (pdf.numPages > MAX_PDF_PAGES) throw new IngestionError("FILE_TOO_LARGE");

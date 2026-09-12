@@ -176,11 +176,13 @@ export function WorkflowBrief({
   draft,
   prepare,
   review,
+  startNew,
 }: {
   evidence: WorkflowEvidence[];
   draft?: WorkflowDraft;
   prepare: (input: { title: string; objective: string; reviewNotes: string; sourceIds: string[] }) => Promise<void>;
   review: (decision: "accept" | "request_changes", expectedRevision: number) => Promise<void>;
+  startNew?: () => void;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [title, setTitle] = useState("");
@@ -277,7 +279,9 @@ export function WorkflowBrief({
         </>
       ) : (
         <article className="workflow-draft">
-          <p className="workflow-draft-label">Reviewed draft · {draft.status.replace("_", " ")}</p>
+          <p className="workflow-draft-label">
+            {draft.status === "draft" ? "Draft" : "Reviewed brief"} · {draft.status.replace("_", " ")}
+          </p>
           <h3>{draft.title}</h3>
           <h4>Outcome to explore</h4>
           <p>{draft.outcome}</p>
@@ -302,6 +306,11 @@ export function WorkflowBrief({
                 () => review("request_changes", draft.revision), "Changes requested; no workflow was activated.",
               )}>Request changes</button>
             </div>
+          )}
+          {startNew && (
+            <button disabled={busy} onClick={startNew}>
+              {draft.evidenceState === "unavailable" ? "Revise as a new draft" : "Start a new draft"}
+            </button>
           )}
         </article>
       )}

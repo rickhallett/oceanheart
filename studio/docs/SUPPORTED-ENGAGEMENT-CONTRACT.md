@@ -42,7 +42,7 @@ cookies are never an acceptable substitute.
 TXT/Markdown are decoded as UTF-8. PDF extraction reads a text layer; a document
 with no usable text fails `UNREADABLE_SCAN` and is never represented as OCR'd.
 PDFs are capped at 200 pages and 32 KiB extracted UTF-8 text, checked page by
-page with parser cleanup. DOCX is capped at 16 MiB total declared uncompressed
+page with the serverless PDF build and document cleanup. DOCX is capped at 16 MiB total declared uncompressed
 ZIP content (ZIP64 and over 2,000 entries fail closed) before extraction, then
 at the same 32 KiB text limit. DOCX extraction reads document text only. Embedded files, macros, external
 relationships and HTML are not executed. All extracted content is untrusted data,
