@@ -51,6 +51,22 @@ node scripts/uat-storm/run.ts live --resume --manifest /private/uat-storm/resume
   --response-timeout-ms 180000
 ```
 
+For each pending broker request, the operator first confirms the bound tab is
+still the private signed-in c0001 surface. `operator-response.ts` wraps the
+current pending request ID and strict payload without copying browser authority:
+
+```sh
+node scripts/uat-storm/operator-response.ts inspect --pending /private/operator-broker/pending.json \
+  --manifest /private/uat-storm/live-manifest.json | \
+  node scripts/uat-storm/operator-broker.ts respond --state-dir /private/operator-broker
+node scripts/uat-storm/operator-response.ts perform --pending /private/operator-broker/pending.json \
+  --result /private/operator-observation.json | \
+  node scripts/uat-storm/operator-broker.ts respond --state-dir /private/operator-broker
+node scripts/uat-storm/operator-response.ts oracle --pending /private/operator-broker/pending.json \
+  --result /private/read-only-oracle.json | \
+  node scripts/uat-storm/operator-broker.ts respond --state-dir /private/operator-broker
+```
+
 The committed example remains disabled. Private run artifacts and real evidence receipts stay outside Git under the canonical operations vault.
 
 ## Selective legacy provenance
