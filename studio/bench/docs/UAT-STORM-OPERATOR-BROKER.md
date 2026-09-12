@@ -46,10 +46,9 @@ to 15 minutes). Shutdown returns `BROKER_SHUTDOWN` to an active caller and
 removes broker-owned pending/response/socket files. Timeout returns
 `OPERATOR_TIMEOUT` and retains no actionable pending request.
 
-## Integration limit
+## Integrated timeout boundary
 
-The engine-side Unix socket adapter must use a configurable response timeout at
-least as long as this operator deadline and no longer than the enclosing run
-deadline. A hard-coded 15-second adapter timeout cannot support a reliable
-human-driven Chrome observation cycle; until aligned, the transport is locally
-proven but the live storm run is not ready.
+The engine-side Unix socket adapter uses a configurable response timeout capped
+by the enclosing 180-second run deadline. Start the broker and engine with the
+same 180-second ceiling; every pending operator action still shares that single
+overall deadline rather than receiving a fresh budget.
