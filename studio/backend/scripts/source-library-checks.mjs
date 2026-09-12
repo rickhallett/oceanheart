@@ -166,6 +166,14 @@ export async function sourceLibraryChecks({
   };
   assert.equal(await alice.mutation("sourceLibrary:changeStatus", approve), 1);
   assert.equal(await alice.mutation("sourceLibrary:changeStatus", approve), 1);
+  const briefArgs = {tenantId, title:"Fictional intake follow-up", outcome:"Review a supported client workflow", reviewNotes:"Keep all patient decisions manual", sourceIds:[sourceId], requestKey:"brief-create"};
+  const briefId = await alice.mutation("workflowBriefs:prepare", briefArgs);
+  assert.equal(await alice.mutation("workflowBriefs:prepare", briefArgs), briefId);
+  await assert.rejects(bob.mutation("workflowBriefs:prepare", {...briefArgs, requestKey:"outsider-brief"}), /FORBIDDEN/);
+  const reviewArgs = {tenantId, briefId, expectedRevision:0, decision:"accept", requestKey:"brief-accept"};
+  assert.deepEqual(await alice.mutation("workflowBriefs:review", reviewArgs), {status:"accepted",revision:1});
+  assert.deepEqual(await alice.mutation("workflowBriefs:review", reviewArgs), {status:"accepted",revision:1});
+  const staleBriefId = await alice.mutation("workflowBriefs:prepare", {...briefArgs, requestKey:"brief-stale"});
   const edit = {
     ...fields,
     tenantId,
@@ -180,6 +188,8 @@ export async function sourceLibraryChecks({
   assert.equal(data.source.revision, 2);
   assert.equal(data.source.approvedVersionId, undefined);
   assert.equal(data.version.number, 2);
+  await assert.rejects(alice.mutation("workflowBriefs:review", {tenantId, briefId:staleBriefId, expectedRevision:0, decision:"accept", requestKey:"stale-review"}), /EVIDENCE_UNAVAILABLE/);
+  check("workflow briefs are owner-only and idempotent; review revalidates exact current approved evidence");
   assert.equal(
     (
       await alice.query("sourceLibrary:version", {

@@ -47,6 +47,7 @@ import type * as settings from "../settings.js";
 import type * as sourceLibrary from "../sourceLibrary.js";
 import type * as tasks from "../tasks.js";
 import type * as tenants from "../tenants.js";
+import type * as workflowBriefs from "../workflowBriefs.js";
 
 import type {
   ApiFromModules,
@@ -94,6 +95,7 @@ declare const fullApi: ApiFromModules<{
   sourceLibrary: typeof sourceLibrary;
   tasks: typeof tasks;
   tenants: typeof tenants;
+  workflowBriefs: typeof workflowBriefs;
 }>;
 
 /**
