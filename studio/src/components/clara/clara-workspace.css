@@ -54,6 +54,11 @@
   gap: 16px;
   margin-top: 18px;
 }
+.clara-pilot-limit {
+  margin-top: 8px !important;
+  color: #657389;
+  font-size: 13px;
+}
 .clara-rate-fields label {
   display: grid;
   gap: 6px;
