@@ -27,4 +27,30 @@ describe("supported engagement document extraction", () => {
     const bytes = new Uint8Array(await Packer.toBuffer(doc));
     await expect(extractDocument(bytes, "docx")).resolves.toContain("therapist opening hours");
   });
+
+  it("rejects an oversized declared DOCX archive before inflation", async () => {
+    const doc = new Document({ sections: [{ children: [new Paragraph("Fictional policy")] }] });
+    const bytes = new Uint8Array(await Packer.toBuffer(doc));
+    const view = new DataView(bytes.buffer);
+    for (let offset = 0; offset + 46 <= bytes.length; offset += 1) {
+      if (view.getUint32(offset, true) === 0x02014b50) {
+        view.setUint32(offset + 24, 17 * 1024 * 1024, true);
+        break;
+      }
+    }
+    await expect(extractDocument(bytes, "docx"))
+      .rejects.toMatchObject({ code: "FILE_TOO_LARGE" } satisfies Partial<IngestionError>);
+  });
+
+  it("stops PDF extraction when accumulated text exceeds the limit", async () => {
+    const pdf = await PDFDocument.create();
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    for (let pageIndex = 0; pageIndex < 8; pageIndex += 1) {
+      const page = pdf.addPage([600, 900]);
+      for (let line = 0; line < 100; line += 1)
+        page.drawText("massage ".repeat(15), { font, size: 8, x: 8, y: 890 - line * 8 });
+    }
+    await expect(extractDocument(await pdf.save(), "pdf"))
+      .rejects.toMatchObject({ code: "FILE_TOO_LARGE" } satisfies Partial<IngestionError>);
+  });
 });
