@@ -42,6 +42,12 @@ function SystemDiagram() {
         <text x="62" y="399" className="diagram-annotation">Release authority stays with Oceanheart operations.</text>
       </svg>
     </div>
+    <div className="system-mobile" aria-label="Studio system architecture">
+      <div className="mobile-system-node"><strong>Client + delivery team</strong><span>WorkOS verifies identity and sessions.</span></div>
+      <div className="mobile-system-node"><strong>Studio application</strong><span>Next.js, React and TypeScript</span></div>
+      <div className="mobile-system-branch"><h3>Application data</h3><div className="mobile-system-node"><strong>Convex</strong><span>Client access checks and queries</span></div><div className="mobile-system-node"><strong>Practice records</strong><span>Records and approved source versions</span></div></div>
+      <div className="mobile-system-branch"><h3>Dedicated workflow runtime</h3><div className="mobile-system-node"><strong>Workflow API</strong><span>Verified identity and server-owned client binding</span></div><div className="mobile-system-node"><strong>Pi runtime</strong><span>Typed inputs and explicit tools</span></div><div className="mobile-system-node"><strong>SQLite</strong><span>Jobs, effects and traces</span></div></div>
+    </div>
     <figcaption>The workspace and workflow runtime have distinct responsibilities. The public website has its own release line.</figcaption>
   </figure>;
 }

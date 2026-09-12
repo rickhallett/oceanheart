@@ -135,3 +135,26 @@
 .technology-logo img { width: 24px; height: 24px; object-fit: contain; flex: none; }
 .technical-page .technology-logo > span { color: var(--tech-ink); font-size: 16px; }
 @media(max-width: 600px) { .technical-page .execution-strip { grid-template-columns: 1fr 1fr; gap: 18px 0; }.technical-page .execution-strip > span:nth-child(3) { border-left: 0; padding-left: 0; } }
+
+.system-mobile { display: none; }
+@media(max-width: 600px) {
+  .technical-page .technical-intro { gap: 24px; padding-block: 32px; }
+  .technical-page .technical-intro h1 { margin-top: 0; }
+  .technical-page .diagram-scroll { display: none; }
+  .technical-page .system-figure figcaption::before { content: none; }
+  .system-mobile { display: grid; gap: 16px; padding: 18px; background: #fcfaf5; border: 1px solid #ddd8cc; }
+  .mobile-system-node { display: grid; gap: 4px; padding: 12px; border: 1px solid #d5dce3; border-radius: 4px; background: #fff; }
+  .mobile-system-node strong { font-size: 14px; font-weight: 500; }
+  .mobile-system-node span { font-size: 13px; line-height: 1.5; color: #526074; }
+  .mobile-system-branch { display: grid; gap: 10px; padding-left: 12px; border-left: 2px solid #b7cfe0; }
+  .technical-page .tech-section .mobile-system-branch h3 { font-size: 14px; margin: 0; }
+  .technical-page .tech-section h2 { font-size: 26px; line-height: 1.2; }
+  .technical-page .tech-section h3 { font-size: 18px; line-height: 1.35; }
+  .technical-page :is(.tech-section > p, .tech-two-columns p, .delivery-sequence p, .tech-example > p:last-child, .tech-status p) { font-size: 15px; line-height: 1.6; }
+  .technical-page :is(.execution-outcomes dd, .tech-stack p, .execution-strip) { font-size: 14px; }
+  .technical-page .tech-stack > div { grid-template-columns: 1fr; gap: 12px; }
+  .technical-page .technology-logos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .technical-page .technology-logo { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; min-height: 28px; gap: 8px; }
+  .technical-page .technology-logo > span { grid-column: 2; font-size: 14px; line-height: 1.4; }
+  .technical-page .technology-logo img { grid-column: 1; grid-row: 1; }
+}
