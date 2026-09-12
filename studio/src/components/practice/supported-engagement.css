@@ -1,0 +1,95 @@
+.engagement-upload,
+.workflow-brief {
+  max-width: 720px;
+  margin: 32px 0;
+  padding-top: 28px;
+  border-top: 1px solid #d8dfe8;
+}
+.engagement-upload form,
+.workflow-brief > label {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+}
+.engagement-upload label,
+.workflow-brief label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.engagement-upload input[type="file"],
+.workflow-brief input[type="text"],
+.workflow-brief textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid #d8dfe8;
+  border-radius: 6px;
+  padding: 14px;
+  background: #fff;
+  font: inherit;
+}
+.workflow-brief textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.engagement-upload-status {
+  display: grid;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-left: 3px solid #255bd7;
+  background: #f5f7fb;
+}
+.engagement-upload-status span,
+.workflow-draft-label,
+.workflow-draft li > span {
+  color: #657389;
+  font-size: 13px;
+}
+.engagement-upload-failed {
+  border-left-color: #9c2f26;
+}
+.workflow-brief fieldset {
+  border: 0;
+  padding: 0;
+  margin: 24px 0;
+}
+.workflow-brief legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.workflow-brief fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+}
+.workflow-draft {
+  margin-top: 28px;
+}
+.workflow-draft ol,
+.workflow-draft ul {
+  padding-left: 22px;
+}
+.workflow-draft li {
+  margin: 14px 0;
+  overflow-wrap: anywhere;
+}
+.workflow-draft li > strong,
+.workflow-draft li > span {
+  display: block;
+}
+.workflow-draft blockquote {
+  margin: 0 0 7px;
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+@media (max-width: 600px) {
+  .engagement-upload,
+  .workflow-brief {
+    margin-top: 24px;
+    padding-top: 22px;
+  }
+}

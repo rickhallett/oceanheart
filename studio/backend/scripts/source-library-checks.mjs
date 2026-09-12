@@ -100,6 +100,63 @@ export async function sourceLibraryChecks({
   check(
     "anonymous, viewer and outsider cannot list/read/history/create/edit/approve source material",
   );
+  await alice.mutation("knowledgeAccess:grant", {
+    tenantId,
+    identity: viewerIdentity,
+    capability: "read",
+  });
+  assert.equal(
+    (await viewer.query("sourceLibrary:get", { tenantId, sourceId })).version._id,
+    original,
+  );
+  await assert.rejects(viewer.mutation("sourceLibrary:save", {
+    ...fields, tenantId, sourceId, expectedRevision: 0, requestKey: "reader-write",
+  }), /FORBIDDEN/);
+  await alice.mutation("knowledgeAccess:grant", {
+    tenantId,
+    identity: viewerIdentity,
+    capability: "contribute",
+  });
+  const contributed = await viewer.mutation("sourceLibrary:create", {
+    ...args, requestKey: "contributor-create",
+  });
+  const contributedVersion = (await viewer.query("sourceLibrary:get", {tenantId, sourceId: contributed})).version._id;
+  await assert.rejects(viewer.mutation("sourceLibrary:changeStatus", {
+    tenantId, sourceId: contributed, versionId: contributedVersion,
+    expectedRevision: 0, action: "approve",
+  }), /FORBIDDEN/);
+  await alice.mutation("knowledgeAccess:revoke", { tenantId, identity: viewerIdentity });
+  await assert.rejects(viewer.query("sourceLibrary:get", { tenantId, sourceId }), /FORBIDDEN/);
+  await alice.mutation("sourceLibrary:changeStatus", {tenantId, sourceId: contributed, versionId: contributedVersion, expectedRevision: 0, action: "delete"});
+  check("knowledge grants are tenant-scoped, capability-bounded, revocable and never confer approval");
+  const uploadArgs = {
+    tenantId,
+    bytes: new TextEncoder().encode("Fictional massage rate and intake policy").buffer,
+    title: "Fictional massage operations",
+    provenance: "Synthetic upload fixture",
+    format: "text",
+    requestKey: "upload-text",
+  };
+  const uploadA = await alice.action("knowledgeIngestionActions:upload", uploadArgs);
+  const uploadB = await alice.action("knowledgeIngestionActions:upload", uploadArgs);
+  assert.equal(uploadA.uploadId, uploadB.uploadId);
+  const uploadedSource = await alice.action("knowledgeIngestionActions:process", {tenantId, uploadId: uploadA.uploadId});
+  const uploaded = await alice.query("sourceLibrary:get", {tenantId, sourceId: uploadedSource});
+  await alice.mutation("sourceLibrary:changeStatus", {tenantId, sourceId: uploadedSource, versionId: uploaded.version._id, expectedRevision: 0, action: "approve"});
+  const replacement = await alice.action("knowledgeIngestionActions:upload", {
+    ...uploadArgs,
+    bytes: new TextEncoder().encode("Updated fictional massage policy").buffer,
+    requestKey: "upload-replacement",
+    targetSourceId: uploadedSource,
+    expectedRevision: 1,
+  });
+  await alice.action("knowledgeIngestionActions:process", {tenantId, uploadId: replacement.uploadId});
+  const replaced = await alice.query("sourceLibrary:get", {tenantId, sourceId: uploadedSource});
+  assert.equal(replaced.version.number, 2);
+  assert.equal(replaced.source.approvedVersionId, undefined);
+  await assert.rejects(alice.query("citedAnswers:search", {tenantId, sourceIds:[uploadedSource], question:"massage policy"}), /SOURCE_UNAVAILABLE/);
+  await alice.mutation("sourceLibrary:changeStatus", {tenantId, sourceId: uploadedSource, versionId: replaced.version._id, expectedRevision: 2, action: "delete"});
+  check("authenticated byte upload is idempotent; replacement versions clear approval and stale retrieval fails closed");
   const approve = {
     tenantId,
     sourceId,
@@ -109,6 +166,14 @@ export async function sourceLibraryChecks({
   };
   assert.equal(await alice.mutation("sourceLibrary:changeStatus", approve), 1);
   assert.equal(await alice.mutation("sourceLibrary:changeStatus", approve), 1);
+  const briefArgs = {tenantId, title:"Fictional intake follow-up", outcome:"Review a supported client workflow", reviewNotes:"Keep all patient decisions manual", sourceIds:[sourceId], requestKey:"brief-create"};
+  const briefId = await alice.mutation("workflowBriefs:prepare", briefArgs);
+  assert.equal(await alice.mutation("workflowBriefs:prepare", briefArgs), briefId);
+  await assert.rejects(bob.mutation("workflowBriefs:prepare", {...briefArgs, requestKey:"outsider-brief"}), /FORBIDDEN/);
+  const reviewArgs = {tenantId, briefId, expectedRevision:0, decision:"accept", requestKey:"brief-accept"};
+  assert.deepEqual(await alice.mutation("workflowBriefs:review", reviewArgs), {status:"accepted",revision:1});
+  assert.deepEqual(await alice.mutation("workflowBriefs:review", reviewArgs), {status:"accepted",revision:1});
+  const staleBriefId = await alice.mutation("workflowBriefs:prepare", {...briefArgs, requestKey:"brief-stale"});
   const edit = {
     ...fields,
     tenantId,
@@ -123,6 +188,8 @@ export async function sourceLibraryChecks({
   assert.equal(data.source.revision, 2);
   assert.equal(data.source.approvedVersionId, undefined);
   assert.equal(data.version.number, 2);
+  await assert.rejects(alice.mutation("workflowBriefs:review", {tenantId, briefId:staleBriefId, expectedRevision:0, decision:"accept", requestKey:"stale-review"}), /EVIDENCE_UNAVAILABLE/);
+  check("workflow briefs are owner-only and idempotent; review revalidates exact current approved evidence");
   assert.equal(
     (
       await alice.query("sourceLibrary:version", {
@@ -266,6 +333,25 @@ export async function sourceLibraryChecks({
   check(
     "invalid writes leave no partial source/version; foreign IDs denied; archived index and bounded history remain scoped",
   );
+  const deletedId = await alice.mutation("sourceLibrary:create", {
+    ...args,
+    requestKey: "delete-source",
+  });
+  const deleted = await alice.query("sourceLibrary:get", {tenantId, sourceId: deletedId});
+  const deleteArgs = {
+    tenantId,
+    sourceId: deletedId,
+    versionId: deleted.version._id,
+    expectedRevision: 0,
+    action: "delete",
+  };
+  assert.equal(await alice.mutation("sourceLibrary:changeStatus", deleteArgs), 1);
+  assert.equal(await alice.mutation("sourceLibrary:changeStatus", deleteArgs), 1);
+  assert.equal((await alice.query("sourceLibrary:versions", {
+    tenantId, sourceId: deletedId, paginationOpts: {numItems: 10, cursor: null},
+  })).page.length, 0);
+  await assert.rejects(alice.query("sourceLibrary:get", {tenantId, sourceId: deletedId}), /INVALID_SOURCE_VERSION/);
+  check("explicit delete removes version content and leaves only inaccessible source audit metadata");
   const malformedId = await alice.mutation("sourceLibrary:create", {
     ...args,
     requestKey: "malformed",

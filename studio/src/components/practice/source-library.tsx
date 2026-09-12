@@ -1,6 +1,6 @@
 "use client";
 import { Component, useRef, useState, type ReactNode } from "react";
-import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
+import { useAction, useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import type { Doc, Id } from "../../../backend/convex/_generated/dataModel";
 import { api } from "../../../backend/convex/_generated/api";
 import type { TenantId } from "./api";
@@ -8,6 +8,13 @@ import "./source-library.css";
 import { TaskApproval, PrepareCompletion } from "./approved-task";
 import { BookOpen, FileText, Plus, Search } from "lucide-react";
 import { CitedAnswers } from "./cited-answers";
+import { DocumentUpload, WorkflowBrief, type UploadStatus } from "./supported-engagement";
+import {
+  supportedEngagementApi,
+  type IngestionFormat,
+  type KnowledgeUploadId,
+  type WorkflowBriefId,
+} from "./supported-engagement-api";
 
 type SourceId = Id<"knowledgeSources">;
 type Fields = {
@@ -26,6 +33,8 @@ function errorText(error: unknown) {
     return "Enter a title and non-empty text up to 32 KiB. The source description is limited to 500 characters.";
   if (text.includes("SOURCE_ARCHIVED"))
     return "This source is archived and cannot be changed.";
+  if (text.includes("SOURCE_DELETED"))
+    return "This document was deleted and is no longer available.";
   return "Could not save the change. Your draft is retained; try again.";
 }
 class LibraryBoundary extends Component<
@@ -59,11 +68,17 @@ export function SourceLibrary({
 }: {
   tenantId: TenantId;
   canWrite: boolean;
-  initialSection?: "documents" | "answers" | "tasks";
+  initialSection?: "documents" | "answers" | "tasks" | "workflow";
 }) {
-  return canWrite ? (
+  if (canWrite) return <LibraryBoundary key={tenantId}><Library tenantId={tenantId} initialSection={initialSection} capability="owner" /></LibraryBoundary>;
+  return <GrantedLibrary tenantId={tenantId} initialSection={initialSection} />;
+}
+function GrantedLibrary({tenantId, initialSection}:{tenantId:TenantId;initialSection:"documents"|"answers"|"tasks"|"workflow"}) {
+  const access = useQuery(supportedEngagementApi.access, {tenantId});
+  if (!access) return <p role="status">Checking Knowledge access…</p>;
+  return access.capability ? (
     <LibraryBoundary key={tenantId}>
-      <Library tenantId={tenantId} initialSection={initialSection} />
+      <Library tenantId={tenantId} initialSection={initialSection === "workflow" ? "documents" : initialSection} capability={access.capability} />
     </LibraryBoundary>
   ) : (
     <div className="lp-empty">
@@ -75,14 +90,16 @@ export function SourceLibrary({
 function Library({
   tenantId,
   initialSection,
+  capability,
 }: {
   tenantId: TenantId;
-  initialSection: "documents" | "answers" | "tasks";
+  initialSection: "documents" | "answers" | "tasks" | "workflow";
+  capability: "read" | "contribute" | "owner";
 }) {
   const [archived, setArchived] = useState(false),
     [selected, setSelected] = useState<SourceId>(),
     [adding, setAdding] = useState(false),
-    [section, setSection] = useState<"documents" | "answers" | "tasks">(
+    [section, setSection] = useState<"documents" | "answers" | "tasks" | "workflow">(
       initialSection,
     ),
     [search, setSearch] = useState("");
@@ -92,14 +109,18 @@ function Library({
     { initialNumItems: 20 },
   );
   const create = useMutation(api.sourceLibrary.create);
+  const canContribute = capability === "owner" || capability === "contribute";
   return (
     <section className="source-library">
       <header className="knowledge-header">
         <div>
-          <h1>Knowledge library</h1>
-          <p>Your practice information, ready when you need it.</p>
+          <h1>Knowledge Centre</h1>
+          <p>
+            Your documents, shared with your authorised Oceanheart delivery
+            team and kept inside this engagement.
+          </p>
         </div>
-        {!adding && !selected && section === "documents" && (
+        {canContribute && !adding && !selected && section === "documents" && (
           <button className="knowledge-primary" onClick={() => setAdding(true)}>
             <Plus size={16} />
             Add document
@@ -108,11 +129,15 @@ function Library({
       </header>
       <nav className="knowledge-tabs" aria-label="Knowledge sections">
         {(
-          [
+          (capability === "owner" ? [
             ["documents", "Documents"],
             ["answers", "Ask your library"],
             ["tasks", "Tasks"],
-          ] as const
+            ["workflow", "Workflow brief"],
+          ] : [
+            ["documents", "Documents"],
+            ["answers", "Ask your library"],
+          ]) as readonly (readonly ["documents" | "answers" | "tasks" | "workflow", string])[]
         ).map(([id, label]) => (
           <button
             key={id}
@@ -124,13 +149,17 @@ function Library({
         ))}
       </nav>
       <div hidden={section !== "answers"}>
-        <CitedAnswers tenantId={tenantId} canWrite={true} />
+        <CitedAnswers tenantId={tenantId} canWrite={true} canApprove={capability === "owner"} />
       </div>
-      <div hidden={section !== "tasks"}>
+      {capability === "owner" && <div hidden={section !== "tasks"}>
         <PrepareCompletion tenantId={tenantId} />
-      </div>
-      <TaskApproval tenantId={tenantId} />
+      </div>}
+      {capability === "owner" && <div hidden={section !== "workflow"}>
+        <WorkflowBriefJourney tenantId={tenantId} />
+      </div>}
+      {capability === "owner" && <TaskApproval tenantId={tenantId} />}
       <div hidden={section !== "documents"}>
+        {!adding && !selected && <OwnerDocumentIngestion tenantId={tenantId} capability={capability} />}
         {adding ? (
           <SourceEditor
             save={async (fields, key) => {
@@ -146,6 +175,7 @@ function Library({
             tenantId={tenantId}
             sourceId={selected}
             back={() => setSelected(undefined)}
+            capability={capability}
           />
         ) : (
           <>
@@ -185,7 +215,7 @@ function Library({
                     ? "Documents you archive will appear here."
                     : "Add a policy, a service guide or useful notes. Choose which documents to use when you ask a question."}
                 </p>
-                {!archived && (
+                {!archived && canContribute && (
                   <button
                     className="knowledge-primary"
                     onClick={() => setAdding(true)}
@@ -248,25 +278,161 @@ function Library({
     </section>
   );
 }
+
+function WorkflowBriefJourney({ tenantId }: { tenantId: TenantId }) {
+  const eligible = useQuery(supportedEngagementApi.eligibleBriefEvidence, { tenantId });
+  const latest = useQuery(supportedEngagementApi.latestBrief, { tenantId });
+  const [briefId, setBriefId] = useState<WorkflowBriefId>();
+  const selected = useQuery(
+    supportedEngagementApi.getBrief,
+    briefId ? { tenantId, briefId } : "skip",
+  );
+  const prepareMutation = useMutation(supportedEngagementApi.prepareBrief);
+  const reviewMutation = useMutation(supportedEngagementApi.reviewBrief);
+  const prepareReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const reviewReceipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const draft = selected ?? latest ?? undefined;
+  return (
+    <WorkflowBrief
+      evidence={eligible ?? []}
+      draft={draft}
+      prepare={async ({ title, objective, reviewNotes, sourceIds }) => {
+        const payload = JSON.stringify({ title, outcome: objective, reviewNotes, sourceIds });
+        if (prepareReceipt.current?.payload !== payload)
+          prepareReceipt.current = { payload, key: crypto.randomUUID() };
+        const id = await prepareMutation({
+          tenantId,
+          title,
+          outcome: objective,
+          reviewNotes,
+          sourceIds: sourceIds as SourceId[],
+          requestKey: prepareReceipt.current.key,
+        });
+        setBriefId(id);
+      }}
+      review={async (decision, revision) => {
+        if (!draft) return;
+        const payload = JSON.stringify({ briefId: draft.id, decision, revision });
+        if (reviewReceipt.current?.payload !== payload)
+          reviewReceipt.current = { payload, key: crypto.randomUUID() };
+        await reviewMutation({
+          tenantId,
+          briefId: draft.id,
+          expectedRevision: revision,
+          decision,
+          requestKey: reviewReceipt.current.key,
+        });
+      }}
+    />
+  );
+}
+
+const ingestionFormats = [
+  { label: "TXT", extensions: [".txt"], mimeTypes: ["text/plain"], maxBytes: 5 * 1024 * 1024 },
+  { label: "Markdown", extensions: [".md", ".markdown"], mimeTypes: ["text/markdown"], maxBytes: 5 * 1024 * 1024 },
+  { label: "PDF", extensions: [".pdf"], mimeTypes: ["application/pdf"], maxBytes: 5 * 1024 * 1024 },
+  { label: "DOCX", extensions: [".docx"], mimeTypes: ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"], maxBytes: 5 * 1024 * 1024 },
+];
+
+function ingestionFormat(fileName: string): IngestionFormat {
+  const name = fileName.toLowerCase();
+  if (name.endsWith(".txt")) return "text";
+  if (name.endsWith(".md") || name.endsWith(".markdown")) return "markdown";
+  if (name.endsWith(".pdf")) return "pdf";
+  if (name.endsWith(".docx")) return "docx";
+  throw new Error("UNSUPPORTED_FORMAT");
+}
+
+function sourceTitle(fileName: string) {
+  return fileName.replace(/\.(?:txt|md|markdown|pdf|docx)$/i, "").replace(/[_-]+/g, " ").trim();
+}
+
+export function OwnerDocumentIngestion({
+  tenantId,
+  replacement,
+  capability = "owner",
+}: {
+  tenantId: TenantId;
+  replacement?: { sourceId: SourceId; title: string; revision: number };
+  capability?: "read" | "contribute" | "owner";
+}) {
+  const upload = useAction(supportedEngagementApi.upload);
+  const process = useAction(supportedEngagementApi.process);
+  const [recent, setRecent] = useState<{ id: KnowledgeUploadId; fileName: string }>();
+  const status = useQuery(
+    supportedEngagementApi.status,
+    recent ? { tenantId, uploadId: recent.id } : "skip",
+  );
+  const receipt = useRef<{ payload: string; key: string } | undefined>(undefined);
+  const latest: UploadStatus | undefined = recent && status ? {
+    id: recent.id,
+    fileName: recent.fileName,
+    state: status.status,
+    error: status.errorCode,
+  } : recent ? { id: recent.id, fileName: recent.fileName, state: "pending" } : undefined;
+  return (
+    <DocumentUpload
+      capability={capability}
+      formats={ingestionFormats}
+      latest={latest}
+      replacement={!!replacement}
+      upload={async (file) => {
+        const bytes = await file.arrayBuffer();
+        const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)))
+          .map((value) => value.toString(16).padStart(2, "0")).join("");
+        const format = ingestionFormat(file.name);
+        const payload = JSON.stringify({
+          name: file.name,
+          size: file.size,
+          hash,
+          format,
+          targetSourceId: replacement?.sourceId,
+          expectedRevision: replacement?.revision,
+        });
+        if (receipt.current?.payload !== payload) receipt.current = { payload, key: crypto.randomUUID() };
+        const registered = await upload({
+          tenantId,
+          bytes,
+          title: replacement?.title || sourceTitle(file.name),
+          provenance: `Uploaded as ${file.name}`,
+          format,
+          requestKey: receipt.current.key,
+          ...(replacement ? {
+            targetSourceId: replacement.sourceId,
+            expectedRevision: replacement.revision,
+          } : {}),
+        });
+        setRecent({ id: registered.uploadId, fileName: file.name });
+        try {
+          await process({ tenantId, uploadId: registered.uploadId });
+        } catch {
+          // The reactive, typed status is authoritative for extraction failures.
+        }
+      }}
+    />
+  );
+}
 function SourceDetail({
   tenantId,
   sourceId,
   back,
+  capability,
 }: {
   tenantId: TenantId;
   sourceId: SourceId;
   back: () => void;
+  capability: "read" | "contribute" | "owner";
 }) {
   const value = useQuery(api.sourceLibrary.get, { tenantId, sourceId });
   const save = useMutation(api.sourceLibrary.save),
-    change = useMutation(api.sourceLibrary.changeStatus);
+    change = useMutation(supportedEngagementApi.changeSourceStatus);
   const [editing, setEditing] = useState(false),
     [pending, setPending] = useState(false),
     [error, setError] = useState(""),
     [archiveConfirm, setArchiveConfirm] = useState(false);
   if (!value?.version) return <p role="status">Loading source…</p>;
   const { source, version } = value;
-  async function status(action: "approve" | "revoke" | "archive") {
+  async function status(action: "approve" | "revoke" | "archive" | "delete") {
     if (pending) return;
     setPending(true);
     setError("");
@@ -279,6 +445,7 @@ function SourceDetail({
         action,
       });
       setArchiveConfirm(false);
+      if (action === "delete") back();
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -320,12 +487,12 @@ function SourceDetail({
       ) : (
         <>
           <p>{version.provenance || ""}</p>
-          {!source.archived && (
+          {!source.archived && capability !== "read" && (
             <div className="source-toolbar">
               <button disabled={pending} onClick={() => setEditing(true)}>
                 Edit document
               </button>
-              <button
+              {capability === "owner" && <button
                 className="document-answer-switch"
                 role="switch"
                 aria-checked={source.approvedVersionId === version._id}
@@ -340,16 +507,28 @@ function SourceDetail({
               >
                 <span aria-hidden="true" className="document-switch-track" />
                 Use in answers
-              </button>
-              <button
+              </button>}
+              {capability === "owner" && <button
                 disabled={pending}
                 onClick={() => setArchiveConfirm(true)}
               >
                 Archive document
-              </button>
+              </button>}
+              {capability === "owner" && <DeleteDocumentControl
+                disabled={pending}
+                deleteDocument={() => status("delete")}
+              />}
             </div>
           )}
           <pre className="source-text">{version.content}</pre>
+          {capability !== "read" && <details>
+            <summary>Upload a replacement version</summary>
+            <OwnerDocumentIngestion
+              tenantId={tenantId}
+              replacement={{ sourceId, title: source.title, revision: source.revision }}
+              capability={capability}
+            />
+          </details>}
           {archiveConfirm && (
             <div role="group" aria-label="Confirm archive">
               <p>
@@ -374,6 +553,35 @@ function SourceDetail({
         </>
       )}
     </>
+  );
+}
+
+export function DeleteDocumentControl({
+  disabled,
+  deleteDocument,
+}: {
+  disabled: boolean;
+  deleteDocument: () => Promise<void>;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  return confirming ? (
+    <div className="document-delete-confirm" role="group" aria-label="Confirm delete">
+      <p>
+        Delete this document permanently? Its uploaded file, text and version
+        history will be removed and it will stop appearing in citations. This
+        cannot be undone. Archive it instead if you need to retain its history.
+      </p>
+      <button disabled={disabled} onClick={() => void deleteDocument()}>
+        Confirm permanent delete
+      </button>
+      <button disabled={disabled} onClick={() => setConfirming(false)}>
+        Keep document
+      </button>
+    </div>
+  ) : (
+    <button disabled={disabled} onClick={() => setConfirming(true)}>
+      Delete document
+    </button>
   );
 }
 function VersionHistory({

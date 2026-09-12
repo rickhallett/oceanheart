@@ -18,6 +18,9 @@ import type * as gmail from "../gmail.js";
 import type * as gmailConnections from "../gmailConnections.js";
 import type * as gmailInternal from "../gmailInternal.js";
 import type * as http from "../http.js";
+import type * as knowledgeAccess from "../knowledgeAccess.js";
+import type * as knowledgeIngestion from "../knowledgeIngestion.js";
+import type * as knowledgeIngestionActions from "../knowledgeIngestionActions.js";
 import type * as lib_access from "../lib/access.js";
 import type * as lib_actionContract from "../lib/actionContract.js";
 import type * as lib_answerProvider from "../lib/answerProvider.js";
@@ -26,9 +29,11 @@ import type * as lib_bookingHours from "../lib/bookingHours.js";
 import type * as lib_catalog from "../lib/catalog.js";
 import type * as lib_createClient from "../lib/createClient.js";
 import type * as lib_demoData from "../lib/demoData.js";
+import type * as lib_documentExtraction from "../lib/documentExtraction.js";
 import type * as lib_gmailMessage from "../lib/gmailMessage.js";
 import type * as lib_gmailProvider from "../lib/gmailProvider.js";
 import type * as lib_gmailSecurity from "../lib/gmailSecurity.js";
+import type * as lib_knowledgeAccess from "../lib/knowledgeAccess.js";
 import type * as lib_practiceDay from "../lib/practiceDay.js";
 import type * as lib_retrieval from "../lib/retrieval.js";
 import type * as lib_settings from "../lib/settings.js";
@@ -42,6 +47,7 @@ import type * as settings from "../settings.js";
 import type * as sourceLibrary from "../sourceLibrary.js";
 import type * as tasks from "../tasks.js";
 import type * as tenants from "../tenants.js";
+import type * as workflowBriefs from "../workflowBriefs.js";
 
 import type {
   ApiFromModules,
@@ -60,6 +66,9 @@ declare const fullApi: ApiFromModules<{
   gmailConnections: typeof gmailConnections;
   gmailInternal: typeof gmailInternal;
   http: typeof http;
+  knowledgeAccess: typeof knowledgeAccess;
+  knowledgeIngestion: typeof knowledgeIngestion;
+  knowledgeIngestionActions: typeof knowledgeIngestionActions;
   "lib/access": typeof lib_access;
   "lib/actionContract": typeof lib_actionContract;
   "lib/answerProvider": typeof lib_answerProvider;
@@ -68,9 +77,11 @@ declare const fullApi: ApiFromModules<{
   "lib/catalog": typeof lib_catalog;
   "lib/createClient": typeof lib_createClient;
   "lib/demoData": typeof lib_demoData;
+  "lib/documentExtraction": typeof lib_documentExtraction;
   "lib/gmailMessage": typeof lib_gmailMessage;
   "lib/gmailProvider": typeof lib_gmailProvider;
   "lib/gmailSecurity": typeof lib_gmailSecurity;
+  "lib/knowledgeAccess": typeof lib_knowledgeAccess;
   "lib/practiceDay": typeof lib_practiceDay;
   "lib/retrieval": typeof lib_retrieval;
   "lib/settings": typeof lib_settings;
@@ -84,6 +95,7 @@ declare const fullApi: ApiFromModules<{
   sourceLibrary: typeof sourceLibrary;
   tasks: typeof tasks;
   tenants: typeof tenants;
+  workflowBriefs: typeof workflowBriefs;
 }>;
 
 /**

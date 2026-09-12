@@ -2,10 +2,17 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { it, expect, vi } from "vitest";
 import {
+  DeleteDocumentControl,
   SourceEditor,
   SourceLibrary,
 } from "../../src/components/practice/source-library";
 import type { TenantId } from "../../src/components/practice/api";
+vi.mock("convex/react", () => ({
+  useQuery: vi.fn(() => ({ capability: null })),
+  useMutation: vi.fn(),
+  useAction: vi.fn(),
+  usePaginatedQuery: vi.fn(),
+}));
 const initial = {
   title: "Synthetic guide",
   provenance: "Fixture",
@@ -86,10 +93,25 @@ it("blocks edits when source is archived remotely", () => {
   expect(screen.getByLabelText("Document text")).toBeDisabled();
   expect(screen.getByRole("button", { name: "Save document" })).toBeDisabled();
 });
-it("does not mount private queries for viewers", () => {
+it("fails closed for a tenant member without a Knowledge grant", () => {
   render(<SourceLibrary tenantId={"tenant" as TenantId} canWrite={false} />);
   expect(screen.getByText("Owner access required")).toBeVisible();
   expect(screen.queryByText("Add document")).not.toBeInTheDocument();
+});
+
+it("distinguishes permanent delete from history-retaining archive and requires confirmation", async () => {
+  const remove = vi.fn().mockResolvedValue(undefined);
+  render(<DeleteDocumentControl disabled={false} deleteDocument={remove} />);
+  fireEvent.click(screen.getByRole("button", { name: "Delete document" }));
+  expect(screen.getByRole("group", { name: "Confirm delete" })).toHaveTextContent(
+    "uploaded file, text and version history will be removed",
+  );
+  expect(screen.getByRole("group", { name: "Confirm delete" })).toHaveTextContent(
+    "Archive it instead",
+  );
+  expect(remove).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Confirm permanent delete" }));
+  await waitFor(() => expect(remove).toHaveBeenCalledTimes(1));
 });
 
 it("picks only editable fields from Convex documents at initialization and latest recovery", async () => {
