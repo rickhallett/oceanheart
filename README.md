@@ -131,3 +131,5 @@ flowchart LR
 | [`docs/`](docs/) | Website delivery notes and shared assets |
 
 Further technical context: [product direction](https://github.com/rickhallett/oceanheart/blob/studio/dev/studio/docs/PRODUCT-DIRECTION.md), [environment architecture](https://github.com/rickhallett/oceanheart/blob/studio/dev/studio/docs/HARNESS-ENVIRONMENT-SPEC.md), [operator bench](https://github.com/rickhallett/oceanheart/tree/studio/dev/studio/bench), and [environments](https://github.com/rickhallett/oceanheart/blob/studio/dev/studio/docs/ENVIRONMENTS.md).
+
+Planning note: [lab notebook publication and website/Studio repository separation](docs/2026-09-14-lab-notebook-and-repository-separation.md).
