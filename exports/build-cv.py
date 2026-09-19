@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass, field
 import html
 import re
@@ -25,6 +26,7 @@ from reportlab.platypus import (
     Image,
     ListFlowable,
     ListItem,
+    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -76,6 +78,21 @@ VARIANTS = {
             "and safety angle."
         ),
         "public_mirror": True,
+    },
+    "ai-enablement-engineer": {
+        "source": SOURCE_DIR / "ai-enablement-engineer.md",
+        "label": "AI Enablement Engineer",
+        "descriptor": "Process discovery | applied AI | adoption and handoff",
+        "preview_only": True,
+        "facts": (
+            (
+                "BASED / TRAVEL",
+                "United Kingdom<br/>Remote, hybrid, willing to relocate",
+            ),
+            ("ENGINEERING", "6+ professional years<br/>Product and AI delivery"),
+            ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
+        ),
+        "page_break_before": ("Experience",),
     },
     "frontend-developer": {
         "source": FULL_COMPLEMENT_SOURCE_DIR / "frontend-developer.md",
@@ -370,6 +387,7 @@ def header_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
+    facts: tuple[tuple[str, str], ...] | None = None,
 ) -> list:
     if not PORTRAIT.exists():
         raise FileNotFoundError(f"Missing portrait: {PORTRAIT}")
@@ -418,11 +436,15 @@ def header_story(
         "CvDescriptorGrouped", parent=styles["descriptor"], spaceAfter=0
     )
 
-    facts = (
-        ("BASED / TRAVEL", "United Kingdom<br/>Remote, hybrid, willing to relocate"),
-        ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
-        ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
-    )
+    if facts is None:
+        facts = (
+            (
+                "BASED / TRAVEL",
+                "United Kingdom<br/>Remote, hybrid, willing to relocate",
+            ),
+            ("ENGINEERING", "6.5 cumulative years<br/>Professional since April 2019"),
+            ("CLINICAL", "15 years CBT<br/>NHS and private practice"),
+        )
     fact_cells = [
         [
             Paragraph(fact_label, styles["fact_label"]),
@@ -598,9 +620,11 @@ def markdown_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
+    facts: tuple[tuple[str, str], ...] | None = None,
+    page_break_before: frozenset[str] = frozenset(),
 ) -> list:
     content = parse_markdown(source)
-    story: list = header_story(content, label, descriptor, styles, width)
+    story: list = header_story(content, label, descriptor, styles, width, facts)
 
     for paragraph in content.intro:
         story.append(Paragraph(inline_markup(paragraph), styles["intro"]))
@@ -610,6 +634,8 @@ def markdown_story(
     for section in content.sections:
         if section.heading in skip:
             continue
+        if section.heading in page_break_before:
+            story.append(PageBreak())
         if section.heading == "Education" and "Technical" in section_map:
             story.extend(
                 compact_sections(
@@ -692,6 +718,10 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
     descriptor = str(config["descriptor"])
     upload_name = config.get("upload_name")
     public_mirror = bool(config.get("public_mirror", False))
+    facts = config.get("facts")
+    if facts is not None and not isinstance(facts, tuple):
+        raise TypeError(f"Invalid facts for {slug}: expected tuple")
+    page_break_before = frozenset(config.get("page_break_before", ()))
     if not isinstance(source, Path) or not source.exists():
         raise FileNotFoundError(f"Missing canonical CV source: {source}")
 
@@ -717,7 +747,15 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             author="Richard Hallett",
             subject="Curriculum vitae",
         )
-        story = markdown_story(source, label, descriptor, styles, document.width)
+        story = markdown_story(
+            source,
+            label,
+            descriptor,
+            styles,
+            document.width,
+            facts=facts,
+            page_break_before=page_break_before,
+        )
         document.build(
             story,
             onFirstPage=lambda canvas, doc: draw_page(canvas, doc, label, styles),
@@ -785,7 +823,24 @@ def write_upload_map() -> Path:
 
 
 def main() -> None:
-    built = [build_variant(slug, config) for slug, config in VARIANTS.items()]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--variant",
+        choices=VARIANTS,
+        help="Build one CV variant without rebuilding the full set.",
+    )
+    args = parser.parse_args()
+
+    if args.variant:
+        path = build_variant(args.variant, VARIANTS[args.variant])
+        print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
+        return
+
+    built = [
+        build_variant(slug, config)
+        for slug, config in VARIANTS.items()
+        if not config.get("preview_only")
+    ]
     default_cv = PRIMARY_OUTPUT_DIR / "richard-hallett-forward-deployed-engineer.pdf"
     shutil.copy2(default_cv, ROOT / "static" / "richard-hallett-cv.pdf")
     map_path = write_upload_map()
