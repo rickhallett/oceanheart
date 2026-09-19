@@ -21,7 +21,7 @@ export function SiteNav({ practice }: { practice?: Practice }) {
     <Link href={practice ? `/${practice}` : "/"} className="wordmark" aria-label={practice ? `${practice} home` : "Oceanheart home"}>{practice ? `${practice}.` : ''}oceanheart.ai</Link>
     <button ref={menuButton} className="mobile-menu-toggle" aria-label={open ? 'close menu' : 'open menu'} aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen(!open)}><span className="menu-strokes" aria-hidden="true"><span /><span /></span></button>
     <nav id="primary-navigation" data-open={open} aria-label="primary navigation">
-      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} onClick={() => setOpen(false)} href={href}>{label}</Link>)}
+      {(practice ? practiceNavigation[practice] : flagshipNavigation).map(([label, href]) => <Link key={href} onClick={() => setOpen(false)} href={href}>{label.toLowerCase()}</Link>)}
     </nav>
   </header>;
 }

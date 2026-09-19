@@ -172,12 +172,13 @@ body { -webkit-font-smoothing: antialiased; }
 @media (max-width: 600px) { .landing-hero-content { gap: 2.5rem; } }
 
 /* Integrated-practice exploration: preserve the card typography and palette. */
-.integrated-home .landing-copy h1 { font-size: clamp(4.5rem, 8.2vw, 8.5rem); line-height: .98; max-width: 12ch; }
+.integrated-home .landing-copy h1 { font-size: clamp(6rem, 10.93vw, 11.33rem); line-height: .98; max-width: 12ch; }
+.integrated-home .human-rule { margin-top: 1.5rem; }
 .integrated-home .landing-hero-content { grid-template-columns: 1.35fr 1fr; gap: 5vw; }
 .integrated-home .founder-line + .founder-line { margin-top: 1rem; }
 .integrated-intro { max-width: 44rem; margin: 0 0 4rem auto; font-size: 1.15rem; line-height: 1.75; color: #a1b7ba; }
 .integrated-intro p + p { margin-top: 1.4rem; }
-@media(max-width:800px) { .integrated-home .landing-hero-content { grid-template-columns: 1fr; } .integrated-home .landing-copy h1 { font-size: clamp(3.4rem, 13vw, 6rem); } .integrated-intro { font-size: 1rem; margin-bottom: 2.5rem; } }
+@media(max-width:800px) { .integrated-home .landing-hero-content { grid-template-columns: 1fr; } .integrated-home .landing-copy h1 { font-size: clamp(4.53rem, 17.33vw, 8rem); } .integrated-intro { font-size: 1rem; margin-bottom: 2.5rem; } }
 
 .inquiry-interlude { height: clamp(280px, 43vw, 640px); overflow: hidden; }
 .inquiry-interlude img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .8; }
