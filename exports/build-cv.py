@@ -23,6 +23,9 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     Image,
+    Flowable,
+    PageBreak,
+    KeepTogether,
     ListFlowable,
     ListItem,
     Paragraph,
@@ -40,12 +43,15 @@ FULL_COMPLEMENT_SOURCE_DIR = SOURCE_DIR / "full-complement"
 PRIMARY_OUTPUT_DIR = ROOT / "output" / "pdf"
 UPLOAD_DIR = PRIMARY_OUTPUT_DIR / "upload"
 MIRROR_DIRS = (ROOT / "static" / "cv",)
-PORTRAIT = SOURCE_DIR / "assets" / "richard-hallett-portrait.jpg"
+PORTRAIT = SOURCE_DIR / "assets" / "richard-hallett-about-cv.png"
 
 MONO_REGULAR_PATH = (
     Path.home() / "Library" / "Fonts" / "JetBrainsMonoNerdFont-Regular.ttf"
 )
 MONO_BOLD_PATH = Path.home() / "Library" / "Fonts" / "JetBrainsMonoNerdFont-Bold.ttf"
+if not (MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists()):
+    MONO_REGULAR_PATH = Path("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf")
+    MONO_BOLD_PATH = Path("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Bold.ttf")
 MONO = "Courier"
 MONO_BOLD = "Courier-Bold"
 if MONO_REGULAR_PATH.exists() and MONO_BOLD_PATH.exists():
@@ -58,6 +64,7 @@ VARIANTS = {
     "forward-deployed-engineer": {
         "source": SOURCE_DIR / "forward-deployed-engineer.md",
         "label": "Forward Deployed Engineer",
+        "page_break_before": "Experience",
         "descriptor": "Product engineering | applied AI | client delivery",
         "upload_name": "Richard Hallett",
         "selection_note": (
@@ -69,6 +76,7 @@ VARIANTS = {
     "applied-ai-engineer": {
         "source": SOURCE_DIR / "applied-ai-engineer.md",
         "label": "Applied AI Engineer",
+        "page_break_before": "Experience",
         "descriptor": "Production LLM systems | evaluation | safety",
         "upload_name": "Richard James Hallett",
         "selection_note": (
@@ -116,11 +124,14 @@ VARIANTS = {
     },
 }
 
-ACCENT = colors.HexColor("#2D5B8E")
-INK = colors.HexColor("#16191D")
-MUTED = colors.HexColor("#586271")
-RULE = colors.HexColor("#D5D9DD")
-PAPER = colors.white
+# Canonical CV styling approved 2026-09-07, from the website light pages.
+ACCENT = colors.HexColor("#637c83")
+INK = colors.HexColor("#151817")
+MUTED = colors.HexColor("#4f514d")
+RULE = colors.HexColor("#c5c2b9")
+PAPER = colors.HexColor("#eee9df")
+MONO = MONO_BOLD = "Helvetica"
+SITE_STYLE = True
 
 LINK_DESCRIPTIONS = {
     "mailto:kai@oceanheart.ai": "Email Richard Hallett",
@@ -161,7 +172,7 @@ def inline_markup(value: str) -> str:
     escaped = html.escape(value, quote=False)
     escaped = re.sub(
         r"\[([^\]]+)\]\((https?://[^)]+)\)",
-        r'<a href="\2" color="#2D5B8E"><u>\1</u></a>',
+        r'<a href="\2" color="#637c83"><u>\1</u></a>',
         escaped,
     )
     escaped = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escaped)
@@ -348,6 +359,7 @@ def parse_markdown(source: Path) -> CvContent:
 
 
 def contact_paragraph(styles: dict[str, ParagraphStyle]) -> Paragraph:
+    link_colour = ACCENT.hexval().replace("0x", "#")
     value = (
         '<a href="mailto:kai@oceanheart.ai" color="#2D5B8E">'
         "<u>kai@oceanheart.ai</u></a>"
@@ -361,7 +373,40 @@ def contact_paragraph(styles: dict[str, ParagraphStyle]) -> Paragraph:
         '<a href="https://oceanheart.ai" color="#2D5B8E">'
         "<u>oceanheart.ai</u></a>"
     )
-    return Paragraph(value, styles["contact"])
+    return Paragraph(value.replace("#2D5B8E", link_colour), styles["contact"])
+
+
+class SoftPortrait(Flowable):
+    """Round and feather the PDF image frame without altering the photo."""
+
+    def __init__(self, path: Path, width: float, height: float):
+        super().__init__()
+        self.path, self.width, self.height = path, width, height
+
+    def draw(self):
+        canvas = self.canv
+        canvas.saveState()
+        radius = 3 * mm
+        clip = canvas.beginPath()
+        clip.roundRect(0, 0, self.width, self.height, radius)
+        canvas.clipPath(clip, stroke=0, fill=0)
+        if SITE_STYLE:
+            canvas.setBlendMode("Multiply")
+        canvas.drawImage(str(self.path), 0, 0, self.width, self.height,
+                         preserveAspectRatio=True, anchor="c", mask="auto")
+        canvas.setBlendMode("Normal")
+        canvas.setStrokeColor(PAPER)
+        # Overlapping translucent contours feather the image into the white page.
+        steps = 24
+        feather = 1.2 * mm
+        for index in range(steps):
+            inset = feather * index / steps
+            canvas.setStrokeAlpha((1 - index / steps) ** 1.5)
+            canvas.setLineWidth(2 * feather / steps)
+            canvas.roundRect(inset, inset, self.width - 2 * inset,
+                             self.height - 2 * inset, max(radius - inset, 0),
+                             stroke=1, fill=0)
+        canvas.restoreState()
 
 
 def header_story(
@@ -370,18 +415,23 @@ def header_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
+    portrait: Path = PORTRAIT,
+    compact: bool = False,
 ) -> list:
-    if not PORTRAIT.exists():
-        raise FileNotFoundError(f"Missing portrait: {PORTRAIT}")
+    if not portrait.exists():
+        raise FileNotFoundError(f"Missing portrait: {portrait}")
 
-    photo_w = 33.9 * mm
-    photo_h = 45.2 * mm
-    photo = Image(str(PORTRAIT), width=photo_w, height=photo_h)
+    photo_w = (29.5 if compact else 33.9) * mm
+    photo_h = (39.333333 if compact else 45.2) * mm
+    photo = (
+        SoftPortrait(portrait, photo_w, photo_h) if compact else
+        Image(str(portrait), width=photo_w, height=photo_h, kind="proportional")
+    )
     photo_box = Table([[photo]], colWidths=[photo_w], rowHeights=[photo_h])
     photo_box.setStyle(
         TableStyle(
             [
-                ("BOX", (0, 0), (-1, -1), 0.65, RULE),
+                *(([("BOX", (0, 0), (-1, -1), 0.65, RULE)]) if not compact else []),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                 ("TOPPADDING", (0, 0), (-1, -1), 0),
@@ -492,6 +542,17 @@ def header_story(
 def section_heading(
     heading: str, styles: dict[str, ParagraphStyle], width: float
 ) -> Table:
+    if SITE_STYLE:
+        heading_table = Table([[Paragraph(html.escape(heading.upper()), styles["section"])]],
+                              colWidths=[width], hAlign="LEFT")
+        heading_table.setStyle(TableStyle([
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ]))
+        heading_table.keepWithNext = True
+        return heading_table
     marker = Table([[""]], colWidths=[4 * mm], rowHeights=[1.4 * mm])
     marker.setStyle(
         TableStyle(
@@ -520,6 +581,7 @@ def section_heading(
             ]
         )
     )
+    table.keepWithNext = True
     return table
 
 
@@ -584,12 +646,12 @@ def compact_sections(
             ]
         )
     )
-    return [
+    return [KeepTogether([
         Spacer(1, 2.5 * mm),
         section_heading("Education and technical", styles, width),
         Spacer(1, 3 * mm),
         columns,
-    ]
+    ])]
 
 
 def markdown_story(
@@ -598,9 +660,14 @@ def markdown_story(
     descriptor: str,
     styles: dict[str, ParagraphStyle],
     width: float,
+    portrait: Path = PORTRAIT,
+    compact: bool = False,
+    page_break_before: str | None = None,
 ) -> list:
     content = parse_markdown(source)
-    story: list = header_story(content, label, descriptor, styles, width)
+    if SITE_STYLE:
+        content.title = "Richard Hallett"
+    story: list = header_story(content, label, descriptor, styles, width, portrait, compact)
 
     for paragraph in content.intro:
         story.append(Paragraph(inline_markup(paragraph), styles["intro"]))
@@ -608,6 +675,8 @@ def markdown_story(
     section_map = {section.heading: section for section in content.sections}
     skip: set[str] = set()
     for section in content.sections:
+        if section.heading == page_break_before:
+            story.append(PageBreak())
         if section.heading in skip:
             continue
         if section.heading == "Education" and "Technical" in section_map:
@@ -624,9 +693,9 @@ def markdown_story(
 
         story.extend(
             [
-                Spacer(1, 2.5 * mm),
+                Spacer(1, (1.7 if compact else 2.5) * mm),
                 section_heading(section.heading, styles, width),
-                Spacer(1, 2.6 * mm),
+                Spacer(1, (1.8 if compact else 2.6) * mm),
             ]
         )
         story.extend(block_flowables(section.blocks, styles))
@@ -636,11 +705,14 @@ def markdown_story(
 
 def draw_page(canvas, doc, label: str, styles: dict[str, ParagraphStyle]) -> None:
     canvas.saveState()
-    canvas.setFillColor(ACCENT)
-    canvas.rect(0, A4[1] - 3.2 * mm, A4[0], 3.2 * mm, stroke=0, fill=1)
+    canvas.setFillColor(PAPER)
+    canvas.rect(0, 0, A4[0], A4[1], stroke=0, fill=1)
+    if not SITE_STYLE:
+        canvas.setFillColor(ACCENT)
+        canvas.rect(0, A4[1] - 3.2 * mm, A4[0], 3.2 * mm, stroke=0, fill=1)
     canvas.setFillColor(MUTED)
     canvas.setFont(MONO, 6.2)
-    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD (KAI) HALLETT")
+    canvas.drawString(doc.leftMargin, 7 * mm, "RICHARD HALLETT" if SITE_STYLE else "RICHARD (KAI) HALLETT")
     canvas.drawRightString(
         A4[0] - doc.rightMargin,
         7 * mm,
@@ -699,6 +771,21 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
     filename = f"richard-hallett-{slug}.pdf"
     destination = PRIMARY_OUTPUT_DIR / filename
     styles = make_styles()
+    if SITE_STYLE:
+        styles["name"].fontName = "Helvetica"
+        styles["name"].fontSize = 27
+        styles["name"].leading = 29
+        styles["role"].fontName = "Helvetica"
+        styles["role"].textColor = MUTED
+        styles["section"].textColor = ACCENT
+        styles["section"].fontSize = 8.4
+    compact = bool(config.get("compact", True))
+    portrait = Path(config.get("portrait", PORTRAIT))
+    if compact:
+        for key in ("intro", "entry", "body", "bullet"):
+            styles[key].fontSize = 8.7
+            styles[key].leading = 10.4
+            styles[key].spaceAfter = 4.2 if key != "bullet" else 1.3
 
     with tempfile.NamedTemporaryFile(
         prefix=f"{slug}-", suffix=".pdf", dir=PRIMARY_OUTPUT_DIR, delete=False
@@ -717,7 +804,7 @@ def build_variant(slug: str, config: dict[str, object]) -> Path:
             author="Richard Hallett",
             subject="Curriculum vitae",
         )
-        story = markdown_story(source, label, descriptor, styles, document.width)
+        story = markdown_story(source, label, descriptor, styles, document.width, portrait, compact, config.get("page_break_before"))
         document.build(
             story,
             onFirstPage=lambda canvas, doc: draw_page(canvas, doc, label, styles),

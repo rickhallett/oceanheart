@@ -3,6 +3,17 @@
 Oceanheart owns the canonical, reusable career documents. Jobpipe selects and
 uses them for applications; it does not maintain competing CV copies.
 
+## Canonical visual style
+
+Approved by Kai on 2026-09-07 for every CV variant: the website light-page
+palette (ivory #eee9df, charcoal #151817, secondary #4f514d, sea-grey #637c83),
+regular Helvetica headings and labels, 8.7pt body type, and the separate About
+portrait asset with rounded, feathered edges. Display the name as Richard Hallett.
+`exports/build-cv.py` owns the shared layout and defaults for future builds.
+Keep all source wording. The four shorter variants fit one page; the two longer
+variants use a deliberate break before Experience. Rebuild every internal,
+upload and static mirror together; local regeneration does not publish the site.
+
 ## CVs
 
 Canonical sources:
